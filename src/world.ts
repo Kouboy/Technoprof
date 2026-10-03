@@ -10,6 +10,7 @@ export type Enemy = {
   x: number;
   hp: number;
   boss: boolean;
+  female?: boolean;
   cool: number;
   wind: number;
   recovery: number;
@@ -136,6 +137,7 @@ export function makeEnemies(room: number, mission: number): Enemy[] {
           x: 235,
           hp: 6 + mission,
           boss: true,
+          female: mission === 0,
           cool: 0.5,
           wind: 0,
           recovery: 0,

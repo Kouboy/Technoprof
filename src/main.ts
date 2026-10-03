@@ -1,4 +1,5 @@
 import { drawComicFX } from "./comic-fx";
+import { drawPassageHints } from "./passage-hints";
 import { ENCOUNTER_SECONDS } from "./world";
 import { SchoolProps, drawDialogue } from "./school-props";
 import { BLOCKED_EDGES, walkBounds, recoveryBank } from "./world";
@@ -484,6 +485,9 @@ class Game extends Phaser.Scene {
         service: 7,
         passerelle: 6,
         inspecteur: 4,
+        "inspectrice-tampon": 4,
+        "inspectrice-pied": 4,
+        "inspectrice-recul": 4,
         chute: 8,
         "fx-coup": 4,
         "fx-garde": 4,
@@ -506,6 +510,12 @@ class Game extends Phaser.Scene {
         ].includes(view)
           ? 8
           : 0;
+      }
+      if (view.startsWith("inspectrice-")) {
+        const e = this.enemies[0];
+        e.recovery = view === "inspectrice-recul" ? 0.5 : 1;
+        e.pattern = view === "inspectrice-pied" ? 0 : 1;
+        e.facing = -1;
       }
       if (view.startsWith("fx-")) {
         this.encounterTime = 0;
@@ -1285,7 +1295,6 @@ class Game extends Phaser.Scene {
           e.x = Phaser.Math.Clamp(e.x + this.face * 14, 22, 287);
           this.hitStop = 0.055;
           this.punches++;
-          this.burst(contact.x, contact.y, 0xeee2b9);
           this.impact = 0.32;
           this.impactX = contact.x;
           this.impactY = contact.y;
@@ -1296,6 +1305,8 @@ class Game extends Phaser.Scene {
       for (const e of this.enemies) {
         if (e.downTime) e.downTime = Math.max(0, e.downTime - dt);
         if (e.hp <= 0) continue;
+        // Let both introduction pages finish before approaching or preparing a hit.
+        if (!e.boss && this.encounterTime > 0) continue;
         e.stun = Math.max(0, e.stun - dt);
         if (e.stun > 0) continue;
         if (this.room === 3) {
@@ -2062,13 +2073,23 @@ class Game extends Phaser.Scene {
         this.txt(40, 116, "DEPANNAGE PUIS AFFECTATION SUIVANTE", 8);
       this.txt(53, 137, "ENTREE : AFFECTATION SUIVANTE");
     }
-    if (this.phase === "school") drawComicFX(this.g, this);
+    if (this.phase === "school") {
+      if (!this.falling && this.schoolFade === 0 && this.bossIntro === 0)
+        drawPassageHints(this.g, this.room, this.px, this.cleared.has(4));
+      drawComicFX(this.g, this);
+    }
     if (
       this.phase === "school" &&
       this.encounterTime > 0 &&
       this.enemies[0]?.hp > 0
     )
-      drawDialogue(this.g, this.room, this.encounterTime, this.enemies[0].x);
+      drawDialogue(
+        this.g,
+        this.room,
+        this.encounterTime,
+        this.enemies[0].x,
+        this.enemies[0].female,
+      );
     this.drawingEncounter = false;
     if (this.phase === "school" && this.schoolFade > 0)
       this.fadeViewport(this.schoolFade / 0.7);
