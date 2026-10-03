@@ -10,10 +10,12 @@ type Fighter = {
   chargeDir?: number;
   facing?: number;
   boss: boolean;
+  role?: string;
   stun?: number;
 };
 type State = {
   room: number;
+  combatProfile?(): ReturnType<typeof combatProfile>;
   px: number;
   py: number;
   face: number;
@@ -53,9 +55,12 @@ export function drawComicFX(g: Phaser.GameObjects.Graphics, s: State) {
     s.attack > PLAY.attackRecovery &&
     s.attack <= PLAY.attackContact
   ) {
-    const y = s.py + VIEW.actorOffsetY - combatProfile(s.room).contactY,
+    const y =
+        s.py +
+        VIEW.actorOffsetY -
+        (s.combatProfile?.() ?? combatProfile(s.room)).contactY,
       dir = s.face,
-      scale = s.room === 4 ? 1 : 0.8;
+      scale = s.enemies.some((e) => e.boss) ? 1 : 0.8;
     const sweep =
       (PLAY.attackContact - s.attack) /
       (PLAY.attackContact - PLAY.attackRecovery);
@@ -82,7 +87,18 @@ export function drawComicFX(g: Phaser.GameObjects.Graphics, s: State) {
       continue;
     if (e.wind > 0) {
       const x = clamp(e.x - 3, 18, 297),
-        y = (s.room === 4 ? 50 : s.room === 3 ? 75 : 64) + VIEW.actorOffsetY;
+        y =
+          (s.room >= 10
+            ? e.boss
+              ? 32
+              : e.role === "student"
+                ? 72
+                : 52
+            : e.boss
+              ? 50
+              : s.room === 3
+                ? 75
+                : 64) + VIEW.actorOffsetY;
       poly(
         [
           x - 4,
@@ -131,7 +147,10 @@ export function drawComicFX(g: Phaser.GameObjects.Graphics, s: State) {
   const alpha = Math.min(1, s.impact / 0.07);
   const x = clamp(s.impactX, 23, 296),
     y = clamp(s.impactY + VIEW.actorOffsetY, 50, 157),
-    r = (blocked ? 8 : 12) * (s.room === 4 ? 1 : 0.8) * (1 - elapsed * 0.65);
+    r =
+      (blocked ? 8 : 12) *
+      (s.enemies.some((e) => e.boss) ? 1 : 0.8) *
+      (1 - elapsed * 0.65);
   const burst = (size: number) => {
     const p: number[] = [];
     for (let i = 0; i < 16; i++) {

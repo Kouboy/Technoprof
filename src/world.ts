@@ -8,6 +8,8 @@ export const TUNING = {
 };
 export type Enemy = {
   x: number;
+  role?: import("./missions").EnemyRole;
+  turnTime?: number;
   hp: number;
   boss: boolean;
   female?: boolean;

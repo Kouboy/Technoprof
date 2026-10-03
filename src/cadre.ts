@@ -104,6 +104,8 @@ export function bitmap(
   }
 }
 export type CadreState = {
+  destinationHUD?: [string, string];
+  classroom?: string;
   paused: boolean;
   phase: string;
   notified: boolean;
@@ -342,10 +344,22 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
       r(12, 198, 22, h, 0x0d171c);
       r(12, 198 + h, 22, 1, amber);
     }
-    compact(40, 199, "COLLEGE", dim, 65);
-    compact(40, 207, "C. HANOUNA", paper, 65);
+    compact(
+      40,
+      199,
+      (s.destinationHUD ?? ["COLLEGE", "C. HANOUNA"])[0],
+      dim,
+      65,
+    );
+    compact(
+      40,
+      207,
+      (s.destinationHUD ?? ["COLLEGE", "C. HANOUNA"])[1],
+      paper,
+      65,
+    );
     compact(40, 220, "SALLE", dim, 27);
-    t(70, 214, "42C", paper, 2, 37);
+    t(70, 214, s.classroom ?? "42C", paper, 2, 37);
   } else if (s.phase === "free") {
     compact(14, 199, "RADIO", dim, 90);
     t(14, 209, "EDUC FRANCE", paper, 1, 91);

@@ -1,11 +1,16 @@
 import Phaser from "phaser";
-import { roomPassages } from "./world";
+import { roomPassages, type Exit } from "./world";
 import { passageMarker } from "./passage-layout";
 import { smallPrint } from "./small-lettering";
 
 // Anchored to doorways/stair landings, never to the moving teacher.
-export function passageHints(room: number, px: number, cleared: boolean) {
-  return roomPassages(room, cleared).flatMap((exit) => {
+export function passageHints(
+  room: number,
+  px: number,
+  cleared: boolean,
+  exits = roomPassages(room, cleared),
+) {
+  return exits.flatMap((exit) => {
     const marker = passageMarker(exit, px);
     return marker ? [{ ...marker, key: exit.key }] : [];
   });
@@ -15,8 +20,9 @@ export function drawPassageHints(
   room: number,
   px: number,
   cleared: boolean,
+  exits?: Exit[],
 ) {
-  for (const hint of passageHints(room, px, cleared)) {
+  for (const hint of passageHints(room, px, cleared, exits)) {
     const vertical = hint.vertical;
     const label = hint.key === "UP" ? "HAUT" : "BAS";
     const { x, y, w, h: height, center } = hint;

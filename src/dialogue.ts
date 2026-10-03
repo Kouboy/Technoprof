@@ -1,4 +1,5 @@
-export const ENCOUNTERS: Record<number, { name: string; pages: string[][] }> = {
+export type Encounter = { name: string; pages: string[][] };
+export const ENCOUNTERS: Record<number, Encounter> = {
   1: {
     name: "PARENT D'ELEVE",
     pages: [
@@ -32,29 +33,42 @@ export const ENCOUNTERS: Record<number, { name: string; pages: string[][] }> = {
 // No timeout: X reveals the current page, then a fresh X advances it.
 export const DIALOGUE = { charactersPerSecond: 34, soundInterval: 0.075 };
 export type DialogueState = { page: number; characters: number };
-export function dialogueLength(room: number, state: DialogueState) {
-  return ENCOUNTERS[room]?.pages[state.page]?.join("").length ?? 0;
+export function dialogueLength(
+  room: number,
+  state: DialogueState,
+  data = ENCOUNTERS[room],
+) {
+  return data?.pages[state.page]?.join("").length ?? 0;
 }
 // Only newly displayed letters/digits speak. Spaces and punctuation stay silent.
 export function dialogueLetters(
   room: number,
   state: DialogueState,
   before: number,
+  data = ENCOUNTERS[room],
 ) {
-  const text = ENCOUNTERS[room]?.pages[state.page]?.join("") ?? "";
+  const text = data?.pages[state.page]?.join("") ?? "";
   return /[\p{L}\p{N}]/u.test(
     text.slice(Math.floor(before), Math.floor(state.characters)),
   );
 }
-export function dialogueReady(room: number, state: DialogueState) {
-  return state.characters >= dialogueLength(room, state);
+export function dialogueReady(
+  room: number,
+  state: DialogueState,
+  data = ENCOUNTERS[room],
+) {
+  return state.characters >= dialogueLength(room, state, data);
 }
-export function advanceDialogue(room: number, state: DialogueState) {
-  if (!dialogueReady(room, state)) {
-    state.characters = dialogueLength(room, state);
+export function advanceDialogue(
+  room: number,
+  state: DialogueState,
+  data = ENCOUNTERS[room],
+) {
+  if (!dialogueReady(room, state, data)) {
+    state.characters = dialogueLength(room, state, data);
     return "revealed";
   }
-  if (state.page + 1 < (ENCOUNTERS[room]?.pages.length ?? 0)) {
+  if (state.page + 1 < (data?.pages.length ?? 0)) {
     state.page++;
     state.characters = 0;
     return "next";

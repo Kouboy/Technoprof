@@ -52,6 +52,7 @@ type Host = {
   loadScenario(name: string): void;
   setPaused(value: boolean): void;
   floorGaps(): number[][];
+  combatProfile?(): ReturnType<typeof combatProfile>;
   bendDirection(distance?: number): number;
   setWorkshopFocus(focused: boolean): void;
   unlockAudio(): void;
@@ -66,6 +67,14 @@ const SCENARIOS: Record<string, string> = {
   "road-brake": "Freinage / véhicule lent",
   "road-edge": "Accotement / perte d'adhérence",
   parent: "Parent / présentation",
+  "bruel-drive": "Bruel / affectation complète",
+  "bruel-cour": "Bruel / cour et parcours",
+  "bruel-arrival": "Bruel / arrivée",
+  "pro-arrival": "Lycée pro / arrivée",
+  "bruel-boss": "Bruel / parent influent",
+  "pro-drive": "Lycée pro / affectation complète",
+  "pro-cour": "Lycée pro / parvis et parcours",
+  "pro-boss": "Lycée pro / responsable sécurité",
   student: "Élève / présentation",
   guard: "Vigile / présentation",
   boss: "Inspectrice / confrontation",
@@ -108,7 +117,7 @@ export function installWorkshop(s: Host) {
   root.hidden = false;
   root.innerHTML = "";
   const heading = document.createElement("strong");
-  heading.textContent = "ATELIER 0.56 — scénarios animés";
+  heading.textContent = "ATELIER 0.57 — scénarios animés";
   root.append(heading);
   const controls = document.createElement("div");
   controls.className = "workshop-controls";
@@ -232,7 +241,7 @@ export function drawWorkshop(s: Host) {
     performance.now() - lastMeasurementAt >= 1000
   )
     refreshMeasurements(s);
-  const profile = combatProfile(s.room);
+  const profile = s.combatProfile?.() ?? combatProfile(s.room);
   const player = s.roomTransition
     ? "TRANSITION → " + s.roomTransition.target
     : s.phase === "school" && s.encounterTime > 0

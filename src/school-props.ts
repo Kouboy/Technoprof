@@ -1,4 +1,9 @@
-import { ENCOUNTERS, dialogueReady, type DialogueState } from "./dialogue";
+import {
+  ENCOUNTERS,
+  dialogueReady,
+  type Encounter,
+  type DialogueState,
+} from "./dialogue";
 import { smallPrint, smallWidth } from "./small-lettering";
 import { ENCOUNTER_SECONDS } from "./world";
 import Phaser from "phaser";
@@ -281,9 +286,14 @@ export class SchoolProps {
     falling = false,
     feet = 159,
     mission = 0,
+    layout?: {
+      blocked: ("left" | "right")[];
+      signs?: [number, number, number, string[]][];
+      labels?: [number, number, string][];
+    },
   ) {
     this.artTint = daylight(mission).background;
-    for (const side of BLOCKED_EDGES[room] ?? []) {
+    for (const side of layout?.blocked ?? BLOCKED_EDGES[room] ?? []) {
       this.prop(
         0,
         side === "left" ? 7 : 287,
@@ -316,7 +326,7 @@ export class SchoolProps {
       );
       teacher.setCrop(0, 0, teacher.frame.width, h);
     }
-    for (const [x, y, w, lines] of SIGNS[room] ?? []) {
+    for (const [x, y, w, lines] of layout?.signs ?? SIGNS[room] ?? []) {
       const plateW = Math.max(
         44,
         ...lines.map((line) => smallWidth(line) + 14),
@@ -334,7 +344,7 @@ export class SchoolProps {
         ),
       );
     }
-    for (const [x, y, label] of DOOR_LABELS[room] ?? []) {
+    for (const [x, y, label] of layout?.labels ?? DOOR_LABELS[room] ?? []) {
       const destination = room === 4;
       const w = Math.max(destination ? 17 : 28, smallWidth(label) + 6),
         left = Math.min(310 - w, x - 3);
@@ -362,8 +372,8 @@ export function dialogueLayout(
   female = false,
   state?: DialogueState,
   actionLabel = "X/F",
+  data = ENCOUNTERS[room] as Encounter | undefined,
 ) {
-  const data = ENCOUNTERS[room];
   if (!data) return;
   const page = state?.page ?? (remaining > ENCOUNTER_SECONDS / 2 ? 0 : 1),
     lines = data.pages[page];
@@ -377,7 +387,7 @@ export function dialogueLayout(
     w,
     h: state ? 34 : 28,
     hint: state
-      ? !dialogueReady(room, state)
+      ? !dialogueReady(room, state, data)
         ? actionLabel + " : AFFICHER"
         : page + 1 < data.pages.length
           ? actionLabel + " : SUITE"
@@ -397,6 +407,7 @@ export function drawDialogue(
   female = false,
   state?: DialogueState,
   actionLabel = "X/F",
+  data = ENCOUNTERS[room] as Encounter | undefined,
 ) {
   const b = dialogueLayout(
     room,
@@ -405,6 +416,7 @@ export function drawDialogue(
     female,
     state,
     actionLabel,
+    data,
   );
   if (!b) return;
   const poly = (points: number[], color: number) => {

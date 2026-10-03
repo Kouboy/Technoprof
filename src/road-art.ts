@@ -49,7 +49,7 @@ export type Scenery = {
   z?: number;
   id?: number;
 };
-export function districtAnchors(travel: number) {
+export function districtAnchors(travel: number, district = "mixed") {
   const result: Scenery[] = [];
   const add = (z: number, lane: number, kind: number, variant = 0, id = 0) => {
     const d = z - travel;
@@ -63,7 +63,8 @@ export function districtAnchors(travel: number) {
   ) {
     const z = id * 30 + 18;
     const side = Math.floor(id / 3) % 2 === 0 ? -1 : 1;
-    const zone = vergeZone(z);
+    const zone =
+      district === "urban" ? 1 : district === "industrial" ? 3 : vergeZone(z);
     if (id % 2 === 0 && !openAddress(id)) {
       if (zone === 0 && id % 6 !== 2) add(z, side * 2.05, 1, 0, id);
       else

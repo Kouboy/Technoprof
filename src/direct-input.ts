@@ -35,6 +35,8 @@ type Host = {
   pointerMode: boolean;
   workshop?: boolean;
   pointerExits(): Exit[];
+  movementBounds?(): { min: number; max: number };
+  combatProfile?(): ReturnType<typeof combatProfile>;
 };
 type Intent =
   | { kind: "walk"; x: number }
@@ -117,7 +119,8 @@ export class DirectInput {
       g.used = true;
       const dx = x - g.x;
       if (Math.abs(dx) > DIRECT.tapSlop) {
-        const bounds = walkBounds(this.host.room);
+        const bounds =
+          this.host.movementBounds?.() ?? walkBounds(this.host.room);
         this.intent = {
           kind: "walk",
           x: Math.max(
@@ -184,7 +187,7 @@ export class DirectInput {
       return;
     }
     if (y >= 135) {
-      const bounds = walkBounds(s.room);
+      const bounds = s.movementBounds?.() ?? walkBounds(s.room);
       const target = Math.max(bounds.min, Math.min(bounds.max, x + s.cam));
       this.intent = { kind: "walk", x: target };
       this.marker(target - s.cam, 163, "walk");
@@ -282,7 +285,10 @@ export class DirectInput {
         s.controls?.setSource("direct", []);
         return;
       }
-      if (dx <= combatProfile(s.room).bookReach - 5 && s.py >= 135) {
+      if (
+        dx <= (s.combatProfile?.() ?? combatProfile(s.room)).bookReach - 5 &&
+        s.py >= 135
+      ) {
         if (s.attack === 0 && s.hitStop === 0) {
           s.controls?.setSource("direct", [direction]);
           this.pulse("X");
@@ -290,7 +296,9 @@ export class DirectInput {
         } else s.controls?.setSource("direct", []);
         return;
       }
-      x -= Math.sign(x - s.px) * (combatProfile(s.room).bookReach - 8);
+      x -=
+        Math.sign(x - s.px) *
+        ((s.combatProfile?.() ?? combatProfile(s.room)).bookReach - 8);
     }
     if (
       intent.kind === "exit" &&

@@ -1,5 +1,5 @@
 import type { AudioKit } from "./audio";
-import { ENCOUNTERS, type DialogueState } from "./dialogue";
+import { ENCOUNTERS, type Encounter, type DialogueState } from "./dialogue";
 export const RADIO_NAME = "Radio Educ France";
 export const RADIO_BULLETINS = [
   "La rentrée est prête : les postes vacants seront occupés par le mot priorité.",
@@ -9,8 +9,8 @@ export const RADIO_BULLETINS = [
 
 export const DAY_BRIEFS = [
   "08:00 — Prise de service. Le trafic laisse encore de la place.",
-  "12:00 — Même collège, trafic plus dense et délai réduit de 15 secondes.",
-  "17:00 — Dernier service. Le trafic se resserre ; la voiture conserve ses dégâts.",
+  "12:00 — Deuxième service. Trafic plus dense et délai réduit.",
+  "17:00 — Dernier service. La voiture conserve ses dégâts ; le trafic se resserre.",
 ];
 export function resultLine(
   ok: boolean,
@@ -75,6 +75,8 @@ type Host = PlayerContext & {
   radioLines: string[];
   remaining: number;
   enemies?: { female?: boolean }[];
+  encounter?(): Encounter | undefined;
+  missionSpec?(): { school: string };
   startDay(): void;
   setPaused(value: boolean, reason?: string): void;
   setPlayerMenu(open: boolean): void;
@@ -253,7 +255,7 @@ export function installPlayerExperience(s: Host) {
     if (dialogueCaption) {
       const data =
         s.phase === "school" && s.encounterTime > 0 && !mode && s.dialogue
-          ? ENCOUNTERS[s.room]
+          ? (s.encounter?.() ?? ENCOUNTERS[s.room])
           : undefined;
       const page = data?.pages[s.dialogue?.page ?? 0];
       let chars = Math.floor(s.dialogue?.characters ?? 0);
@@ -368,7 +370,7 @@ export function installPlayerExperience(s: Host) {
         "Trois affectations. Deux cours à assurer pour garder votre poste.",
       );
       paragraph(
-        "Attendez l’ordre en voiture, rejoignez le collège puis trouvez la salle 42C. Dès la notification, un même délai couvre la route et le collège. L’arrivée automatique ne vous coûte pas de temps.",
+        "Attendez l’ordre en voiture, rejoignez l’établissement puis trouvez la salle affectée. Dès la notification, un même délai couvre la route et la recherche de la salle. L’arrivée automatique ne vous coûte pas de temps.",
       );
       paragraph(
         "Clavier : ZQSD ou flèches · ESPACE · F/X. Souris et tactile : interactions directement dans la scène. Paysage conseillé sur téléphone.",
@@ -380,7 +382,14 @@ export function installPlayerExperience(s: Host) {
       const list = document.createElement("ol");
       s.results.forEach((result, i) => {
         const item = document.createElement("li");
-        item.textContent = ["08:00", "12:00", "17:00"][i] + " — " + result;
+        item.textContent =
+          [
+            "08:00 — Collège C. Hanouna",
+            "12:00 — Lycée Patrick Bruel",
+            "17:00 — Lycée Pro Tibo InShape",
+          ][i] +
+          " — " +
+          result;
         list.append(item);
       });
       root.append(list);

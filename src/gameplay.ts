@@ -102,7 +102,39 @@ export const STUDENT = {
   recovery: 0.85,
   cooldown: 1.15,
 };
-export function combatProfile(room: number) {
+export const NEW_COMBAT = {
+  influential: { ...COMBAT.arena, bodyGap: 40, bookReach: 67, contactY: 62 },
+  security: {
+    ...COMBAT.corridor,
+    bodyGap: 24,
+    jumpClear: 146,
+    bookReach: 56,
+    contactY: 61,
+  },
+};
+export const SECURITY = {
+  turn: 0.85,
+  wind: 0.85,
+  reach: 49,
+  recovery: 1.05,
+  speed: 19,
+  approach: 40,
+  trigger: 62,
+  cooldown: 1.2,
+};
+export const THROWER = {
+  wind: 1,
+  recovery: 1.25,
+  cooldown: 1.6,
+  speed: 115,
+  reach: 190,
+  height: 130,
+};
+export function combatProfile(room: number, role?: string) {
+  if (role === "influential") return NEW_COMBAT.influential;
+  if (role === "security") return NEW_COMBAT.security;
+  if (role === "student") return COMBAT.student;
+  if (role === "guard" || role === "thrower") return COMBAT.corridor;
   return room === 4
     ? COMBAT.arena
     : room === 3
