@@ -193,6 +193,7 @@ class Game extends Phaser.Scene {
   arrivalStill = false;
   reviewFacing = 1;
   preload() {
+    this.audio.prepare();
     SliceArt.preload(this);
     SchoolProps.preload(this);
     HallArt.preload(this);
@@ -1077,7 +1078,7 @@ class Game extends Phaser.Scene {
       spawn: this.px,
       introduction: this.encounterTime,
     });
-    this.audio.tone(180, 0.06, 0.013, 110);
+    this.audio.fx("step", (this.px - 160) / 190, 0.8);
   }
 
   finish(ok: boolean, reason?: FailureReason) {
@@ -1129,7 +1130,6 @@ class Game extends Phaser.Scene {
     if (ok) {
       this.openingFrom = this.px;
       this.won++;
-      this.audio.tone(430, 0.22, 0.03, 670);
     }
     this.results.push(resultLine(ok, this.failureReason, this.brokenRoad));
     this.session.record(ok ? "success" : "failure", this.mission, this.room, {
@@ -1172,10 +1172,18 @@ class Game extends Phaser.Scene {
       this.phase === "free",
       value,
     );
-    this.audio.scene(this.phase, value, this.remaining, 0);
+    this.audio.scene(
+      this.phase,
+      value,
+      this.remaining,
+      0,
+      this.room,
+      this.encounterTime > 0 || this.schoolFade > 0,
+    );
     this.audio.motor(
       this.speed,
       !value && ["free", "receive", "road", "arrival"].includes(this.phase),
+      this.keys.UP.isDown,
     );
     this.syncPlayerUI?.();
   }
@@ -1478,11 +1486,19 @@ class Game extends Phaser.Scene {
       this.phase === "free",
       this.paused,
     );
-    this.audio.scene(this.phase, this.paused, this.remaining, dt);
+    this.audio.scene(
+      this.phase,
+      this.paused,
+      this.remaining,
+      dt,
+      this.room,
+      this.encounterTime > 0 || this.schoolFade > 0,
+    );
     this.audio.motor(
       this.speed,
       !this.paused &&
         ["free", "receive", "road", "arrival"].includes(this.phase),
+      this.keys.UP.isDown,
     );
     if (this.paused) {
       this.draw();
@@ -1594,7 +1610,11 @@ class Game extends Phaser.Scene {
       );
       this.shoulderClock = Math.max(0, this.shoulderClock - dt);
       if (this.shoulder > 0.12 && this.speed > 20 && this.shoulderClock === 0) {
-        this.audio.noise(0.12, 0.006 + this.shoulder * 0.012, 420);
+        this.audio.fx(
+          "gravel",
+          Math.sign(this.car) * 0.5,
+          0.3 + this.shoulder * 0.8,
+        );
         this.shoulderClock = 0.24;
       }
       if (this.shoulder > 0.12 && oldShoulder <= 0.12) {
@@ -1623,14 +1643,13 @@ class Game extends Phaser.Scene {
           { x: x + 15, y: 165, life: 0.65 },
         );
         if (this.skidClock === 0) {
-          this.audio.noise(0.16, 0.017, 2400);
+          this.audio.fx("skid", this.car * 0.3);
           this.skidClock = 0.2;
         }
       }
       this.rattleClock -= dt;
       if (this.speed > 90 && this.rattleClock <= 0) {
-        this.audio.noise(0.055, this.vehicle < 45 ? 0.018 : 0.006, 580);
-        this.audio.tone(145, 0.035, this.vehicle < 45 ? 0.008 : 0.003, 70);
+        this.audio.fx("rattle", 0.3, this.vehicle < 45 ? 1.3 : 0.45);
         this.rattleClock = this.vehicle < 45 ? 0.65 : 1.8;
       }
       for (const o of this.obstacles) {
@@ -1713,7 +1732,6 @@ class Game extends Phaser.Scene {
         this.phase = "receive";
         this.notified = true;
         this.audio.radio("", false);
-        this.audio.tone(700, 0.22, 0.025, 1050);
         this.age = 0;
         this.road = 0;
       }
@@ -1724,8 +1742,9 @@ class Game extends Phaser.Scene {
           this.arrivalAlert = true;
           this.boardMessage = "ARRIVEE IMMINENTE / PREPAREZ-VOUS";
           this.messageTime = 5;
-          this.audio.tone(523, 0.16, 0.025, 523);
-          this.audio.tone(784, 0.25, 0.025, 784, 0.2);
+          this.audio.tone(523, 0.16, 0.065, 523);
+          this.audio.tone(784, 0.25, 0.065, 784, 0.2);
+          this.audio.attention(0.65);
         }
         if (this.phase === "receive" && this.age > 3) {
           this.phase = "road";
@@ -1760,12 +1779,7 @@ class Game extends Phaser.Scene {
               page: this.dialogue.page,
               result,
             });
-            this.audio.tone(
-              result === "finished" ? 250 : 380,
-              0.035,
-              0.007,
-              300,
-            );
+            this.audio.fx("paper", 0, result === "finished" ? 0.35 : 0.2);
             if (result === "finished") {
               this.encounterTime = 0;
               this.bossIntro = 0;
@@ -1807,7 +1821,7 @@ class Game extends Phaser.Scene {
             bank: this.px,
           });
           this.inv = 1.5;
-          this.audio.noise(0.2, 0.04, 330);
+          this.audio.fx("land", (this.px - 160) / 190, 1.4);
           if (this.hp <= 0 || this.remaining <= 0) this.finish(false);
         }
         this.draw();
@@ -1852,18 +1866,24 @@ class Game extends Phaser.Scene {
         this.stepClock += dt;
         if (this.stepClock > 0.27) {
           this.stepClock = 0;
-          this.audio.tone(85, 0.025, 0.007, 45);
+          this.audio.fx("step", (this.px - 160) / 190);
         }
       }
       if (jumpPressed && this.py === PLAY.floor && !recovering) {
         this.vy = -PLAY.jump;
-        this.audio.tone(220, 0.07, 0.012, 330);
+        this.audio.fx("jump", (this.px - 160) / 190);
       }
       const bounds = walkBounds(this.room);
       this.px = Phaser.Math.Clamp(this.px, bounds.min, bounds.max);
+      const landing = this.py < PLAY.floor && this.vy > 100;
       this.vy += PLAY.gravity * dt;
       this.py += this.vy * dt;
       if (this.py >= 159) {
+        if (
+          landing &&
+          !this.floorGaps().some(([l, r]) => this.px > l && this.px < r)
+        )
+          this.audio.fx("land", (this.px - 160) / 190);
         this.py = 159;
         this.vy = 0;
       }
@@ -1996,7 +2016,10 @@ class Game extends Phaser.Scene {
               }
             }
             e.recovery = BOSS.recovery;
-            this.audio.combat("swing", facing);
+            this.audio.fx(
+              e.pattern % 2 === 0 ? "sweep" : "stamp",
+              facing * 0.25,
+            );
           }
           continue;
         }
@@ -2015,6 +2038,11 @@ class Game extends Phaser.Scene {
           e.facing = Math.sign(d) || -1;
           e.pattern++;
           e.wind = e.pattern % 2 === 0 ? BOSS.sweepWind : BOSS.stampWind;
+          this.audio.fx(
+            e.pattern % 2 === 0 ? "step" : "paper",
+            (e.x - 160) / 190,
+            0.7,
+          );
           e.cool = BOSS.cooldown;
         }
       }
@@ -2090,7 +2118,7 @@ class Game extends Phaser.Scene {
       x: this.px,
       bank: this.fallReturn,
     });
-    this.audio.noise(0.14, 0.03, 1300);
+    this.audio.fx("crumble", (this.px - 160) / 190);
     this.burst(this.px, 158, 0x8e8268);
     return true;
   }
@@ -2258,7 +2286,7 @@ class Game extends Phaser.Scene {
         e.stun = 1.1;
         e.recovery = 0.5;
         this.burst(e.x, 136, 0xbab099);
-        this.audio.tone(90, 0.16, 0.05, 28);
+        this.audio.fx("land", (e.x - 160) / 190, 1.8);
         this.boardMessage = "INCIDENT MOBILIER ENREGISTRE";
         this.messageTime = 3;
       } else if (e.chargeTime! <= 0) e.recovery = PARENT.recovery;
@@ -2268,7 +2296,7 @@ class Game extends Phaser.Scene {
       e.wind -= dt;
       if (e.wind <= 0) {
         e.chargeTime = PARENT.charge;
-        this.audio.tone(200, 0.12, 0.02, 70);
+        this.audio.fx("jump", (e.x - 160) / 190, 1.3);
       }
       return;
     }

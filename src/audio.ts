@@ -1,50 +1,262 @@
+import {
+  AUDIO,
+  FOLEY,
+  makeMaterial,
+  engineState,
+  passState,
+  type Material,
+} from "./audio-materials";
+type Voice = {
+  source: AudioBufferSourceNode | OscillatorNode;
+  nodes: AudioNode[];
+  group: string;
+};
+type Loop = {
+  source: AudioBufferSourceNode;
+  gain: GainNode;
+  filter: BiquadFilterNode;
+};
+const clamp = (v: number, a = -1, b = 1) => Math.max(a, Math.min(b, v));
+const CLASSROOM: ["chair" | "paper" | "chalk", number, number][] = [
+  ["chair", 0, -0.55],
+  ["chair", 0.38, 0.6],
+  ["paper", 0.95, -0.25],
+  ["paper", 1.45, 0.35],
+  ["chalk", 2.15, -0.15],
+];
 export class AudioKit {
   context?: AudioContext;
-  engine?: OscillatorNode;
-  motorGain?: GainNode;
   master?: GainNode;
-  hum?: GainNode;
-  noiseBuffer?: AudioBuffer;
+  ambience?: GainNode;
+  roomSend?: GainNode;
+  ambienceSend?: GainNode;
+  loops: Partial<Record<Material, Loop>> = {};
+  buffers = new Map<Material, AudioBuffer>();
+  samples = new Map<Material, Float32Array>();
+  preparing = false;
+  voices = new Set<Voice>();
+  muted = false;
+  effectsVolume = 1;
+  ambienceVolume = 1;
+  voiceVolume = 1;
+  paused = false;
+  wasMuted = false;
+  previous = "";
+  seconds = -1;
+  pulse = 0;
+  ambientDelay = 6.5;
+  room = -1;
+  classroomAge = 0;
+  gear = -1;
+  shiftUntil = 0;
+  duckUntil = 0;
+  serial = 0;
   radioPlaying = false;
   radioText = "";
   radioDone = false;
   radioPaused = false;
-  radioUtterance?: SpeechSynthesisUtterance;
-  classroomNodes: AudioBufferSourceNode[] = [];
-  muted = false;
-  effectsVolume = 1;
-  voiceVolume = 1;
   radioFailed = false;
-  previous = "";
-  pulse = 0;
-  seconds = -1;
+  radioUtterance?: SpeechSynthesisUtterance;
+  prepare() {
+    if (this.preparing || typeof setTimeout === "undefined") return;
+    this.preparing = true;
+    const kinds = Object.keys(FOLEY) as Material[];
+    const next = () => {
+      const kind = kinds.shift();
+      if (!kind) return;
+      if (!this.samples.has(kind))
+        this.samples.set(kind, makeMaterial(kind, AUDIO.sampleRate));
+      setTimeout(next, 0);
+    };
+    // One small material per task while graphics load. No context before input.
+    next();
+  }
   unlock() {
     if (!this.context) {
       const c = (this.context = new AudioContext());
+      const limiter = c.createDynamicsCompressor();
+      limiter.threshold.value = -12;
+      limiter.knee.value = 10;
+      limiter.ratio.value = 5;
+      limiter.attack.value = 0.004;
+      limiter.release.value = 0.16;
+      const dc = c.createBiquadFilter();
+      dc.type = "highpass";
+      dc.frequency.value = 35;
+      dc.connect(limiter).connect(c.destination);
       this.master = c.createGain();
-      this.master.gain.value = this.muted ? 0 : 0.7 * this.effectsVolume;
-      this.master.connect(c.destination);
-      this.engine = c.createOscillator();
-      this.engine.type = "sawtooth";
-      const filter = c.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.value = 340;
-      this.motorGain = c.createGain();
-      this.motorGain.gain.value = 0;
-      this.engine.connect(filter).connect(this.motorGain).connect(this.master);
-      this.engine.start();
-      const neon = c.createOscillator();
-      neon.type = "sine";
-      neon.frequency.value = 100;
-      this.hum = c.createGain();
-      this.hum.gain.value = 0;
-      neon.connect(this.hum).connect(this.master);
-      neon.start();
-      this.noiseBuffer = c.createBuffer(1, c.sampleRate, c.sampleRate);
-      const data = this.noiseBuffer.getChannelData(0);
-      for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+      this.ambience = c.createGain();
+      this.master.gain.value =
+        this.muted || this.paused ? 0 : AUDIO.master * this.effectsVolume;
+      this.ambience.gain.value =
+        this.muted || this.paused ? 0 : AUDIO.master * this.ambienceVolume;
+      this.master.connect(dc);
+      this.ambience.connect(dc);
+      const impulse = c.createBuffer(
+        2,
+        Math.ceil(c.sampleRate * 0.28),
+        c.sampleRate,
+      );
+      for (let ch = 0; ch < 2; ch++) {
+        const out = impulse.getChannelData(ch);
+        let seed = 5303 + ch;
+        for (let i = Math.floor(c.sampleRate * 0.013); i < out.length; i++) {
+          seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+          out[i] =
+            (seed / 2147483648 - 1) * Math.exp((-i / c.sampleRate) * 24) * 0.16;
+        }
+      }
+      const roomReturn = (output: GainNode) => {
+        const reverb = c.createConvolver(),
+          send = c.createGain();
+        reverb.buffer = impulse;
+        reverb.normalize = false;
+        send.gain.value = AUDIO.roomWet;
+        send.connect(reverb).connect(output);
+        return send;
+      };
+      this.roomSend = roomReturn(this.master);
+      this.ambienceSend = roomReturn(this.ambience);
+      this.loop("engine", this.master, 1500);
+      for (const [kind, cutoff] of [
+        ["wind", 1600],
+        ["rolling", 700],
+        ["room", 550],
+        ["hum", 500],
+      ] as [Material, number][])
+        this.loop(kind, this.ambience, cutoff);
     }
-    void this.context.resume();
+    void this.context.resume().catch(() => {});
+  }
+  buffer(kind: Material) {
+    const c = this.context!;
+    let b = this.buffers.get(kind);
+    if (!b) {
+      const pcm =
+        this.samples.get(kind) ?? makeMaterial(kind, AUDIO.sampleRate);
+      this.samples.set(kind, pcm);
+      b = c.createBuffer(1, pcm.length, AUDIO.sampleRate);
+      b.getChannelData(0).set(pcm);
+      this.buffers.set(kind, b);
+    }
+    return b;
+  }
+  loop(kind: Material, output: AudioNode, cutoff: number) {
+    const c = this.context!,
+      source = c.createBufferSource(),
+      gain = c.createGain(),
+      filter = c.createBiquadFilter();
+    source.buffer = this.buffer(kind);
+    source.loop = true;
+    source.loopStart = 0.015;
+    source.loopEnd = source.buffer.duration;
+    gain.gain.value = 0;
+    filter.type = "lowpass";
+    filter.frequency.value = cutoff;
+    source.connect(filter).connect(gain).connect(output);
+    source.start(c.currentTime, 0.015);
+    this.loops[kind] = { source, gain, filter };
+  }
+  track(source: Voice["source"], nodes: AudioNode[], group: string) {
+    while (this.voices.size >= AUDIO.maxVoices)
+      this.stopVoice(this.voices.values().next().value!);
+    const voice = { source, nodes, group };
+    this.voices.add(voice);
+    source.onended = () => {
+      this.voices.delete(voice);
+      source.disconnect();
+      for (const n of nodes) n.disconnect();
+    };
+  }
+  stopVoice(voice: Voice) {
+    this.voices.delete(voice);
+    const gain = (voice.nodes[0] as GainNode).gain;
+    if (gain && this.context) {
+      const now = this.context.currentTime;
+      gain.cancelScheduledValues(now);
+      gain.setValueAtTime(gain.value, now);
+      gain.linearRampToValueAtTime(0, now + 0.012);
+    }
+    try {
+      voice.source.stop((this.context?.currentTime ?? 0) + 0.014);
+    } catch {
+      /* Already ended. */
+    }
+  }
+  stopGroup(group?: string) {
+    for (const v of [...this.voices])
+      if (!group || v.group === group) this.stopVoice(v);
+  }
+  play(
+    kind: Material,
+    side = 0,
+    weight = 1,
+    delay = 0,
+    group = "fx",
+    rate = 1,
+    offset = 0,
+  ) {
+    if (!this.context || !this.master || this.muted || this.paused) return;
+    const c = this.context,
+      buffer = this.buffer(kind),
+      start = c.currentTime + Math.max(0, delay);
+    if (offset >= buffer.duration) return;
+    const source = c.createBufferSource(),
+      gain = c.createGain(),
+      pan = c.createStereoPanner();
+    source.buffer = buffer;
+    source.playbackRate.value = rate;
+    const peak = FOLEY[kind][1] * clamp(weight, 0, 2),
+      duration = (buffer.duration - offset) / rate;
+    gain.gain.setValueAtTime(0, start);
+    gain.gain.linearRampToValueAtTime(peak, start + 0.002);
+    gain.gain.setValueAtTime(peak, start + Math.max(0.002, duration - 0.014));
+    gain.gain.linearRampToValueAtTime(0, start + Math.max(0.004, duration));
+    pan.pan.value = clamp(side, -0.8, 0.8);
+    source
+      .connect(gain)
+      .connect(pan)
+      .connect(
+        group === "ambient" || group === "classroom"
+          ? this.ambience!
+          : this.master,
+      );
+    if (
+      this.roomSend &&
+      (this.previous === "course" ||
+        this.previous === "opening" ||
+        (this.previous === "school" && this.room !== 0))
+    )
+      pan.connect(
+        group === "ambient" || group === "classroom"
+          ? this.ambienceSend!
+          : this.roomSend,
+      );
+    this.track(source, [gain, pan], group);
+    source.start(start, offset);
+    source.stop(start + duration + 0.004);
+  }
+  fx(kind: Material, side = 0, weight = 1) {
+    this.play(
+      kind,
+      side,
+      weight,
+      0,
+      "fx",
+      1 + ((this.serial++ % 5) - 2) * 0.012,
+    );
+    if (
+      ["book", "body", "defeat", "impact", "stamp"].includes(kind) &&
+      this.context
+    )
+      this.attention(0.22);
+  }
+  attention(seconds: number) {
+    if (this.context)
+      this.duckUntil = Math.max(
+        this.duckUntil,
+        this.context.currentTime + seconds,
+      );
   }
   tone(
     frequency: number,
@@ -53,170 +265,219 @@ export class AudioKit {
     end = frequency,
     delay = 0,
   ) {
-    if (!this.context || !this.master || this.muted) return;
+    if (!this.context || !this.master || this.muted || this.paused) return;
     const c = this.context,
       o = c.createOscillator(),
-      g = c.createGain();
-    const start = c.currentTime + delay;
-    o.type = frequency >= 650 ? "sine" : "triangle";
+      g = c.createGain(),
+      start = c.currentTime + delay;
+    o.type = "sine";
     o.frequency.setValueAtTime(frequency, start);
     o.frequency.exponentialRampToValueAtTime(
       Math.max(20, end),
       start + duration,
     );
-    g.gain.setValueAtTime(0.0001, start);
-    g.gain.exponentialRampToValueAtTime(volume, start + 0.004);
+    g.gain.setValueAtTime(0, start);
+    g.gain.linearRampToValueAtTime(volume, start + 0.004);
     g.gain.exponentialRampToValueAtTime(0.0001, start + duration);
     o.connect(g).connect(this.master);
+    this.track(o, [g], "cue");
     o.start(start);
     o.stop(start + duration);
-    o.onended = () => {
-      o.disconnect();
-      g.disconnect();
-    };
-    if (frequency <= 110 && volume >= 0.025)
-      this.noise(duration, volume * 0.7, 650);
   }
   noise(duration: number, volume: number, frequency: number) {
-    if (!this.context || !this.master || !this.noiseBuffer || this.muted)
-      return;
-    const c = this.context,
-      n = c.createBufferSource(),
-      f = c.createBiquadFilter(),
-      g = c.createGain();
-    n.buffer = this.noiseBuffer;
-    f.type = "lowpass";
-    f.frequency.value = frequency;
-    g.gain.setValueAtTime(volume, c.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + duration);
-    n.connect(f).connect(g).connect(this.master);
-    n.start();
-    n.stop(c.currentTime + duration);
-    n.onended = () => {
-      n.disconnect();
-      f.disconnect();
-      g.disconnect();
-    };
+    this.play(
+      frequency > 1500 ? "paper" : "gravel",
+      0,
+      volume / 0.14,
+      0,
+      "fx",
+      0.2 / Math.max(0.05, duration),
+    );
   }
   combat(
     kind: "swing" | "block" | "hit" | "hurt" | "defeat",
     direction: number,
   ) {
-    if (!this.context || !this.master || !this.noiseBuffer || this.muted)
-      return;
-    const c = this.context,
-      now = c.currentTime;
-    // Paper/air, a hard folder stop, a book's blunt thud, and clothing/body:
-    // different spectra and envelopes, all synchronized with actual contact.
-    const layers: Record<typeof kind, number[][]> = {
-      swing: [[1700, 400, 0.11, 0.018, 0.035]],
-      block: [
-        [2800, 1200, 0.065, 0.085, 0.002],
-        [650, 450, 0.1, 0.035, 0.002],
-      ],
-      hit: [
-        [420, 160, 0.14, 0.12, 0.003],
-        [1800, 750, 0.045, 0.055, 0.002],
-      ],
-      hurt: [
-        [240, 85, 0.21, 0.14, 0.004],
-        [900, 250, 0.12, 0.055, 0.003],
-      ],
-      defeat: [
-        [360, 95, 0.23, 0.14, 0.003],
-        [1600, 350, 0.1, 0.055, 0.002],
-      ],
+    const material: Record<typeof kind, Material> = {
+      swing: "swing",
+      block: "block",
+      hit: "book",
+      hurt: "body",
+      defeat: "defeat",
     };
-    for (const [from, to, duration, volume, rise] of layers[kind]) {
-      const source = c.createBufferSource(),
-        filter = c.createBiquadFilter(),
-        gain = c.createGain(),
-        pan = c.createStereoPanner();
-      source.buffer = this.noiseBuffer;
-      filter.type = kind === "swing" ? "bandpass" : "lowpass";
-      filter.Q.value = 0.7;
-      filter.frequency.setValueAtTime(from, now);
-      filter.frequency.exponentialRampToValueAtTime(to, now + duration);
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(volume, now + rise);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-      pan.pan.value = Math.max(-0.25, Math.min(0.25, direction * 0.25));
-      source.connect(filter).connect(gain).connect(pan).connect(this.master);
-      source.start(now);
-      source.stop(now + duration);
-      source.onended = () => {
-        source.disconnect();
-        filter.disconnect();
-        gain.disconnect();
-        pan.disconnect();
-      };
-    }
+    this.fx(material[kind], clamp(direction) * 0.25);
+    if (kind === "defeat") this.play("book", clamp(direction) * 0.25, 0.7);
   }
   pass(side: number, close: boolean, truck: boolean, closing = 45) {
-    if (!this.context || !this.master || !this.noiseBuffer || this.muted)
-      return;
-    const c = this.context,
-      n = c.createBufferSource(),
-      f = c.createBiquadFilter(),
-      g = c.createGain(),
-      pan = c.createStereoPanner();
-    const rush = Math.max(0, Math.min(1, closing / 100));
-    const duration = 0.7 - rush * 0.32,
-      now = c.currentTime;
-    n.buffer = this.noiseBuffer;
-    f.type = "bandpass";
-    f.Q.value = 0.7;
-    f.frequency.setValueAtTime(truck ? 700 : 1400, now);
-    f.frequency.exponentialRampToValueAtTime(truck ? 180 : 350, now + duration);
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(
-      (close ? 0.065 : 0.023) * (0.6 + rush * 0.4),
-      now + 0.12,
+    const mix = passState(close, truck, closing);
+    this.play(
+      truck ? "truck" : "pass",
+      clamp(side) * 0.75,
+      mix.gain,
+      0,
+      "fx",
+      mix.rate,
     );
-    g.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-    pan.pan.value = Math.max(-0.85, Math.min(0.85, side));
-    n.connect(f).connect(g).connect(pan).connect(this.master);
-    n.start();
-    n.stop(now + duration);
-    n.onended = () => {
-      n.disconnect();
-      f.disconnect();
-      g.disconnect();
-      pan.disconnect();
-    };
+    if (close) this.attention(0.24);
   }
   roadImpact(side: number, truck: boolean) {
-    if (!this.context || !this.master || !this.noiseBuffer || this.muted)
-      return;
+    this.fx("impact", clamp(side) * 0.65, truck ? 1.15 : 1);
+  }
+  material(
+    kind: "chair" | "paper" | "chalk",
+    delay: number,
+    side = 0,
+    offset = 0,
+  ) {
+    this.play(kind, side, 1, delay, "classroom", 1, offset);
+  }
+  classroom() {
+    for (const [kind, start, side] of CLASSROOM)
+      if (start + FOLEY[kind][0] > this.classroomAge)
+        this.material(
+          kind,
+          Math.max(0, start - this.classroomAge),
+          side,
+          Math.max(0, this.classroomAge - start),
+        );
+  }
+  scene(
+    phase: string,
+    paused: boolean,
+    remaining: number,
+    dt: number,
+    room = 0,
+    dialogue = false,
+  ) {
+    if (!this.context || !this.master) return;
     const c = this.context,
-      now = c.currentTime;
-    for (const [frequency, duration, volume] of [
-      [260, 0.3, truck ? 0.2 : 0.15],
-      [2100, 0.09, 0.07],
-    ]) {
-      const n = c.createBufferSource(),
-        f = c.createBiquadFilter(),
-        gain = c.createGain(),
-        pan = c.createStereoPanner();
-      n.buffer = this.noiseBuffer;
-      f.type = "lowpass";
-      f.frequency.value = frequency;
-      gain.gain.setValueAtTime(volume, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-      pan.pan.value = Math.max(-0.7, Math.min(0.7, side));
-      n.connect(f).connect(gain).connect(pan).connect(this.master);
-      n.start(now);
-      n.stop(now + duration);
-      n.onended = () => {
-        n.disconnect();
-        f.disconnect();
-        gain.disconnect();
-        pan.disconnect();
-      };
+      wasPaused = this.paused;
+    this.paused = paused;
+    this.master.gain.setTargetAtTime(
+      this.muted || paused ? 0 : AUDIO.master * this.effectsVolume,
+      c.currentTime,
+      0.025,
+    );
+    this.ambience?.gain.setTargetAtTime(
+      this.muted || paused ? 0 : AUDIO.master * this.ambienceVolume,
+      c.currentTime,
+      0.025,
+    );
+    if (this.muted && !this.wasMuted) this.stopGroup();
+    this.wasMuted = this.muted;
+    if (paused) {
+      if (!wasPaused) this.stopGroup();
+      return;
     }
-    // Two loose-metal aftershocks, distinct from the low body thump.
-    this.tone(190, 0.055, 0.011, 95, 0.11);
-    this.tone(145, 0.045, 0.008, 80, 0.21);
+    const entered = phase !== this.previous;
+    if (entered) {
+      this.stopGroup();
+      this.previous = phase;
+      this.pulse = 0;
+      this.seconds = -1;
+      this.room = room;
+      this.classroomAge = 0;
+      if (phase === "course") this.classroom();
+      if (phase === "receive") {
+        this.play("relay", 0, 1);
+        this.play("data", 0, 1, 0.09, "cue");
+        [880, 660, 880].forEach((f, i) =>
+          this.tone(f, 0.08, 0.034, f, 2.35 + i * 0.13),
+        );
+        this.attention(3);
+      }
+      if (phase === "opening") this.fx("door", 0.25);
+      if (phase === "fail")
+        [330, 220, 147].forEach((f, i) =>
+          this.tone(f, 0.16, 0.045, f, i * 0.19),
+        );
+      if (phase === "arrival") this.fx("gravel", 0.5, 0.8);
+    } else if (wasPaused && phase === "course") this.classroom();
+    if (phase === "course") this.classroomAge += dt;
+    const school = phase === "school";
+    if (this.room !== room) {
+      this.stopGroup("ambient");
+      this.room = room;
+      this.pulse = 0;
+    }
+    const outdoor = room === 0;
+    this.loops.room?.gain.gain.setTargetAtTime(
+      school ? (outdoor ? 0.016 : AUDIO.ambient) * (dialogue ? 0.55 : 1) : 0,
+      c.currentTime,
+      0.16,
+    );
+    this.loops.hum?.gain.gain.setTargetAtTime(
+      school && !outdoor ? 0.018 : 0,
+      c.currentTime,
+      0.16,
+    );
+    this.pulse += dt;
+    if (
+      school &&
+      !dialogue &&
+      this.pulse > this.ambientDelay + (room % 3) * 0.5
+    ) {
+      this.pulse = 0;
+      this.ambientDelay = 5.5 + ((this.serial++ * 17) % 23) / 4;
+      if ([3, 5, 8].includes(room))
+        this.play("drip", room % 2 ? 0.45 : -0.5, 1, 0, "ambient");
+      else if (!outdoor) this.play("relay", -0.45, 0.45, 0, "ambient");
+    }
+    const seconds = Math.ceil(remaining);
+    if (
+      ["road", "school"].includes(phase) &&
+      !dialogue &&
+      remaining > 0 &&
+      remaining < 30 &&
+      seconds !== this.seconds
+    ) {
+      this.tone(1050, 0.035, 0.018, 850);
+      this.attention(0.12);
+    }
+    this.seconds = seconds;
+  }
+  motor(speed: number, on: boolean, throttle = false) {
+    if (!this.context || !this.loops.engine) return;
+    const c = this.context,
+      model = engineState(speed, throttle);
+    if (on && this.gear >= 0 && model.gear !== this.gear)
+      this.shiftUntil = c.currentTime + AUDIO.shiftSeconds;
+    this.gear = on ? model.gear : -1;
+    const duck = Math.min(
+      this.radioPlaying ? 0.5 : 1,
+      c.currentTime < this.duckUntil ? 0.4 : 1,
+    );
+    const shifted = c.currentTime < this.shiftUntil ? 0.55 : 1,
+      engine = this.loops.engine;
+    engine.source.playbackRate.setTargetAtTime(
+      model.rate,
+      c.currentTime,
+      0.075,
+    );
+    engine.gain.gain.setTargetAtTime(
+      on && !this.muted ? model.engine * duck * shifted : 0,
+      c.currentTime,
+      0.05,
+    );
+    engine.filter.frequency.setTargetAtTime(
+      throttle ? 1500 : 900,
+      c.currentTime,
+      0.09,
+    );
+    for (const [kind, volume] of [
+      ["wind", model.wind],
+      ["rolling", model.rolling],
+    ] as [Material, number][])
+      this.loops[kind]?.gain.gain.setTargetAtTime(
+        on && !this.muted ? volume * duck : 0,
+        c.currentTime,
+        0.12,
+      );
+    this.loops.wind?.filter.frequency.setTargetAtTime(
+      450 + Math.max(0, speed) * 5,
+      c.currentTime,
+      0.12,
+    );
   }
   radio(text: string, on: boolean, paused = false) {
     if (typeof speechSynthesis === "undefined") return;
@@ -280,133 +541,5 @@ export class AudioKit {
       finish();
     };
     speechSynthesis.speak(u);
-  }
-  material(kind: "chair" | "paper" | "chalk", delay: number, side = 0) {
-    if (!this.context || !this.master || this.muted) return;
-    const c = this.context,
-      duration = kind === "chair" ? 0.75 : kind === "paper" ? 0.38 : 0.9;
-    const b = c.createBuffer(
-        1,
-        Math.floor(c.sampleRate * duration),
-        c.sampleRate,
-      ),
-      data = b.getChannelData(0);
-    let brown = 0;
-    for (let i = 0; i < data.length; i++) {
-      const t = i / c.sampleRate,
-        noise = Math.random() * 2 - 1;
-      brown = (brown + noise * 0.07) / 1.025;
-      const pulse =
-        0.3 + 0.7 * Math.abs(Math.sin(t * (kind === "chalk" ? 24 : 13)));
-      const env = Math.sin((Math.PI * t) / duration) ** 2;
-      data[i] =
-        env *
-        pulse *
-        (kind === "chair"
-          ? brown * 2 + Math.sin(t * 1100 + Math.sin(t * 70) * 4) * 0.12
-          : noise * (kind === "paper" ? 0.35 : 0.18));
-    }
-    const n = c.createBufferSource(),
-      f = c.createBiquadFilter(),
-      g = c.createGain(),
-      pan = c.createStereoPanner();
-    n.buffer = b;
-    f.type = "bandpass";
-    f.frequency.value = kind === "chair" ? 600 : kind === "paper" ? 1800 : 2900;
-    f.Q.value = 0.7;
-    g.gain.value = kind === "chair" ? 0.25 : 0.15;
-    pan.pan.value = side;
-    n.connect(f).connect(g).connect(pan).connect(this.master);
-    n.start(c.currentTime + delay);
-    this.classroomNodes.push(n);
-    n.onended = () => {
-      n.disconnect();
-      f.disconnect();
-      g.disconnect();
-      pan.disconnect();
-      this.classroomNodes = this.classroomNodes.filter((x) => x !== n);
-    };
-  }
-  scene(phase: string, paused: boolean, remaining: number, dt: number) {
-    if (!this.context || !this.master) return;
-    this.master.gain.setTargetAtTime(
-      this.muted || paused ? 0 : 0.7 * this.effectsVolume,
-      this.context.currentTime,
-      0.025,
-    );
-    this.hum?.gain.setTargetAtTime(
-      phase === "school" && !paused ? 0.006 : 0,
-      this.context.currentTime,
-      0.08,
-    );
-    if (paused) return;
-    if (phase !== this.previous) {
-      if (this.previous === "course") {
-        for (const n of this.classroomNodes) n.stop();
-        this.classroomNodes = [];
-      }
-      this.previous = phase;
-      this.pulse = 0;
-      if (phase === "course") {
-        this.material("chair", 0, -0.5);
-        this.material("chair", 0.35, 0.6);
-        this.material("paper", 1, -0.2);
-        this.material("paper", 1.4, 0.3);
-        this.material("chalk", 2.1, -0.1);
-      }
-      if (phase === "receive") {
-        this.noise(0.15, 0.018, 2400);
-        for (let i = 0; i < 30; i++)
-          this.tone(
-            i % 3 === 0 ? 2100 : 1200,
-            0.045,
-            0.009,
-            i % 2 ? 1800 : 900,
-            i * 0.075,
-          );
-        [880, 660, 880].forEach((n, i) =>
-          this.tone(n, 0.09, 0.02, n, 0.18 + i * 0.15),
-        );
-      }
-      if (phase === "school") {
-        this.tone(660, 0.35, 0.012, 658);
-        this.tone(520, 0.5, 0.009, 518, 0.35);
-      }
-      if (phase === "opening") this.noise(0.22, 0.025, 320);
-      if (phase === "fail")
-        [220, 165, 110].forEach((n, i) =>
-          this.tone(n, 0.22, 0.015, n, i * 0.23),
-        );
-      if (phase === "arrival") this.noise(0.45, 0.012, 1200);
-    }
-    this.pulse += dt;
-    if (phase === "school" && this.pulse > 3.15) {
-      this.pulse = 0;
-      this.tone(1300, 0.035, 0.003, 650);
-      this.noise(0.1, 0.003, 2800);
-    }
-    const seconds = Math.ceil(remaining);
-    if (
-      ["road", "school"].includes(phase) &&
-      remaining < 30 &&
-      seconds !== this.seconds
-    )
-      this.tone(1050, 0.025, 0.007, 850);
-    this.seconds = seconds;
-  }
-  motor(speed: number, on: boolean) {
-    if (!this.context || !this.motorGain || !this.engine) return;
-    // Short changes of engine pitch evoke gear shifts while preserving speed feedback.
-    const gear = Math.min(4, Math.floor(speed / 55));
-    this.engine.frequency.setTargetAtTime(
-      32 + speed * 0.38 - gear * 10,
-      this.context.currentTime,
-      0.09,
-    );
-    this.motorGain.gain.setTargetAtTime(
-      on && !this.muted ? 0.011 + speed * 0.000025 : 0,
-      this.context.currentTime,
-      0.08,
-    );
   }
 }

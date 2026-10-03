@@ -103,6 +103,9 @@ export function installPlayerExperience(s: Host) {
       s.audio.voiceVolume = Number.isFinite(saved.voice)
         ? Math.max(0, Math.min(1, saved.voice))
         : 1;
+      s.audio.ambienceVolume = Number.isFinite(saved.ambience)
+        ? Math.max(0, Math.min(1, saved.ambience))
+        : 1;
       hints = saved.hints !== false;
       s.audio.muted = saved.muted === true;
     }
@@ -117,6 +120,7 @@ export function installPlayerExperience(s: Host) {
         JSON.stringify({
           effects: s.audio.effectsVolume,
           voice: s.audio.voiceVolume,
+          ambience: s.audio.ambienceVolume,
           hints,
           muted: s.audio.muted,
         }),
@@ -157,7 +161,14 @@ export function installPlayerExperience(s: Host) {
       s.phase === "free",
       s.paused,
     );
-    s.audio.scene(s.phase, s.paused, s.remaining, 0);
+    s.audio.scene(
+      s.phase,
+      s.paused,
+      s.remaining,
+      0,
+      s.room,
+      s.encounterTime > 0,
+    );
     game.focus();
     sync();
   };
@@ -291,7 +302,7 @@ export function installPlayerExperience(s: Host) {
     } else if (menuPage === "settings") {
       const sliders: [string, number, (v: number) => void][] = [
         [
-          "Effets et ambiance",
+          "Effets et moteur",
           s.audio.effectsVolume,
           (v) => (s.audio.effectsVolume = v),
         ],
@@ -299,6 +310,11 @@ export function installPlayerExperience(s: Host) {
           "Voix de la radio",
           s.audio.voiceVolume,
           (v) => (s.audio.voiceVolume = v),
+        ],
+        [
+          "Ambiances et bruit de route",
+          s.audio.ambienceVolume,
+          (v) => (s.audio.ambienceVolume = v),
         ],
       ];
       for (const [label, value, change] of sliders) {
