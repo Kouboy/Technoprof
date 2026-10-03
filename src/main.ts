@@ -35,6 +35,7 @@ import {
   DIALOGUE,
   advanceDialogue,
   dialogueLength,
+  dialogueLetters,
   type DialogueState,
 } from "./dialogue";
 import { SchoolProps, drawDialogue } from "./school-props";
@@ -188,6 +189,7 @@ class Game extends Phaser.Scene {
   roadArt?: RoadArt;
   sceneGraphics?: Phaser.GameObjects.Graphics;
   foreground?: Phaser.GameObjects.Graphics;
+  sceneFade?: Phaser.GameObjects.Graphics;
   cadreReview = false;
   artReview = -1;
   arrivalStill = false;
@@ -264,6 +266,14 @@ class Game extends Phaser.Scene {
   openingFrom = 280;
   attackHit = false;
   schoolFade = 0;
+  roomTransition: {
+    target: number;
+    spawn: number;
+    age: number;
+    swapped: boolean;
+  } | null = null;
+  exitHeld = false;
+  dialogueSoundWait = 0;
   roomEnemies = new Map<number, Enemy[]>();
   g!: Phaser.GameObjects.Graphics;
   labels: Phaser.GameObjects.Text[] = [];
@@ -438,6 +448,7 @@ class Game extends Phaser.Scene {
     this.carArt = new CarArt(this);
     this.roadArt = new RoadArt(this);
     this.foreground = this.add.graphics().setDepth(3.2);
+    this.sceneFade = this.add.graphics().setDepth(4.05);
     this.groundContact = this.add.graphics().setDepth(1.3);
     this.roadWash = this.add.graphics().setDepth(3.095);
     this.sceneSurround = this.add.graphics().setDepth(4.1);
@@ -980,6 +991,9 @@ class Game extends Phaser.Scene {
     this.begin();
   }
   begin() {
+    this.roomTransition = null;
+    this.exitHeld = false;
+    this.dialogueSoundWait = 0;
     this.failureReason = null;
     this.playerRecovery = 0;
     this.attackBuffer = 0;
@@ -1045,6 +1059,9 @@ class Game extends Phaser.Scene {
     this.enterRoom(0, 25);
   }
   enterRoom(room: number, x: number) {
+    this.roomTransition = null;
+    this.direct?.cancel();
+    this.dialogueSoundWait = 0;
     this.roomEnteredAt = this.session.elapsed;
     this.impact = 0;
     this.hitStop = 0;
@@ -1079,6 +1096,22 @@ class Game extends Phaser.Scene {
       introduction: this.encounterTime,
     });
     this.audio.fx("step", (this.px - 160) / 190, 0.8);
+  }
+
+  changeRoom(target: number, spawn: number) {
+    if (this.roomTransition) return;
+    this.exitHeld = this.keys.UP.isDown || this.keys.DOWN.isDown;
+    this.direct?.cancel();
+    this.attackBuffer = 0;
+    this.roomTransition = { target, spawn, age: 0, swapped: false };
+  }
+
+  roomTransitionAlpha() {
+    const t = this.roomTransition;
+    if (!t) return 0;
+    return t.swapped
+      ? Math.max(0, 1 - (t.age - PLAY.roomFadeOut) / PLAY.roomFadeIn)
+      : Math.min(1, t.age / PLAY.roomFadeOut);
   }
 
   finish(ok: boolean, reason?: FailureReason) {
@@ -1178,7 +1211,7 @@ class Game extends Phaser.Scene {
       this.remaining,
       0,
       this.room,
-      this.encounterTime > 0 || this.schoolFade > 0,
+      this.encounterTime > 0 || this.schoolFade > 0 || !!this.roomTransition,
     );
     this.audio.motor(
       this.speed,
@@ -1255,6 +1288,7 @@ class Game extends Phaser.Scene {
       boss: 4,
       sweep: 4,
       gap: 8,
+      stairs: 7,
       hit: 6,
       whiff: 6,
       "hit-left": 6,
@@ -1324,6 +1358,11 @@ class Game extends Phaser.Scene {
         this.enemies[0].facing = -1;
       }
       if (name === "late") this.remaining = 2;
+      if (name === "stairs") {
+        // Reproduce the old held-DOWN bounce without a combat obscuring it.
+        this.px = 220;
+        this.roomEnemies.set(3, []);
+      }
     } else if (name === "arrival") {
       this.phase = "arrival";
       this.parkSpeed = 100;
@@ -1459,6 +1498,9 @@ class Game extends Phaser.Scene {
     const attackPressed = just("X") || this.queuedAttack;
     this.queuedAttack = false;
     const enterPressed = just("ENTER");
+    const upPressed = just("UP"),
+      downPressed = just("DOWN");
+    if (!this.keys.UP.isDown && !this.keys.DOWN.isDown) this.exitHeld = false;
     if (just("M")) this.audio.muted = !this.audio.muted;
     if (just("F2") && this.workshop) {
       this.begin();
@@ -1492,7 +1534,7 @@ class Game extends Phaser.Scene {
       this.remaining,
       dt,
       this.room,
-      this.encounterTime > 0 || this.schoolFade > 0,
+      this.encounterTime > 0 || this.schoolFade > 0 || !!this.roomTransition,
     );
     this.audio.motor(
       this.speed,
@@ -1759,6 +1801,20 @@ class Game extends Phaser.Scene {
         }
       }
     } else if (this.phase === "school") {
+      if (this.roomTransition) {
+        const t = this.roomTransition;
+        t.age += dt;
+        if (!t.swapped && t.age >= PLAY.roomFadeOut) {
+          this.enterRoom(t.target, t.spawn);
+          t.swapped = true;
+          this.roomTransition = t;
+        }
+        if (t.age >= PLAY.roomFadeOut + PLAY.roomFadeIn)
+          this.roomTransition = null;
+        // A forced visual transition consumes inputs but never the mission clock.
+        this.draw();
+        return;
+      }
       const presentation =
         this.schoolFade > 0 || this.encounterTime > 0 || this.bossIntro > 0;
       this.schoolFade = Math.max(0, this.schoolFade - dt);
@@ -1769,10 +1825,24 @@ class Game extends Phaser.Scene {
       this.inv = Math.max(0, this.inv - dt);
       if (presentation) {
         if (this.schoolFade === 0 && this.encounterTime > 0) {
+          const before = this.dialogue.characters;
           this.dialogue.characters = Math.min(
             dialogueLength(this.room, this.dialogue),
             this.dialogue.characters + DIALOGUE.charactersPerSecond * dt,
           );
+          this.dialogueSoundWait = Math.max(0, this.dialogueSoundWait - dt);
+          if (
+            !attackPressed &&
+            this.dialogueSoundWait === 0 &&
+            dialogueLetters(this.room, this.dialogue, before)
+          ) {
+            this.audio.talk(
+              this.room,
+              !!this.enemies[0]?.female,
+              ((this.enemies[0]?.x ?? 160) - 160) / 190,
+            );
+            this.dialogueSoundWait = DIALOGUE.soundInterval;
+          }
           if (attackPressed) {
             const result = advanceDialogue(this.room, this.dialogue);
             this.session.record("dialogue", this.mission, this.room, {
@@ -1780,6 +1850,7 @@ class Game extends Phaser.Scene {
               result,
             });
             this.audio.fx("paper", 0, result === "finished" ? 0.35 : 0.2);
+            this.dialogueSoundWait = 0;
             if (result === "finished") {
               this.encounterTime = 0;
               this.bossIntro = 0;
@@ -2057,7 +2128,9 @@ class Game extends Phaser.Scene {
           this.py === 159 &&
           this.attack === 0 &&
           this.playerRecovery === 0 &&
-          (this.keys[action.key].isDown || just(action.key))
+          !this.exitHeld &&
+          (this.keys[action.key].isDown ||
+            (action.key === "UP" ? upPressed : downPressed))
         ) {
           if (action.target === -1) this.finish(true);
           else {
@@ -2066,23 +2139,30 @@ class Game extends Phaser.Scene {
               this.boardMessage = "VOTRE AUTONOMIE EST APPRECIEE";
               this.messageTime = 4;
             }
-            this.enterRoom(action.target, action.spawn);
+            this.changeRoom(action.target, action.spawn);
           }
         } else if (
           this.attack > 0 ||
           this.playerRecovery > 0 ||
-          this.py !== PLAY.floor
+          this.py !== PLAY.floor ||
+          this.interactLock > 0
         ) {
           // Screen changes, like door interactions, wait for a controllable landing.
-        } else if (this.room === 0 && this.px > 298) this.enterRoom(1, 18);
+        } else if (this.room === 0 && this.px > 298 && dir > 0)
+          this.changeRoom(1, 18);
         else if (this.room === 1) {
-          if (this.px < 12) this.enterRoom(0, 290);
-          else if (this.px > 298) this.enterRoom(2, 20);
-        } else if (this.room === 2 && this.px < 12) this.enterRoom(1, 290);
-        else if (this.room === 3 && this.px > 298) this.enterRoom(4, 25);
-        else if (this.room === 6 && this.px > 298) this.enterRoom(7, 28);
-        else if (this.room === 7 && this.px < 12) this.enterRoom(6, 280);
-        else if (this.room === 8 && this.px > 298) this.enterRoom(3, 100);
+          if (this.px < 12 && dir < 0) this.changeRoom(0, 290);
+          else if (this.px > 298 && dir > 0) this.changeRoom(2, 20);
+        } else if (this.room === 2 && this.px < 12 && dir < 0)
+          this.changeRoom(1, 290);
+        else if (this.room === 3 && this.px > 298 && dir > 0)
+          this.changeRoom(4, 25);
+        else if (this.room === 6 && this.px > 298 && dir > 0)
+          this.changeRoom(7, 28);
+        else if (this.room === 7 && this.px < 12 && dir < 0)
+          this.changeRoom(6, 280);
+        else if (this.room === 8 && this.px > 298 && dir > 0)
+          this.changeRoom(3, 100);
       }
     }
     this.draw();
@@ -2650,6 +2730,7 @@ class Game extends Phaser.Scene {
     }
   }
   draw() {
+    this.sceneFade?.clear();
     if (this.substepping) return;
     this.art?.hide();
     this.hallArt?.hide();
@@ -2841,6 +2922,8 @@ class Game extends Phaser.Scene {
     this.drawingEncounter = false;
     if (this.phase === "school" && this.schoolFade > 0)
       this.fadeViewport(this.schoolFade / 0.7);
+    if (this.phase === "school" && this.roomTransition)
+      this.fadeViewport(this.roomTransitionAlpha());
     if (this.phase === "tow") {
       this.banner("DEPANNAGE EN COURS");
       this.txt(45, 120, "VOITURE DE SERVICE / DEPANNAGE", 8);
@@ -2889,8 +2972,9 @@ class Game extends Phaser.Scene {
   }
   fadeViewport(alpha: number) {
     for (const t of this.labels) if (t.y < 179) t.setAlpha(1 - alpha);
-    this.g.fillStyle(0x000000, alpha);
-    this.g.fillRect(5, 5, 310, 172);
+    const overlay = this.sceneFade ?? this.g;
+    overlay.fillStyle(0x000000, alpha);
+    overlay.fillRect(5, 5, 310, 172);
   }
   groundSchoolActors() {
     if (this.brokenRoad || !["school", "opening", "fail"].includes(this.phase))

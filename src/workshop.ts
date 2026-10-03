@@ -28,6 +28,7 @@ type Host = {
   impactX: number;
   impactY: number;
   encounterTime: number;
+  roomTransition?: { target: number; age: number } | null;
   bossIntro: number;
   enemies: Enemy[];
   car: number;
@@ -67,6 +68,7 @@ const SCENARIOS: Record<string, string> = {
   boss: "Inspectrice / confrontation",
   sweep: "Inspectrice / balayage",
   gap: "Trous / aller-retour",
+  stairs: "Transitions / escalier ↔ couloir",
   arrival: "Arrivée / transition",
   hit: "Livre / contact",
   whiff: "Livre / dans le vide",
@@ -91,7 +93,7 @@ export function installWorkshop(s: Host) {
   root.hidden = false;
   root.innerHTML = "";
   const heading = document.createElement("strong");
-  heading.textContent = "ATELIER 0.53 — scénarios animés";
+  heading.textContent = "ATELIER 0.54 — scénarios animés";
   root.append(heading);
   const controls = document.createElement("div");
   controls.className = "workshop-controls";
@@ -219,8 +221,9 @@ export function installWorkshop(s: Host) {
 }
 export function drawWorkshop(s: Host) {
   const profile = combatProfile(s.room);
-  const player =
-    s.phase === "school" && s.encounterTime > 0
+  const player = s.roomTransition
+    ? "TRANSITION → " + s.roomTransition.target
+    : s.phase === "school" && s.encounterTime > 0
       ? "DIALOGUE"
       : s.falling > 0
         ? "CHUTE"

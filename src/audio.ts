@@ -258,6 +258,26 @@ export class AudioKit {
         this.context.currentTime + seconds,
       );
   }
+  talk(room: number, female = false, side = 0) {
+    const rate =
+      room === 3
+        ? 1.4
+        : room === 6
+          ? 0.82
+          : room === 4
+            ? female
+              ? 1.2
+              : 0.95
+            : 1.05;
+    this.play(
+      "talk",
+      side * 0.3,
+      1,
+      0,
+      "dialogue",
+      rate + ((this.serial++ % 5) - 2) * 0.025,
+    );
+  }
   tone(
     frequency: number,
     duration = 0.08,

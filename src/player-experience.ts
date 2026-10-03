@@ -29,6 +29,7 @@ export type PlayerContext = {
   age: number;
   room: number;
   encounterTime: number;
+  roomTransition?: unknown;
   roomEnteredAt: number;
   session: { elapsed: number };
   pointerMode?: boolean;
@@ -50,7 +51,8 @@ export function contextualHelp(s: PlayerContext) {
     return "Le délai a commencé : route et recherche de la salle partagent le même chronomètre.";
   if (s.phase === "arrival" || s.phase === "arrivalFade")
     return "Arrivée automatique : le délai est suspendu. Vous reprendrez la main dans la cour.";
-  if (s.phase !== "school" || s.encounterTime > 0) return "";
+  if (s.phase !== "school" || s.encounterTime > 0 || s.roomTransition)
+    return "";
   const elapsed = s.session.elapsed - s.roomEnteredAt;
   if (s.room === 0 && elapsed < 10)
     return s.pointerMode

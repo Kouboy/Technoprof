@@ -27,6 +27,7 @@ export const FOLEY = {
   door: [0.85, 0.3],
   chair: [0.85, 0.22],
   paper: [0.5, 0.18],
+  talk: [0.043, 0.095],
   chalk: [1.05, 0.12],
   rattle: [0.2, 0.14],
   impact: [0.62, 0.62],
@@ -98,6 +99,15 @@ export function makeMaterial(kind: Material, sampleRate: number, seed = 5301) {
     let v = 0,
       env = Math.min(1, t / 0.0015) * Math.min(1, (duration - t) / 0.009);
     switch (kind) {
+      case "talk":
+        // A soft voiced grain, with breath and two formants; no sharp UI beep.
+        v =
+          (tone(165, t) * 0.32 +
+            tone(495, t) * 0.12 +
+            tone(1155, t) * 0.04 +
+            band * 0.18) *
+          burst(t, 0, duration);
+        break;
       case "engine": {
         // Combustion pulses + irregular exhaust texture, rather than a sawtooth note.
         const cycle = (t * 40) % 1;

@@ -30,10 +30,21 @@ export const ENCOUNTERS: Record<number, { name: string; pages: string[][] }> = {
 };
 
 // No timeout: X reveals the current page, then a fresh X advances it.
-export const DIALOGUE = { charactersPerSecond: 34 };
+export const DIALOGUE = { charactersPerSecond: 34, soundInterval: 0.075 };
 export type DialogueState = { page: number; characters: number };
 export function dialogueLength(room: number, state: DialogueState) {
   return ENCOUNTERS[room]?.pages[state.page]?.join("").length ?? 0;
+}
+// Only newly displayed letters/digits speak. Spaces and punctuation stay silent.
+export function dialogueLetters(
+  room: number,
+  state: DialogueState,
+  before: number,
+) {
+  const text = ENCOUNTERS[room]?.pages[state.page]?.join("") ?? "";
+  return /[\p{L}\p{N}]/u.test(
+    text.slice(Math.floor(before), Math.floor(state.characters)),
+  );
 }
 export function dialogueReady(room: number, state: DialogueState) {
   return state.characters >= dialogueLength(room, state);

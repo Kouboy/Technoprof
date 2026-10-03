@@ -119,6 +119,7 @@ export type CadreState = {
   messageTime: number;
   brokenRoad: boolean;
   schoolFade: number;
+  roomTransition?: unknown;
   bossIntro: number;
   encounterTime: number;
   failureReason?: "late" | "exhausted" | "breakdown" | null;
@@ -149,7 +150,10 @@ export function cadreModel(s: CadreState, routeMeters: number) {
           "later",
         ].includes(s.phase) ||
         (s.phase === "school" &&
-          (s.schoolFade > 0 || s.bossIntro > 0 || s.encounterTime > 0))));
+          (s.schoolFade > 0 ||
+            s.bossIntro > 0 ||
+            s.encounterTime > 0 ||
+            !!s.roomTransition))));
   const urgent = assigned && !suspended && s.remaining <= 30;
   const status =
     s.phase === "fail"

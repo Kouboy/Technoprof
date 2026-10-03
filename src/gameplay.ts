@@ -22,6 +22,8 @@ export const PLAY = {
   impactSeconds: 0.32,
   invulnerability: 1.2,
   interactLock: 0.35,
+  roomFadeOut: 0.12,
+  roomFadeIn: 0.18,
   openingSeconds: 3.4,
   failContinueSeconds: 2,
   maxStepMs: 20,

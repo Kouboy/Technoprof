@@ -16,6 +16,7 @@ type Host = {
   playerMenu: boolean;
   encounterTime: number;
   schoolFade: number;
+  roomTransition?: unknown;
   age: number;
   freshKey: boolean;
   px: number;
@@ -58,7 +59,12 @@ export class DirectInput {
   }
   blocked() {
     const s = this.host;
-    return (s.paused && !s.workshop) || s.playerMenu || s.schoolFade > 0;
+    return (
+      (s.paused && !s.workshop) ||
+      s.playerMenu ||
+      s.schoolFade > 0 ||
+      !!s.roomTransition
+    );
   }
   marker(x: number, y: number, kind: string) {
     this.feedback = { x, y, kind, life: DIRECT.markerSeconds };
