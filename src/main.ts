@@ -47,6 +47,11 @@ import { AudioKit } from "./audio";
 class Game extends Phaser.Scene {
   failureReason: FailureReason | null = null;
   playerRecovery = 0;
+  playerHitDirection = -1;
+  bookBlocked = 0;
+  attackBuffer = 0;
+  reducedShake = false;
+  comicWords = true;
   seed = 4301;
   random = new SeededRandom();
   session = new SessionLog();
@@ -261,6 +266,32 @@ class Game extends Phaser.Scene {
   shoulderClock = 0;
   results: string[] = [];
   create() {
+    const shakeOption = document.getElementById(
+      "reduced-shake",
+    ) as HTMLInputElement | null;
+    try {
+      this.reducedShake =
+        localStorage.getItem("technoprof-reduced-shake") === "true";
+    } catch {
+      /* The setting still works without local storage. */
+    }
+    if (shakeOption) {
+      shakeOption.checked = this.reducedShake;
+      shakeOption.onfocus = () => this.setWorkshopFocus(true);
+      shakeOption.onblur = () => this.setWorkshopFocus(false);
+      shakeOption.onchange = () => {
+        this.reducedShake = shakeOption.checked;
+        try {
+          localStorage.setItem(
+            "technoprof-reduced-shake",
+            String(this.reducedShake),
+          );
+        } catch {
+          /* Non-persistent mode. */
+        }
+        shakeOption.blur();
+      };
+    }
     this.cameras.main.setZoom(2).setScroll(-160, -120);
     this.g = this.add.graphics().setDepth(3);
     this.art = new SliceArt(this);
@@ -556,6 +587,7 @@ class Game extends Phaser.Scene {
         const e = this.enemies[0];
         e.recovery = view === "inspectrice-recul" ? 0.5 : 1;
         e.pattern = view === "inspectrice-pied" ? 0 : 1;
+        e.strikeTime = view === "inspectrice-recul" ? 0 : 0.12;
         e.facing = -1;
       }
       if (view.startsWith("fx-")) {
@@ -840,6 +872,8 @@ class Game extends Phaser.Scene {
   begin() {
     this.failureReason = null;
     this.playerRecovery = 0;
+    this.attackBuffer = 0;
+    this.bookBlocked = 0;
     this.attack = 0;
     this.hitStop = 0;
     this.encounterTime = 0;
@@ -916,6 +950,8 @@ class Game extends Phaser.Scene {
     this.inv = 0.5;
     this.attack = 0;
     this.playerRecovery = 0;
+    this.attackBuffer = 0;
+    this.bookBlocked = 0;
     this.arena = room === 4;
     this.encounterTime =
       !this.roomEnemies.has(room) && [1, 3, 4, 6].includes(room)
@@ -959,6 +995,8 @@ class Game extends Phaser.Scene {
         "late");
     this.attack = 0;
     this.playerRecovery = 0;
+    this.attackBuffer = 0;
+    this.bookBlocked = 0;
     this.impact = 0;
     this.hitStop = 0;
     this.encounterTime = 0;
@@ -971,6 +1009,9 @@ class Game extends Phaser.Scene {
       e.recovery = 0;
       e.chargeTime = 0;
       e.strikeTime = 0;
+      e.recoilTime = 0;
+      e.blockTime = 0;
+      e.downTime = 0;
     }
     this.phase = ok ? "opening" : "fail";
     this.age = 0;
@@ -1089,6 +1130,13 @@ class Game extends Phaser.Scene {
       boss: 4,
       gap: 8,
       hit: 6,
+      whiff: 6,
+      "hit-left": 6,
+      "block-left": 4,
+      "hurt-left": 3,
+      "defeat-parent": 1,
+      "defeat-student": 3,
+      "defeat-guard": 6,
       block: 4,
       hurt: 3,
       success: 4,
@@ -1099,24 +1147,42 @@ class Game extends Phaser.Scene {
       this.school();
       this.schoolFade = 0;
       this.enterRoom(rooms[name], name === "gap" ? 80 : 100);
-      if (["hit", "block", "hurt", "success", "exhausted"].includes(name)) {
+      const kind = name.replace(/-left$/, "");
+      if (
+        ["whiff", "hit", "block", "hurt", "success", "exhausted"].includes(
+          kind,
+        ) ||
+        name.startsWith("defeat-")
+      ) {
         this.bossIntro = 0;
         this.encounterTime = 0;
         const e = this.enemies[0];
         e.x = 220;
-        this.px = name === "block" || name === "success" ? 160 : 175;
+        this.px =
+          kind === "block" || kind === "success"
+            ? 160
+            : name === "defeat-parent"
+              ? 185
+              : 175;
         e.cool = 1;
         this.inv = 0;
-        if (name === "hit") e.recovery = 1.5;
-        if (name === "success") {
+        if (kind === "hit" || kind === "whiff") e.recovery = 1.5;
+        if (kind === "whiff") this.px = 125;
+        if (name === "success" || name.startsWith("defeat-")) {
           e.hp = 1;
           e.recovery = 3;
         }
-        if (name === "hurt" || name === "exhausted") {
+        if (kind === "hurt" || name === "exhausted") {
           e.wind = STUDENT.wind;
           e.facing = -1;
         }
         if (name === "exhausted") this.hp = 1;
+        if (name.endsWith("-left")) {
+          this.px = 320 - this.px;
+          e.x = 320 - e.x;
+          this.face = -1;
+          e.facing = 1;
+        }
       }
       if (name === "late") this.remaining = 2;
     } else if (name === "arrival") {
@@ -1548,11 +1614,13 @@ class Game extends Phaser.Scene {
         return;
       }
       this.attack = Math.max(0, this.attack - dt);
+      this.bookBlocked = Math.max(0, this.bookBlocked - dt);
+      this.attackBuffer = Math.max(0, this.attackBuffer - dt);
       const recovering = this.playerRecovery > 0;
       this.playerRecovery = Math.max(0, this.playerRecovery - dt);
       const dir =
         (this.keys.RIGHT.isDown ? 1 : 0) - (this.keys.LEFT.isDown ? 1 : 0);
-      if (dir && this.attack === 0) this.face = dir;
+      if (dir && this.attack === 0 && !recovering) this.face = dir;
       const previousX = this.px;
       if (
         this.py === 159 &&
@@ -1600,14 +1668,27 @@ class Game extends Phaser.Scene {
         this.vy = 0;
       }
       if (this.tryFall()) return;
-      if (attackPressed && this.attack === 0 && !recovering) {
+      // Only a fresh press in the last 100 ms of a swing can request the next one.
+      // Early mashing, a held key, hurt and transitions never queue an attack.
+      if (
+        attackPressed &&
+        this.attack > 0 &&
+        this.attack <= PLAY.attackBuffer &&
+        !recovering
+      )
+        this.attackBuffer = PLAY.attackBuffer;
+      if (
+        (attackPressed || this.attackBuffer > 0) &&
+        this.attack === 0 &&
+        !recovering
+      ) {
+        this.attackBuffer = 0;
         this.attack = PLAY.attackDuration;
         this.attackHit = false;
         this.session.record("attack", this.mission, this.room, {
           x: this.px,
           facing: this.face,
         });
-        this.audio.tone(180, 0.09, 0.015, 85);
       }
       if (
         this.attack > 0 &&
@@ -1615,6 +1696,7 @@ class Game extends Phaser.Scene {
         !this.attackHit
       ) {
         this.attackHit = true;
+        this.audio.combat("swing", this.face);
         for (const e of this.enemies) {
           if (
             e.hp <= 0 ||
@@ -1634,26 +1716,35 @@ class Game extends Phaser.Scene {
             );
           }
           if (e.boss && e.recovery <= 0 && e.stun <= 0) {
-            this.audio.tone(800, 0.05, 0.02, 450);
-            this.impact = 0.32;
+            this.audio.combat("block", this.face);
+            this.bookBlocked = PLAY.attackRecovery;
+            this.attack = PLAY.attackRecovery;
+            e.blockTime = 0.14;
+            e.hitDirection = this.face;
+            this.impact = PLAY.impactSeconds;
             this.impactX = contact.x;
             this.impactY = contact.y;
             this.impactKind = "block";
-            this.hitStop = 0.04;
+            this.hitStop = PLAY.blockStop;
             this.session.record("blocked", this.mission, this.room, contact);
             continue;
           }
           e.hp--;
-          if (e.hp <= 0) e.downTime = 1.1;
+          if (e.hp <= 0) e.downTime = PLAY.defeatSeconds;
           e.stun = PLAY.hitStun;
           e.wind = 0;
           e.chargeTime = 0;
           e.strikeTime = 0;
           e.recovery = Math.max(e.recovery, 0.35);
-          e.x = Phaser.Math.Clamp(e.x + this.face * 14, 22, 287);
+          e.facing = Math.sign(this.px - e.x) || -this.face;
+          e.hitDirection = this.face;
+          e.recoilTime = PLAY.hitStun;
+          const oldX = e.x;
+          e.x = Phaser.Math.Clamp(e.x + this.face * PLAY.recoil, 22, 287);
+          e.recoilDistance = e.x - oldX;
           this.hitStop = PLAY.hitStop;
           this.punches++;
-          this.impact = 0.32;
+          this.impact = PLAY.impactSeconds;
           this.impactX = contact.x;
           this.impactY = contact.y;
           this.impactKind = "hit";
@@ -1661,10 +1752,12 @@ class Game extends Phaser.Scene {
             ...contact,
             hp: e.hp,
           });
-          this.audio.tone(110, 0.1, 0.04, 35);
+          this.audio.combat(e.hp <= 0 ? "defeat" : "hit", this.face);
         }
       }
       for (const e of this.enemies) {
+        e.recoilTime = Math.max(0, (e.recoilTime ?? 0) - dt);
+        e.blockTime = Math.max(0, (e.blockTime ?? 0) - dt);
         if (e.downTime) e.downTime = Math.max(0, e.downTime - dt);
         if (e.hp <= 0) continue;
         e.strikeTime = Math.max(0, (e.strikeTime ?? 0) - dt);
@@ -1701,19 +1794,19 @@ class Game extends Phaser.Scene {
               (this.px - e.x) * facing > 0
             ) {
               const vulnerable = this.inv <= 0;
-              this.hurt();
+              this.hurt(facing);
               if (vulnerable) {
-                this.impact = 0.32;
+                this.impact = PLAY.impactSeconds;
                 this.impactKind = "hurt";
                 this.impactX = this.px - facing * 10;
                 this.impactY = e.pattern % 2 === 0 ? 125 : 113;
                 this.burst(this.impactX, this.impactY, 0xbf6648);
-                this.hitStop = 0.065;
+                this.hitStop = PLAY.hurtStop;
                 this.px = Phaser.Math.Clamp(this.px + facing * 10, 22, 298);
               }
             }
             e.recovery = BOSS.recovery;
-            this.audio.tone(e.boss ? 65 : 100, 0.12, 0.025, 35);
+            this.audio.combat("swing", facing);
           }
           continue;
         }
@@ -1801,6 +1894,8 @@ class Game extends Phaser.Scene {
     this.attack = 0;
     this.attackHit = true;
     this.playerRecovery = 0;
+    this.attackBuffer = 0;
+    this.bookBlocked = 0;
     this.session.record("fall", this.mission, this.room, {
       x: this.px,
       bank: this.fallReturn,
@@ -1854,7 +1949,7 @@ class Game extends Phaser.Scene {
       (type === 1 ? 0.55 : 0.42);
     this.burst(160 + this.car * 105, 148, 0xdba15d);
     this.audio.roadImpact(lane - this.car, type === 1);
-    this.cameras.main.shake(170, 0.008);
+    this.shake(170, 0.008);
     this.boardMessage = "CHOC / CARROSSERIE ENDOMMAGEE";
     this.messageTime = 3;
   }
@@ -1876,17 +1971,17 @@ class Game extends Phaser.Scene {
           this.inv <= 0
         ) {
           const contact = this.px - dir * 8;
-          this.hurt();
+          this.hurt(dir);
           this.px = Phaser.Math.Clamp(this.px + dir * 9, 12, 298);
           this.impactX = contact;
           this.impactY = 128;
-          this.impact = 0.32;
+          this.impact = PLAY.impactSeconds;
           this.impactKind = "hurt";
           this.hitStop = 0.045;
         }
         e.recovery = STUDENT.recovery;
         e.cool = STUDENT.cooldown;
-        this.audio.tone(130, 0.07, 0.012, 70);
+        this.audio.combat("swing", dir);
       }
       return;
     }
@@ -1916,16 +2011,16 @@ class Game extends Phaser.Scene {
           this.py > 130 &&
           this.inv <= 0
         ) {
-          this.hurt();
+          this.hurt(dir);
           this.px = Phaser.Math.Clamp(this.px + dir * 12, 12, 298);
           this.impactX = this.px - dir * 12;
           this.impactY = 115;
           this.impactKind = "hurt";
-          this.impact = 0.32;
+          this.impact = PLAY.impactSeconds;
         }
         e.recovery = GUARD.recovery;
         e.cool = GUARD.cooldown;
-        this.audio.tone(110, 0.09, 0.015, 55);
+        this.audio.combat("swing", dir);
       }
       return;
     }
@@ -1952,8 +2047,8 @@ class Game extends Phaser.Scene {
         this.py > 130 &&
         this.inv <= 0
       ) {
-        this.hurt();
-        this.impact = 0.32;
+        this.hurt(e.chargeDir ?? 1);
+        this.impact = PLAY.impactSeconds;
         this.impactKind = "hurt";
         this.impactX = this.px - (e.chargeDir ?? 1) * 8;
         this.impactY = this.py - 43;
@@ -1962,6 +2057,8 @@ class Game extends Phaser.Scene {
       if (e.x < 29 || e.x > 275) {
         e.x = Phaser.Math.Clamp(e.x, 29, 275);
         e.hp--;
+        if (e.hp <= 0) e.downTime = PLAY.defeatSeconds;
+        e.hitDirection = -(e.chargeDir ?? 1);
         e.chargeTime = 0;
         e.stun = 1.1;
         e.recovery = 0.5;
@@ -2062,19 +2159,32 @@ class Game extends Phaser.Scene {
       }
     }
   }
-  hurt() {
+  shake(duration: number, intensity: number) {
+    this.cameras.main.shake(
+      duration,
+      this.reducedShake ? intensity * 0.2 : intensity,
+    );
+  }
+  unlockAudio() {
+    this.audio.unlock();
+  }
+  hurt(direction = -this.face) {
     if (this.inv > 0) return;
     this.hp--;
     this.inv = PLAY.invulnerability;
     this.attack = 0;
     this.attackHit = true;
     this.playerRecovery = PLAY.playerRecovery;
+    this.playerHitDirection = direction;
+    this.attackBuffer = 0;
+    this.bookBlocked = 0;
+    this.hitStop = PLAY.hurtStop;
     this.session.record("hurt", this.mission, this.room, {
       hp: this.hp,
       x: this.px,
     });
-    this.audio.tone(130, 0.15, 0.025, 45);
-    this.cameras.main.shake(100, 0.008);
+    this.audio.combat("hurt", direction);
+    this.shake(80, 0.005);
   }
   person(x: number, y: number, c: number, book = false, enemy?: Enemy) {
     const role = book
@@ -2143,7 +2253,8 @@ class Game extends Phaser.Scene {
       0x080d13,
       0.7,
     );
-    const kick = enemy?.boss && enemy.recovery > 0.8 && enemy.pattern % 2 === 0;
+    const kick =
+      enemy?.boss && (enemy.strikeTime ?? 0) > 0 && enemy.pattern % 2 === 0;
     poly(
       [
         -5,
@@ -2231,7 +2342,7 @@ class Game extends Phaser.Scene {
       if (this.attack > 0.17 && this.attack < 0.34)
         poly([12, -39, 27, -33, 31, -23, 27, -26, 23, -32], 0xe3d4b3);
     } else {
-      const hit = !!enemy && enemy.recovery > 0.35;
+      const hit = !!enemy && (enemy.strikeTime ?? 0) > 0;
       const hand = hit ? 22 : enemy?.wind ? 3 : 10;
       poly([4, -30, 7, -28, hand, -22, hand, -18, 4, -24], coat);
       r(hand - 1, -22, 4, 4, 0xb9aa89);
@@ -3383,36 +3494,17 @@ class Game extends Phaser.Scene {
   drawHall() {
     this.hallArt!.background.setVisible(true);
 
-    const moving =
-      this.phase === "school" &&
-      this.playerRecovery === 0 &&
-      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
-    const frame =
-      this.attack > 0.34
-        ? 4
-        : this.attack > 0.17
-          ? 5
-          : this.attack > 0
-            ? 6
-            : this.py < 158
-              ? 7
-              : moving
-                ? [1, 2, 3, 2][Math.floor(this.walkClock / 1.5) % 4]
-                : 0;
-    if (this.py < 202)
-      this.art!.pose("prof", frame, this.px, this.py, this.face)
-        .setScale(0.18 * this.face, 0.18)
-        .setAlpha(
-          this.inv > 0 && Math.floor(this.age * 12) % 2 === 0 ? 0.5 : 1,
-        );
-    const e = this.enemies.find((e) => e.parent && e.hp > 0);
+    if (this.py < 202) this.art!.drawTeacher(this, 0.18);
+    const e = this.enemies.find(
+      (e) => e.parent && (e.hp > 0 || (e.downTime ?? 0) > 0),
+    );
     if (e) {
       const facing =
         (e.chargeTime ?? 0) > 0 || e.wind > 0
           ? (e.chargeDir ?? 1)
           : Math.sign(this.px - e.x) || 1;
       this.hallArt!.pose(
-        e.stun > 0 || e.recovery > 0
+        e.hp <= 0 || e.stun > 0 || e.recovery > 0
           ? 3
           : (e.chargeTime ?? 0) > 0
             ? 2
@@ -3422,78 +3514,25 @@ class Game extends Phaser.Scene {
         e.x,
         facing,
       );
+      this.art!.reactEnemy(this.hallArt!.parent, e, facing);
     }
   }
   drawTechnical() {
     this.technicalBackdrop!.setVisible(true);
-    const moving =
-      this.phase === "school" &&
-      this.playerRecovery === 0 &&
-      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
-    const frame =
-      this.attack > 0.34
-        ? 4
-        : this.attack > 0.17
-          ? 5
-          : this.attack > 0
-            ? 6
-            : this.py < 158
-              ? 7
-              : moving
-                ? [1, 2, 3, 2][Math.floor(this.walkClock / 1.5) % 4]
-                : 0;
-    this.art!.pose("prof", frame, this.px, this.py, this.face)
-      .setScale(0.18 * this.face, 0.18)
-      .setAlpha(this.inv > 0 && Math.floor(this.age * 12) % 2 === 0 ? 0.5 : 1);
+    if (this.py < 202) this.art!.drawTeacher(this, 0.18);
   }
   drawService() {
     this.serviceBackdrop!.setVisible(true);
-    const moving =
-      this.phase === "school" &&
-      this.playerRecovery === 0 &&
-      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
-    const frame =
-      this.attack > 0.34
-        ? 4
-        : this.attack > 0.17
-          ? 5
-          : this.attack > 0
-            ? 6
-            : this.py < 158
-              ? 7
-              : moving
-                ? [1, 2, 3, 2][Math.floor(this.walkClock / 1.5) % 4]
-                : 0;
-    this.art!.pose("prof", frame, this.px, this.py, this.face)
-      .setScale(0.18 * this.face, 0.18)
-      .setAlpha(this.inv > 0 && Math.floor(this.age * 12) % 2 === 0 ? 0.5 : 1);
+    if (this.py < 202) this.art!.drawTeacher(this, 0.18);
   }
   drawWing() {
     this.wingArt!.background.setVisible(true);
-    const moving =
-      this.phase === "school" &&
-      this.playerRecovery === 0 &&
-      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
-    const frame =
-      this.attack > 0.34
-        ? 4
-        : this.attack > 0.17
-          ? 5
-          : this.attack > 0
-            ? 6
-            : this.py < 158
-              ? 7
-              : moving
-                ? [1, 2, 3, 2][Math.floor(this.walkClock / 1.5) % 4]
-                : 0;
-    this.art!.pose("prof", frame, this.px, this.py, this.face)
-      .setScale(0.18 * this.face, 0.18)
-      .setAlpha(this.inv > 0 && Math.floor(this.age * 12) % 2 === 0 ? 0.5 : 1);
+    if (this.py < 202) this.art!.drawTeacher(this, 0.18);
 
     const e = this.enemies[0];
     if (e && (e.hp > 0 || (e.downTime ?? 0) > 0)) {
       const facing =
-        e.wind > 0 || e.recovery > 0
+        e.wind > 0 || e.recovery > 0 || e.stun > 0 || e.hp <= 0
           ? (e.facing ?? -1)
           : Math.sign(this.px - e.x) || -1;
       const frame =
@@ -3501,7 +3540,7 @@ class Game extends Phaser.Scene {
           ? 3
           : e.wind > 0
             ? 1
-            : e.recovery > 0.64
+            : (e.strikeTime ?? 0) > 0
               ? 2
               : 0;
       this.wingArt!.pose(
@@ -3510,34 +3549,17 @@ class Game extends Phaser.Scene {
         facing,
         e.hp <= 0 ? Math.min(1, e.downTime ?? 0) : 1,
       );
+      this.art!.reactEnemy(this.wingArt!.student, e, facing);
     }
   }
   drawBridge() {
     this.bridgeArt!.background.setVisible(true);
-    const moving =
-      this.phase === "school" &&
-      this.playerRecovery === 0 &&
-      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
-    const frame =
-      this.attack > 0.34
-        ? 4
-        : this.attack > 0.17
-          ? 5
-          : this.attack > 0
-            ? 6
-            : this.py < 158
-              ? 7
-              : moving
-                ? [1, 2, 3, 2][Math.floor(this.walkClock / 1.5) % 4]
-                : 0;
-    this.art!.pose("prof", frame, this.px, this.py, this.face)
-      .setScale(0.18 * this.face, 0.18)
-      .setAlpha(this.inv > 0 && Math.floor(this.age * 12) % 2 === 0 ? 0.5 : 1);
+    if (this.py < 202) this.art!.drawTeacher(this, 0.18);
 
     const e = this.enemies[0];
     if (e && (e.hp > 0 || (e.downTime ?? 0) > 0)) {
       const facing =
-        e.wind > 0 || e.recovery > 0
+        e.wind > 0 || e.recovery > 0 || e.stun > 0 || e.hp <= 0
           ? (e.facing ?? -1)
           : Math.sign(this.px - e.x) || -1;
       const frame =
@@ -3545,7 +3567,7 @@ class Game extends Phaser.Scene {
           ? 3
           : e.wind > 0
             ? 1
-            : e.recovery > 0.65
+            : (e.strikeTime ?? 0) > 0
               ? 2
               : 0;
       this.bridgeArt!.pose(
@@ -3554,73 +3576,20 @@ class Game extends Phaser.Scene {
         facing,
         e.hp <= 0 ? Math.min(1, e.downTime ?? 0) : 1,
       );
+      this.art!.reactEnemy(this.bridgeArt!.guard, e, facing);
     }
   }
   drawCentralStair() {
     this.centralBackdrop!.setVisible(true);
-    const moving =
-      this.phase === "school" &&
-      this.playerRecovery === 0 &&
-      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
-    const frame =
-      this.attack > 0.34
-        ? 4
-        : this.attack > 0.17
-          ? 5
-          : this.attack > 0
-            ? 6
-            : this.py < 158
-              ? 7
-              : moving
-                ? [1, 2, 3, 2][Math.floor(this.walkClock / 1.5) % 4]
-                : 0;
-    this.art!.pose("prof", frame, this.px, this.py, this.face)
-      .setScale(0.18 * this.face, 0.18)
-      .setAlpha(this.inv > 0 && Math.floor(this.age * 12) % 2 === 0 ? 0.5 : 1);
+    if (this.py < 202) this.art!.drawTeacher(this, 0.18);
   }
   drawAnnexStair() {
     this.stairBackdrop!.setVisible(true);
-    const moving =
-      this.phase === "school" &&
-      this.playerRecovery === 0 &&
-      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
-    const frame =
-      this.attack > 0.34
-        ? 4
-        : this.attack > 0.17
-          ? 5
-          : this.attack > 0
-            ? 6
-            : this.py < 158
-              ? 7
-              : moving
-                ? [1, 2, 3, 2][Math.floor(this.walkClock / 1.5) % 4]
-                : 0;
-    this.art!.pose("prof", frame, this.px, this.py, this.face)
-      .setScale(0.18 * this.face, 0.18)
-      .setAlpha(this.inv > 0 && Math.floor(this.age * 12) % 2 === 0 ? 0.5 : 1);
+    if (this.py < 202) this.art!.drawTeacher(this, 0.18);
   }
   drawCourtyard() {
     this.courtBackdrop!.setVisible(true);
-    const moving =
-      this.phase === "school" &&
-      this.playerRecovery === 0 &&
-      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
-    const frame =
-      this.attack > 0.34
-        ? 4
-        : this.attack > 0.17
-          ? 5
-          : this.attack > 0
-            ? 6
-            : this.py < 158
-              ? 7
-              : moving
-                ? [1, 2, 3, 2][Math.floor(this.walkClock / 1.5) % 4]
-                : 0;
-    this.art!.pose("prof", frame, this.px, this.py, this.face)
-      .setScale(0.13 * this.face, 0.13)
-      .setAlpha(this.inv > 0 && Math.floor(this.age * 12) % 2 === 0 ? 0.5 : 1);
+    if (this.py < 202) this.art!.drawTeacher(this, 0.13);
   }
   drawSliceSchool() {
     this.art!.render(this);

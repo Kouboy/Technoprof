@@ -3,6 +3,7 @@ import { ART_DATA } from "./art-data";
 import { INSPECTRICE_DATA } from "./inspectrice-data";
 import { INSPECTRICE_OUTLINES } from "./inspectrice-mask";
 import type { Enemy } from "./world";
+import { teacherPose, enemyPose, type TeacherState } from "./combat-poses";
 
 // Source rectangles deliberately follow the drawn silhouettes rather than an
 // assumed regular grid: the extended book crosses the generated cell boundary.
@@ -113,8 +114,20 @@ export class SliceArt {
         role === "prof" ? 0.225 : 0.238,
       )
       .setFlipX(false)
+      .setAngle(0)
       .setVisible(true);
     return sprite;
+  }
+  drawTeacher(state: TeacherState, scale = 0.225) {
+    const p = teacherPose(state);
+    return this.pose("prof", p.frame, p.x, p.y, state.face)
+      .setScale(scale * state.face, scale)
+      .setAngle(p.angle)
+      .setAlpha(p.alpha);
+  }
+  reactEnemy(sprite: Phaser.GameObjects.Image, enemy: Enemy, facing: number) {
+    const p = enemyPose(enemy, facing);
+    sprite.setPosition(p.x, p.y).setAngle(p.angle).setAlpha(p.alpha);
   }
   render(state: {
     px: number;
@@ -128,30 +141,13 @@ export class SliceArt {
     age: number;
     openingFrom?: number;
     playerRecovery?: number;
+    playerHitDirection?: number;
+    bookBlocked?: number;
     keys: Record<string, { isDown: boolean }>;
     enemies: Enemy[];
   }) {
     this.backdrop.setVisible(true);
-    const moving =
-      state.phase === "school" &&
-      !state.playerRecovery &&
-      (state.keys.LEFT.isDown || state.keys.RIGHT.isDown);
-    let teacherFrame =
-      state.attack > 0.34
-        ? 4
-        : state.attack > 0.17
-          ? 5
-          : state.attack > 0
-            ? 6
-            : state.py < 158
-              ? 7
-              : moving
-                ? [1, 2, 3, 2][Math.floor(state.walkClock / 1.5) % 4]
-                : 0;
-    if (state.phase === "opening") teacherFrame = 0;
-    this.pose("prof", teacherFrame, state.px, state.py, state.face).setAlpha(
-      state.inv > 0 && Math.floor(state.inv * 12) % 2 ? 0.4 : 1,
-    );
+    this.drawTeacher(state);
     for (const enemy of state.enemies)
       if (enemy.boss && (enemy.hp > 0 || (enemy.downTime ?? 0) > 0)) {
         this.inspectorFemale = !!enemy.female;
@@ -166,7 +162,7 @@ export class SliceArt {
             ? 7
             : enemy.wind > 0
               ? 4
-              : enemy.recovery > 0.8
+              : (enemy.strikeTime ?? 0) > 0
                 ? enemy.pattern % 2 === 0
                   ? 6
                   : 5
@@ -175,21 +171,17 @@ export class SliceArt {
                   : movingEnemy
                     ? [1, 2, 3, 2][Math.floor((enemy.walk ?? 0) / 8) % 4]
                     : 0;
-        this.pose(
-          "inspecteur",
-          frame,
-          enemy.x,
-          159,
-          enemy.wind > 0 || enemy.recovery > 0
+        const facing =
+          enemy.wind > 0 ||
+          enemy.recovery > 0 ||
+          enemy.stun > 0 ||
+          enemy.hp <= 0
             ? (enemy.facing ?? (state.px < enemy.x ? -1 : 1))
             : state.px < enemy.x
               ? -1
-              : 1,
-        ).setAlpha(
-          enemy.hp <= 0 ? Math.min(1, (enemy.downTime ?? 0) * 1.5) : 1,
-        );
-        if (enemy.hp <= 0)
-          this.inspector.y += Math.min(10, (1.1 - (enemy.downTime ?? 0)) * 12);
+              : 1;
+        this.pose("inspecteur", frame, enemy.x, 159, facing);
+        this.reactEnemy(this.inspector, enemy, facing);
       }
     if (state.phase === "opening") {
       const t = state.age;

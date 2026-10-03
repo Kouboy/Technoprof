@@ -1,67 +1,61 @@
 {
-  "version": "0.44",
+  "version": "0.45",
   "importClientDate": "2026-10-03",
   "scope": "partial source backup",
   "files": [
     {
-      "original": "audio.ts",
-      "path": "src/audio.ts",
-      "bytes": 11240,
-      "sha256": "c7a7fbd6f177369dd98f5445240ff43942e247b224a139563ef2c5f6e206d12b"
-    },
-    {
-      "original": "comic-fx.ts",
-      "path": "src/comic-fx.ts",
-      "bytes": 5552,
-      "sha256": "a6ac191769ac0fc6ab1c8558fa79ce071041a9b9da9b17b661079cf3a2f7cfe7"
-    },
-    {
-      "original": "gameplay.ts",
-      "path": "src/gameplay.ts",
-      "bytes": 3141,
-      "sha256": "b0b47e4efb3527549a167aca31f5483e772b5815da3d6dd7d189bfb6a502ea52"
+      "original": "cadre.ts",
+      "path": "src/cadre.ts",
+      "bytes": 11836,
+      "sha256": "6ee7acd73bca2d25efc320a74c4f44dc163525f5ea8c07dce7e3634a74fbb763"
     },
     {
       "original": "index.html",
       "path": "index.html",
-      "bytes": 6691,
-      "sha256": "5da9c15dcef25fafa87969a338e0bf280be48805e8faa8f733f4e786d4d92f0a"
+      "bytes": 6794,
+      "sha256": "d065535d3dcf22224b1be2a49c842b92b569ab81280f924c2a77df8a9c584971"
     },
     {
       "original": "main.ts",
       "path": "src/main.ts",
-      "bytes": 126316,
-      "sha256": "4d47595487b4083e2f818899757e94c22aec451d90ea805a4fb245d6b40cca4f"
+      "bytes": 125596,
+      "sha256": "5ee46ce4531a451b6c5e2b0cdc813b84ae57145bc7b46205359644aea54d2e82"
     },
     {
       "original": "package-lock.json",
       "path": "package-lock.json",
       "bytes": 38850,
-      "sha256": "59f81de482bd26037d2c56f976f10c29c834b9be1c01ed6fc8f9d3b92017c8c2"
+      "sha256": "7a4e880079e9e44b237445c30465a7c1095ff186917b0ef9cd88568116ea3f8d"
     },
     {
       "original": "package.json",
       "path": "package.json",
-      "bytes": 635,
-      "sha256": "c98ae987d5843cc3e4f502e2c5b2dc84965d12b82478873f120113026aa43cdc"
+      "bytes": 662,
+      "sha256": "1f8f32777d0b5dbd6762c5d8e13e954e51f73f43092ccd2fb3ee7f9dc0b501c8"
+    },
+    {
+      "original": "passage-hints.ts",
+      "path": "src/passage-hints.ts",
+      "bytes": 2617,
+      "sha256": "bd706de61fa6f13ec34a0f843a131032dc95365b7e02dbb78ffbb0998afb0c33"
+    },
+    {
+      "original": "road-art.ts",
+      "path": "src/road-art.ts",
+      "bytes": 5174,
+      "sha256": "1fadc323984dc961288f86a74570c922d0b12b657d200b26d92498d0f600b152"
+    },
+    {
+      "original": "school-props.ts",
+      "path": "src/school-props.ts",
+      "bytes": 11540,
+      "sha256": "04f336d8bf8e541178b7ceca583b0949e1a2ce4f384c1fa1b73f936f72efd50b"
     },
     {
       "original": "slice-art.ts",
       "path": "src/slice-art.ts",
-      "bytes": 7461,
-      "sha256": "6560ef033c1862c1afd77c2823e4252eebc6ea99abe697350b068466a809415a"
-    },
-    {
-      "original": "workshop.ts",
-      "path": "src/workshop.ts",
-      "bytes": 9576,
-      "sha256": "9a5221d93766ad2779fb03ec689470d71d5a1148cd569d0d80c6194260e57b86"
-    },
-    {
-      "original": "world.ts",
-      "path": "src/world.ts",
-      "bytes": 3503,
-      "sha256": "e49363e8bca05ada6a2ba5d828282ed0db31cbf2d6fd1770ceb8512df36000f4"
+      "bytes": 7333,
+      "sha256": "b9302b1ea5b70189780820b2ce8cd87bd4d8767d5878337f925e7077b7d63107"
     }
   ]
 }
