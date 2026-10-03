@@ -55,6 +55,10 @@
       "careApplied": false
     }
   },
+  "branchZones": [
+    "bruel-hall",
+    "bruel-jonction-b"
+  ],
   "knownRouteSavingSeconds": 3.447,
   "careExtraDiscoverySeconds": 6.906,
   "careExtraKnownSeconds": 4.082,

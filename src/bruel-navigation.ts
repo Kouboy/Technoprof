@@ -234,6 +234,86 @@ export const BRUEL_NAV: MissionSpec = {
   },
 };
 
+// A2 owns every room/exit object, so switching profile cannot alter the A1 reference.
+const a2Room = (id: number, changes: Partial<RoomSpec> = {}): RoomSpec => {
+  const base = BRUEL_NAV.rooms[id],
+    exits = (changes.exits ?? base.exits ?? []).map((e) => ({ ...e }));
+  return {
+    ...base,
+    ...changes,
+    exits,
+    blocked: (["left", "right"] as const).filter(
+      (side) => !exits.some((e) => e.edge && e.key === side.toUpperCase()),
+    ),
+    navigation: { ...base.navigation!, revision: "A2" },
+  };
+};
+export const BRUEL_NAV_A2: MissionSpec = {
+  ...BRUEL_NAV,
+  id: "bruel-navigation-atelier-a2",
+  rooms: Object.fromEntries(
+    Object.keys(BRUEL_NAV.rooms).map((id) => [Number(id), a2Room(Number(id))]),
+  ),
+};
+BRUEL_NAV_A2.rooms[n.hall] = a2Room(n.hall, {
+  exits: [
+    navExit("LEFT", 10, n.vestibule, 278, "GAUCHE : VESTIBULE"),
+    navExit("UP", 60, n.principal, 50, "HAUT : GRAND ESCALIER"),
+    navExit("UP", 180, n.infirmerie, 55, "HAUT : INFIRMERIE / RDC"),
+    navExit("UP", 285, n.annexe, 55, "HAUT : ESCALIER ANNEXE / 1ER"),
+  ],
+});
+// The right opening leads into a staircase in depth, rather than a blocked passage.
+BRUEL_NAV_A2.rooms[n.hall].blocked = [];
+BRUEL_NAV_A2.rooms[n.principal] = a2Room(n.principal, {
+  exits: [
+    navExit("DOWN", 60, n.hall, 65, "BAS : HALL / RDC"),
+    navExit("UP", 250, n.palier, 50, "HAUT : PALIER / 1ER"),
+  ],
+});
+BRUEL_NAV_A2.rooms[n.palier] = a2Room(n.palier, {
+  exits: [
+    navExit("DOWN", 60, n.principal, 240, "BAS : GRAND ESCALIER / RDC"),
+    navExit("RIGHT", 298, n.galerieA, 20, "DROITE : GALERIE A"),
+    navExit("UP", 230, n.annexe, 55, "HAUT : PASSAGE INTERIEUR / ANNEXE"),
+  ],
+});
+BRUEL_NAV_A2.rooms[n.annexe] = a2Room(n.annexe, {
+  name: "PALIER ANNEXE / 1ER",
+  frame: 1,
+  exits: [
+    navExit("DOWN", 60, n.hall, 278, "BAS : DESCENDRE AU HALL / RDC"),
+    navExit("LEFT", 10, n.palier, 230, "GAUCHE : PALIER PRINCIPAL"),
+    navExit("RIGHT", 298, n.jonction, 55, "DROITE : JONCTION"),
+  ],
+});
+BRUEL_NAV_A2.rooms[n.annexe].navigation!.floor = 1;
+BRUEL_NAV_A2.rooms[n.galerieA] = a2Room(n.galerieA, {
+  exits: [
+    navExit("LEFT", 10, n.palier, 278, "GAUCHE : PALIER"),
+    navExit("RIGHT", 298, n.jonction, 20, "DROITE : TRAVERSEE DES AILES"),
+  ],
+});
+BRUEL_NAV_A2.rooms[n.jonction] = a2Room(n.jonction, {
+  exits: [
+    navExit("LEFT", 10, n.galerieA, 278, "GAUCHE : GALERIE A"),
+    navExit("UP", 90, n.annexe, 240, "HAUT : ANNEXE / 1ER"),
+    navExit("RIGHT", 298, n.galerieB, 20, "DROITE : GALERIE B"),
+  ],
+});
+BRUEL_NAV_A2.rooms[n.galerieB] = a2Room(n.galerieB, {
+  exits: [
+    navExit("LEFT", 10, n.jonction, 278, "GAUCHE : JONCTION"),
+    navExit("RIGHT", 298, n.palierB, 20, "DROITE : PALIER B"),
+  ],
+});
+BRUEL_NAV_A2.rooms[n.palierB] = a2Room(n.palierB, {
+  exits: [
+    navExit("LEFT", 10, n.galerieB, 278, "GAUCHE : GALERIE B"),
+    navExit("RIGHT", 298, n.seuil, 45, "DROITE : SALLES B11-B14"),
+  ],
+});
+
 export class NavigationCare {
   used = false;
   active = false;
@@ -278,6 +358,10 @@ export type NavigationVisit = {
   active: Record<string, number>;
 };
 export class NavigationMetrics {
+  revision: "A1" | "A2";
+  constructor(revision: "A1" | "A2" = "A1") {
+    this.revision = revision;
+  }
   end?: { outcome: string; hp: number; remaining: number; careUsed: boolean };
   visits: NavigationVisit[] = [];
   choices: {
@@ -302,11 +386,20 @@ export class NavigationMetrics {
   }
   snapshot() {
     return {
-      profile: "bruel-navigation-atelier",
+      profile:
+        this.revision === "A2"
+          ? "bruel-navigation-atelier-a2"
+          : "bruel-navigation-atelier",
+      revision: this.revision,
       visits: this.visits.map((v) => ({ ...v, active: { ...v.active } })),
       choices: [...this.choices],
       returns: this.visits.filter((v) => v.visit > 1).length,
       annexeUses: this.choices.filter((c) => c.annexe).length,
+      midcourseUses: this.choices.filter(
+        (c) =>
+          c.from === "bruel-palier-principal" &&
+          c.to === "bruel-escalier-annexe",
+      ).length,
       ...(this.end ? { end: { ...this.end } } : {}),
     };
   }

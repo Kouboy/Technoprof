@@ -542,7 +542,7 @@
       "remaining": 220.425
     }
   ],
-  "branchChecks": 0,
+  "branchChecks": 81,
   "routes": [
     {
       "fps": 30,
@@ -577,7 +577,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 191.35,
+      "remaining": 191.1,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -599,7 +599,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 175.8,
+      "remaining": 175.317,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -621,13 +621,37 @@
     {
       "fps": 30,
       "mode": "keyboard",
+      "path": "midcourseChoice",
+      "road": false,
+      "roadSpent": 0,
+      "startHp": 5,
+      "gain": 0,
+      "hp": 4,
+      "remaining": 189.567,
+      "visits": [
+        "bruel-cour",
+        "bruel-vestibule",
+        "bruel-hall",
+        "bruel-escalier-principal",
+        "bruel-palier-principal",
+        "bruel-escalier-annexe",
+        "bruel-jonction-b",
+        "bruel-galerie-b",
+        "bruel-palier-b",
+        "bruel-seuil-b12"
+      ],
+      "returns": 0
+    },
+    {
+      "fps": 30,
+      "mode": "keyboard",
       "path": "known",
       "road": true,
       "roadSpent": 56.033,
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 135.317,
+      "remaining": 135.067,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -701,7 +725,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 2,
-      "remaining": 188.017,
+      "remaining": 187.733,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -725,7 +749,7 @@
       "startHp": 2,
       "gain": 2,
       "hp": 3,
-      "remaining": 188.017,
+      "remaining": 187.733,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -773,7 +797,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 184.75,
+      "remaining": 184.5,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -795,7 +819,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 169.283,
+      "remaining": 168.8,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -817,13 +841,37 @@
     {
       "fps": 30,
       "mode": "direct",
+      "path": "midcourseChoice",
+      "road": false,
+      "roadSpent": 0,
+      "startHp": 5,
+      "gain": 0,
+      "hp": 4,
+      "remaining": 183,
+      "visits": [
+        "bruel-cour",
+        "bruel-vestibule",
+        "bruel-hall",
+        "bruel-escalier-principal",
+        "bruel-palier-principal",
+        "bruel-escalier-annexe",
+        "bruel-jonction-b",
+        "bruel-galerie-b",
+        "bruel-palier-b",
+        "bruel-seuil-b12"
+      ],
+      "returns": 0
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
       "path": "known",
       "road": true,
       "roadSpent": 53.95,
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 130.8,
+      "remaining": 130.55,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -897,7 +945,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 2,
-      "remaining": 181.583,
+      "remaining": 181.333,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -921,7 +969,7 @@
       "startHp": 2,
       "gain": 2,
       "hp": 3,
-      "remaining": 181.583,
+      "remaining": 181.333,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -969,7 +1017,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 191.567,
+      "remaining": 191.317,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -991,7 +1039,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 176.133,
+      "remaining": 175.617,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1013,13 +1061,37 @@
     {
       "fps": 60,
       "mode": "keyboard",
+      "path": "midcourseChoice",
+      "road": false,
+      "roadSpent": 0,
+      "startHp": 5,
+      "gain": 0,
+      "hp": 4,
+      "remaining": 189.8,
+      "visits": [
+        "bruel-cour",
+        "bruel-vestibule",
+        "bruel-hall",
+        "bruel-escalier-principal",
+        "bruel-palier-principal",
+        "bruel-escalier-annexe",
+        "bruel-jonction-b",
+        "bruel-galerie-b",
+        "bruel-palier-b",
+        "bruel-seuil-b12"
+      ],
+      "returns": 0
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
       "path": "known",
       "road": true,
       "roadSpent": 53.7,
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 137.867,
+      "remaining": 137.617,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1093,7 +1165,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 2,
-      "remaining": 188.333,
+      "remaining": 188.067,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1117,7 +1189,7 @@
       "startHp": 2,
       "gain": 2,
       "hp": 3,
-      "remaining": 188.333,
+      "remaining": 188.067,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1165,7 +1237,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 191.2,
+      "remaining": 190.95,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1187,7 +1259,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 175.75,
+      "remaining": 175.25,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1209,13 +1281,37 @@
     {
       "fps": 60,
       "mode": "direct",
+      "path": "midcourseChoice",
+      "road": false,
+      "roadSpent": 0,
+      "startHp": 5,
+      "gain": 0,
+      "hp": 4,
+      "remaining": 189.467,
+      "visits": [
+        "bruel-cour",
+        "bruel-vestibule",
+        "bruel-hall",
+        "bruel-escalier-principal",
+        "bruel-palier-principal",
+        "bruel-escalier-annexe",
+        "bruel-jonction-b",
+        "bruel-galerie-b",
+        "bruel-palier-b",
+        "bruel-seuil-b12"
+      ],
+      "returns": 0
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
       "path": "known",
       "road": true,
       "roadSpent": 53.55,
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 137.65,
+      "remaining": 137.4,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1289,7 +1385,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 2,
-      "remaining": 188.067,
+      "remaining": 187.817,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1313,7 +1409,7 @@
       "startHp": 2,
       "gain": 2,
       "hp": 3,
-      "remaining": 188.067,
+      "remaining": 187.817,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1361,7 +1457,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 190.758,
+      "remaining": 190.5,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1383,7 +1479,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 175.383,
+      "remaining": 174.858,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1405,13 +1501,37 @@
     {
       "fps": 120,
       "mode": "keyboard",
+      "path": "midcourseChoice",
+      "road": false,
+      "roadSpent": 0,
+      "startHp": 5,
+      "gain": 0,
+      "hp": 4,
+      "remaining": 189.017,
+      "visits": [
+        "bruel-cour",
+        "bruel-vestibule",
+        "bruel-hall",
+        "bruel-escalier-principal",
+        "bruel-palier-principal",
+        "bruel-escalier-annexe",
+        "bruel-jonction-b",
+        "bruel-galerie-b",
+        "bruel-palier-b",
+        "bruel-seuil-b12"
+      ],
+      "returns": 0
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
       "path": "known",
       "road": true,
       "roadSpent": 53.442,
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 137.317,
+      "remaining": 137.058,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1485,7 +1605,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 2,
-      "remaining": 187.575,
+      "remaining": 187.317,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1509,7 +1629,7 @@
       "startHp": 2,
       "gain": 2,
       "hp": 3,
-      "remaining": 187.575,
+      "remaining": 187.317,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1557,7 +1677,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 191.475,
+      "remaining": 191.208,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1579,7 +1699,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 176.133,
+      "remaining": 175.6,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1601,13 +1721,37 @@
     {
       "fps": 120,
       "mode": "direct",
+      "path": "midcourseChoice",
+      "road": false,
+      "roadSpent": 0,
+      "startHp": 5,
+      "gain": 0,
+      "hp": 4,
+      "remaining": 189.75,
+      "visits": [
+        "bruel-cour",
+        "bruel-vestibule",
+        "bruel-hall",
+        "bruel-escalier-principal",
+        "bruel-palier-principal",
+        "bruel-escalier-annexe",
+        "bruel-jonction-b",
+        "bruel-galerie-b",
+        "bruel-palier-b",
+        "bruel-seuil-b12"
+      ],
+      "returns": 0
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
       "path": "known",
       "road": true,
       "roadSpent": 53.45,
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 138.025,
+      "remaining": 137.758,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1681,7 +1825,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 2,
-      "remaining": 188.383,
+      "remaining": 188.117,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1705,7 +1849,7 @@
       "startHp": 2,
       "gain": 2,
       "hp": 3,
-      "remaining": 188.383,
+      "remaining": 188.117,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",

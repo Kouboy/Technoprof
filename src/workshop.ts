@@ -62,9 +62,12 @@ type Host = {
   exportJournal(): void;
 };
 const SCENARIOS: Record<string, string> = {
-  "bruel-navigation": "Bruel / découverte du réseau (atelier)",
-  "bruel-navigation-road": "Bruel / route puis réseau (atelier)",
-  "bruel-navigation-care": "Bruel / hall et soins (preset atelier)",
+  "bruel-navigation-a2": "Bruel A2 / découverte du réseau",
+  "bruel-navigation-a2-road": "Bruel A2 / route puis réseau",
+  "bruel-navigation-a2-care": "Bruel A2 / hall et soins",
+  "bruel-navigation": "Bruel A1 / découverte (comparaison)",
+  "bruel-navigation-road": "Bruel A1 / route puis réseau",
+  "bruel-navigation-care": "Bruel A1 / hall et soins",
   "hanouna-quiet": "Matin / liaison sans combat",
   "hanouna-quiet-class": "Matin / classe vide",
   "hanouna-quiet-hall": "Matin / hall",
@@ -218,7 +221,7 @@ export function installWorkshop(s: Host) {
   careSettings.append(hpLabel);
   const navigationNote = document.createElement("p");
   navigationNote.textContent =
-    "BRUEL / PROTOTYPE DE NAVIGATION. Changer le soin ou les PV relance cet essai. Première visite : chercher B12 sans plan. Soins : approcher l’armoire, F/X ou toucher. Délai actif pendant le soin ; un usage par affectation.";
+    "BRUEL / NAVIGATION A2 (A1 disponible en comparaison). Première visite : chercher B12 sans plan, puis refaire le parcours. Changer le soin ou les PV relance cet essai. Soins : approcher l’armoire, F/X ou toucher. Délai actif pendant le soin ; un usage par affectation.";
   careSettings.append(navigationNote);
   root.append(careSettings);
   careSettings.addEventListener("focusin", () => s.setWorkshopFocus(true));

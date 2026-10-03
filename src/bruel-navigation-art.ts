@@ -77,18 +77,50 @@ export class BruelNavigationArt {
   render(r: RoomSpec, care: NavigationCare, px: number, pointer: boolean) {
     if (!r.navigation) return;
     const id = r.id,
-      g = this.ink;
+      g = this.ink,
+      a2 = r.navigation.revision === "A2";
     if (id === NAV_ID.hall) {
       this.patch(0, "nav-stair", 23, 24, 79, 127);
       this.patch(1, "nav-door", 164, 25, 34, 126);
-      this.plate(16, 13, ["B10-B12 / 1ER", "GRAND ESCALIER"], true);
+      this.plate(
+        16,
+        13,
+        [a2 ? "AILE B / 1ER" : "B10-B12 / 1ER", "GRAND ESCALIER"],
+        true,
+      );
       this.plate(142, 39, ["INFIRMERIE"]);
-      this.plate(242, 82, ["ANNEXE >", "ESCALIER B"]);
+      if (a2) {
+        this.patch(2, "nav-stair", 268, 35, 36, 116);
+        this.plate(248, 30, ["ANNEXE", "1ER ETAGE"]);
+      } else this.plate(242, 82, ["ANNEXE >", "ESCALIER B"]);
       this.plate(13, 112, ["< COUR"]);
     } else if (id === NAV_ID.annexe) {
       this.copper(209);
-      this.plate(162, 38, ["AILE B / 1ER", "ESCALIER >"], true);
-      this.plate(25, 45, ["HALL / RDC"]);
+      if (a2) {
+        // Upper landing: visible descending flight, not the RDC stairs going up.
+        this.patch(0, "nav-door", 43, 25, 59, 126);
+        g.fillStyle(0x10171c);
+        g.fillRect(47, 35, 49, 113);
+        for (let i = 0; i < 8; i++) {
+          const y = 88 + i * 7,
+            x = 92 - i * 6;
+          g.fillStyle(0x626b67);
+          g.fillRect(x, y, 96 - x, 2);
+          g.fillStyle(0x303c3b);
+          g.fillRect(x, y + 2, 96 - x, 5);
+        }
+        g.lineStyle(2, 0x7a8377);
+        g.lineBetween(94, 80, 49, 133);
+        g.lineBetween(94, 80, 94, 112);
+        g.lineBetween(49, 133, 49, 149);
+        this.plate(11, 15, ["< PALIER", "PRINCIPAL"]);
+        this.plate(125, 15, ["ANNEXE / 1ER"]);
+        this.plate(42, 42, ["HALL / RDC"]);
+        this.plate(242, 43, ["JONCTION >"]);
+      } else {
+        this.plate(162, 38, ["AILE B / 1ER", "ESCALIER >"], true);
+        this.plate(25, 45, ["HALL / RDC"]);
+      }
     } else if (id === NAV_ID.principal) {
       this.plate(159, 41, ["1ER ETAGE >", "AILES A-B"], true);
       this.plate(24, 45, ["HALL / RDC"]);
@@ -99,7 +131,12 @@ export class BruelNavigationArt {
       g.lineBetween(157, 28, 157, 93);
       g.lineBetween(119, 62, 199, 62);
       this.plate(17, 44, ["RDC / ESCALIER"]);
-      this.plate(216, 47, ["GALERIE A >", "LIAISON B"]);
+      if (a2) {
+        this.patch(1, "nav-door", 213, 25, 34, 126);
+        this.plate(205, 15, ["ANNEXE"]);
+        this.plate(205, 35, ["PASSAGE", "INTERIEUR"]);
+        this.plate(254, 35, ["GALERIE A", "TRAVERSEE >"]);
+      } else this.plate(216, 47, ["GALERIE A >", "LIAISON B"]);
       this.plate(123, 100, ["1ER ETAGE"], true);
     } else if (id === NAV_ID.jonction) {
       this.patch(0, "nav-door", 74, 27, 33, 124);
@@ -107,8 +144,8 @@ export class BruelNavigationArt {
       g.fillRect(77, 28, 25, 113);
       this.copper(209);
       this.plate(13, 45, ["< GALERIE A"]);
-      this.plate(59, 77, ["ANNEXE / RDC"]);
-      this.plate(239, 44, ["B10-B12 >"], true);
+      this.plate(59, 77, [a2 ? "ANNEXE / 1ER" : "ANNEXE / RDC"]);
+      this.plate(239, 44, a2 ? ["GALERIE B >", "B08-B14"] : ["B10-B12 >"], !a2);
     } else if (id === NAV_ID.infirmerie) {
       this.patch(0, "nav-door", 44, 25, 33, 126);
       this.plate(25, 42, ["HALL / RDC"]);
@@ -174,7 +211,7 @@ export class BruelNavigationArt {
       }
     } else if (id === NAV_ID.galerieA) {
       this.plate(12, 47, ["< PALIER"]);
-      this.plate(234, 47, ["B10-B12 >"], true);
+      this.plate(234, 47, [a2 ? "JONCTION >" : "B10-B12 >"], !a2);
       for (let i = 0; i < 3; i++) {
         g.fillStyle(0x584b39);
         g.fillRect(118 + i * 25, 54, 21, 25);
@@ -186,7 +223,7 @@ export class BruelNavigationArt {
       this.plate(132, 86, ["A01-A04"]);
     } else if (id === NAV_ID.galerieB) {
       this.plate(12, 47, ["< JONCTION"]);
-      this.plate(238, 47, ["B10-B12 >"], true);
+      this.plate(238, 47, [a2 ? "PALIER B >" : "B10-B12 >"], !a2);
       this.plate(133, 77, ["B08-B10"]);
     } else if (id === NAV_ID.palierB) {
       g.fillStyle(0x080d13);
@@ -201,12 +238,13 @@ export class BruelNavigationArt {
       g.lineBetween(160, 47, 152, 64);
       g.lineBetween(152, 64, 167, 74);
       this.plate(13, 44, ["< GALERIE B"]);
-      this.plate(260, 44, ["B12 >"], true);
+      this.plate(a2 ? 245 : 260, 44, [a2 ? "B11-B14 >" : "B12 >"], !a2);
     } else if (id === NAV_ID.seuil) this.plate(270, 47, ["B12"], true);
     else if (id === NAV_ID.cour) this.plate(239, 47, ["ENTREE >"], true);
     else if (id === NAV_ID.vestibule) {
       this.plate(13, 47, ["< COUR"]);
       this.plate(259, 47, ["HALL >"], true);
+      if (a2) this.plate(126, 25, ["B12 / AILE B", "1ER ETAGE"], true);
     }
   }
 }

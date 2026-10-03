@@ -1,6 +1,9 @@
 const assert = require("node:assert/strict"),
   fs = require("node:fs");
 const { createGame } = require("./test-harness.cjs");
+const a2 = process.argv.includes("--a2");
+const scenarioName = (name) =>
+  a2 ? name.replace("bruel-navigation", "bruel-navigation-a2") : name;
 const setup = (scenario = "bruel-navigation", hp = 5, gain = 1) => {
   const t = createGame(),
     g = t.g;
@@ -15,7 +18,7 @@ const setup = (scenario = "bruel-navigation", hp = 5, gain = 1) => {
       .map((k) => [k, { isDown: false, just: false }]),
   );
   g.direct = new t.api.DirectInput(g);
-  g.loadScenario(scenario);
+  g.loadScenario(scenarioName(scenario));
   g.direct.tick(0);
   return t;
 };
@@ -60,7 +63,10 @@ function exit(t, target, mode) {
   }
 }
 const d = JSON.parse(
-  fs.readFileSync("work/bruel-navigation-design.json", "utf8"),
+  fs.readFileSync(
+    `work/bruel-navigation${a2 ? "-a2" : ""}-design.json`,
+    "utf8",
+  ),
 );
 const t0 = setup(),
   spec = t0.g.missionSpec(),
@@ -88,13 +94,87 @@ for (const z of d.zones) {
 }
 assert.throws(() => t0.g.enterRoom(999, 50), /Zone inconnue/);
 const ordinary = createGame();
-ordinary.g.loadScenario("bruel-navigation");
+ordinary.g.loadScenario(scenarioName("bruel-navigation"));
 assert(!ordinary.g.navigationProfile, "profile must require workshop");
 for (const name of ["mission", "bruel-cour", "bruel-drive", "road"]) {
   t0.g.loadScenario(name);
   assert(!t0.g.navigationProfile);
   assert(!t0.g.roomSpec()?.navigation);
 }
+
+// Quiet branches isolate traversal rules from combat. Entry presets are declared;
+// transitions themselves must use the same physical/pointer inputs as the player.
+let branchChecks = 0;
+if (a2)
+  for (const fps of [30, 60, 120])
+    for (const mode of ["keyboard", "direct"]) {
+      for (const source of [
+        "hall",
+        "principal",
+        "palier",
+        "annexe",
+        "infirmerie",
+      ]) {
+        const id = t0.api.NAV_ID[source];
+        for (const edge of spec.rooms[id].exits) {
+          const t = setup("bruel-navigation-care"),
+            g = t.g;
+          g.enterRoom(id, 150);
+          t.advance(0.4, fps);
+          for (let i = 0; i < fps * 6 && g.room === id; i++) {
+            release(t);
+            exit(t, edge.target, mode);
+            t.step(1000 / fps);
+          }
+          assert.equal(
+            g.room,
+            edge.target,
+            `branch ${source}->${edge.target} ${mode} ${fps}`,
+          );
+          // Keep the source intention held across the forced fade.
+          t.advance(0.4, fps);
+          assert.equal(
+            g.room,
+            edge.target,
+            "held input cannot immediately bounce",
+          );
+          assert.equal(g.navigationMetrics.choices.length, 1);
+          if (mode === "direct")
+            assert(!g.direct.intent, "pointer transition consumes its target");
+          branchChecks++;
+        }
+      }
+      if (mode === "keyboard") {
+        const t = setup("bruel-navigation-care"),
+          g = t.g;
+        g.enterRoom(t.api.NAV_ID.annexe, 15);
+        t.advance(0.4, fps);
+        hold(t, "UP");
+        hold(t, "LEFT");
+        for (let i = 0; i < fps * 3 && g.room !== t.api.NAV_ID.palier; i++)
+          t.step(1000 / fps);
+        assert.equal(g.room, t.api.NAV_ID.palier);
+        t.advance(0.4, fps);
+        release(t);
+        hold(t, "UP");
+        t.advance(0.8, fps);
+        assert.equal(
+          g.room,
+          t.api.NAV_ID.palier,
+          "UP carried onto the return door needs release",
+        );
+        release(t);
+        t.step(1000 / fps);
+        hold(t, "UP");
+        t.advance(0.4, fps);
+        assert.equal(
+          g.room,
+          t.api.NAV_ID.annexe,
+          "fresh UP is accepted after release",
+        );
+        branchChecks++;
+      }
+    }
 
 const careReports = [];
 for (const fps of [30, 60, 120])
@@ -218,6 +298,7 @@ const runs = ["discovery", "known", "correctedWrongTurn"].map((path) => ({
   hp: 5,
   gain: 1,
 }));
+if (a2) runs.push({ path: "midcourseChoice", hp: 5, gain: 1 });
 runs.push({ path: "known", hp: 5, gain: 1, road: true });
 for (const path of ["discoveryWithCare", "knownWithCare"])
   for (const gain of [1, 2]) runs.push({ path, hp: 2, gain });
@@ -353,8 +434,14 @@ for (const fps of [30, 60, 120])
       assert.equal(nav.visits.length, route.length);
       assert.equal(
         nav.annexeUses,
-        path.startsWith("discovery") ? 0 : path.startsWith("known") ? 1 : 2,
+        path.startsWith("discovery") || path === "midcourseChoice"
+          ? 0
+          : path.startsWith("known")
+            ? 1
+            : 2,
       );
+      assert.equal(nav.revision, a2 ? "A2" : "A1");
+      assert.equal(nav.midcourseUses, path === "midcourseChoice" ? 1 : 0);
       if (path.endsWith("WithCare")) {
         assert(nav.careUsed);
         assert.equal(
@@ -400,12 +487,13 @@ for (const fps of [30, 60, 120])
       });
     }
 fs.writeFileSync(
-  "work/navigation-atelier-results.json",
+  `work/navigation${a2 ? "-a2" : ""}-atelier-results.json`,
   JSON.stringify(
     {
       method:
         "Isolated declared presets; all traversal and care through physical aliases or DirectInput. Only edge-case tests set timer/position explicitly. Not human orientation or phone validation.",
       care: careReports,
+      branchChecks,
       routes: routesReports,
     },
     null,
@@ -413,5 +501,5 @@ fs.writeFileSync(
   ) + "\n",
 );
 console.log(
-  "PASS atelier: graph matches runtime; profile isolated; 60 care comparisons through both inputs at 30/60/120 fps; capped gain, one-use reentry, pause/focus, late precedence; 48 full routes including 24 +1/+2 care runs and 6 continuous road-to-class trials with real fights and course-to-cruising ellipse.",
+  `PASS atelier ${a2 ? "A2" : "A1"}: graph matches runtime; profile isolated; 60 care comparisons through both inputs at 30/60/120 fps; capped gain, one-use reentry, pause/focus, late precedence; ${routesReports.length} full routes including 24 +1/+2 care runs and 6 continuous road-to-class trials with real fights and course-to-cruising ellipse.`,
 );

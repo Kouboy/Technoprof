@@ -7,6 +7,7 @@ import {
 import { NewSchoolArt } from "./new-school-art";
 import {
   BRUEL_NAV,
+  BRUEL_NAV_A2,
   NAV_ID,
   NAV_CARE,
   NavigationCare,
@@ -139,13 +140,18 @@ class Game extends Phaser.Scene {
   newSchoolArt?: NewSchoolArt;
   projectiles: { x: number; dir: number; life: number }[] = [];
   navigationProfile = false;
+  navigationRevision: "A1" | "A2" = "A1";
   navigationGain: 1 | 2 = 1;
   navigationStartHp = 5;
   navigationCare = new NavigationCare();
   navigationMetrics = new NavigationMetrics();
   navigationArt?: BruelNavigationArt;
   navigationSpec() {
-    return this.workshop && this.navigationProfile ? BRUEL_NAV : undefined;
+    return this.workshop && this.navigationProfile
+      ? this.navigationRevision === "A2"
+        ? BRUEL_NAV_A2
+        : BRUEL_NAV
+      : undefined;
   }
   missionSpec() {
     return this.navigationSpec() ?? missionSpec(this.mission);
@@ -1456,22 +1462,21 @@ class Game extends Phaser.Scene {
     this.artReview = -1;
     if (this.workshop && name.startsWith("bruel-navigation")) {
       this.navigationProfile = true;
+      this.navigationRevision = name.includes("-a2") ? "A2" : "A1";
+      this.navigationMetrics = new NavigationMetrics(this.navigationRevision);
       this.mission = 1;
       this.begin();
       this.returnFade = 0;
-      if (name !== "bruel-navigation-road") {
+      if (!name.endsWith("-road")) {
         this.notified = true;
         this.phase = "school";
         this.schoolFade = 0;
         this.hp = this.navigationStartHp;
-        this.enterRoom(
-          name === "bruel-navigation-care" ? NAV_ID.hall : NAV_ID.cour,
-          20,
-        );
+        this.enterRoom(name.endsWith("-care") ? NAV_ID.hall : NAV_ID.cour, 20);
       }
       this.session.record("scenario", this.mission, this.room, {
         name,
-        profile: BRUEL_NAV.id,
+        profile: this.missionSpec().id,
         careGain: this.navigationGain,
         startHp: this.hp,
       });

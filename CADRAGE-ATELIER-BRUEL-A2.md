@@ -1,7 +1,9 @@
 # Bruel A2 — densifier les décisions
 
-**Statut : proposition mesurée, pas encore dans le jouable.** A1 est conservé
-sur `atelier-navigation-bruel`. La 0.61 publiée n’est pas concernée.
+**Statut : implémenté dans le profil d’atelier A2, le 3 octobre 2026.**
+Branche `atelier-navigation-bruel-a2`. A1 reste sélectionnable et sa branche
+`atelier-navigation-bruel` est conservée. La 0.61 publiée n’est pas concernée.
+Voir `ATELIER-BRUEL-A2.md` pour lancer le jouable et conduire la comparaison.
 
 Le retour sur A1 valide la lisibilité, mais son parcours principal indique trop
 souvent la prochaine direction. Il faut rendre utile la connaissance du lieu,
@@ -95,9 +97,8 @@ node work/propose-navigation-a2.cjs
 node work/check-bruel-navigation-design.cjs bruel-navigation-a2-design.json bruel-navigation-a2-measures.json
 ```
 
-Avant l’implémentation, l’arbitrage porte sur cette **liaison supplémentaire et
-la représentation de l’annexe au premier étage**, pas sur l’objectif de densité
-déjà validé. Après implémentation, tester sans plan : reconnaître le palier,
+La **liaison supplémentaire et la représentation de l’annexe au premier étage**
+ont reçu le feu vert. Tester maintenant sans plan : reconnaître le palier,
 choisir une continuation, expliquer la reconnexion, corriger une erreur et
 utiliser ce savoir lors de la seconde tentative. Les assets définitifs viennent
 après ce test de navigation.

@@ -32,7 +32,12 @@ export type RoomSpec = {
   encounter?: Encounter;
   signs?: [number, number, number, string[]][];
   labels?: [number, number, string][];
-  navigation?: { id: string; floor: number; landmark: string };
+  navigation?: {
+    id: string;
+    floor: number;
+    landmark: string;
+    revision?: "A1" | "A2";
+  };
   care?: { x: number; reach: number };
 };
 export type MissionSpec = {
