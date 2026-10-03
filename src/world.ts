@@ -35,6 +35,8 @@ export type Exit = {
   label: string;
   target: number;
   spawn: number;
+  hint: [number, number];
+  edge?: boolean;
 };
 export const ROOM_NAMES = [
   "COUR / BATIMENT C",
@@ -56,6 +58,7 @@ export const EXITS: Record<number, Exit[]> = {
       label: "HAUT : ANNEXE / DETOUR",
       target: 5,
       spawn: 50,
+      hint: [62, 62],
     },
   ],
   2: [
@@ -66,6 +69,7 @@ export const EXITS: Record<number, Exit[]> = {
       label: "HAUT : RACCOURCI / SOL FRAGILE",
       target: 8,
       spawn: 25,
+      hint: [272, 62],
     },
   ],
   8: [
@@ -76,6 +80,7 @@ export const EXITS: Record<number, Exit[]> = {
       label: "BAS : RETOUR ESCALIER",
       target: 2,
       spawn: 220,
+      hint: [61, 62],
     },
   ],
   3: [
@@ -86,6 +91,7 @@ export const EXITS: Record<number, Exit[]> = {
       label: "BAS : ESCALIER DE SERVICE",
       target: 7,
       spawn: 240,
+      hint: [52, 62],
     },
   ],
   5: [
@@ -96,6 +102,7 @@ export const EXITS: Record<number, Exit[]> = {
       label: "BAS : REVENIR AU HALL",
       target: 1,
       spawn: 80,
+      hint: [58, 59],
     },
     {
       from: 200,
@@ -104,6 +111,7 @@ export const EXITS: Record<number, Exit[]> = {
       label: "HAUT : MONTER AU 2E",
       target: 6,
       spawn: 30,
+      hint: [247, 92],
     },
   ],
   6: [
@@ -114,6 +122,7 @@ export const EXITS: Record<number, Exit[]> = {
       label: "BAS : ANNEXE",
       target: 5,
       spawn: 230,
+      hint: [60, 62],
     },
   ],
   7: [
@@ -124,6 +133,7 @@ export const EXITS: Record<number, Exit[]> = {
       label: "HAUT : PASSERELLE DU 2E",
       target: 6,
       spawn: 280,
+      hint: [43, 59],
     },
     {
       from: 170,
@@ -132,9 +142,53 @@ export const EXITS: Record<number, Exit[]> = {
       label: "BAS : AILE C AU 1ER",
       target: 3,
       spawn: 30,
+      hint: [264, 59],
     },
   ],
 };
+function edgeExit(key: "LEFT" | "RIGHT", target: number, spawn: number): Exit {
+  return {
+    from: key === "LEFT" ? 10 : 298,
+    to: key === "LEFT" ? 12 : 302,
+    key,
+    label: (key === "LEFT" ? "GAUCHE : " : "DROITE : ") + ROOM_NAMES[target],
+    target,
+    spawn,
+    hint: [key === "LEFT" ? 15 : 298, 137],
+    edge: true,
+  };
+}
+export const EDGE_EXITS: Record<number, Exit[]> = {
+  0: [edgeExit("RIGHT", 1, 18)],
+  1: [edgeExit("LEFT", 0, 290), edgeExit("RIGHT", 2, 20)],
+  2: [edgeExit("LEFT", 1, 290)],
+  3: [edgeExit("RIGHT", 4, 25)],
+  6: [edgeExit("RIGHT", 7, 28)],
+  7: [edgeExit("LEFT", 6, 280)],
+  8: [edgeExit("RIGHT", 3, 100)],
+};
+export const CLASSROOM_EXIT: Exit = {
+  from: 245,
+  to: 302,
+  key: "UP",
+  label: "HAUT : OUVRIR 42C",
+  target: -1,
+  spawn: 0,
+  hint: [281, 62],
+};
+export function roomPassages(room: number, cleared: boolean): Exit[] {
+  return [
+    ...(room === 4 ? (cleared ? [CLASSROOM_EXIT] : []) : (EXITS[room] ?? [])),
+    ...(EDGE_EXITS[room] ?? []),
+  ];
+}
+export function withinPassage(exit: Exit, px: number) {
+  if (exit.edge)
+    return exit.key === "LEFT"
+      ? px >= exit.from && px < exit.to
+      : px > exit.from && px <= exit.to;
+  return px >= exit.from && px <= exit.to;
+}
 export function makeEnemies(room: number, mission: number): Enemy[] {
   return room === 4
     ? [

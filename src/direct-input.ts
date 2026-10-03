@@ -1,6 +1,8 @@
 import { ActionInput } from "./controls";
 import { combatProfile } from "./gameplay";
 import type { Enemy, Exit } from "./world";
+import { withinPassage, walkBounds } from "./world";
+import { markerPassage, doorwayPassage, passageMarker } from "./passage-layout";
 
 export const DIRECT = {
   swipe: 14,
@@ -152,6 +154,13 @@ export class DirectInput {
       return;
     }
     if (y > 175) return;
+    const exits = s.pointerExits();
+    // An explicitly displayed passage wins over an overlapping actor hitbox.
+    const marker = markerPassage(exits, s.px, x + s.cam, y);
+    if (marker) {
+      this.chooseExit(marker);
+      return;
+    }
     const enemy = s.enemies.find(
       (e) =>
         e.hp > 0 &&
@@ -164,20 +173,26 @@ export class DirectInput {
       this.marker(enemy.x - s.cam, 120, "attack");
       return;
     }
-    const exit = s
-      .pointerExits()
-      .find(
-        (e) => x + s.cam >= e.from && x + s.cam <= e.to && y >= 40 && y < 145,
-      );
+    const exit = doorwayPassage(exits, x + s.cam, y);
     if (exit) {
-      this.intent = { kind: "exit", exit };
-      this.marker((exit.from + exit.to) / 2 - s.cam, 130, "exit");
+      this.chooseExit(exit);
       return;
     }
     if (y >= 135) {
-      this.intent = { kind: "walk", x: x + s.cam };
-      this.marker(x, 163, "walk");
+      const bounds = walkBounds(s.room);
+      const target = Math.max(bounds.min, Math.min(bounds.max, x + s.cam));
+      this.intent = { kind: "walk", x: target };
+      this.marker(target - s.cam, 163, "walk");
     }
+  }
+  chooseExit(exit: Exit) {
+    this.intent = { kind: "exit", exit };
+    const marker = passageMarker(exit, this.host.px);
+    this.marker(
+      (marker ? marker.x + marker.w / 2 : exit.hint[0]) - this.host.cam,
+      marker ? marker.y + marker.h / 2 : exit.hint[1],
+      "exit",
+    );
   }
   tick(dt: number) {
     const s = this.host;
@@ -248,7 +263,11 @@ export class DirectInput {
       intent.kind === "walk"
         ? intent.x
         : intent.kind === "exit"
-          ? (intent.exit.from + intent.exit.to) / 2
+          ? intent.exit.edge
+            ? intent.exit.key === "LEFT"
+              ? intent.exit.from
+              : intent.exit.to
+            : (intent.exit.from + intent.exit.to) / 2
           : intent.enemy.x;
     const direction = x > s.px ? "RIGHT" : "LEFT";
     const dx = Math.abs(x - s.px);
@@ -270,8 +289,7 @@ export class DirectInput {
     }
     if (
       intent.kind === "exit" &&
-      s.px >= intent.exit.from &&
-      s.px <= intent.exit.to
+      (intent.exit.edge || withinPassage(intent.exit, s.px))
     ) {
       s.controls?.setSource("direct", [intent.exit.key]);
       return;

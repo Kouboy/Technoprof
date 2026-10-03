@@ -73,7 +73,14 @@ import {
   roadProjection,
   type Traffic,
 } from "./driving";
-import { TUNING, ROOM_NAMES, EXITS, makeEnemies, type Enemy } from "./world";
+import {
+  TUNING,
+  ROOM_NAMES,
+  roomPassages,
+  withinPassage,
+  makeEnemies,
+  type Enemy,
+} from "./world";
 import { AudioKit } from "./audio";
 class Game extends Phaser.Scene {
   failureReason: FailureReason | null = null;
@@ -1158,6 +1165,7 @@ class Game extends Phaser.Scene {
       e.blockTime = 0;
       e.downTime = 0;
     }
+    this.direct?.cancel();
     this.phase = ok ? "opening" : "fail";
     this.age = 0;
     if (ok) {
@@ -1289,6 +1297,7 @@ class Game extends Phaser.Scene {
       sweep: 4,
       gap: 8,
       stairs: 7,
+      passages: 0,
       hit: 6,
       whiff: 6,
       "hit-left": 6,
@@ -1362,6 +1371,11 @@ class Game extends Phaser.Scene {
         // Reproduce the old held-DOWN bounce without a combat obscuring it.
         this.px = 220;
         this.roomEnemies.set(3, []);
+      }
+      if (name === "passages") {
+        this.px = 240;
+        // Isolate the visible arrow interaction from combat and dialogue.
+        this.roomEnemies.set(1, []);
       }
     } else if (name === "arrival") {
       this.phase = "arrival";
@@ -2121,16 +2135,22 @@ class Game extends Phaser.Scene {
       if (this.enemies.every((e) => e.hp <= 0)) this.cleared.add(this.room);
       if (this.remaining <= 0 || this.hp <= 0) this.finish(false);
       else {
-        const action = this.interaction();
+        const action = this.pointerExits().find(
+          (exit) =>
+            withinPassage(exit, this.px) &&
+            (exit.edge
+              ? dir === (exit.key === "LEFT" ? -1 : 1)
+              : !this.exitHeld &&
+                (this.keys[exit.key].isDown ||
+                  (exit.key === "UP" ? upPressed : downPressed))),
+        );
         if (
           action &&
           this.interactLock === 0 &&
           this.py === 159 &&
           this.attack === 0 &&
           this.playerRecovery === 0 &&
-          !this.exitHeld &&
-          (this.keys[action.key].isDown ||
-            (action.key === "UP" ? upPressed : downPressed))
+          !recovering
         ) {
           if (action.target === -1) this.finish(true);
           else {
@@ -2141,28 +2161,7 @@ class Game extends Phaser.Scene {
             }
             this.changeRoom(action.target, action.spawn);
           }
-        } else if (
-          this.attack > 0 ||
-          this.playerRecovery > 0 ||
-          this.py !== PLAY.floor ||
-          this.interactLock > 0
-        ) {
-          // Screen changes, like door interactions, wait for a controllable landing.
-        } else if (this.room === 0 && this.px > 298 && dir > 0)
-          this.changeRoom(1, 18);
-        else if (this.room === 1) {
-          if (this.px < 12 && dir < 0) this.changeRoom(0, 290);
-          else if (this.px > 298 && dir > 0) this.changeRoom(2, 20);
-        } else if (this.room === 2 && this.px < 12 && dir < 0)
-          this.changeRoom(1, 290);
-        else if (this.room === 3 && this.px > 298 && dir > 0)
-          this.changeRoom(4, 25);
-        else if (this.room === 6 && this.px > 298 && dir > 0)
-          this.changeRoom(7, 28);
-        else if (this.room === 7 && this.px < 12 && dir < 0)
-          this.changeRoom(6, 280);
-        else if (this.room === 8 && this.px > 298 && dir > 0)
-          this.changeRoom(3, 100);
+        }
       }
     }
     this.draw();
@@ -2203,27 +2202,10 @@ class Game extends Phaser.Scene {
     return true;
   }
   pointerExits() {
-    return (
-      (this.room === 4
-        ? this.cleared.has(4)
-          ? [
-              {
-                from: 245,
-                to: 302,
-                key: "UP",
-                label: "HAUT : OUVRIR 42C",
-                target: -1,
-                spawn: 0,
-              },
-            ]
-          : []
-        : EXITS[this.room]) ?? []
-    );
+    return roomPassages(this.room, this.cleared.has(this.room));
   }
   interaction() {
-    return this.pointerExits().find(
-      (t) => this.px >= t.from && this.px <= t.to,
-    );
+    return this.pointerExits().find((t) => withinPassage(t, this.px));
   }
   burst(x: number, y: number, color: number) {
     for (let i = 0; i < 8; i++)

@@ -1,49 +1,25 @@
 {
-  "version": "0.54",
+  "version": "0.55",
   "importClientDate": "2026-10-03",
   "scope": "retained source tree; historical build unverified",
   "files": [
     {
-      "original": "check-049.cjs",
-      "path": "check-049.cjs",
-      "bytes": 8766,
-      "sha256": "b0c5e45717763eda4e7354a64fb4efdb75ee8f03205a0b938c72dc00b3d850c5"
-    },
-    {
-      "original": "check-054.cjs",
-      "path": "check-054.cjs",
-      "bytes": 6055,
-      "sha256": "c2ca0cac414186a808c433e53ded271175ae60201b9789f8561060a2eb9e85cd"
-    },
-    {
-      "original": "check-school.cjs",
-      "path": "check-school.cjs",
-      "bytes": 4126,
-      "sha256": "e8f330b93b0769f687b1a24f6cc511c5337d55016fa965540af06a47a376b28b"
-    },
-    {
-      "original": "check.cjs",
-      "path": "check.cjs",
-      "bytes": 30258,
-      "sha256": "603daf6102925ad49ce1474e5992564af3116841362f3f1bed53031b94359997"
-    },
-    {
       "original": "index.html",
       "path": "index.html",
       "bytes": 12903,
-      "sha256": "3e1eaeaff6b02f86efafc237090b5509624cb339169bad7c0d64a77f060988eb"
+      "sha256": "adecb5755229357013df2252812c04cffc38749fd0892223799ba00f4223097a"
     },
     {
       "original": "package-lock.json",
       "path": "package-lock.json",
       "bytes": 38850,
-      "sha256": "f6c88a316d9e76d7e81d7164cd59e458b751e459579b037708a0d8e25968984a"
+      "sha256": "9421fe8ae067046f4b6b5d6af8979f7fedf6d085e5d82dc9c0e45aebb760b1f7"
     },
     {
       "original": "package.json",
       "path": "package.json",
-      "bytes": 851,
-      "sha256": "28ce940db8c5877df1253cd17b81d01487808f6746e072439e7db0c6a82b10e7"
+      "bytes": 878,
+      "sha256": "014f10a21ef75d24dacaa234f3441beeefaf9e1122c97d9e49de8ad8c7178243"
     },
     {
       "original": "src/arrival-data.ts",
@@ -144,8 +120,8 @@
     {
       "original": "src/direct-input.ts",
       "path": "src/direct-input.ts",
-      "bytes": 9283,
-      "sha256": "2fd612c27e2db0fe48e118ae04609c3afcf24be149efaf0bd23983a13c9a7902"
+      "bytes": 10045,
+      "sha256": "de65b99694e142ce022e8c02b1964e57f87c9bf1012bfbfa4f9515ea54e18321"
     },
     {
       "original": "src/driving.ts",
@@ -186,14 +162,20 @@
     {
       "original": "src/main.ts",
       "path": "src/main.ts",
-      "bytes": 137392,
-      "sha256": "acb6525bd465475c88986885539b918a3f3f75dcb9325963e749fb0c3ac8c166"
+      "bytes": 136535,
+      "sha256": "6f07ec3c06457d25000e336641e134fa19151931a40e6423f509670e9abb087a"
     },
     {
       "original": "src/passage-hints.ts",
       "path": "src/passage-hints.ts",
-      "bytes": 2764,
-      "sha256": "964b0a92952c428dcb7179bf8d0b24425c74e8a777bcb3c9fc8ecfc951254e9f"
+      "bytes": 1798,
+      "sha256": "098710b27e09d37622917b9d46a8e362c20fa5f5a724b606df0fefa6d8eb1f74"
+    },
+    {
+      "original": "src/passage-layout.ts",
+      "path": "src/passage-layout.ts",
+      "bytes": 1340,
+      "sha256": "4e0dd489b6f2ce78e25d4fdcae6b828f3d05d10e644a9b7f478e9f798213f774"
     },
     {
       "original": "src/player-experience.ts",
@@ -247,7 +229,7 @@
       "original": "src/session-log.ts",
       "path": "src/session-log.ts",
       "bytes": 1014,
-      "sha256": "5918065eb74879128eae1777cc1043cf9a25c962bcce4387417343a88c057e99"
+      "sha256": "231602c3d00b5c4d87b690c3463fd008e6c0c31886e1f228356ab8af7523f264"
     },
     {
       "original": "src/sky-data.ts",
@@ -306,20 +288,14 @@
     {
       "original": "src/workshop.ts",
       "path": "src/workshop.ts",
-      "bytes": 10569,
-      "sha256": "0b74489f46cbbed73ab495eb011db3b4f9366f72098782a8787fa019145e6b1c"
+      "bytes": 10609,
+      "sha256": "f8fe8174554d4311fe01e34dfdb929ec20054592148da622c562bd7298fe812c"
     },
     {
       "original": "src/world.ts",
       "path": "src/world.ts",
-      "bytes": 3600,
-      "sha256": "261e13ab37af9f814523fb1135328eec8f21f3cf5d01f4ecd2a7de5cf917ac15"
-    },
-    {
-      "original": "test-harness.cjs",
-      "path": "test-harness.cjs",
-      "bytes": 1769,
-      "sha256": "3b7890a19c1ffee1570b28a97c34d569bf64fce2e2829f1d12d041136be79643"
+      "bytes": 5082,
+      "sha256": "b0212e5a088c745c340e2cc77161e081da1210afc28d7cea926c482706717944"
     }
   ]
 }

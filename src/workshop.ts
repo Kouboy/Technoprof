@@ -69,6 +69,7 @@ const SCENARIOS: Record<string, string> = {
   sweep: "Inspectrice / balayage",
   gap: "Trous / aller-retour",
   stairs: "Transitions / escalier ↔ couloir",
+  passages: "Passages / cour ↔ hall",
   arrival: "Arrivée / transition",
   hit: "Livre / contact",
   whiff: "Livre / dans le vide",
@@ -93,7 +94,7 @@ export function installWorkshop(s: Host) {
   root.hidden = false;
   root.innerHTML = "";
   const heading = document.createElement("strong");
-  heading.textContent = "ATELIER 0.54 — scénarios animés";
+  heading.textContent = "ATELIER 0.55 — scénarios animés";
   root.append(heading);
   const controls = document.createElement("div");
   controls.className = "workshop-controls";
