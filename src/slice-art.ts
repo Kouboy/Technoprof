@@ -140,6 +140,7 @@ export class SliceArt {
     phase: string;
     age: number;
     openingFrom?: number;
+    encounterTime?: number;
     playerRecovery?: number;
     playerHitDirection?: number;
     bookBlocked?: number;
@@ -153,6 +154,7 @@ export class SliceArt {
         this.inspectorFemale = !!enemy.female;
         const movingEnemy =
           state.phase === "school" &&
+          !state.encounterTime &&
           enemy.stun <= 0 &&
           enemy.recovery <= 0 &&
           enemy.wind <= 0 &&

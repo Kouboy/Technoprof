@@ -1,25 +1,25 @@
 {
-  "version": "0.47",
+  "version": "0.48",
   "importClientDate": "2026-10-03",
   "scope": "retained source tree; historical build unverified",
   "files": [
     {
       "original": "index.html",
       "path": "index.html",
-      "bytes": 10449,
-      "sha256": "9c4dc3586d0b9cae960546697e4a6a7fa9cb5a59ddd3091898beba8410e70937"
+      "bytes": 10459,
+      "sha256": "d08064f95cc05d5cd48690a6f542ca543c90b7e023017b9cd232b6707ea273a6"
     },
     {
       "original": "package-lock.json",
       "path": "package-lock.json",
       "bytes": 38850,
-      "sha256": "9b1d0a1e30f7f13bf188ceb00ae315532690efa828af6a51c5c7915761fbdf3a"
+      "sha256": "fbf8794e630e2fd62d6dd82ec2df5e4433ecabf80815e41e73c50bb152f21331"
     },
     {
       "original": "package.json",
       "path": "package.json",
-      "bytes": 716,
-      "sha256": "b00ea7e00fe1adfe1e7baeca706f21787241717c59dd959d46499a49ddc733c4"
+      "bytes": 743,
+      "sha256": "7af85788d92ab59e4c5769d4f91e07589d6d92937b9da4dfb1dd863ee6877de5"
     },
     {
       "original": "src/arrival-data.ts",
@@ -54,8 +54,8 @@
     {
       "original": "src/cadre.ts",
       "path": "src/cadre.ts",
-      "bytes": 11836,
-      "sha256": "6ee7acd73bca2d25efc320a74c4f44dc163525f5ea8c07dce7e3634a74fbb763"
+      "bytes": 11993,
+      "sha256": "da748d999842d46d6099ceca213bef73097b6c0c4da8bef226152e199ec16b63"
     },
     {
       "original": "src/car-art.ts",
@@ -84,14 +84,14 @@
     {
       "original": "src/combat-poses.ts",
       "path": "src/combat-poses.ts",
-      "bytes": 2401,
-      "sha256": "5f33c4446b8c2387d8c45e43b5e48c474892111e8d035ce3ef5f420d341547a8"
+      "bytes": 2557,
+      "sha256": "0194f4c66a097337c96dc1d4565e43ee95483b1791d6cdccb38b2c33fc4dec9c"
     },
     {
       "original": "src/comic-fx.ts",
       "path": "src/comic-fx.ts",
-      "bytes": 5890,
-      "sha256": "20878a0a979651cd0997b321964fd3863246012825597f7356776a4dd4e3ba57"
+      "bytes": 5982,
+      "sha256": "b818f300e17f49a92e6c5a9f3d95449fbfd6acec787dbc7c286a043a56ae1602"
     },
     {
       "original": "src/court-data.ts",
@@ -100,16 +100,22 @@
       "sha256": "226ee5122df650ddd2bc4da96413a91ab0ac4d6c37fc7a12dfc6d5115c9c0008"
     },
     {
+      "original": "src/dialogue.ts",
+      "path": "src/dialogue.ts",
+      "bytes": 1599,
+      "sha256": "b04474575a398cefa13ce6ed4754c76055139259930c34934c2df6927ede9a3a"
+    },
+    {
       "original": "src/driving.ts",
       "path": "src/driving.ts",
-      "bytes": 2396,
-      "sha256": "cb50953b24fb29f85ea7bd3a21cbf54e4273323be23e10beb6c79825f5107055"
+      "bytes": 2580,
+      "sha256": "86ed3311d179e134ac142a97721b5e12c726d293d1e0e6a02cc0c435226e2fff"
     },
     {
       "original": "src/gameplay.ts",
       "path": "src/gameplay.ts",
-      "bytes": 3309,
-      "sha256": "bc309aa9d43762266379cf9ae1cff617c84438c58ba44103c5d4802fb9807540"
+      "bytes": 3347,
+      "sha256": "710799e5ca2ecb01a3af27490a125a85e18939ddbf6a1b8433d65f375cf188c1"
     },
     {
       "original": "src/hall-art.ts",
@@ -138,8 +144,8 @@
     {
       "original": "src/main.ts",
       "path": "src/main.ts",
-      "bytes": 130945,
-      "sha256": "eb8726d75b293cc8dbb353f4703f01d8948fc87010556959ba0356b8dd37e956"
+      "bytes": 132442,
+      "sha256": "858a9d6b83cb73f50f7c145ebc970a9ddb8dc034063da0138760305a3337eb1e"
     },
     {
       "original": "src/passage-hints.ts",
@@ -150,8 +156,8 @@
     {
       "original": "src/player-experience.ts",
       "path": "src/player-experience.ts",
-      "bytes": 13510,
-      "sha256": "7ce625039934f2352cef9f7b9f7e158cbee91aeded43cfb7242b2f084254825f"
+      "bytes": 13625,
+      "sha256": "edfff477fe2b6664bb98bd04ef0a52aa048ad9ad615cfe43c75564b644122043"
     },
     {
       "original": "src/presentation.ts",
@@ -180,8 +186,8 @@
     {
       "original": "src/school-props.ts",
       "path": "src/school-props.ts",
-      "bytes": 12520,
-      "sha256": "f4901679bd717395ab6cbc6c74d71c7a86b6e45c9cd77c48dd78b0fe9943df03"
+      "bytes": 12297,
+      "sha256": "6042b44e99c70fa1380d4faf419756355180ca5d6599f88dd69f767c8c321d69"
     },
     {
       "original": "src/service-data.ts",
@@ -193,7 +199,7 @@
       "original": "src/session-log.ts",
       "path": "src/session-log.ts",
       "bytes": 1014,
-      "sha256": "0f5515de78198875f6d03e686b9c2ecf5380757e404be091f6601ba56a0d0d7d"
+      "sha256": "520b1b7c91e6c078184759e7eadd946c262e9dff6a780938a9236cf0e1f20584"
     },
     {
       "original": "src/sky-data.ts",
@@ -204,8 +210,8 @@
     {
       "original": "src/slice-art.ts",
       "path": "src/slice-art.ts",
-      "bytes": 7333,
-      "sha256": "b9302b1ea5b70189780820b2ce8cd87bd4d8767d5878337f925e7077b7d63107"
+      "bytes": 7395,
+      "sha256": "71e349474c2d325794cf159c0392ff7ade96bad643f944f98c17b1ac2ffa2d37"
     },
     {
       "original": "src/small-lettering.ts",
@@ -246,8 +252,8 @@
     {
       "original": "src/workshop.ts",
       "path": "src/workshop.ts",
-      "bytes": 10261,
-      "sha256": "86ca5893d351c4a1c2b46c9db4df754f51e8eff35091bf752e608de2d88962a1"
+      "bytes": 10393,
+      "sha256": "2745adf5a37cd733a59ee5275c7729bd5bdefd742f04a424519c62044ae89f2b"
     },
     {
       "original": "src/world.ts",

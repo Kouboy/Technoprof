@@ -147,7 +147,8 @@ export function cadreModel(s: CadreState, routeMeters: number) {
           "blackAfter",
           "later",
         ].includes(s.phase) ||
-        (s.phase === "school" && (s.schoolFade > 0 || s.bossIntro > 0))));
+        (s.phase === "school" &&
+          (s.schoolFade > 0 || s.bossIntro > 0 || s.encounterTime > 0))));
   const urgent = assigned && !suspended && s.remaining <= 30;
   const status =
     s.phase === "fail"
@@ -282,7 +283,7 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
       r(12, 198, 22, h, 0x0d171c);
       r(12, 198 + h, 22, 1, amber);
     }
-    t(40, 197, "ST-HANOUNA", paper, 1, 67);
+    t(40, 197, "C. HANOUNA", paper, 1, 67);
     t(40, 207, "SALLE", dim, 1, 67);
     t(40, 216, "42C", paper, 2, 67);
   } else if (s.phase === "free") {
@@ -365,13 +366,15 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
           ? "RESEAU RECTORAL - AFFECTATION RECUE"
           : m.near
             ? "ARRIVEE IMMINENTE - " + m.distance
-            : s.messageTime > 0
-              ? s.boardMessage
-              : s.phase === "free"
-                ? service + " / FM"
-                : m.assigned
-                  ? "RESEAU RECTORAL - " + service
-                  : "CADRE / " + service;
+            : s.phase === "school" && s.encounterTime > 0
+              ? "ECHANGE EN COURS / DELAI SUSPENDU"
+              : s.messageTime > 0
+                ? s.boardMessage
+                : s.phase === "free"
+                  ? service + " / FM"
+                  : m.assigned
+                    ? "RESEAU RECTORAL - " + service
+                    : "CADRE / " + service;
   r(7, 233, 306, 7, ink);
   t(
     11,

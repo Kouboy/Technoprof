@@ -69,6 +69,8 @@ export const BOSS = {
   sweepReach: 78,
   stampWind: 0.55,
   sweepWind: 0.8,
+  sweepPose: 0.36,
+  stampPose: 0.18,
   recovery: 1.1,
   cooldown: 1.1,
 };

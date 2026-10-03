@@ -1,6 +1,9 @@
 // Road coordinates: x is a lateral offset, z is the scrolling world distance.
 // Mission kilometres remain the integral of actual km/h, independent of projection.
 export const DRIVE = {
+  // World scroll gain, shared by moving vehicles and spawn spacing.
+  // Contact projection and mission kilometres remain unchanged.
+  motionScale: 2.4,
   lanePixels: 105,
   roadHalfPixels: 125,
   playerWidth: 42,
@@ -66,7 +69,8 @@ export function trafficCue(index: number, mission: number, random: number) {
   return {
     ...cue,
     gap:
-      cue.gap * (mission === 0 ? 1 : mission === 1 ? 0.94 : 0.88) +
-      (index === 0 ? 0 : random * 35),
+      DRIVE.motionScale *
+      (cue.gap * (mission === 0 ? 1 : mission === 1 ? 0.94 : 0.88) +
+        (index === 0 ? 0 : random * 35)),
   };
 }

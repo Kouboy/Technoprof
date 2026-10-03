@@ -9,6 +9,8 @@ export type TeacherState = {
   walkClock: number;
   inv: number;
   phase: string;
+  encounterTime?: number;
+  schoolFade?: number;
   playerRecovery?: number;
   playerHitDirection?: number;
   bookBlocked?: number;
@@ -20,7 +22,9 @@ export function teacherPose(s: TeacherState) {
   const hurt = Math.min(1, (s.playerRecovery ?? 0) / PLAY.playerRecovery);
   const blocked = Math.min(1, (s.bookBlocked ?? 0) / PLAY.attackRecovery);
   const moving =
-    s.phase === "school" && (s.keys.LEFT.isDown || s.keys.RIGHT.isDown);
+    s.phase === "school" &&
+    !(s.encounterTime || s.schoolFade) &&
+    (s.keys.LEFT.isDown || s.keys.RIGHT.isDown);
   const frame =
     hurt > 0
       ? 6
@@ -46,7 +50,12 @@ export function teacherPose(s: TeacherState) {
     y: s.py,
     angle: direction * 9 * hurt - s.face * 4 * blocked,
     // Keep the initial recoil opaque; blink only in the protected recovery afterwards.
-    alpha: hurt > 0 ? 1 : s.inv > 0 && Math.floor(s.inv * 12) % 2 ? 0.55 : 1,
+    alpha:
+      s.encounterTime || hurt > 0
+        ? 1
+        : s.inv > 0 && Math.floor(s.inv * 12) % 2
+          ? 0.55
+          : 1,
   };
 }
 

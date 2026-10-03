@@ -162,6 +162,10 @@ export function installPlayerExperience(s: Host) {
       ["Sur la route", "↑ accélérer · ↓ freiner · ← → diriger"],
       ["Dans le collège", "← → marcher · ESPACE sauter · X frapper au livre"],
       [
+        "Pendant un dialogue",
+        "X afficher la réplique · X suivant · délai suspendu",
+      ],
+      [
         "Portes / escaliers",
         "↑ ou ↓, selon la touche affichée près du passage",
       ],

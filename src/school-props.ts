@@ -1,3 +1,4 @@
+import { ENCOUNTERS, dialogueReady, type DialogueState } from "./dialogue";
 import { smallPrint, smallWidth } from "./small-lettering";
 import { ENCOUNTER_SECONDS } from "./world";
 import Phaser from "phaser";
@@ -354,45 +355,16 @@ export class SchoolProps {
     }
   }
 }
-export const ENCOUNTERS: Record<number, { name: string; pages: string[][] }> = {
-  1: {
-    name: "PARENT D'ELEVE",
-    pages: [
-      ["Une semaine sans cours !", "Encore un remplacant ?"],
-      ["Vous n'irez pas plus loin", "sans me repondre."],
-    ],
-  },
-  3: {
-    name: "ELEVE",
-    pages: [
-      ["Mon pere preside les parents.", "Il fera sauter votre contrat."],
-      ["Retirez ce zero,", "et je vous laisse passer."],
-    ],
-  },
-  6: {
-    name: "VIGILE",
-    pages: [
-      ["Consigne de la direction :", "votre badge est hors liste."],
-      ["Titulaire ou remplacant,", "vous faites demi-tour."],
-    ],
-  },
-  4: {
-    name: "INSPECTEUR",
-    pages: [
-      ["Votre retard sera consigne", "dans mon rapport."],
-      ["Un avis defavorable,", "et votre poste saute."],
-    ],
-  },
-};
 export function dialogueLayout(
   room: number,
   remaining: number,
   speakerX: number,
   female = false,
+  state?: DialogueState,
 ) {
   const data = ENCOUNTERS[room];
   if (!data) return;
-  const page = remaining > ENCOUNTER_SECONDS / 2 ? 0 : 1,
+  const page = state?.page ?? (remaining > ENCOUNTER_SECONDS / 2 ? 0 : 1),
     lines = data.pages[page];
   const w = Math.max(112, ...lines.map((l) => smallWidth(l) + 20));
   const x = Math.max(12, Math.min(308 - w, speakerX - w * 0.6));
@@ -402,7 +374,14 @@ export function dialogueLayout(
     x,
     y: room === 4 ? 10 : 15,
     w,
-    h: 32,
+    h: state ? 42 : 32,
+    hint: state
+      ? !dialogueReady(room, state)
+        ? "X : AFFICHER"
+        : page + 1 < data.pages.length
+          ? "X : SUITE"
+          : "X : TERMINER"
+      : "",
     tail: Math.max(x + 14, Math.min(x + w - 14, speakerX)),
     mouthX: Math.max(15, Math.min(305, speakerX - 9)),
     mouthY: room === 4 ? 62 : room === 3 ? 90 : 80,
@@ -414,8 +393,9 @@ export function drawDialogue(
   remaining: number,
   speakerX: number,
   female = false,
+  state?: DialogueState,
 ) {
-  const b = dialogueLayout(room, remaining, speakerX, female);
+  const b = dialogueLayout(room, remaining, speakerX, female, state);
   if (!b) return;
   const poly = (points: number[], color: number) => {
     g.fillStyle(color);
@@ -482,7 +462,16 @@ export function drawDialogue(
     0xe3d4b3,
   );
   smallPrint(g, x + 10, y + 5, b.name, 0x854538);
-  b.lines.forEach((line, i) =>
-    smallPrint(g, x + 10, y + 14 + i * 8, line, 0x141e27),
-  );
+  let characters = state ? Math.floor(state.characters) : Infinity;
+  b.lines.forEach((line, i) => {
+    smallPrint(
+      g,
+      x + 10,
+      y + 14 + i * 8,
+      line.slice(0, Math.max(0, characters)),
+      0x141e27,
+    );
+    characters -= line.length;
+  });
+  if (b.hint) smallPrint(g, x + 10, y + 33, b.hint, 0x854538);
 }

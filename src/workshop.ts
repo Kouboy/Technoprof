@@ -65,6 +65,7 @@ const SCENARIOS: Record<string, string> = {
   student: "Élève / présentation",
   guard: "Vigile / présentation",
   boss: "Inspectrice / confrontation",
+  sweep: "Inspectrice / balayage",
   gap: "Trous / aller-retour",
   arrival: "Arrivée / transition",
   hit: "Livre / contact",
@@ -90,7 +91,7 @@ export function installWorkshop(s: Host) {
   root.hidden = false;
   root.innerHTML = "";
   const heading = document.createElement("strong");
-  heading.textContent = "ATELIER 0.47 — scénarios animés";
+  heading.textContent = "ATELIER 0.48 — scénarios animés";
   root.append(heading);
   const controls = document.createElement("div");
   controls.className = "workshop-controls";
@@ -150,7 +151,7 @@ export function installWorkshop(s: Host) {
     s.setPaused(true);
     s.workshopStep = true;
   });
-  button("Frapper (X)", () => {
+  button("Action / dialogue (X)", () => {
     s.queuedAttack = true;
     if (s.paused) s.workshopStep = true;
   });
@@ -219,15 +220,17 @@ export function installWorkshop(s: Host) {
 export function drawWorkshop(s: Host) {
   const profile = combatProfile(s.room);
   const player =
-    s.falling > 0
-      ? "CHUTE"
-      : s.playerRecovery > 0
-        ? "TOUCHE"
-        : s.py < PLAY.floor
-          ? "SAUT"
-          : s.attack > 0
-            ? "FRAPPE"
-            : "LIBRE";
+    s.phase === "school" && s.encounterTime > 0
+      ? "DIALOGUE"
+      : s.falling > 0
+        ? "CHUTE"
+        : s.playerRecovery > 0
+          ? "TOUCHE"
+          : s.py < PLAY.floor
+            ? "SAUT"
+            : s.attack > 0
+              ? "FRAPPE"
+              : "LIBRE";
   const seconds = Object.entries(s.session.phaseSeconds)
     .map(([name, t]) => `${name} ${t.toFixed(1)}s`)
     .join(" · ");

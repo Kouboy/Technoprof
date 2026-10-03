@@ -24,6 +24,7 @@ type State = {
   impactKind: string;
   enemies: Fighter[];
   bossIntro: number;
+  encounterTime?: number;
   comicWords?: boolean;
 };
 export function drawComicFX(g: Phaser.GameObjects.Graphics, s: State) {
@@ -71,7 +72,13 @@ export function drawComicFX(g: Phaser.GameObjects.Graphics, s: State) {
     }
   }
   for (const e of s.enemies) {
-    if (e.hp <= 0 || (e.stun ?? 0) > 0 || s.bossIntro > 0) continue;
+    if (
+      e.hp <= 0 ||
+      (e.stun ?? 0) > 0 ||
+      s.bossIntro > 0 ||
+      (s.encounterTime ?? 0) > 0
+    )
+      continue;
     if (e.wind > 0) {
       const x = clamp(e.x - 3, 18, 297),
         y = s.room === 4 ? 50 : s.room === 3 ? 75 : 64;
