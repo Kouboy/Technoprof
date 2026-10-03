@@ -1,0 +1,37 @@
+{
+  "version": "0.40",
+  "importClientDate": "2026-10-03",
+  "scope": "partial source backup",
+  "files": [
+    {
+      "original": "audio.ts",
+      "path": "src/audio.ts",
+      "bytes": 9979,
+      "sha256": "4f10acb541972de9936dfe613ca864146d0066bffa8578e122a1ad0e45621024"
+    },
+    {
+      "original": "index.html",
+      "path": "index.html",
+      "bytes": 4474,
+      "sha256": "b5f3cb66de519ae8c3fadb73c65ef1127a32c16374d3b2323060ad78db994020"
+    },
+    {
+      "original": "main.ts",
+      "path": "src/main.ts",
+      "bytes": 110919,
+      "sha256": "6ae076749ab4dc67ddfdf0a7ea9851b2bca694d751dd2d850a370ddb83461d16"
+    },
+    {
+      "original": "package-lock.json",
+      "path": "package-lock.json",
+      "bytes": 38850,
+      "sha256": "903fe40450a6a49f985e230a96b6a4e5837efe6f3938d4c0e1cebaf71a4a2572"
+    },
+    {
+      "original": "package.json",
+      "path": "package.json",
+      "bytes": 581,
+      "sha256": "cbfd93f8e1a9a6044a0f03b5fe22e0c3d5a2237c13c80ba2f27628be8ca7ebb8"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "technoprof",
+  "version": "0.40.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc && vite build && node work/export-local.cjs",
+    "test": "node work/check.cjs && node work/check-art.cjs && node work/check-car.cjs && node work/check-road.cjs && node work/check-cadre.cjs && node work/check-school.cjs",
+    "format": "prettier --write src index.html"
+  },
+  "dependencies": {
+    "phaser": "4.2.1"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.6",
+    "typescript": "7.0.2",
+    "vite": "8.2.2"
+  }
+}
