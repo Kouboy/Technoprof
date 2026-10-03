@@ -1,11 +1,11 @@
-# TECHNOPROF — Physique appliquée — 0.60
+# TECHNOPROF — Physique appliquée — 0.61
 
 Jeu d'action arcade rétro satirique français : un professeur remplaçant rejoint
 son affectation en voiture, traverse un établissement dégradé et tente de faire
 cours avant la fin du délai. Trois missions rythment la journée, du matin au soir.
 
 **Jouer sans installation :** télécharger et extraire
-[Technoprof-0.60-testeurs.zip](https://github.com/Kouboy/Technoprof/releases/tag/v0.60),
+[Technoprof-0.61-testeurs.zip](https://github.com/Kouboy/Technoprof/releases/tag/v0.61),
 puis ouvrir `Jouer-Technoprof.html`. Le jeu fonctionne localement hors connexion.
 
 ## Développer et tester
@@ -40,7 +40,17 @@ jouer directement dans la scène. L'aide en jeu détaille les gestes.
 La branche `main` contient l'état courant. Voir [l'historique importé](HISTORIQUE.md)
 pour distinguer les sauvegardes partielles et les jalons plus complets. Les tags
 `snapshot-0.40` à `snapshot-0.59` conservent les fichiers disponibles ; `v0.60`
-désigne l'état actuel. Les nouvelles évolutions seront enregistrées par commits.
+désigne l'état de l'import. La version actuelle est `v0.61`. Les évolutions sont enregistrées par commits.
+
+## 0.61 — Circulation dès le premier trajet
+
+Le matin reprend la densité de l'ancien deuxième trajet, puis la densité double
+à chaque affectation. Les groupes des deux derniers trajets gardent une ouverture
+qui alterne entre gauche et droite. Neuf essais anticipatoires mesurent environ
+22–24 / 39 / 73–75 dépassements confirmés, sans choc ; la difficulté humaine reste
+à tester. Voir [GAMEPLAY-0.61.md](GAMEPLAY-0.61.md). La 0.60 reste conservée.
+
+## 0.60 — Historique de la progression
 
 
 Revue actualisée : [audit 0.60](AUDIT-0.60.md) et [plan après revue](PLAN-APRES-REVIEW-0.60.md).

@@ -2,6 +2,7 @@
 // State is observed to choose actions; no position, health, timer, enemy or phase writes.
 const {createGame}=require('./test-harness.cjs');
 const {driveInput}=require('./drive-bot.cjs');
+const {driveInput:anticipatoryDriveInput}=require('./fair-drive-bot-060.cjs');
 exports.runDay=({seed=4301,fps=60,mode='keyboard',path='detour',boss='read',driveStyle='avoid',readingDelay=.7}={})=>{
  const {g,step,api}=createGame();
  g.workshop=true;g.seed=seed; // deterministic entry; no workshop scenarios.
@@ -32,7 +33,7 @@ exports.runDay=({seed=4301,fps=60,mode='keyboard',path='detour',boss='read',driv
   if(['free','receive','road'].includes(g.phase)){
    // Use the same visible-traffic lane driver, then translate into actual controls.
    const probe={...g,keys:Object.fromEntries(['LEFT','RIGHT','UP','DOWN'].map(k=>[k,{isDown:false}]))};
-   driveInput(probe,1);g.botTarget=probe.botTarget;
+   (g.mission===0?driveInput:anticipatoryDriveInput)(probe,1);g.botTarget=probe.botTarget;
    if(driveStyle==='coast'){}
    else if(mode==='keyboard')for(const a of driveStyle==='straight'?['UP']:['LEFT','RIGHT','UP','DOWN']){if(probe.keys[a].isDown)key(a);}
    else {if(!g.direct.gesture)g.direct.down(1,160,140);g.direct.move(1,160+(driveStyle==='straight'?0:probe.botTarget*105),probe.keys.DOWN.isDown&&driveStyle!=='straight'?160:140);}

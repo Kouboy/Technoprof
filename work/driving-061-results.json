@@ -1,0 +1,103 @@
+[
+  {
+    "preference": -1,
+    "mission": 1,
+    "lanes": [
+      0,
+      -0.68
+    ],
+    "seconds": 62.08,
+    "collisions": 0,
+    "vehicle": 100,
+    "remaining": 178
+  },
+  {
+    "preference": -1,
+    "mission": 2,
+    "lanes": [
+      0,
+      -0.94,
+      0.94
+    ],
+    "seconds": 58.02,
+    "collisions": 1,
+    "vehicle": 78,
+    "remaining": 167
+  },
+  {
+    "preference": -1,
+    "mission": 3,
+    "lanes": [
+      0,
+      -0.94,
+      0.94
+    ],
+    "seconds": 65.96000000000001,
+    "collisions": 0,
+    "vehicle": 100,
+    "remaining": 144
+  },
+  {
+    "preference": 1,
+    "mission": 1,
+    "lanes": [
+      0,
+      0.68,
+      -0.68
+    ],
+    "seconds": 62.08,
+    "collisions": 0,
+    "vehicle": 100,
+    "remaining": 178
+  },
+  {
+    "preference": 1,
+    "mission": 2,
+    "lanes": [
+      0,
+      -0.94,
+      0.94
+    ],
+    "seconds": 58.02,
+    "collisions": 1,
+    "vehicle": 78,
+    "remaining": 167
+  },
+  {
+    "preference": 1,
+    "mission": 3,
+    "lanes": [
+      0,
+      -0.94,
+      0.94
+    ],
+    "seconds": 65.96000000000001,
+    "collisions": 0,
+    "vehicle": 100,
+    "remaining": 144
+  },
+  {
+    "fixedLane": -0.98,
+    "phase": "fail",
+    "collisions": 4,
+    "remaining": 199
+  },
+  {
+    "fixedLane": -1.15,
+    "phase": "fail",
+    "collisions": 0,
+    "remaining": 0
+  },
+  {
+    "fixedLane": 0.98,
+    "phase": "fail",
+    "collisions": 5,
+    "remaining": 187
+  },
+  {
+    "fixedLane": 1.15,
+    "phase": "fail",
+    "collisions": 0,
+    "remaining": 0
+  }
+]

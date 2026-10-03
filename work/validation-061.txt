@@ -1,0 +1,7 @@
+TECHNOPROF 0.61: former second journey density on first road, then x1/x2/x4 nominal density. Alternating two-lane waves at midi/twilight.
+TypeScript/Vite/export and 23-script suite PASS. 60 first assignments, 36 full three-school days and 9 confirmed clean roads; synthetic controls/FPS do not replace human testing.
+Confirmed clean road crossings: 22-24 / 39 / 73-75. No vehicle respawn at assignment. Anticipatory driver used on the two dense roads; delayed simple driver can fail.
+Compiled workshop observed: first road and twilight cruising, reveal after fade at 1.3s, no console errors in inspected trial. Full human high-speed/audio/phone validation pending.
+Autonomous HTML SHA256: 05713E027D7DCB4B5CD8AAA6E2E74B53D1EA45526215E33CC8FE4E905B94DD65
+Technoprof-0.61-local.zip : 35 entries, matching game, 64347888 bytes
+Technoprof-0.61-testeurs.zip : 4 entries, matching game, 64289313 bytes

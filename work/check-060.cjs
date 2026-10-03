@@ -31,7 +31,7 @@ for(const path of ['detour','shortcut'])for(const mode of ['keyboard','direct'])
  const rooms=[1,2,3].map(m=>r.journal.events.filter(e=>e.mission===m&&e.kind==='room').length);
  assert.deepEqual(rooms,path==='detour'?[10,18,36]:[9,18,37]);
  const passing=[1,2,3].map(m=>r.journal.events.filter(e=>e.mission===m&&['pass','near-pass'].includes(e.kind)).length);
- assert(passing[0]>=9&&passing[0]<=11);assert(passing[1]>=19);assert(passing[2]>=36);assert(passing[2]>=passing[1]*1.7);
+ assert(passing[0]>=22&&passing[0]<=27);assert(passing[1]>=37);assert(passing[2]>=70);assert(passing[2]>=passing[1]*1.7);
  const wins=r.journal.events.filter(e=>e.kind==='success').map(e=>e.data);
  assert(wins[0].remaining>wins[1].remaining+25);assert(wins[1].remaining>wins[2].remaining+50);assert(wins[2].remaining>5);
  reports.push({path,mode,rooms,encounters,passing,wins,hits:r.collisions});
@@ -42,9 +42,10 @@ const cleanRoads=[];
 for(const seed of [4301,8317]){
  const h=createGame(),g=h.g;g.workshop=true;g.seed=seed;g.mission=2;g.begin();
  let steps=0;while(['free','receive','road'].includes(g.phase)&&steps++<15000){driveInput(g);h.step(1000/60);}
- assert.equal(g.phase,'arrival');assert.equal(g.collisions,0);assert(g.remaining>145);assert.equal(g.vehicle,100);
+ assert.equal(g.phase,'arrival');assert.equal(g.collisions,0);assert(g.remaining>135);assert.equal(g.vehicle,100);
  cleanRoads.push({seed,remaining:g.remaining,passing:g.session.events.filter(e=>['pass','near-pass'].includes(e.kind)).length});
 }
-fs.writeFileSync('work/progression-060.json',JSON.stringify({method:'Graph paths plus normal held keyboard/direct full days. Clean road uses a visible-traffic anticipatory input driver; no world position, HP or timer correction. Human balance remains to be tested.',paths,reports,cleanRoads},null,2));
+const versionTag=JSON.parse(fs.readFileSync('package.json')).version.split('.').slice(0,2).join('');
+fs.writeFileSync(`work/progression-${versionTag}.json`,JSON.stringify({method:'Graph paths plus normal held keyboard/direct full days. Clean road uses a visible-traffic anticipatory input driver; no world position, HP or timer correction. Human balance remains to be tested.',paths,reports,cleanRoads},null,2));
 console.log('PASS 060 minimum rooms 9/18/36, encounters 3/6/12, both branches, returns, all rooms reachable, added intros and actual passing exposure; 4 full days and 2 clean dense-road input-only routes.');
 

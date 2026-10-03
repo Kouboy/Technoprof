@@ -374,9 +374,9 @@ extendWing(proRooms, [22, 23], 26, 24, "T03", 2);
 
 // Minimum complete-route load doubles. Detours can add one room/encounter.
 export const DAY_LOAD = [
-  { rooms: 9, encounters: 3, roadPasses: 10 },
-  { rooms: 18, encounters: 6, roadPasses: 20 },
-  { rooms: 36, encounters: 12, roadPasses: 40 },
+  { rooms: 9, encounters: 3, roadPasses: 25 },
+  { rooms: 18, encounters: 6, roadPasses: 40 },
+  { rooms: 36, encounters: 12, roadPasses: 75 },
 ];
 const addWorkload = (
   rooms: Record<number, RoomSpec>,

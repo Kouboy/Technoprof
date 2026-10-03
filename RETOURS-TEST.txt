@@ -1,6 +1,6 @@
-ESSAI 0.59 : comparer la circulation des trois trajets, la longueur des parcours calmes et la lecture matin / midi / crepuscule. Exporter le journal apres la journee.
+ESSAI 0.61 : comparer les trois densites de circulation. Les ouvertures entre groupes sont-elles lisibles ? Notez les chocs qui paraissent inevitables et exportez le journal apres la journee.
 
-TECHNOPROF 0.58 — APRÈS LA PARTIE
+TECHNOPROF 0.61 — APRÈS LA PARTIE
 
 Quelques notes suffisent, même si vous n'avez pas terminé.
 

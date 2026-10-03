@@ -1,0 +1,119 @@
+{
+  "method": "Normal input-only full days. Encounter counts, not entity capacity. Human difficulty and hardware touch feel require user testing.",
+  "exposures": [
+    {
+      "seed": 1,
+      "mode": "keyboard",
+      "passed": [
+        26,
+        39,
+        74
+      ],
+      "orientation": [
+        19.433,
+        44.95,
+        89.733
+      ],
+      "remaining": [
+        145.8333333332584,
+        110.04999999992384,
+        25.08333333327394
+      ]
+    },
+    {
+      "seed": 1,
+      "mode": "direct",
+      "passed": [
+        26,
+        39,
+        76
+      ],
+      "orientation": [
+        19.2,
+        44.717,
+        90.233
+      ],
+      "remaining": [
+        145.78333333325835,
+        110.1666666665905,
+        25.89999999994056
+      ]
+    },
+    {
+      "seed": 4301,
+      "mode": "keyboard",
+      "passed": [
+        24,
+        39,
+        74
+      ],
+      "orientation": [
+        19.433,
+        44.95,
+        89.733
+      ],
+      "remaining": [
+        145.8333333332584,
+        110.44999999992382,
+        24.749999999940627
+      ]
+    },
+    {
+      "seed": 4301,
+      "mode": "direct",
+      "passed": [
+        24,
+        39,
+        76
+      ],
+      "orientation": [
+        19.2,
+        44.717,
+        90.233
+      ],
+      "remaining": [
+        145.78333333325835,
+        110.44999999992382,
+        25.7833333332739
+      ]
+    },
+    {
+      "seed": 3842110648,
+      "mode": "keyboard",
+      "passed": [
+        25,
+        38,
+        72
+      ],
+      "orientation": [
+        19.433,
+        44.95,
+        89.733
+      ],
+      "remaining": [
+        145.8333333332584,
+        108.5166666665906,
+        24.11666666660733
+      ]
+    },
+    {
+      "seed": 3842110648,
+      "mode": "direct",
+      "passed": [
+        25,
+        39,
+        75
+      ],
+      "orientation": [
+        19.2,
+        44.717,
+        90.233
+      ],
+      "remaining": [
+        145.78333333325835,
+        109.89999999992385,
+        24.866666666607287
+      ]
+    }
+  ]
+}

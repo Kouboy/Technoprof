@@ -1,0 +1,77 @@
+{
+  "method": "Fixed deterministic entry, normal cruising and assignment, held inputs only. Crossings confirmed after the contact zone with no hit; independent of early pass sounds. Controlled feasibility, not human discovery or physical-phone validation.",
+  "roads": [
+    {
+      "seed": 1,
+      "mission": 1,
+      "confirmed": 24,
+      "peakVisible": 4,
+      "remaining": 178.61666666661782,
+      "hits": 0
+    },
+    {
+      "seed": 1,
+      "mission": 2,
+      "confirmed": 39,
+      "peakVisible": 5,
+      "remaining": 170.89999999995695,
+      "hits": 0
+    },
+    {
+      "seed": 1,
+      "mission": 3,
+      "confirmed": 74,
+      "peakVisible": 7,
+      "remaining": 144.3166666666144,
+      "hits": 0
+    },
+    {
+      "seed": 4301,
+      "mission": 1,
+      "confirmed": 23,
+      "peakVisible": 4,
+      "remaining": 178.11666666661742,
+      "hits": 0
+    },
+    {
+      "seed": 4301,
+      "mission": 2,
+      "confirmed": 39,
+      "peakVisible": 5,
+      "remaining": 171.29999999995727,
+      "hits": 0
+    },
+    {
+      "seed": 4301,
+      "mission": 3,
+      "confirmed": 73,
+      "peakVisible": 7,
+      "remaining": 143.9833333332808,
+      "hits": 0
+    },
+    {
+      "seed": 8317,
+      "mission": 1,
+      "confirmed": 22,
+      "peakVisible": 4,
+      "remaining": 176.16666666661587,
+      "hits": 0
+    },
+    {
+      "seed": 8317,
+      "mission": 2,
+      "confirmed": 39,
+      "peakVisible": 5,
+      "remaining": 171.08333333329043,
+      "hits": 0
+    },
+    {
+      "seed": 8317,
+      "mission": 3,
+      "confirmed": 75,
+      "peakVisible": 7,
+      "remaining": 145.3833333332819,
+      "hits": 0
+    }
+  ]
+}

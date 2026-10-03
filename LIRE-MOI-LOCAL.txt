@@ -1,6 +1,6 @@
-TECHNOPROF 0.60 - VERSION LOCALE AUTONOME
+TECHNOPROF 0.61 - VERSION LOCALE AUTONOME
 
-0.60 : 9 / 18 / 36 tableaux minimum ; 3 / 6 / 12 adversaires ; environ 10 / 20 / 40 depassements. Delais inchanges. 39 tableaux ajoutes avec les assets existants. Voir GAMEPLAY-0.60.md. La 0.59 reste conservee.
+0.61 : le matin reprend la densite de l ancien deuxieme trajet, puis densite x1 / x2 / x4. Groupes denses avec ouverture alternee. Environ 25 / 40 / 75 depassements selon la conduite. Voir GAMEPLAY-0.61.md. La 0.60 reste conservee.
 
 0.59 : circulation plus dense a chaque trajet ; trois pieces sans ennemis par etablissement ; fuites, froid, dechets ; matin 07:00, midi 12:00, crepuscule 18:30. Voir GAMEPLAY-0.59.md. Dans Jouer-Labo.html, essais Matin / Midi / Crepuscule. La 0.58 reste conservee.
 

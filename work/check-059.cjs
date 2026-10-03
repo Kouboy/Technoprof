@@ -34,6 +34,7 @@ for(const seed of [1,4301,3842110648])for(const mode of ['keyboard','direct']){
  assert(calls.some(c=>c[0]==='fillTriangle'));assert(calls.some(c=>c[0]==='lineBetween'));
 }
 const b=fs.readFileSync('art/quiet-backgrounds-059.png');assert.equal(b.readUInt32BE(16),1672);assert.equal(b.readUInt32BE(20),941);
-fs.writeFileSync('work/traffic-exposure-060.json',JSON.stringify({method:'Normal input-only full days. Encounter counts, not entity capacity. Human difficulty and hardware touch feel require user testing.',exposures},null,2));
+const versionTag=JSON.parse(fs.readFileSync('package.json')).version.split('.').slice(0,2).join('');
+fs.writeFileSync(`work/traffic-exposure-${versionTag}.json`,JSON.stringify({method:'Normal input-only full days. Encounter counts, not entity capacity. Human difficulty and hardware touch feel require user testing.',exposures},null,2));
 console.log('PASS 059 nine quiet rooms, forward/return passages, no enemies/intros/gaps, active orientation clock, locked arenas; 6 normal days with progressive actual traffic exposure and no notification pop; three time-of-day palettes, background animation primitives and atlas size');
 

@@ -12,9 +12,12 @@ dates de commit sont celles de l'import, pas des dates de développement invent�
   les outils présents dans chaque sauvegarde. Certains outils, documents ou
   fichiers de configuration n'y avaient pas été conservés. Leur compilation
   et leur suite de tests n'ont pas été validées lors de cet import.
-- **v0.60 / main :** état actuel des sources, assets, outils et documentation,
+- **v0.60 :** état initial importé des sources, assets, outils et documentation,
   comprenant l'audit et son complément sur les charges. Le gameplay est celui
   de la livraison locale 0.60 ; l'esquive n'est pas encore corrigée.
+- **v0.61 / main :** première évolution enregistrée après l'import : premier
+  trajet plus dense et densité nominale doublée à chaque affectation. Les sources,
+  tests et livraisons correspondent à ce nouveau réglage.
 
 Chaque jalon importé contient `history/checkpoint.json`, qui liste les fichiers
 conservés et leurs empreintes SHA-256. Les fichiers TypeScript qui étaient à la

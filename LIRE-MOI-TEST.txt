@@ -1,5 +1,5 @@
 TECHNOPROF — Physique appliquée
-Version de test 0.60
+Version de test 0.61
 
 1. Extraire l'archive dans un dossier.
 2. Ouvrir Jouer-Technoprof.html dans votre navigateur habituel.

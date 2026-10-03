@@ -18,7 +18,14 @@ export const DRIVE = {
   braking: 95,
 };
 // One queue capacity across the day: density comes from spacing, not a longer tail.
-export const TRAFFIC = { capacity: 32, spacing: [1, 0.36, 0.16] };
+export const TRAFFIC = {
+  capacity: 32,
+  // Start at the former second journey; multiply density at each assignment.
+  baseSpacing: 0.36,
+  densityGrowth: 2,
+  // Dense streams keep their authored stagger instead of converging into walls.
+  convoySpeed: 74,
+};
 export type Traffic = {
   z: number;
   x: number;
@@ -66,13 +73,19 @@ const CUES = [
   { gap: 620, x: 0, type: 0, speed: 78 },
   { gap: 900, x: -0.62, type: 0, speed: 72 },
 ];
+// Dense waves occupy two lanes, then hand the opening to the opposite side.
+// The longer fifth interval gives time to cross before the next wave arrives.
+const DENSE_LANES = [0.62, 0, 0.62, 0, -0.62, 0, -0.62, 0];
 export function trafficCue(index: number, mission: number, random: number) {
   const cue = CUES[index % CUES.length];
+  const density = TRAFFIC.densityGrowth ** Math.max(0, Math.min(2, mission));
   return {
     ...cue,
+    x: mission <= 0 ? cue.x : DENSE_LANES[index % DENSE_LANES.length],
+    speed: mission <= 0 ? cue.speed : TRAFFIC.convoySpeed,
     gap:
       DRIVE.motionScale *
-      (cue.gap * TRAFFIC.spacing[Math.max(0, Math.min(2, mission))] +
-        (index === 0 ? 0 : random * 35)),
+      (cue.gap * TRAFFIC.baseSpacing +
+        (index === 0 ? 0 : random * 35)) / density,
   };
 }
