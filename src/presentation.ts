@@ -180,6 +180,13 @@ export function drawRoadWear(
 
 export const REFERENCE_SCENES: Record<string, string> = {
   road: "Route",
+  "road-housing": "Route / habitat",
+  "road-civic": "Route / équipements publics",
+  "road-green": "Route / talus et arbres",
+  "road-workshops": "Route / ateliers",
+  "road-bridge": "Pont / béton",
+  "road-steel": "Pont / maçonnerie et acier",
+  "road-under": "Pont / passage sous le tablier",
   arrival: "Arrivée au collège",
   "0": "Cour",
   "1": "Hall",

@@ -2,6 +2,7 @@ import { daylight } from "./presentation";
 import { SKY_DATA } from "./sky-data";
 import Phaser from "phaser";
 import { ROAD_DATA } from "./road-data";
+import { VERGE_DATA } from "./verge-data";
 export const ROAD_FRAMES = {
   traffic: [
     [28, 450, 473, 362],
@@ -14,28 +15,74 @@ export const ROAD_FRAMES = {
     [265, 556, 210, 452],
     [602, 660, 911, 323],
   ],
+  verge: [
+    [40, 10, 460, 480],
+    [515, 152, 553, 338],
+    [1074, 46, 452, 447],
+    [88, 502, 360, 490],
+    [512, 506, 542, 501],
+    [1062, 698, 460, 290],
+  ],
 };
-export function openAddress(id: number) {
-  return id % 10 >= 6;
+export const VERGE = { zoneLength: 720, visible: 720, bridgeBehind: 48 };
+export const ROAD_VIEWS: Record<string, number> = {
+  road: 140,
+  "road-housing": 240,
+  "road-civic": 780,
+  "road-green": 1450,
+  "road-workshops": 2250,
+  "road-bridge": 340,
+  "road-steel": 1070,
+  "road-under": 408,
+};
+export function vergeZone(z: number) {
+  return Math.floor(Math.max(0, z) / VERGE.zoneLength) % 4;
 }
+export function openAddress(id: number) {
+  return vergeZone(id * 30 + 18) === 2 || id % 10 >= 8;
+}
+export type Scenery = {
+  d: number;
+  lane: number;
+  kind: number;
+  variant?: number;
+  z?: number;
+  id?: number;
+};
 export function districtAnchors(travel: number) {
-  const result: { d: number; lane: number; kind: number }[] = [];
-  const add = (z: number, lane: number, kind: number) => {
+  const result: Scenery[] = [];
+  const add = (z: number, lane: number, kind: number, variant = 0, id = 0) => {
     const d = z - travel;
-    if (d >= 0 && d <= 540) result.push({ d, lane, kind });
+    if (d >= (kind === 6 ? -VERGE.bridgeBehind : -30) && d <= VERGE.visible)
+      result.push({ d, lane, kind, variant, z, id });
   };
   for (
-    let id = Math.max(0, Math.floor(travel / 30) - 2);
-    id <= Math.floor(travel / 30) + 18;
+    let id = Math.max(0, Math.floor(travel / 30) - 3);
+    id <= Math.floor(travel / 30) + 25;
     id++
   ) {
     const z = id * 30 + 18;
     const side = Math.floor(id / 3) % 2 === 0 ? -1 : 1;
-    if (!openAddress(id) && id % 7 !== 3) add(z, side * 1.95, 1);
-    if (!openAddress(id)) add(z + 8, -side * 1.8, 5);
-    if (id % 2 === 0) add(z + 12, id % 4 === 0 ? -1.25 : 1.25, 4);
-    if (id % 8 === 3) add(z + 15, side * 1.38, 2);
-    if (id % 18 === 12) add(z + 10, 0, 6);
+    const zone = vergeZone(z);
+    if (id % 2 === 0 && !openAddress(id)) {
+      if (zone === 0 && id % 6 !== 2) add(z, side * 2.05, 1, 0, id);
+      else
+        add(
+          z,
+          side * (zone === 1 ? 2.5 : 2.1),
+          7,
+          zone === 1 ? (id % 6 === 0 ? 0 : 1) : 2,
+          id,
+        );
+      if (id % 4 === 0) add(z + 9, -side * 1.95, 5, 0, id);
+    }
+    if (zone === 2 && id % 3 !== 1) add(z + 4, side * 1.85, 7, 4, id);
+    if (zone !== 2 && id % 7 === 5) add(z + 4, side * 2.35, 7, 4, id);
+    if (id % 4 === 0) add(z + 12, id % 8 === 0 ? -1.4 : 1.4, 4, 0, id);
+    if (zone !== 2 && id % 14 === 3) add(z + 15, side * 1.75, 2, 0, id);
+    if (id % 11 === 6) add(z + 7, -side * 1.7, 7, 5, id);
+    if (id % 60 === 38) add(z + 8, -side * 3.1, 7, 3, id);
+    if (id % 24 === 12) add(z + 10, 0, 6, Math.floor(id / 24) % 2, id);
   }
   return result;
 }
@@ -65,7 +112,7 @@ export class RoadArt {
       .setDepth(3.002)
 
       .setVisible(false);
-    for (const key of ["traffic", "district"] as const) {
+    for (const key of ["traffic", "district", "verge"] as const) {
       const source = scene.textures
         .get("raw-" + key)
         .getSourceImage() as HTMLImageElement;
@@ -92,6 +139,7 @@ export class RoadArt {
     scene.load.image("sky", SKY_DATA);
     for (const key of ["traffic", "district"] as const)
       scene.load.image("raw-" + key, ROAD_DATA[key]);
+    scene.load.image("raw-verge", VERGE_DATA);
   }
   sky(horizon: number, bend: number, clock: number, mission = 0) {
     const cloudHeight = (horizon - 7) * 0.82;
@@ -120,7 +168,7 @@ export class RoadArt {
     return g.setDepth(this.depth);
   }
   draw(
-    key: "traffic" | "district",
+    key: "traffic" | "district" | "verge",
     frame: number,
     x: number,
     y: number,
@@ -139,7 +187,13 @@ export class RoadArt {
       // Re-anchor after changing the frame, at the tires rather than transparent padding.
       .setOrigin(
         0.5,
-        key === "traffic" ? (806 - ROAD_FRAMES.traffic[frame][1]) / h : 1,
+        key === "traffic"
+          ? (806 - ROAD_FRAMES.traffic[frame][1]) / h
+          : key === "verge"
+            ? ([488, 485, 490, 985, 993, 977][frame] -
+                ROAD_FRAMES.verge[frame][1]) /
+              h
+            : 1,
       )
       .setPosition(x, y)
       .setDisplaySize(width, (width * h) / w)

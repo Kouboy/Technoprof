@@ -1,5 +1,6 @@
 import type { AudioKit } from "./audio";
 import { ENCOUNTERS, type DialogueState } from "./dialogue";
+export const RADIO_NAME = "Radio Educ France";
 export const RADIO_BULLETINS = [
   "La rentrée est prête : les postes vacants seront occupés par le mot priorité.",
   "Le ministère annonce plus d’autonomie. Chaque établissement pourra désormais choisir ce qu’il ne répare pas.",
@@ -231,7 +232,7 @@ export function installPlayerExperience(s: Host) {
     const bulletin = s.phase === "free" && !mode ? s.mission : -1;
     const caption =
       bulletin >= 0
-        ? "Radio : Educ France — " + RADIO_BULLETINS[Math.min(2, bulletin)]
+        ? RADIO_NAME + " — " + RADIO_BULLETINS[Math.min(2, bulletin)]
         : "";
     if (captions.textContent !== caption) captions.textContent = caption;
     captions.hidden = !caption;

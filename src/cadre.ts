@@ -343,7 +343,7 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
     compact(40, 220, "SALLE", dim, 27);
     t(70, 214, "42C", paper, 2, 37);
   } else if (s.phase === "free") {
-    compact(14, 199, "RADIO FM", dim, 90);
+    compact(14, 199, "RADIO", dim, 90);
     t(14, 209, "EDUC FRANCE", paper, 1, 91);
     r(14, 221, 83, 1, 0x38494c);
     for (let i = 0; i < 16; i++) {

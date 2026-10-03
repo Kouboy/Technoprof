@@ -1,5 +1,5 @@
 {
-  "version": "0.51",
+  "version": "0.52",
   "importClientDate": "2026-10-03",
   "scope": "retained source tree; historical build unverified",
   "files": [
@@ -7,19 +7,19 @@
       "original": "index.html",
       "path": "index.html",
       "bytes": 12903,
-      "sha256": "3f364de2b51aa2672ec65e6cf4a0b559d163ff2b3b5f6c21e718953e1be1f1cf"
+      "sha256": "a74b9b51fd329c117c29a1994d992936e2c725f70dd7da5b96cea58ca06caa2c"
     },
     {
       "original": "package-lock.json",
       "path": "package-lock.json",
       "bytes": 38850,
-      "sha256": "6618c592a15780110ab67263750725abd5393d92e2c9dc0f1f329ed1a59b4977"
+      "sha256": "e03aa9810d576242989d94def21d717efe31604ff052e241a249923fa31f313b"
     },
     {
       "original": "package.json",
       "path": "package.json",
-      "bytes": 770,
-      "sha256": "4ace1993e34d828b96b831e03e08115aa72c0d3adb47eff4eb1e8b885895584f"
+      "bytes": 797,
+      "sha256": "43dca8fde1c82b2c8f4054a697019cbdcbcabe72bac3a74bef81ffce1de9a5ad"
     },
     {
       "original": "src/arrival-data.ts",
@@ -54,8 +54,8 @@
     {
       "original": "src/cadre.ts",
       "path": "src/cadre.ts",
-      "bytes": 15471,
-      "sha256": "e70bb9c9538290ccf45765fc8ecc98d8e9e63db833247a5418bcc3a9f2b43be7"
+      "bytes": 15468,
+      "sha256": "7435cc516ac9bf59321b46b6d8032147261f0f9a1463bc61e8bd21738528a6ef"
     },
     {
       "original": "src/car-art.ts",
@@ -156,8 +156,8 @@
     {
       "original": "src/main.ts",
       "path": "src/main.ts",
-      "bytes": 134749,
-      "sha256": "afbe744fc863a2cdee068dae929618d1853ffdf4f2b8f1be7802d3eb2e3dbb8d"
+      "bytes": 133872,
+      "sha256": "3e13c08786cb132fcf2108f12858b630b8041ab321ea0db4328f569ae6bb91b4"
     },
     {
       "original": "src/passage-hints.ts",
@@ -168,26 +168,32 @@
     {
       "original": "src/player-experience.ts",
       "path": "src/player-experience.ts",
-      "bytes": 15926,
-      "sha256": "9007fa846ee689f03928634cded30016a94f47ef5d70733256748303dd671886"
+      "bytes": 15967,
+      "sha256": "de17943a127199593f8221e1f1ac70d7bcff7b6c13a2c9cf0939e2583a62e328"
     },
     {
       "original": "src/presentation.ts",
       "path": "src/presentation.ts",
-      "bytes": 7623,
-      "sha256": "d2b5be0b2ddb822050ad21e093d780ba0e5aee59658f4877b7ddd918e5ca7f9b"
+      "bytes": 7922,
+      "sha256": "7a4bd1430c0b745fdea69dbd08f4d7ec073e10e5c17320842666c75c0b234fbb"
     },
     {
       "original": "src/road-art.ts",
       "path": "src/road-art.ts",
-      "bytes": 5017,
-      "sha256": "91c5bee522d4787bf934ff3cb905fca383340682e4299fde80fedb9d96af9797"
+      "bytes": 6650,
+      "sha256": "64b8ac02110cef15b70b0d3f39f65bbdbd660cbad4d2ed4b791d638daa5ad045"
     },
     {
       "original": "src/road-data.ts",
       "path": "src/road-data.ts",
       "bytes": 4909101,
       "sha256": "7588f13641e4ca68d9e214f3eb6d31dcf0d1dff7ab1774589d4bcff99ee70153"
+    },
+    {
+      "original": "src/road-structures.ts",
+      "path": "src/road-structures.ts",
+      "bytes": 3659,
+      "sha256": "28c154fa5ede810aa843f9dc8ea670d645acc4ca549a26734633dc6e624695fa"
     },
     {
       "original": "src/school-props-data.ts",
@@ -211,7 +217,7 @@
       "original": "src/session-log.ts",
       "path": "src/session-log.ts",
       "bytes": 1014,
-      "sha256": "cc85724d366911e37206975c31525aa5caddd059f643982f24317e86000bf604"
+      "sha256": "209fd5aa3a771b9f3dd37b0b055441be9a9385dde7510af1c3b2777e655937cd"
     },
     {
       "original": "src/sky-data.ts",
@@ -244,6 +250,12 @@
       "sha256": "d0e12304733951a3306fa315097c2b26644708a9b9dae88a5e989faebcac4636"
     },
     {
+      "original": "src/verge-data.ts",
+      "path": "src/verge-data.ts",
+      "bytes": 3553172,
+      "sha256": "f639ece068283955f72581ed63971ac67cead537cd9bf6d07b9b32486b75c4db"
+    },
+    {
       "original": "src/warnings-data.ts",
       "path": "src/warnings-data.ts",
       "bytes": 2629593,
@@ -265,7 +277,7 @@
       "original": "src/workshop.ts",
       "path": "src/workshop.ts",
       "bytes": 10393,
-      "sha256": "3755186b4b11eda0f0a1c71c56ac400dd3211c30b67bd130a33da1c87d81fbb0"
+      "sha256": "b049a9e0376b05ff797a839f7977b85176a9d9ad3ad52658e9cad9845adca4d2"
     },
     {
       "original": "src/world.ts",

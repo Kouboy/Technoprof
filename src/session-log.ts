@@ -31,7 +31,7 @@ export class SessionLog {
     results: string[],
   ) {
     return {
-      version: "0.51",
+      version: "0.52",
       seed,
       simulationSeconds: +this.elapsed.toFixed(3),
       phaseSeconds: { ...this.phaseSeconds },

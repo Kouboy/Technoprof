@@ -5,6 +5,7 @@ import {
   installPlayerExperience,
   resultLine,
   RADIO_BULLETINS,
+  RADIO_NAME,
 } from "./player-experience";
 import {
   VIEW,
@@ -48,7 +49,15 @@ import { STAIR_DATA } from "./stair-data";
 import { HallArt } from "./hall-art";
 import { COURT_DATA } from "./court-data";
 import { ARRIVAL_DATA } from "./arrival-data";
-import { RoadArt, districtAnchors, openAddress } from "./road-art";
+import {
+  RoadArt,
+  districtAnchors,
+  openAddress,
+  vergeZone,
+  type Scenery,
+  ROAD_VIEWS,
+} from "./road-art";
+import { drawRoadBridge, roadsideProjection } from "./road-structures";
 import { CarArt } from "./car-art";
 import { SliceArt } from "./slice-art";
 import Phaser from "phaser";
@@ -211,7 +220,7 @@ class Game extends Phaser.Scene {
   skidClock = 0;
   rattleClock = 0;
   tireMarks: { x: number; y: number; life: number }[] = [];
-  radioLines = RADIO_BULLETINS.map((text) => "Radio Educ France. " + text);
+  radioLines = RADIO_BULLETINS.map((text) => RADIO_NAME + ". " + text);
   falling = 0;
   fallReturn = 25;
   lastGroundX = 25;
@@ -1339,8 +1348,13 @@ class Game extends Phaser.Scene {
     this.draw();
   }
   loadPresentation(scene: string, mission: number) {
+    const roadView = ROAD_VIEWS[scene];
     this.loadScenario(
-      scene === "road" ? "road" : scene === "arrival" ? "arrival" : "boss",
+      roadView !== undefined
+        ? "road"
+        : scene === "arrival"
+          ? "arrival"
+          : "boss",
     );
     this.mission = Math.max(0, Math.min(2, mission));
     this.cadreReview = true;
@@ -1350,15 +1364,15 @@ class Game extends Phaser.Scene {
     this.ambienceClock = 0;
     this.inv = 0;
     this.face = 1;
-    if (scene === "road") {
-      this.travel = 140;
+    if (roadView !== undefined) {
+      this.travel = roadView;
       this.road = 1200;
       this.speed = 148;
       this.car = 0;
       this.obstacles = [
-        { z: 220, x: -0.65, type: 0, speed: 74 },
-        { z: 290, x: 0.65, type: 2, speed: 82 },
-        { z: 430, x: -0.65, type: 1, speed: 62 },
+        { z: roadView + 80, x: -0.65, type: 0, speed: 74 },
+        { z: roadView + 150, x: 0.65, type: 2, speed: 82 },
+        { z: roadView + 290, x: -0.65, type: 1, speed: 62 },
       ];
     } else if (scene === "arrival") {
       this.age = 2.6;
@@ -3150,11 +3164,17 @@ class Game extends Phaser.Scene {
         d = DRIVE.focal / scale - DRIVE.focal,
         c = project(d).x,
         half = DRIVE.roadHalfPixels * scale;
-      const district = Math.floor((this.travel + d) / 750) % 3;
       const worldZ = this.travel + d;
+      const district = vergeZone(worldZ);
       const address = Math.floor((worldZ - 18) / 30);
       const open = openAddress(Math.max(0, address));
-      this.rect(7, y, 306, 1, 0x45443a);
+      this.rect(
+        7,
+        y,
+        306,
+        1,
+        [0x45443a, 0x526064, 0x454b3a, 0x3d4445][district],
+      );
       for (const side of [-1, 1]) {
         const a = c + side * half,
           b = c + side * (half + 24 * scale);
@@ -3245,8 +3265,19 @@ class Game extends Phaser.Scene {
       scenery.length = 0;
       scenery.push(...districtAnchors(this.travel));
     }
-    const renderScenery = (t: { d: number; lane: number; kind: number }) => {
-      const p = project(t.d, t.lane);
+    const renderScenery = (t: Scenery) => {
+      const p = roadsideProjection(this.travel, t.d, t.lane);
+      if (t.kind === 6) {
+        drawRoadBridge(this.g, this.travel, t.d, t.variant ?? 0);
+        return;
+      }
+      if (this.roadArt && t.kind === 7) {
+        const frame = t.variant ?? 0,
+          width = [160, 195, 150, 90, 115, 42][frame] * p.scale;
+        if (p.x + width / 2 < 7 || p.x - width / 2 > 313) return;
+        this.roadArt.draw("verge", frame, p.x, p.y, width, t.lane > 0);
+        return;
+      }
       if (this.roadArt && t.kind !== 6) {
         const frame =
           t.kind === 1 ? 0 : t.kind === 2 ? 1 : t.kind === 4 ? 2 : 3;
@@ -3303,70 +3334,6 @@ class Game extends Phaser.Scene {
           local(-20, -71, 3, 7, 0x854538);
           local(-5, -85, 13, 6, 0xb9aa89);
           local(-3, -83, 9, 1, 0x24333b);
-          return;
-        }
-        if (t.kind === 6) {
-          const left = project(t.d, -1.5),
-            right = project(t.d, 1.5);
-          this.rect(
-            left.x,
-            left.y - 57 * p.scale,
-            6 * p.scale,
-            57 * p.scale,
-            0x46534f,
-          );
-          this.rect(
-            right.x - 6 * p.scale,
-            right.y - 57 * p.scale,
-            6 * p.scale,
-            57 * p.scale,
-            0x46534f,
-          );
-          this.rect(
-            left.x,
-            left.y - 60 * p.scale,
-            right.x - left.x,
-            10 * p.scale,
-            0x697266,
-          );
-          this.rect(
-            left.x,
-            left.y - 62 * p.scale,
-            right.x - left.x,
-            2 * p.scale,
-            0xa0a18a,
-          );
-          for (let i = 0; i < 12; i++) {
-            const xx = left.x + ((right.x - left.x) * i) / 12;
-            this.rect(
-              xx,
-              left.y - 70 * p.scale,
-              1 * p.scale,
-              8 * p.scale,
-              0x24333b,
-            );
-          }
-          this.rect(
-            left.x,
-            left.y - 70 * p.scale,
-            right.x - left.x,
-            1 * p.scale,
-            0x928269,
-          );
-          this.rect(
-            left.x + 8 * p.scale,
-            left.y - 58 * p.scale,
-            12 * p.scale,
-            5 * p.scale,
-            0xb9aa89,
-          );
-          this.rect(
-            left.x + 10 * p.scale,
-            left.y - 56 * p.scale,
-            8 * p.scale,
-            1 * p.scale,
-            0x854538,
-          );
           return;
         }
         if (t.kind === 1) {
