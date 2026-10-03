@@ -1,25 +1,25 @@
 {
-  "version": "0.48",
+  "version": "0.49",
   "importClientDate": "2026-10-03",
   "scope": "retained source tree; historical build unverified",
   "files": [
     {
       "original": "index.html",
       "path": "index.html",
-      "bytes": 10459,
-      "sha256": "d08064f95cc05d5cd48690a6f542ca543c90b7e023017b9cd232b6707ea273a6"
+      "bytes": 12903,
+      "sha256": "1d96f8d539814aba03a0ef30b3191e03654943702becf4e283f83064d79ee3c3"
     },
     {
       "original": "package-lock.json",
       "path": "package-lock.json",
       "bytes": 38850,
-      "sha256": "fbf8794e630e2fd62d6dd82ec2df5e4433ecabf80815e41e73c50bb152f21331"
+      "sha256": "f821aaec8004e251100eca8c1e77c4949fa5eb4e4e09c5c55b95e9dceb226c59"
     },
     {
       "original": "package.json",
       "path": "package.json",
-      "bytes": 743,
-      "sha256": "7af85788d92ab59e4c5769d4f91e07589d6d92937b9da4dfb1dd863ee6877de5"
+      "bytes": 770,
+      "sha256": "39d1224e25e5aea1182307a2935f3f5af345d6064dace2a012ece1b57c59ff01"
     },
     {
       "original": "src/arrival-data.ts",
@@ -94,6 +94,12 @@
       "sha256": "b818f300e17f49a92e6c5a9f3d95449fbfd6acec787dbc7c286a043a56ae1602"
     },
     {
+      "original": "src/controls.ts",
+      "path": "src/controls.ts",
+      "bytes": 2028,
+      "sha256": "0caee598d2e28068014bc358a347660e888c7e3ed54ae70b42e081b5080d1a84"
+    },
+    {
       "original": "src/court-data.ts",
       "path": "src/court-data.ts",
       "bytes": 3748114,
@@ -104,6 +110,12 @@
       "path": "src/dialogue.ts",
       "bytes": 1599,
       "sha256": "b04474575a398cefa13ce6ed4754c76055139259930c34934c2df6927ede9a3a"
+    },
+    {
+      "original": "src/direct-input.ts",
+      "path": "src/direct-input.ts",
+      "bytes": 9201,
+      "sha256": "d475b227a1a1b5674528c21ea7c4afe1674575fdf10be9440a0bc664215660c1"
     },
     {
       "original": "src/driving.ts",
@@ -144,8 +156,8 @@
     {
       "original": "src/main.ts",
       "path": "src/main.ts",
-      "bytes": 132442,
-      "sha256": "858a9d6b83cb73f50f7c145ebc970a9ddb8dc034063da0138760305a3337eb1e"
+      "bytes": 134104,
+      "sha256": "72a37fda820f4bbae613192c26e53dd07a081df8e4ff97df0249f522f8153c8e"
     },
     {
       "original": "src/passage-hints.ts",
@@ -156,8 +168,8 @@
     {
       "original": "src/player-experience.ts",
       "path": "src/player-experience.ts",
-      "bytes": 13625,
-      "sha256": "edfff477fe2b6664bb98bd04ef0a52aa048ad9ad615cfe43c75564b644122043"
+      "bytes": 15926,
+      "sha256": "9007fa846ee689f03928634cded30016a94f47ef5d70733256748303dd671886"
     },
     {
       "original": "src/presentation.ts",
@@ -186,8 +198,8 @@
     {
       "original": "src/school-props.ts",
       "path": "src/school-props.ts",
-      "bytes": 12297,
-      "sha256": "6042b44e99c70fa1380d4faf419756355180ca5d6599f88dd69f767c8c321d69"
+      "bytes": 12424,
+      "sha256": "bf76290b309a2211863f7d41c9e612570293f60bc8ec3f1e6cf2a5022ddd0470"
     },
     {
       "original": "src/service-data.ts",
@@ -199,7 +211,7 @@
       "original": "src/session-log.ts",
       "path": "src/session-log.ts",
       "bytes": 1014,
-      "sha256": "520b1b7c91e6c078184759e7eadd946c262e9dff6a780938a9236cf0e1f20584"
+      "sha256": "2483dc34a8cfee8876172341e2c8ce8ea6ef58157b5f4a8d8c163fef763bd769"
     },
     {
       "original": "src/sky-data.ts",
@@ -253,7 +265,7 @@
       "original": "src/workshop.ts",
       "path": "src/workshop.ts",
       "bytes": 10393,
-      "sha256": "2745adf5a37cd733a59ee5275c7729bd5bdefd742f04a424519c62044ae89f2b"
+      "sha256": "5eb1705aa3bbbade785ab389df9eb3cdd4c6888f9eacb70fb51f4160f80cce54"
     },
     {
       "original": "src/world.ts",

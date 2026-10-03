@@ -1,3 +1,5 @@
+import { ActionInput, BINDINGS } from "./controls";
+import { DirectInput, installDirectInput } from "./direct-input";
 import { drawComicFX } from "./comic-fx";
 import {
   installPlayerExperience,
@@ -75,6 +77,10 @@ class Game extends Phaser.Scene {
   sceneSurround?: Phaser.GameObjects.Graphics;
   presentationHideHud = false;
   syncPlayerUI?: () => void;
+  direct?: DirectInput;
+  controls?: ActionInput;
+  pointerMode = false;
+  physicalKeys?: Record<string, Phaser.Input.Keyboard.Key>;
   playerMenu = false;
   roomEnteredAt = 0;
   seed = 4301;
@@ -425,9 +431,11 @@ class Game extends Phaser.Scene {
     this.roadWash = this.add.graphics().setDepth(3.095);
     this.sceneSurround = this.add.graphics().setDepth(4.1);
     drawSurround(this.sceneSurround);
-    this.keys = this.input.keyboard!.addKeys(
-      "LEFT,RIGHT,UP,DOWN,SPACE,X,ENTER,P,M,F2,F3,F4",
+    this.physicalKeys = this.input.keyboard!.addKeys(
+      Object.values(BINDINGS).flat().join(","),
     ) as typeof this.keys;
+    this.controls = new ActionInput();
+    this.keys = this.controls.keys as unknown as typeof this.keys;
     this.input.keyboard!.addCapture(["SPACE", "UP", "DOWN", "LEFT", "RIGHT"]);
     this.input.keyboard!.on("keydown", this.handleKeyDown, this);
     const focusLost = () => this.pauseForFocusLoss();
@@ -680,6 +688,8 @@ class Game extends Phaser.Scene {
     }
     if (preview === "presentation") installPresentation(this);
     if (!preview || preview === "accueil") {
+      if (window.matchMedia("(any-pointer: coarse)").matches)
+        this.pointerMode = true;
       this.phase = "title";
       this.syncPlayerUI = installPlayerExperience(this);
       if (preview === "accueil") {
@@ -701,7 +711,12 @@ class Game extends Phaser.Scene {
         }
       }
     } else document.getElementById("loading")?.setAttribute("hidden", "");
+    if (!preview || preview === "accueil" || preview === "labo")
+      this.direct = installDirectInput(this);
     this.draw();
+  }
+  refreshLayout() {
+    this.scale?.refresh();
   }
   inkCache = new Map<number, number>();
   ink(c: number) {
@@ -925,6 +940,8 @@ class Game extends Phaser.Scene {
   }
   setPlayerMenu(open: boolean) {
     this.playerMenu = open;
+    this.controls?.reset();
+    this.direct?.cancel();
     const keyboard = this.input?.keyboard;
     if (!keyboard) return;
     keyboard.resetKeys();
@@ -1131,7 +1148,11 @@ class Game extends Phaser.Scene {
     )
       this.freshKey = true;
   }
-  setPaused(value: boolean, reason = "") {
+  setPaused(value: boolean, reason = "", preserveControls = false) {
+    if (!preserveControls && value !== this.paused) {
+      this.controls?.reset();
+      this.direct?.cancel();
+    }
     this.paused = value;
     this.pauseReason = value ? reason : "";
     this.freshKey = false;
@@ -1187,6 +1208,7 @@ class Game extends Phaser.Scene {
     }
   }
   loadScenario(name: string) {
+    this.controls?.reset();
     this.workshopScenario = name;
     this.input?.keyboard?.resetKeys();
     this.paused = false;
@@ -1364,6 +1386,10 @@ class Game extends Phaser.Scene {
     if (focused) this.setPaused(true);
   }
   update(_t: number, ms: number) {
+    if (this.controls && this.physicalKeys)
+      this.controls.sampleKeyboard(this.physicalKeys, (k) =>
+        Phaser.Input.Keyboard.JustDown(this.physicalKeys![k]),
+      );
     if (
       ms > PLAY.maxFrameMs &&
       !this.paused &&
@@ -1390,7 +1416,7 @@ class Game extends Phaser.Scene {
     this.substepping = true;
     for (let i = 0; i < steps; i++) this.simulate(elapsed / steps / 1000);
     this.substepping = false;
-    if (singleStep) this.setPaused(wasPaused);
+    if (singleStep) this.setPaused(wasPaused, "", true);
     this.draw();
   }
   simulate(dt: number) {
@@ -1403,6 +1429,7 @@ class Game extends Phaser.Scene {
       return;
     }
 
+    this.direct?.tick(dt);
     const just = (k: string) => Phaser.Input.Keyboard.JustDown(this.keys[k]);
     // Consume one-shot controls even when an imposed transition rejects them.
     const jumpPressed = just("SPACE");
@@ -2052,9 +2079,9 @@ class Game extends Phaser.Scene {
     this.burst(this.px, 158, 0x8e8268);
     return true;
   }
-  interaction() {
-    const targets =
-      this.room === 4
+  pointerExits() {
+    return (
+      (this.room === 4
         ? this.cleared.has(4)
           ? [
               {
@@ -2067,8 +2094,13 @@ class Game extends Phaser.Scene {
               },
             ]
           : []
-        : EXITS[this.room];
-    return targets?.find((t) => this.px >= t.from && this.px <= t.to);
+        : EXITS[this.room]) ?? []
+    );
+  }
+  interaction() {
+    return this.pointerExits().find(
+      (t) => this.px >= t.from && this.px <= t.to,
+    );
   }
   burst(x: number, y: number, color: number) {
     for (let i = 0; i < 8; i++)
@@ -2760,6 +2792,7 @@ class Game extends Phaser.Scene {
         this.enemies[0].x,
         this.enemies[0].female,
         this.dialogue,
+        this.pointerMode ? "TOUCHER" : "X/F",
       );
     this.drawingEncounter = false;
     if (this.phase === "school" && this.schoolFade > 0)
@@ -2773,6 +2806,23 @@ class Game extends Phaser.Scene {
       : [])
       if (p.x > 8 && p.x < 308 && p.y > 8 && p.y < 173)
         this.rect(p.x, p.y, 3, 2, p.color);
+    const feedback = this.direct?.feedback;
+    if (
+      feedback &&
+      !this.paused &&
+      ["school", "free", "receive", "road"].includes(this.phase)
+    ) {
+      const x = feedback.x,
+        y = feedback.y;
+      this.g.lineStyle(
+        1,
+        feedback.kind === "attack" ? 0xd97561 : 0xe5ae60,
+        Math.min(1, feedback.life / 0.2),
+      );
+      this.g.strokeRect(x - 4, y - 4, 8, 8);
+      this.g.lineBetween(x - 8, y, x - 5, y);
+      this.g.lineBetween(x + 5, y, x + 8, y);
+    }
     if (this.paused && !this.workshop && !this.syncPlayerUI) {
       this.g.fillStyle(0x080d13, 0.55);
       this.g.fillRect(7, 7, 306, 168);

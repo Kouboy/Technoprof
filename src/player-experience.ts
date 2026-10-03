@@ -1,4 +1,5 @@
 import type { AudioKit } from "./audio";
+import { ENCOUNTERS, type DialogueState } from "./dialogue";
 export const RADIO_BULLETINS = [
   "La rentrée est prête : les postes vacants seront occupés par le mot priorité.",
   "Le ministère annonce plus d’autonomie. Chaque établissement pourra désormais choisir ce qu’il ne répare pas.",
@@ -29,17 +30,21 @@ export type PlayerContext = {
   encounterTime: number;
   roomEnteredAt: number;
   session: { elapsed: number };
+  pointerMode?: boolean;
+  dialogue?: DialogueState;
 };
 export function contextualHelp(s: PlayerContext) {
   if (s.paused) return "";
   if (s.phase === "course" && s.age > 1)
-    return "Une touche pour poursuivre après le cours.";
+    return "Une touche ou un toucher pour poursuivre après le cours.";
   if (s.mission !== 0)
     return s.phase === "free" && s.age < 10
       ? DAY_BRIEFS[Math.min(2, s.mission)]
       : "";
   if (s.phase === "free" && s.age < 10)
-    return "↑ accélérer · ↓ freiner · ← → diriger. En attente d’affectation : aucun délai ne s’écoule.";
+    return s.pointerMode
+      ? "Maintenez dans la scène pour accélérer. Glissez pour diriger ; vers le bas pour freiner. Relâchez pour laisser rouler."
+      : "Z/↑ accélérer · S/↓ freiner · Q D/← → diriger. Souris/tactile : maintenir puis glisser dans la scène.";
   if (s.phase === "receive" || (s.phase === "road" && s.age < 8))
     return "Le délai a commencé : route et recherche de la salle partagent le même chronomètre.";
   if (s.phase === "arrival" || s.phase === "arrivalFade")
@@ -47,9 +52,13 @@ export function contextualHelp(s: PlayerContext) {
   if (s.phase !== "school" || s.encounterTime > 0) return "";
   const elapsed = s.session.elapsed - s.roomEnteredAt;
   if (s.room === 0 && elapsed < 10)
-    return "← → marcher. Suivez les plaques ; les accès indiquent leur touche à proximité.";
+    return s.pointerMode
+      ? "Touchez le sol pour marcher, une porte pour la rejoindre. Glissez vers le haut pour sauter, en diagonale pour sauter dans cette direction."
+      : "Q D/← → marcher. Suivez les plaques ; les accès indiquent leur touche à proximité.";
   if (s.room === 1 && elapsed < 20)
-    return "X : se défendre avec le livre. ESPACE : sauter les trous ou une charge. Vous pouvez aussi éviter l’adversaire.";
+    return s.pointerMode
+      ? "Touchez l’adversaire pour aller le frapper. Touchez le sol pour vous placer ; glissez vers le haut pour sauter."
+      : "F/X : se défendre avec le livre. ESPACE : sauter les trous ou une charge. Vous pouvez aussi éviter l’adversaire.";
   if (s.room === 4 && elapsed < 22)
     return "L’inspection bloque le livre. Évitez son attaque, puis frappez pendant son ouverture.";
   return "";
@@ -62,6 +71,7 @@ type Host = PlayerContext & {
   audio: AudioKit;
   radioLines: string[];
   remaining: number;
+  enemies?: { female?: boolean }[];
   startDay(): void;
   setPaused(value: boolean, reason?: string): void;
   setPlayerMenu(open: boolean): void;
@@ -72,6 +82,7 @@ export function installPlayerExperience(s: Host) {
   const toolbar = document.getElementById("player-toolbar")!;
   const help = document.getElementById("player-help")!;
   const captions = document.getElementById("radio-caption")!;
+  const dialogueCaption = document.getElementById("dialogue-caption");
   const game = document.getElementById("game")!;
   const loading = document.getElementById("loading");
   if (loading) loading.hidden = true;
@@ -159,15 +170,30 @@ export function installPlayerExperience(s: Host) {
   const controls = () => {
     const dl = document.createElement("dl");
     for (const [key, action] of [
-      ["Sur la route", "↑ accélérer · ↓ freiner · ← → diriger"],
-      ["Dans le collège", "← → marcher · ESPACE sauter · X frapper au livre"],
+      ["Sur la route", "Z/↑ accélérer · S/↓ freiner · Q D/← → diriger"],
+      [
+        "Dans le collège",
+        "Q D ou ← → marcher · ESPACE sauter · F ou X frapper",
+      ],
       [
         "Pendant un dialogue",
-        "X afficher la réplique · X suivant · délai suspendu",
+        "F ou X afficher, puis poursuivre · délai suspendu",
       ],
       [
         "Portes / escaliers",
-        "↑ ou ↓, selon la touche affichée près du passage",
+        "Z/↑ ou S/↓, selon la flèche affichée près du passage",
+      ],
+      [
+        "Souris / tactile",
+        "Touchez le sol pour marcher, un adversaire pour aller le frapper, un passage pour l’emprunter. Glissez vers le haut pour sauter ; en diagonale pour sauter dans cette direction.",
+      ],
+      [
+        "Conduite directe",
+        "Maintenez dans la scène pour accélérer. Glissez à gauche/droite pour diriger ; vers le bas pour freiner. Relâchez pour laisser rouler.",
+      ],
+      [
+        "Dialogue / après le cours",
+        "Un clic ou toucher révèle la réplique puis la poursuit. Après le cours ou un échec, touchez pour continuer.",
       ],
       ["À tout moment", "P ou Échap : pause / reprise · M : son"],
     ]) {
@@ -209,6 +235,29 @@ export function installPlayerExperience(s: Host) {
         : "";
     if (captions.textContent !== caption) captions.textContent = caption;
     captions.hidden = !caption;
+    if (dialogueCaption) {
+      const data =
+        s.phase === "school" && s.encounterTime > 0 && !mode && s.dialogue
+          ? ENCOUNTERS[s.room]
+          : undefined;
+      const page = data?.pages[s.dialogue?.page ?? 0];
+      let chars = Math.floor(s.dialogue?.characters ?? 0);
+      const speech =
+        page
+          ?.map((line) => {
+            const shown = line.slice(0, Math.max(0, chars));
+            chars -= line.length;
+            return shown;
+          })
+          .filter(Boolean)
+          .join(" ") ?? "";
+      const name =
+        s.room === 4 && s.enemies?.[0]?.female ? "INSPECTRICE" : data?.name;
+      const text = speech ? name + " — " + speech : "";
+      if (dialogueCaption.textContent !== text)
+        dialogueCaption.textContent = text;
+      dialogueCaption.hidden = !text;
+    }
     root.hidden = !mode;
     const key = mode + ":" + menuPage + ":" + s.results.join("|");
     if (key === previous) return;
@@ -301,7 +350,9 @@ export function installPlayerExperience(s: Host) {
       paragraph(
         "Attendez l’ordre en voiture, rejoignez le collège puis trouvez la salle 42C. Dès la notification, un même délai couvre la route et le collège. L’arrivée automatique ne vous coûte pas de temps.",
       );
-      paragraph("Jeu au clavier · ← → ↑ ↓ · ESPACE · X · P");
+      paragraph(
+        "Clavier : ZQSD ou flèches · ESPACE · F/X. Souris et tactile : interactions directement dans la scène. Paysage conseillé sur téléphone.",
+      );
     } else if (mode === "report") {
       paragraph(
         `${s.won} cours assuré${s.won > 1 ? "s" : ""} sur 3 — minimum exigé : 2.`,

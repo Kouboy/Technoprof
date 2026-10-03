@@ -361,6 +361,7 @@ export function dialogueLayout(
   speakerX: number,
   female = false,
   state?: DialogueState,
+  actionLabel = "X/F",
 ) {
   const data = ENCOUNTERS[room];
   if (!data) return;
@@ -377,10 +378,10 @@ export function dialogueLayout(
     h: state ? 42 : 32,
     hint: state
       ? !dialogueReady(room, state)
-        ? "X : AFFICHER"
+        ? actionLabel + " : AFFICHER"
         : page + 1 < data.pages.length
-          ? "X : SUITE"
-          : "X : TERMINER"
+          ? actionLabel + " : SUITE"
+          : actionLabel + " : TERMINER"
       : "",
     tail: Math.max(x + 14, Math.min(x + w - 14, speakerX)),
     mouthX: Math.max(15, Math.min(305, speakerX - 9)),
@@ -394,8 +395,16 @@ export function drawDialogue(
   speakerX: number,
   female = false,
   state?: DialogueState,
+  actionLabel = "X/F",
 ) {
-  const b = dialogueLayout(room, remaining, speakerX, female, state);
+  const b = dialogueLayout(
+    room,
+    remaining,
+    speakerX,
+    female,
+    state,
+    actionLabel,
+  );
   if (!b) return;
   const poly = (points: number[], color: number) => {
     g.fillStyle(color);
