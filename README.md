@@ -48,6 +48,9 @@ jouer directement dans la scène. L'aide en jeu détaille les gestes.
 
 ## Versions et suivi
 
+Prochaine conception à relire : [navigation et orientation à Bruel](CONCEPTION-BRUEL-NAVIGATION.md).
+Le graphe proposé est un essai séparé ; il ne modifie pas encore le jeu 0.61.
+
 La branche `main` contient l'état courant. Voir [l'historique importé](HISTORIQUE.md)
 pour distinguer les sauvegardes partielles et les jalons plus complets. Les tags
 `snapshot-0.40` à `snapshot-0.59` conservent les fichiers disponibles ; `v0.60`
