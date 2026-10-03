@@ -1,4 +1,4 @@
-// Compact five-pixel lettering for speech and physical signs (HUD keeps its large font).
+// Compact five-pixel lettering shared by speech, physical signs and HUD labels.
 const rows: Record<string, string> = {
   A: "010/101/111/101/101",
   B: "110/101/110/101/110",
@@ -39,6 +39,7 @@ const rows: Record<string, string> = {
   " ": "00/00/00/00/00",
   "!": "1/1/1/0/1",
   "?": "110/001/010/000/010",
+  "%": "101/001/010/100/101",
   ":": "0/1/0/1/0",
   "'": "1/1/0/0/0",
   "-": "000/000/111/000/000",

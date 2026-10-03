@@ -1,3 +1,4 @@
+import { smallPrint, smallWidth } from "./small-lettering";
 // Integer-grid lettering and metalwork stay sharp at the game's logical resolution.
 // This module only reads game state; rendering cannot start or reset a mission.
 export const GLYPHS: Record<string, string[]> = Object.fromEntries(
@@ -193,164 +194,232 @@ export function cadreModel(s: CadreState, routeMeters: number) {
     reveal: s.phase === "receive" ? Math.max(0, Math.min(1, s.age / 3)) : 1,
   };
 }
+// Taller, narrower instrument digits: 18px high instead of the old 21px clock.
+export const CADRE_DIGITS: Record<string, string[]> = Object.fromEntries(
+  Object.entries({
+    "0": "01110/10001/10001/10001/10001/10001/10001/10001/01110",
+    "1": "00100/01100/00100/00100/00100/00100/00100/00100/01110",
+    "2": "01110/10001/00001/00001/00110/01000/10000/10000/11111",
+    "3": "11110/00001/00001/00001/01110/00001/00001/00001/11110",
+    "4": "00010/00110/01010/10010/11111/00010/00010/00010/00010",
+    "5": "11111/10000/10000/10000/11110/00001/00001/00001/11110",
+    "6": "01110/10000/10000/10000/11110/10001/10001/10001/01110",
+    "7": "11111/00001/00001/00010/00100/00100/01000/01000/01000",
+    "8": "01110/10001/10001/10001/01110/10001/10001/10001/01110",
+    "9": "01110/10001/10001/10001/01111/00001/00001/00001/01110",
+    ":": "0/0/1/1/0/1/1/0/0",
+    "-": "00000/00000/00000/00000/11111/00000/00000/00000/00000",
+  }).map(([key, rows]) => [key, rows.split("/")]),
+);
+export function clockWidth(value: string) {
+  return [...value].reduce(
+    (width, c) => width + (CADRE_DIGITS[c][0].length + 1) * 2,
+    -2,
+  );
+}
 export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
   const m = cadreModel(s, routeMeters);
   const ink = 0x080d13,
     metal = 0x24333b,
-    edge = 0x758080,
+    edge = 0x647577,
     paper = 0xe3d4b3,
     amber = 0xe5ae60,
     red = 0xd97561,
-    dim = 0x647577;
+    dim = 0x82908b;
   const r = (x: number, y: number, w: number, h: number, c: number) => {
     g.fillStyle(c);
     g.fillRect(x, y, w, h);
   };
+  const compact = (
+    x: number,
+    y: number,
+    text: string,
+    c = paper,
+    width = 300,
+  ) => {
+    let fitted = text;
+    if (smallWidth(fitted) > width) {
+      while (fitted.length && smallWidth(fitted + "...") > width)
+        fitted = fitted.slice(0, -1);
+      fitted += "...";
+    }
+    smallPrint(g, x, y, fitted, c);
+  };
+  const centerSmall = (
+    x: number,
+    w: number,
+    y: number,
+    text: string,
+    c = paper,
+  ) => compact(x + Math.floor((w - smallWidth(text)) / 2), y, text, c, w);
   const t = (
     x: number,
     y: number,
-    v: string,
+    text: string,
     c = paper,
     scale = 1,
     width = 300,
-  ) => bitmap(g, x, y, v, c, scale, width);
-  const centered = (
-    left: number,
-    width: number,
-    y: number,
-    v: string,
-    c = paper,
-    scale = 1,
-  ) =>
-    t(
-      left + Math.floor((width - bitmapWidth(v, scale)) / 2),
-      y,
-      v,
-      c,
-      scale,
-      width,
-    );
+  ) => bitmap(g, x, y, text, c, scale, width);
+
+  // Folded steel surround. Grain and wear are confined to the metal gutters.
   r(0, 179, 320, 61, ink);
   r(1, 180, 318, 59, metal);
-  r(2, 180, 316, 1, edge);
-  r(3, 181, 314, 1, 0x38494c);
-  for (const [x, w] of [
-    [7, 103],
-    [116, 90],
-    [212, 101],
-  ]) {
-    r(x - 2, 184, w + 4, 48, ink);
-    r(x - 1, 184, w + 2, 1, dim);
-    r(x, 185, w, 45, 0x0d171c);
-    r(x, 194, w, 1, 0x38494c);
-    r(x, 230, w, 1, edge);
+  r(2, 180, 316, 1, 0x758080);
+  r(3, 181, 314, 1, 0x526064);
+  r(2, 182, 316, 1, 0x38494c);
+  r(1, 182, 1, 57, 0x526064);
+  r(318, 181, 1, 58, 0x141e27);
+  for (const x of [5, 112, 208, 314]) {
+    r(x, 184, 1, 47, 0x38494c);
+    r(x + 1, 184, 1, 47, 0x141e27);
+    for (let y = 195; y < 226; y += 9) r(x, y, 1, 2, 0x526064);
   }
+  for (const [x, w] of [
+    [8, 101],
+    [118, 86],
+    [213, 99],
+  ]) {
+    r(x - 1, 184, w + 2, 48, ink);
+    r(x, 185, w, 1, edge);
+    r(x, 186, w, 7, 0x38494c);
+    r(x + 1, 187, w - 2, 5, 0x24333b);
+    r(x, 193, w, 1, 0x526064);
+    r(x, 194, w, 36, 0x0d171c);
+    r(x + 1, 195, w - 2, 1, 0x080d13);
+    r(x, 230, w, 1, 0x526064);
+    r(x + 1, 231, w - 2, 1, 0x141e27);
+  }
+  // Recessed screws, slots, oxidised drips and a few exposed paint layers.
   for (const x of [3, 111, 207, 315])
     for (const y of [184, 228]) {
-      r(x, y, 3, 3, ink);
-      r(x, y, 2, 2, edge);
+      r(x - 1, y - 1, 4, 4, ink);
+      r(x, y, 2, 2, 0x758080);
       r(x, y + 1, 2, 1, 0x38494c);
+      r(x + 1, y, 1, 1, 0x141e27);
+      if (y === 184) r(x, y + 4, 1, 3, 0x665e4a);
     }
-  // Chipped paint stays at the frame edges, away from the instruments.
   for (const [x, y, w] of [
-    [23, 181, 8],
-    [77, 231, 5],
-    [181, 181, 6],
-    [288, 231, 9],
+    [24, 181, 9],
+    [76, 231, 5],
+    [180, 181, 7],
+    [282, 231, 10],
   ]) {
-    r(x, y, w, 1, dim);
-    r(x + 2, y, 2, 1, 0x928269);
+    r(x, y, w, 1, edge);
+    r(x + 2, y, 3, 1, 0x928269);
+    r(x + 3, y + 1, 1, 1, 0x665e4a);
   }
-  t(12, 185, m.assigned ? "AFFECTATION" : "RECEPTION", paper, 1, 95);
-  centered(118, 86, 185, "DELAIS", paper);
-  t(217, 185, m.driving ? "AUTO" : "PERSONNEL", paper, 1, 91);
+  compact(12, 187, m.assigned ? "AFFECTATION" : "RECEPTION", paper, 88);
+  centerSmall(120, 82, 187, "DELAIS");
+  compact(217, 187, m.driving ? "AUTO" : "PERSONNEL", paper, 62);
+  const clockColor = m.urgent ? red : m.assigned ? amber : dim;
+  // Small signal lamps carry state; no ornamental flashing in ordinary play.
+  r(102, 187, 3, 3, ink);
+  r(103, 188, 1, 1, m.assigned ? amber : dim);
+  r(196, 187, 3, 3, ink);
+  r(197, 188, 1, 1, m.suspended ? dim : clockColor);
+
   if (m.assigned) {
-    // Wired-glass door, enamel number plate, handle and battered threshold.
-    r(12, 198, 22, 31, dim);
-    r(14, 200, 18, 29, 0x928269);
-    r(16, 201, 14, 27, 0x665e4a);
-    r(18, 203, 10, 12, ink);
-    r(19, 204, 8, 10, 0x38494c);
-    for (let y = 205; y < 214; y += 3) r(19, y, 8, 1, dim);
-    r(21, 204, 1, 10, dim);
-    r(25, 204, 1, 10, dim);
-    r(28, 218, 2, 1, paper);
-    r(28, 219, 1, 2, edge);
-    r(16, 226, 14, 2, edge);
-    r(17, 222, 2, 1, 0xb9aa89);
+    // Destination card: wired glazing, worn latch and a dented lower plate.
+    r(12, 198, 22, 30, 0x526064);
+    r(13, 199, 20, 28, ink);
+    r(15, 200, 16, 26, 0x928269);
+    r(16, 201, 14, 24, 0x665e4a);
+    r(18, 202, 10, 12, ink);
+    r(19, 203, 8, 10, 0x38494c);
+    for (let y = 204; y < 213; y += 3) r(19, y, 8, 1, 0x647577);
+    r(21, 203, 1, 10, 0x647577);
+    r(25, 203, 1, 10, 0x647577);
+    r(28, 217, 2, 1, paper);
+    r(28, 218, 1, 2, edge);
+    r(16, 224, 14, 2, edge);
+    r(17, 221, 2, 1, 0xb9aa89);
     if (m.reveal < 1) {
-      const h = Math.round(31 * (1 - m.reveal));
+      const h = Math.round(30 * (1 - m.reveal));
       r(12, 198, 22, h, 0x0d171c);
       r(12, 198 + h, 22, 1, amber);
     }
-    t(40, 197, "C. HANOUNA", paper, 1, 67);
-    t(40, 207, "SALLE", dim, 1, 67);
-    t(40, 216, "42C", paper, 2, 67);
+    compact(40, 199, "COLLEGE", dim, 65);
+    compact(40, 207, "C. HANOUNA", paper, 65);
+    compact(40, 220, "SALLE", dim, 27);
+    t(70, 214, "42C", paper, 2, 37);
   } else if (s.phase === "free") {
-    t(14, 199, "RADIO :", dim);
-    t(14, 211, "EDUC FRANCE", paper, 1, 91);
-    for (let i = 0; i < 18; i++) {
+    compact(14, 199, "RADIO FM", dim, 90);
+    t(14, 209, "EDUC FRANCE", paper, 1, 91);
+    r(14, 221, 83, 1, 0x38494c);
+    for (let i = 0; i < 16; i++) {
       const h =
-        1 + Math.floor((Math.sin(s.ambienceClock * 3 + i * 0.8) + 1) * 2);
-      r(15 + i * 5, 228 - h, 2, h, dim);
+        1 + Math.floor((Math.sin(s.ambienceClock * 3 + i * 0.8) + 1) * 1.5);
+      r(15 + i * 5, 228 - h, 2, h, 0x82908b);
     }
   } else {
-    t(14, 200, "RESEAU", dim);
-    t(14, 211, "RECTORAL", paper);
-    t(14, 223, "EN ATTENTE", dim);
+    compact(14, 200, "RESEAU", dim, 90);
+    t(14, 210, "RECTORAL", paper, 1, 90);
+    compact(14, 223, "EN ATTENTE", dim, 90);
   }
-  const clockColor = m.urgent ? red : m.assigned ? amber : dim;
-  centered(118, 86, 199, m.time, clockColor, 3);
-  centered(118, 86, 224, m.status, s.phase === "fail" || m.urgent ? red : dim);
+
+  // Instrument numerals have their own narrower stencil; labels use the same
+  // five-pixel lettering as the physical signs elsewhere in the school.
+  const clockX = 118 + Math.floor((86 - clockWidth(m.time)) / 2);
+  let cursor = clockX;
+  g.fillStyle(clockColor);
+  for (const c of m.time) {
+    const glyph = CADRE_DIGITS[c];
+    glyph.forEach((row, y) =>
+      [...row].forEach((pixel, x) => {
+        if (pixel === "1") g.fillRect(cursor + x * 2, 200 + y * 2, 2, 2);
+      }),
+    );
+    cursor += (glyph[0].length + 1) * 2;
+  }
+  r(125, 221, 72, 1, 0x24333b);
+  centerSmall(
+    120,
+    82,
+    224,
+    m.status,
+    s.phase === "fail" || m.urgent ? red : dim,
+  );
   if (m.urgent && Math.floor(s.ambienceClock * 3) % 2 === 0) {
     r(117, 196, 88, 1, red);
     r(117, 231, 88, 1, red);
   }
   if (m.driving) {
-    t(
-      268,
-      185,
-      Math.round(s.vehicle) + "%",
-      s.vehicle <= 40 ? red : paper,
-      1,
-      42,
-    );
-    r(217, 227, 90, 2, 0x38494c);
-    r(
-      217,
-      227,
-      Math.round((90 * Math.max(0, Math.min(100, s.vehicle))) / 100),
-      2,
-      s.vehicle <= 40 ? red : dim,
-    );
+    const healthColor = s.vehicle <= 40 ? red : dim;
+    const health = Math.max(0, Math.min(100, s.vehicle));
+    compact(281, 187, Math.round(health) + "%", healthColor, 28);
+    for (let i = 0; i < 10; i++) {
+      r(218 + i * 9, 227, 7, 2, 0x24333b);
+      if (health > i * 10) r(218 + i * 9, 227, 7, 2, healthColor);
+    }
     if (m.assigned) {
-      t(218, 197, Math.round(s.speed) + " KM/H", paper, 1, 88);
-      t(218, 209, m.distance, m.veryNear ? red : m.near ? amber : paper, 2, 90);
+      t(218, 198, Math.round(s.speed) + " KM/H", paper, 1, 88);
+      compact(218, 206, "RESTE", dim, 30);
+      const digits = m.distance.replace(" KM", "");
+      const distanceColor = m.veryNear ? red : m.near ? amber : paper;
+      t(218, 212, digits, distanceColor, 2, 75);
+      compact(222 + bitmapWidth(digits, 2), 221, "KM", distanceColor, 20);
       if (m.near) {
         r(213, 195, 2, 31, m.veryNear ? red : amber);
         r(310, 195, 2, 31, m.veryNear ? red : amber);
       }
     } else {
-      t(218, 199, "VITESSE", dim);
-      t(218, 212, Math.round(s.speed) + " KM/H", paper, 2, 90);
+      compact(218, 199, "VITESSE", dim, 89);
+      const digits = String(Math.round(s.speed));
+      t(218, 210, digits, paper, 2, 75);
+      compact(222 + bitmapWidth(digits, 2), 219, "KM/H", paper, 27);
     }
   } else {
-    t(218, 199, "ETAT DU PROF", dim, 1, 89);
+    compact(218, 199, "ETAT DU PROF", dim, 89);
     for (let i = 0; i < 5; i++) {
-      r(218 + i * 18, 212, 14, 9, 0x38494c);
+      r(218 + i * 18, 210, 14, 8, 0x38494c);
+      r(219 + i * 18, 211, 12, 6, 0x141e27);
       if (i < s.hp) {
-        r(219 + i * 18, 213, 12, 7, s.hp <= 2 ? red : paper);
-        r(219 + i * 18, 213, 12, 1, s.hp <= 2 ? amber : 0xb9aa89);
+        r(220 + i * 18, 211, 10, 5, s.hp <= 2 ? red : 0xb9aa89);
+        r(220 + i * 18, 211, 10, 1, s.hp <= 2 ? amber : paper);
       }
     }
-    t(
-      218,
-      224,
-      Math.max(0, s.hp) + "/5  SERVICE " + Math.min(3, s.mission + 1) + "/3",
-      dim,
-      1,
-      90,
-    );
+    t(218, 222, Math.max(0, s.hp) + "/5", s.hp <= 2 ? red : paper, 1, 24);
+    compact(251, 224, "SERVICE " + Math.min(3, s.mission + 1) + "/3", dim, 58);
   }
   const service =
     ["08:00", "12:00", "17:00"][Math.min(s.mission, 2)] +
@@ -376,23 +445,23 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
                     ? "RESEAU RECTORAL - " + service
                     : "CADRE / " + service;
   r(7, 233, 306, 7, ink);
-  t(
+  r(7, 233, 306, 1, 0x38494c);
+  compact(
     11,
-    233,
+    235,
     line,
     s.phase === "fail" || m.veryNear
       ? red
       : m.near || s.phase === "receive"
         ? amber
         : dim,
-    1,
     298,
   );
   if (s.phase === "receive") {
-    r(7, 193, Math.round(103 * m.reveal), 1, amber);
+    r(8, 193, Math.round(101 * m.reveal), 1, amber);
     if (Math.floor(s.age * 6) % 2 === 0) {
-      r(5, 183, 107, 1, amber);
-      r(5, 231, 107, 1, amber);
+      r(7, 184, 103, 1, amber);
+      r(7, 231, 103, 1, amber);
     }
   }
 }
