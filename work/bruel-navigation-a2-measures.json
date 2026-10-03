@@ -1,0 +1,75 @@
+{
+  "status": "proposal-not-runtime",
+  "method": "Static proposed graph, exact entry/exit offsets at current walk speed. No combat, hesitation, human comprehension or actual gameplay simulated.",
+  "zones": 12,
+  "levels": 2,
+  "encountersFromExistingBruel": [
+    11,
+    13,
+    14,
+    41,
+    44,
+    47
+  ],
+  "routes": {
+    "discovery": {
+      "visits": 10,
+      "uniqueZones": 10,
+      "encounters": 6,
+      "movementAndCareSeconds": 28.141,
+      "careApplied": false
+    },
+    "known": {
+      "visits": 8,
+      "uniqueZones": 8,
+      "encounters": 6,
+      "movementAndCareSeconds": 24.694,
+      "careApplied": false
+    },
+    "discoveryWithCare": {
+      "visits": 12,
+      "uniqueZones": 11,
+      "encounters": 6,
+      "movementAndCareSeconds": 35.047,
+      "careApplied": true
+    },
+    "knownWithCare": {
+      "visits": 10,
+      "uniqueZones": 9,
+      "encounters": 6,
+      "movementAndCareSeconds": 28.776,
+      "careApplied": true
+    },
+    "correctedWrongTurn": {
+      "visits": 14,
+      "uniqueZones": 11,
+      "encounters": 6,
+      "movementAndCareSeconds": 38.506,
+      "careApplied": false
+    },
+    "orientationLoop": {
+      "visits": 7,
+      "uniqueZones": 6,
+      "encounters": 1,
+      "movementAndCareSeconds": 11.953,
+      "careApplied": false
+    },
+    "midcourseChoice": {
+      "visits": 10,
+      "uniqueZones": 10,
+      "encounters": 6,
+      "movementAndCareSeconds": 26.518,
+      "careApplied": false
+    }
+  },
+  "branchZones": [
+    "bruel-hall",
+    "bruel-palier-principal",
+    "bruel-escalier-annexe",
+    "bruel-jonction-b"
+  ],
+  "knownRouteSavingSeconds": 3.447,
+  "careExtraDiscoverySeconds": 6.906,
+  "careExtraKnownSeconds": 4.082,
+  "wrongTurnExtraSeconds": 13.812
+}

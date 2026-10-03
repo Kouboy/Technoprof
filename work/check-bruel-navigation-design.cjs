@@ -4,7 +4,7 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const { stripTypeScriptTypes } = require('node:module');
 const vm = require('node:vm');
-const d = JSON.parse(fs.readFileSync(path.join(__dirname, 'bruel-navigation-design.json'), 'utf8'));
+const d = JSON.parse(fs.readFileSync(path.join(__dirname, process.argv[2] ?? 'bruel-navigation-design.json'), 'utf8'));
 const zones = new Map(d.zones.map(z => [z.id, z]));
 assert.equal(d.status, 'proposal-not-runtime');
 assert.equal(zones.size, d.zones.length, 'duplicate zone');
@@ -100,10 +100,11 @@ const delta = (a,b) => +(routes[a].movementAndCareSeconds - routes[b].movementAn
 const report = { status: d.status,
   method: 'Static proposed graph, exact entry/exit offsets at current walk speed. No combat, hesitation, human comprehension or actual gameplay simulated.',
   zones: zones.size, levels: 2, encountersFromExistingBruel: expected, routes,
+  branchZones:d.zones.filter(z=>z.exits.length>=3).map(z=>z.id),
   knownRouteSavingSeconds: delta('discovery','known'),
   careExtraDiscoverySeconds: delta('discoveryWithCare','discovery'),
   careExtraKnownSeconds: delta('knownWithCare','known'),
   wrongTurnExtraSeconds: delta('correctedWrongTurn','known') };
-fs.writeFileSync(path.join(__dirname, 'bruel-navigation-measures.json'), JSON.stringify(report,null,2)+'\n');
+if(process.argv[3] !== '-') fs.writeFileSync(path.join(__dirname, process.argv[3] ?? 'bruel-navigation-measures.json'), JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify(report,null,2));
 console.log('PASS design graph: valid destinations/spawns, returns, explicit floor changes, reachable optional care, real loop, six existing common encounters and shorter known route. Not an implementation test.');
