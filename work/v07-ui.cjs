@@ -1,0 +1,10 @@
+const fs=require('fs');let s=fs.readFileSync('src/main.ts','utf8');s=s.replace('this.txt(45, 36, "TECHNOPROF", 29','this.txt(45, 25, "TECHNOPROF", 29').replace('this.txt(55, 73, "PHYSIQUE APPLIQUEE", 13)','this.txt(55, 61, "PHYSIQUE APPLIQUEE", 13)').replace('          101,','          84,').replace('124 + i * 10','108 + i * 10').replace('this.txt(58, 161, "ENTREE : NOUVELLE JOURNEE");','this.txt(19,142,`${this.kilometers.toFixed(1)} KM / ${this.collisions} CHOCS / ${this.punches} COUPS`,8);this.txt(19,153,this.won>=2?"MOYENS JUGES SUFFISANTS. RECONDUCTION.":"LES CONTRAINTES NE SAURAIENT EXCUSER.",8,"#e6be65");this.txt(58,166,"ENTREE : NOUVELLE JOURNEE");');
+const a=s.indexOf('      this.txt(9, 196, "ST-HANOUNA"'),b=s.indexOf('\n    this.txt(123,',a);s=s.slice(0,a)+`      this.txt(41,197,'ST-HANOUNA',8);this.txt(41,209,'42C',13,'#e6be65');this.rect(9,194,25,29,0xa49b76);this.rect(12,198,19,25,0x34423d);this.rect(26,212,2,2,0xd7c48e);if(this.phase==='receive'){const h=29*(1-Math.min(1,this.age/3));this.rect(9,194,25,h,0x111c1b);this.rect(9,194+h,25,1,0xe6be65);}}
+ `+s.slice(b);
+// Damage preview provides a repeatable collision test without changing real mission rules.
+s=s.replace('      if (preview === "arrivee") {','      if(preview==="chocs"){this.vehicle=100;this.speed=140;this.obstacles=[{z:45,x:0,type:1},{z:300,x:0,type:1},{z:650,x:0,type:1}];}else if (preview === "arrivee") {');
+// Keep effects out of the empty cinematic frames.
+s=s.replace('    for (const p of this.particles)\n      if', '    for (const p of (["free","receive","road","school"].includes(this.phase)?this.particles:[]))\n      if');
+fs.writeFileSync('src/main.ts',s);
+let h=fs.readFileSync('index.html','utf8');h=h.replace('Essais rapides :','Essais rapides : <a href="?essai=chocs">Chocs</a> · <a href="?essai=parent">Parent</a> · <a href="?essai=raccourci">Raccourci</a> ·');fs.writeFileSync('index.html',h);
+let t=fs.readFileSync('work/check.cjs','utf8');t=t.replace("g.px=250;press('UP');assert.equal(g.room,2);", "g.px=250;press('UP');assert.equal(g.room,8);g.px=25;press('DOWN');assert.equal(g.room,2);");fs.writeFileSync('work/check.cjs',t);

@@ -1,0 +1,12 @@
+TECHNOPROF 0.60 - exponential workload: minimum rooms 9/18/36, encounters 3/6/12, actual traffic about 10/20/40.
+npm test PASS (22 scripts). TypeScript/Vite build and autonomous HTML with 13 lightweight shortcuts PASS.
+60 first assignments and 36 full days plus 6 exposure and 4 progression runs: keyboard/direct, both paths, synthetic 30/60/120 fps. Human difficulty and physical-phone tests pending.
+Measured passing exposure: about 10 / 20-22 / 35-40 in continuous reference days; two clean anticipatory third-road runs reach 42. No notification respawn.
+Compiled browser observed via localhost: new Bruel encounter, reveal/confirm without attack, twilight corridor 60 -> classroom 61 through direct input, frozen speech clock, no browser errors. Not file:// or physical-phone validation.
+29 PNG assets, about 87.6 MB autonomous HTML; Vite large-chunk and Node experimental TypeScript notices remain known.
+Standalone SHA256: EF98F0F98C6EB73BAE83B15313756BBA63D6538002EB4AEF78216FEC9E4E90AF
+0.59 unchanged: 21486F80BFB19166CFB2D31AEA859EF37C9E23B8AC098EEE49EFF3555B183744
+0.58 unchanged: 8015A00054DCB11450F8D6C14CC73E9CA5A6E5B393E28BA2539E36C42FC0F196
+0.57 unchanged: 17065A1E836764ED03F641F1A39B3C02AF0229C683818F1D220C2DF7E9F7D1FE
+Technoprof-0.60-local.zip : 34 entries, matching game hash, 64345575 bytes
+Technoprof-0.60-testeurs.zip : 4 entries, matching game hash, 64289267 bytes

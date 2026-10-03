@@ -1,0 +1,11 @@
+TECHNOPROF 0.59 - traffic progression, nine quiet rooms, decay and morning/noon/twilight.
+npm test PASS (21 scripts). TypeScript/Vite build and autonomous HTML with 13 lightweight shortcuts PASS.
+60 first assignments and 36 full days plus 6 exposure runs: keyboard/direct, both paths, synthetic 30/60/120 fps. Human difficulty and physical-phone tests pending.
+Measured passing exposure: 10 / 12 / 18 on the continuous simulated days; same queue capacity, progressively shorter spacing, no notification respawn.
+Compiled browser observed via localhost: three classes and lighting periods, route at twilight, hall passage. Not standalone file:// or phone validation.
+29 PNG assets, about 87.6 MB autonomous HTML; Vite large-chunk and Node experimental TypeScript notices remain known.
+Standalone SHA256: 21486F80BFB19166CFB2D31AEA859EF37C9E23B8AC098EEE49EFF3555B183744
+0.58 unchanged: 8015A00054DCB11450F8D6C14CC73E9CA5A6E5B393E28BA2539E36C42FC0F196
+0.57 unchanged: 17065A1E836764ED03F641F1A39B3C02AF0229C683818F1D220C2DF7E9F7D1FE
+Technoprof-0.59-local.zip : 33 entries, matching game hash, 64341909 bytes
+Technoprof-0.59-testeurs.zip : 4 entries, matching game hash, 64288147 bytes

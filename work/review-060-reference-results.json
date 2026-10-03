@@ -1,0 +1,704 @@
+[
+  {
+    "mode": "keyboard",
+    "branch": "detour",
+    "overlaps": [],
+    "states": {
+      "0:1": {
+        "hpAtEntry": 3,
+        "secondsAlive": 0.5333333333333333,
+        "sawWind": false,
+        "sawStrike": false,
+        "hpAtEnd": 3
+      },
+      "0:6": {
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "0:3": {
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "0:4": {
+        "hpAtEntry": 6,
+        "secondsAlive": 9.766666666666731,
+        "sawWind": true,
+        "sawStrike": true,
+        "hpAtEnd": 0
+      },
+      "1:11": {
+        "role": "filmer",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.1833333333333305,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:13": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.816666666666665,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:41": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9666666666666646,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:44": {
+        "role": "filmer",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.4333333333333296,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:47": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.949999999999998,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:14": {
+        "role": "influential",
+        "hpAtEntry": 6,
+        "secondsAlive": 6.633333333333315,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:21": {
+        "role": "thrower",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.883333333333328,
+        "sawWind": true,
+        "sawStrike": true,
+        "hpAtEnd": 0
+      },
+      "2:22": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.7999999999999985,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:61": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.949999999999998,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:64": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9666666666666646,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:67": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.949999999999998,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:70": {
+        "role": "thrower",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.166666666666664,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:73": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9666666666666646,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:76": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.949999999999998,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:79": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9666666666666646,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:82": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.949999999999998,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:85": {
+        "role": "thrower",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.166666666666664,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:24": {
+        "role": "security",
+        "hpAtEntry": 6,
+        "secondsAlive": 7.533333333333312,
+        "sawWind": true,
+        "sawStrike": true,
+        "hpAtEnd": 0
+      }
+    }
+  },
+  {
+    "mode": "keyboard",
+    "branch": "shortcut",
+    "overlaps": [],
+    "states": {
+      "0:1": {
+        "hpAtEntry": 3,
+        "secondsAlive": 3.7166666666666583,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 2
+      },
+      "0:3": {
+        "hpAtEntry": 2,
+        "secondsAlive": 1.4166666666666665,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "0:4": {
+        "hpAtEntry": 6,
+        "secondsAlive": 9.766666666666731,
+        "sawWind": true,
+        "sawStrike": true,
+        "hpAtEnd": 0
+      },
+      "1:11": {
+        "role": "filmer",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.1833333333333305,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:13": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.4499999999999997,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:41": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9666666666666646,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:44": {
+        "role": "filmer",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.4333333333333296,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:47": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.949999999999998,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:14": {
+        "role": "influential",
+        "hpAtEntry": 6,
+        "secondsAlive": 6.633333333333315,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:21": {
+        "role": "thrower",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.883333333333328,
+        "sawWind": true,
+        "sawStrike": true,
+        "hpAtEnd": 0
+      },
+      "2:25": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.1833333333333305,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:61": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.949999999999998,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:64": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9666666666666646,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:67": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.949999999999998,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:70": {
+        "role": "thrower",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.166666666666664,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:73": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9666666666666646,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:76": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.949999999999998,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:79": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9666666666666646,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:82": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.949999999999998,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:85": {
+        "role": "thrower",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.166666666666664,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:24": {
+        "role": "security",
+        "hpAtEntry": 6,
+        "secondsAlive": 7.533333333333312,
+        "sawWind": true,
+        "sawStrike": true,
+        "hpAtEnd": 0
+      }
+    }
+  },
+  {
+    "mode": "direct",
+    "branch": "detour",
+    "overlaps": [],
+    "states": {
+      "0:1": {
+        "hpAtEntry": 3,
+        "secondsAlive": 0.5333333333333333,
+        "sawWind": false,
+        "sawStrike": false,
+        "hpAtEnd": 3
+      },
+      "0:6": {
+        "hpAtEntry": 2,
+        "secondsAlive": 2.0166666666666644,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "0:3": {
+        "hpAtEntry": 2,
+        "secondsAlive": 2.0166666666666644,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "0:4": {
+        "hpAtEntry": 6,
+        "secondsAlive": 10.000000000000076,
+        "sawWind": true,
+        "sawStrike": true,
+        "hpAtEnd": 0
+      },
+      "1:11": {
+        "role": "filmer",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.3166666666666633,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:13": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.8499999999999983,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:41": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:44": {
+        "role": "filmer",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.083333333333331,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:47": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:14": {
+        "role": "influential",
+        "hpAtEntry": 6,
+        "secondsAlive": 6.783333333333315,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:21": {
+        "role": "thrower",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.8999999999999946,
+        "sawWind": true,
+        "sawStrike": true,
+        "hpAtEnd": 0
+      },
+      "2:22": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.8333333333333317,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:61": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:64": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:67": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:70": {
+        "role": "thrower",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.199999999999997,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:73": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:76": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:79": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:82": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:85": {
+        "role": "thrower",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.199999999999997,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:24": {
+        "role": "security",
+        "hpAtEntry": 6,
+        "secondsAlive": 7.716666666666645,
+        "sawWind": true,
+        "sawStrike": true,
+        "hpAtEnd": 0
+      }
+    }
+  },
+  {
+    "mode": "direct",
+    "branch": "shortcut",
+    "overlaps": [],
+    "states": {
+      "0:1": {
+        "hpAtEntry": 3,
+        "secondsAlive": 3.733333333333325,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 2
+      },
+      "0:3": {
+        "hpAtEntry": 2,
+        "secondsAlive": 1.4499999999999997,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "0:4": {
+        "hpAtEntry": 6,
+        "secondsAlive": 10.000000000000076,
+        "sawWind": true,
+        "sawStrike": true,
+        "hpAtEnd": 0
+      },
+      "1:11": {
+        "role": "filmer",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.3166666666666633,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:13": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.483333333333333,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:41": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:44": {
+        "role": "filmer",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.083333333333331,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:47": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "1:14": {
+        "role": "influential",
+        "hpAtEntry": 6,
+        "secondsAlive": 6.783333333333315,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:21": {
+        "role": "thrower",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.8999999999999946,
+        "sawWind": true,
+        "sawStrike": true,
+        "hpAtEnd": 0
+      },
+      "2:25": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.199999999999997,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:61": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:64": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:67": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:70": {
+        "role": "thrower",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.199999999999997,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:73": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:76": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:79": {
+        "role": "student",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:82": {
+        "role": "guard",
+        "hpAtEntry": 2,
+        "secondsAlive": 1.9833333333333312,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:85": {
+        "role": "thrower",
+        "hpAtEntry": 2,
+        "secondsAlive": 2.199999999999997,
+        "sawWind": true,
+        "sawStrike": false,
+        "hpAtEnd": 0
+      },
+      "2:24": {
+        "role": "security",
+        "hpAtEntry": 6,
+        "secondsAlive": 7.716666666666645,
+        "sawWind": true,
+        "sawStrike": true,
+        "hpAtEnd": 0
+      }
+    }
+  }
+]

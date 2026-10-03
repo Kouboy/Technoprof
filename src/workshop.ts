@@ -67,6 +67,11 @@ const SCENARIOS: Record<string, string> = {
   "bruel-quiet-hall": "Midi / hall",
   "pro-quiet-class": "Crépuscule / classe vide",
   "pro-quiet-hall": "Crépuscule / hall",
+  "bruel-workload": "Midi / ailes supplémentaires",
+  "bruel-workload-dialogue": "Midi / nouvelle rencontre",
+  "pro-workload": "Crépuscule / ailes supplémentaires",
+  "pro-workload-dialogue": "Crépuscule / nouvelle rencontre",
+  "pro-workload-end": "Crépuscule / fin de parcours",
   mission: "Première affectation / parcours complet",
   road: "Route / trafic reproductible",
   "road-slow": "Conduite / 40 km/h",
@@ -128,7 +133,7 @@ export function installWorkshop(s: Host) {
   root.hidden = false;
   root.innerHTML = "";
   const heading = document.createElement("strong");
-  heading.textContent = "ATELIER 0.59 — scénarios animés";
+  heading.textContent = "ATELIER 0.60 — scénarios animés";
   root.append(heading);
   const controls = document.createElement("div");
   controls.className = "workshop-controls";

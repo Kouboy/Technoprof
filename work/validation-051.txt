@@ -1,0 +1,12 @@
+TECHNOPROF 0.51 - verification 2026-10-01
+npm test: PASS (work/tests-051.txt). TypeScript/Vite build: PASS (work/build-051.txt). Autonomous export and 13 shortcuts: PASS.
+HUD: five-pixel secondary labels, narrower 18-pixel clock, separate distance units and service label. Integer drawing, viewport bounds, actual font widths and read-only render verified across all phases.
+Behavior: destination hidden before notification, reveal, shared/suspended clock, terminal causes, urgency and strict 1000m/500m distance thresholds preserved.
+Browser: radio, reception, route, proximity, college and urgency observed. Both phases checked at native 640x480, then route at viewport 844x390. No warn/error logs.
+Captures: work/cadre-college-051.png, work/cadre-route-051.png, work/cadre-mobile-051.png.
+Limitation: primary numbers remain identifiable in mobile landscape; secondary labels are small at that scale. Actual-phone legibility and subjective visual preference still require human testing.
+Known build warnings: embedded bundle over 500 kB; experimental Node stripTypeScriptTypes.
+Standalone SHA256: 18A6E2558E29E7E2545CB9E571CDE037CDA1736CA0215A341546E9A7758ABC60
+0.50 baseline unchanged: B26EE1CB9D834E5079A93F25D9DA65D6488C8ABCF8965D4F026674773E1160E4
+Technoprof-0.51-local.zip : 25 entries, matching game hash, 48465085 bytes
+Technoprof-0.51-testeurs.zip : 4 entries, matching game hash, 48434437 bytes

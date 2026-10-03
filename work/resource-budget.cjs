@@ -11,4 +11,4 @@ for(const name of fs.readdirSync('src').filter(n=>n.endsWith('.ts'))){
 }
 images.sort((a,b)=>b.rgbaBytes-a.rgbaBytes);
 const report={images:images.length,encodedPngBytes:images.reduce((s,i)=>s+i.pngBytes,0),sourceRgbaBytes:images.reduce((s,i)=>s+i.rgbaBytes,0),largest:images.slice(0,12),note:'Uncompressed source pixels only. Not a live memory measurement. Derived canvases and browser copies excluded.'};
-fs.writeFileSync('work/resource-budget-059.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));
+fs.writeFileSync('work/resource-budget-060.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));

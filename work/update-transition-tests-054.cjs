@@ -1,0 +1,16 @@
+const fs=require('fs');
+let s=fs.readFileSync('work/check.cjs','utf8');
+s=s.replace('const acknowledge=()=>{','const settle=()=>{for(let i=0;g.roomTransition&&i<25;i++)step(1);assert(!g.roomTransition);};const edge=(x,key)=>{acknowledge();step(18);g.px=x;g.keys[key].isDown=true;step(1);g.keys[key].isDown=false;settle();};const acknowledge=()=>{settle();');
+s=s.replace("g.keys[k].just=true;step(1);acknowledge();", "g.keys[k].just=true;step(1);settle();acknowledge();");
+s=s.replaceAll('g.px=301;step(1);assert.equal(g.room,',"edge(301,'RIGHT');assert.equal(g.room,");
+s=s.replaceAll('g.px=10;step(1);assert.equal(g.room,',"edge(10,'LEFT');assert.equal(g.room,");
+s=s.replaceAll('g.keys.UP.isDown=true;step(20);g.keys.UP.isDown=false;assert.equal(g.room,6)', 'g.keys.UP.isDown=true;step(36);g.keys.UP.isDown=false;assert.equal(g.room,6)');
+s=s.replace('g.keys.RIGHT.isDown=false;g.keys.LEFT.isDown=false;}\nwalkTo', 'g.keys.RIGHT.isDown=false;g.keys.LEFT.isDown=false;settle();}\nwalkTo');
+s=s.replace('g.hitStop=0;step(1);assert.equal(g.room,1);console.log(\'PASS courtyard', "g.hitStop=0;edge(299,'RIGHT');assert.equal(g.room,1);console.log('PASS courtyard");
+s=s.replace("g.enterRoom(2,9);g.schoolFade=0;step(1);assert.equal(g.room,1)","g.enterRoom(2,9);g.schoolFade=0;edge(10,'LEFT');assert.equal(g.room,1)");
+s=s.replace('g.interactLock=0;g.hitStop=0;step(1);assert.equal(g.room,4)', "g.interactLock=0;g.hitStop=0;edge(299,'RIGHT');assert.equal(g.room,4)");
+fs.writeFileSync('work/check.cjs',s);
+s=fs.readFileSync('work/check-043.cjs','utf8');
+s=s.replace('advance(.3);assert.equal(g.room,6)', 'advance(.5);assert.equal(g.room,6)');
+s=s.replace('assert.equal(g.room,6);advance(.4);assert.equal(g.room,7)', "assert.equal(g.room,6);g.keys.UP.isDown=false;g.keys.RIGHT.isDown=true;advance(.8);g.keys.RIGHT.isDown=false;assert.equal(g.room,7)");
+fs.writeFileSync('work/check-043.cjs',s);

@@ -1,0 +1,24 @@
+ESSAI 0.59 : comparer la circulation des trois trajets, la longueur des parcours calmes et la lecture matin / midi / crepuscule. Exporter le journal apres la journee.
+
+TECHNOPROF 0.58 — APRÈS LA PARTIE
+
+Quelques notes suffisent, même si vous n'avez pas terminé.
+
+1. Quel était votre objectif ? Quand le délai a-t-il commencé ?
+2. À quel moment avez-vous hésité sur le chemin ou la touche à utiliser ?
+3. Un choc, une chute ou un coup vous a-t-il semblé incompréhensible ? Où ?
+4. Comment avez-vous essayé de passer chacun des boss rencontrés ?
+5. Comprenez-vous le résultat de votre journée et ses causes ?
+6. Quel moment vous a paru le plus réussi ? Le plus frustrant ?
+
+7. Les trois lieux vous ont-ils paru différents ? Comment ?
+
+8. Avec la souris ou le toucher, quel geste a été difficile ou mal interprété ?
+
+Si possible : navigateur, appareil, clavier/souris/toucher, taille approximative de la fenêtre, son activé ou non.
+Pour un problème, décrire ce qui s'est passé juste avant et la commande utilisée.
+Ne pas chercher à tout diagnostiquer : une observation précise aide déjà beaucoup.
+
+Ces notes restent sur votre ordinateur jusqu'à ce que vous choisissiez de les partager.
+
+En cas de souci, joignez si possible le fichier obtenu avec Pause / aide > Exporter mon essai. Pour le chargement : indiquez le temps ressenti avant l'accueil, et les saccades constatees pendant le jeu. Le journal ne mesure pas votre comprehension du chemin : vos mots restent essentiels.

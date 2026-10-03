@@ -50,7 +50,7 @@ g.begin();assert(g.obstacles.some(o=>Math.abs(o.x)<.2));g.notified=true;g.phase=
 
 g.speed=260;g.travel=220*Math.PI/2;const rightBend=g.curveForce();g.travel=220*Math.PI*1.5;const leftBend=g.curveForce();assert(rightBend>0&&leftBend<0);assert(Math.abs(rightBend+leftBend)<1e-9);assert(Math.abs(leftBend)<=.14);g.travel=0;assert.equal(g.curveForce(),0);console.log('PASS gentle symmetric curve drift, zero on straight');
 
-g.mission=0;g.begin();assert.equal(g.obstacles.length,12);assert(g.obstacles.slice(1).every((o,i)=>o.z-g.obstacles[i].z>=190));g.mission=1;g.begin();assert.equal(g.obstacles.length,12);g.mission=2;g.begin();assert.equal(g.obstacles.length,12);console.log('PASS equal traffic queue capacity, first mission spaced; actual encounter progression checked in 059');
+g.mission=0;g.begin();assert.equal(g.obstacles.length,32);assert(g.obstacles.slice(1).every((o,i)=>o.z-g.obstacles[i].z>=190));g.mission=1;g.begin();assert.equal(g.obstacles.length,32);g.mission=2;g.begin();assert.equal(g.obstacles.length,32);console.log('PASS equal traffic queue capacity, first mission spaced; actual encounter progression checked in 059');
 // Feedback is tied to actual passes and hard braking, with no repeated whoosh.
 g.mission=0;g.begin();g.phase='road';g.notified=true;g.speed=180;g.car=0;g.travel=0;g.obstacles=[{z:.1,x:.5,type:0}];let passes=0;g.audio.pass=()=>passes++;step(1);assert.equal(passes,1);step(10);assert.equal(passes,1);g.keys.DOWN.isDown=true;step(2);assert(g.tireMarks.length>0);g.keys.DOWN.isDown=false;step(70);assert.equal(g.tireMarks.length,0);console.log('PASS one-shot passing sound and temporary hard-braking tire marks');
 // Audio sequencing without relying on installed voices or speakers.

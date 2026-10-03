@@ -1,0 +1,10 @@
+TECHNOPROF 0.47 - verification 2026-09-25
+Full suite: PASS (work/tests-047.txt). Final menu/audio corrections: check-047 PASS.
+Build TypeScript/Vite: PASS. Autonomous export: PASS, 13 shortcuts.
+Browser: title, controls/settings, sliders via keyboard, saved options after reload, launch/pause, sample reports 2/3 and 1/3. No warning/error logs observed.
+Human validation pending: first-time comprehension, fluidity and audio listening.
+Known warnings: embedded bundle >500 kB; experimental Node stripTypeScriptTypes.
+Standalone SHA256: 2C10C953B2DA030F89796903B615C10D53893B9942194421C801A28D06532C0C
+Technoprof-0.47-local.zip: 21 entries; matching game hash; 48452339 bytes
+Technoprof-0.47-testeurs.zip: 4 entries; matching game hash; 48429305 bytes
+0.46 baseline unchanged: BED208D086B41BC794CE50362DC9EDDFC81D4227AE9E8242D8F8FF6BE7D0A091

@@ -49,9 +49,9 @@ assert(mash.hp<quick.hp);assert(mash.journal.events.filter(e=>e.kind==='blocked'
  for(let i=0;i<10000;i++)g.runtime.frame(16.6);assert.equal(g.runtime.frames.size,2);
  g.runtime.resetFrames();assert.equal(g.runtime.snapshot().frameIntervalsMs.p50,null);
 }
-fs.writeFileSync('work/mission-results-059.json',JSON.stringify({method:'Continuous input-only VM journeys, deterministic seed; no position/HP/timer/phase skips after start. Synthetic FPS is not hardware performance.',reports:reports.map(({end,...r})=>r)},null,2));
+fs.writeFileSync('work/mission-results-060.json',JSON.stringify({method:'Continuous input-only VM journeys, deterministic seed; no position/HP/timer/phase skips after start. Synthetic FPS is not hardware performance.',reports:reports.map(({end,...r})=>r)},null,2));
 const rows=['seed,fps,mode,path,outcome,remaining,hp,vehicle,collisions,falls,elapsed'];
 for(const r of reports)rows.push([r.seed,r.fps,r.mode,r.path,r.outcome,r.remaining.toFixed(2),r.hp,r.vehicle,r.collisions,r.falls,r.elapsed].join(','));
-fs.writeFileSync('work/mission-results-059.csv',rows.join('\n'));
+fs.writeFileSync('work/mission-results-060.csv',rows.join('\n'));
 console.log('PASS 056: 60 continuous first assignments (2 paths, 2 control modes, 5 seeds, 30/60/120 fps), class and cruising return; exact timer accounting, suspended reading/cinema/fades, hazards and both boss threats');
 console.log('PASS slow reading, no-input late, no-steering damage, naive strikes cost health; clamped swipe, bounded runtime stats and 13 source texture releases');

@@ -18,7 +18,7 @@ export const DRIVE = {
   braking: 95,
 };
 // One queue capacity across the day: density comes from spacing, not a longer tail.
-export const TRAFFIC = { capacity: 12, spacing: [1, 0.64, 0.44] };
+export const TRAFFIC = { capacity: 32, spacing: [1, 0.36, 0.16] };
 export type Traffic = {
   z: number;
   x: number;

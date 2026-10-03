@@ -1,0 +1,12 @@
+TECHNOPROF 0.56 - lot 1 technical delivery; human discovery and physical-phone validation pending.
+npm test: PASS (18 scripts, work/tests-056.txt). Build TypeScript/Vite: PASS (work/build-056.txt). Local export and 13 shortcuts: PASS.
+60 continuous keyboard/direct journeys: two paths, five seeds, 30/60/120 synthetic fps. Timer accounting, reading/cinema/fade suspension, real entries, both boss threats, course/ellipse/cruising: PASS.
+Slow reading, coast timeout, no-steering damage and naive boss strike costs measured. Swipe against blocked boundary terminates. Runtime histogram bounded; 13 raw source textures removed after independent atlas preparation.
+Compiled browser: route, inspector, guard/book impact, normal radio -> DATA -> road, pause/export button observed; actual 1446-byte JSON export parsed. No warn/error console logs observed.
+PC sample: 20.45 s simulated, 2095 wall-frame intervals, p50 10 ms / p95 11 ms / p99 11 ms / max 65.3 ms; not full-day or phone validation. Production served via localhost, not standalone file://.
+Evidence: work/mission-results-056.json and .csv; work/resource-budget-056.json; work/runtime-compiled-056.json; work/journal-browser-056.json; work/pause-export-056.png.
+Known tooling notices: Vite bundle size, Node experimental stripTypeScriptTypes. HTML remains about 70 MB. Reduced source copies do not prove reduced total process heap.
+Standalone SHA256: 7B7C5FC4F42C8B9B75961136851674FC8B67B917178ADA96D7E245814EC32894
+0.55 baseline unchanged: AE9B54B1E59E8428252FA61A362CC4C57CDF4E6F639F99CC0CD9B73485B7AFD9
+Technoprof-0.56-local.zip : 30 entries, matching game hash, 51148797 bytes
+Technoprof-0.56-testeurs.zip : 4 entries, matching game hash, 51103554 bytes

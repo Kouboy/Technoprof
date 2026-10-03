@@ -1,0 +1,2 @@
+const fs=require('fs');let s=fs.readFileSync('work/check.cjs','utf8');s=s.replace(".replace(/^import .*;$/gm,'')", ".replace(/import[\\s\\S]*?from\\s+['\"][^'\"]+['\"];?/g,'')");fs.writeFileSync('work/check.cjs',s);
+const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.version='0.6.0';p.scripts.test='node work/check.cjs';p.scripts.format='prettier --write src index.html';fs.writeFileSync('package.json',JSON.stringify(p,null,2));

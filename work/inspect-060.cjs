@@ -1,0 +1,1 @@
+const {runDay}=require('./day-runner-057.cjs');const r=runDay({seed:4301});console.log(r.journal.events.filter(e=>e.kind==='crash'));console.log(r.journal.events.filter(e=>e.kind==='room'&&e.mission===3).slice(0,5));

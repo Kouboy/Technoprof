@@ -1,0 +1,13 @@
+TECHNOPROF 0.50 - verification 2026-10-01
+npm test: PASS (work/tests-050.txt). TypeScript/Vite build: PASS (work/build-050.txt). Autonomous export and 13 shortcuts: PASS.
+School feet: shared four-logical-pixel presentation offset; contact shadows, book motion, impacts, particles and fall cropping follow it. Simulation jump height, hitboxes, timings and access rules unchanged.
+Dialogue geometry: all four speakers and both pages stay within viewport, bubble border at least six pixels above conservative head bounds, tail at least four pixels above face.
+Browser: student, parent, inspectrice and guard conversations observed in their actual rooms. Repeated rendering does not drift the feet. Fall verified at two depths by actual floor click and workshop steps; foreground lip occludes the body. Console warn/error logs empty.
+Captures: work/inspectrice-050.png, work/chute-050.png.
+Controls regressions: aliases, keyboard/mouse/touch, dialogues and deterministic gesture road pass; first route arrives with vehicle 100%, collisions 0.
+Limitation: real-time fluidity, audio and tactile comfort still require human play. No actual phone validation claimed.
+Known build warnings: embedded bundle over 500 kB; experimental Node stripTypeScriptTypes.
+Standalone SHA256: B26EE1CB9D834E5079A93F25D9DA65D6488C8ABCF8965D4F026674773E1160E4
+0.49 baseline unchanged: 3D7095A79CCBD6C5BFCAAF197BBD78B7693C6D87B8E76932FC77BB5AF7235DF3
+Technoprof-0.50-local.zip : 24 entries, matching game hash, 48462581 bytes
+Technoprof-0.50-testeurs.zip : 4 entries, matching game hash, 48433638 bytes

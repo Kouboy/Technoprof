@@ -1,0 +1,21 @@
+node_modules/
+dist/
+work/checkpoints/
+
+# Livraisons générées : télécharger depuis les releases ou lancer npm run build.
+/Jouer-*.html
+/Technoprof-*.zip
+
+# Sauvegardes importées dans l'historique, fichiers temporaires et traces locales.
+work/backup-*/
+work/github-migration/
+work/*.bak
+work/*browser*.json
+work/browser-*.json
+work/runtime-compiled*.json
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db

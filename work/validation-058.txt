@@ -1,0 +1,11 @@
+TECHNOPROF 0.58 - lot 3 begun: attack poses, guard direction, gesture audio; human discovery and physical-phone tests pending.
+npm test PASS (20 scripts). TypeScript/Vite build PASS. Single autonomous HTML and 13 lightweight shortcuts PASS.
+36 full continuous days / 108 assignments: 2 paths, keyboard/direct, 3 seeds, 30/60/120 synthetic fps. No post-start position/HP/timer/phase/enemy writes. Three wins, no falls/chocs, exact charged-clock accounting.
+New introductions, locked classroom, failure-to-next, frontal/back security guard, slow turn, projectile dodge/contact/cleanup and non-self-defeating parent boss PASS.
+Compiled browser observed via localhost: security preparation, active push, recovery and ground guard marker; student windup, released projectile and active throw pose. This is not standalone file:// or phone validation.
+28 PNG, 61580909 compressed bytes, 176182848 estimated source RGBA bytes. Original sheets conserved. Runtime releases 15 prepared sources. No claim of overall process/GPU memory reduction.
+Known tooling notices: Vite large bundle, Node experimental TypeScript stripper. Game is about 83.7 MB.
+Standalone SHA256: 8015A00054DCB11450F8D6C14CC73E9CA5A6E5B393E28BA2539E36C42FC0F196
+0.57 unchanged: 17065A1E836764ED03F641F1A39B3C02AF0229C683818F1D220C2DF7E9F7D1FE
+Technoprof-0.58-local.zip : 32 entries, matching game hash, 61438742 bytes
+Technoprof-0.58-testeurs.zip : 4 entries, matching game hash, 61387307 bytes

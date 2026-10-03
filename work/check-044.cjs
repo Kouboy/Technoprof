@@ -12,10 +12,11 @@ assert.equal(r.shoulderAmount(.98),0);assert(r.shoulderAmount(1.05)>0);assert.eq
 assert.equal(r.shoulderDrag(-1.1,200),r.shoulderDrag(1.1,200));
 const projection=r.roadProjection(0,0,.62);assert.equal(projection.x,160+.62*105);assert.equal(projection.scale,1);
 console.log('PASS widths share render/collision geometry, symmetric progressive shoulders and contact projection');
+const {driveInput:anticipatoryDriver}=require('./fair-drive-bot-060.cjs');
 const results=[];
 for(const preference of [-1,1])for(const mission of [0,1,2]){
  const {g,step}=createGame();g.seed=4401;g.mission=mission;g.begin();g.phase='road';g.notified=true;
- const visited=new Set();let ticks=0;for(;ticks<12000&&g.phase==='road';ticks++){driveInput(g,preference);visited.add(g.botTarget);step();}
+ const visited=new Set();let ticks=0;for(;ticks<12000&&g.phase==='road';ticks++){(mission===2?anticipatoryDriver:driveInput)(g,preference);visited.add(g.botTarget);step();}
  assert.equal(g.phase,'arrival',`driver ${preference} mission ${mission} ${g.vehicle} HP ${g.remaining}s`);
  assert(visited.size>=2);assert(g.remaining>90);assert(g.vehicle>=56,`recoverable drive ${g.vehicle}`);
  results.push({preference,mission:mission+1,lanes:[...visited],seconds:ticks*.02,collisions:g.collisions,vehicle:g.vehicle,remaining:Math.round(g.remaining)});

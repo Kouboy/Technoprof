@@ -1,0 +1,3 @@
+Inspectrice : generation avec l'outil imagegen integre, reference art/slice-19/inspecteur.png.
+Le generateur a conserve un fond opaque malgre une seconde demande de transparence.
+La source originale choisie reste intacte. Le jeu applique les contours de src/inspectrice-mask.ts au chargement ; aucune source raster n'a ete retouchee par script.

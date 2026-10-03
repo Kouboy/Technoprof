@@ -1,0 +1,15 @@
+TECHNOPROF 0.46 - verification 2026-09-25
+npm test: PASS full suite, including check-046.
+Final correction: gallery arrival now shows 0 km/h and 0 km; check-046 rerun PASS.
+npm run build: PASS (TypeScript + Vite + autonomous HTML).
+node work/check-local.cjs: PASS 13 lightweight shortcuts, query and hash preservation.
+Browser: 11 scenes inspected; morning/evening road, native size, HUD toggle, boss bubble.
+Browser console: no warnings/errors observed in the inspected scenes.
+Limit: background browser auto-pauses long frames; fluidity and subjective audio not validated.
+Known tooling warnings: Vite embedded bundle over 500 kB; Node experimental stripTypeScriptTypes.
+ZIP entries: 20
+Standalone bytes: 66361725
+ZIP bytes: 48445871
+Main SHA256: BED208D086B41BC794CE50362DC9EDDFC81D4227AE9E8242D8F8FF6BE7D0A091
+Archived main SHA256: BED208D086B41BC794CE50362DC9EDDFC81D4227AE9E8242D8F8FF6BE7D0A091
+0.45 baseline unchanged: B72A81718D0F7B5BCE397D2387DB56E8F9F61DB28BDFF80285E896E7B527C9AE

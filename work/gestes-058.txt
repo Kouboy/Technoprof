@@ -1,0 +1,6 @@
+Apercu sec, mono. Synthese et gains du jeu, sans ambiance/reverberation/limiteur. Ce fichier ne remplace pas une ecoute pendant une journee.
+0.0 s : influential — preparation, geste a 1.0 s, contact du livre a 1.6 s.
+3.0 s : security — preparation, geste a 4.0 s, contact du livre a 4.6 s.
+6.0 s : thrower — preparation, geste a 7.0 s, contact du livre a 7.6 s.
+9.0 s : filmer — preparation, geste a 10.0 s, contact du livre a 10.6 s.
+Peak PCM 0.3307; 22050 Hz; 529244 octets.

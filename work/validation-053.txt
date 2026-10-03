@@ -1,0 +1,13 @@
+TECHNOPROF 0.53 - verification 2026-10-01
+npm test: PASS (work/tests-053.txt). TypeScript/Vite build: PASS (work/build-053.txt). Autonomous export and 13 shortcuts: PASS.
+Audio: authored local PCM, cached 22050Hz material buffers, cooperative warmup without early context, five loop sources, speed/load/gear model, stereo near-pass, notification/radio priority, independent effects/voice/ambience including classroom.
+Audio lifecycle: 24-voice cap, node cleanup, scheduled-source cancellation on pause/mute/phase change, short gain release, class resume at saved offset, silence after ellipse, urgency excluded during suspended dialogue.
+Events: actual jump/solid landing/crumbling/fall recovery and boss release, no repeated passing sound. Existing gameplay suite passes.
+Browser: three settings, gesture-start, pause, mute/unmute and real book contact observed. No warn/error logs. Capture: work/audio-reglages-053.png.
+Browser scope: Vite source modules on loopback 5174. Giant standalone remains beyond IAB transport limit. Startup in hidden workshop triggered long-frame protection; no stable-FPS or subjective-listening claim.
+Listening artifact: work/matieres-audio-053.wav, 23s, same PCM and base gains, excludes in-game filters/compression/reverb; montage peak 0.369. Human in-game listening and phone checks remain.
+Known build warnings: embedded bundle over 500 kB; experimental Node stripTypeScriptTypes.
+Standalone SHA256: B6CCA44EA69C7B00E3D90DCA4D35BB482088CB25FD957EC1604F25C2ECE441CB
+0.52 baseline unchanged: DF8761406E4E9D3C9D17EF01CB28E8BFB35453D806EAF99B45F5B68C8F8927BF
+Technoprof-0.53-local.zip : 27 entries, matching game hash, 51136800 bytes
+Technoprof-0.53-testeurs.zip : 4 entries, matching game hash, 51100675 bytes

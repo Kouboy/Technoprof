@@ -1,0 +1,119 @@
+{
+  "method": "Normal input-only full days. Encounter counts, not entity capacity. Human difficulty and hardware touch feel require user testing.",
+  "exposures": [
+    {
+      "seed": 1,
+      "mode": "keyboard",
+      "passed": [
+        10,
+        22,
+        35
+      ],
+      "orientation": [
+        19.433,
+        44.95,
+        89.733
+      ],
+      "remaining": [
+        145.8333333332584,
+        112.03333333325706,
+        24.399999999940647
+      ]
+    },
+    {
+      "seed": 1,
+      "mode": "direct",
+      "passed": [
+        10,
+        22,
+        35
+      ],
+      "orientation": [
+        19.2,
+        44.717,
+        90.233
+      ],
+      "remaining": [
+        145.78333333325835,
+        112.24999999992372,
+        23.366666666607372
+      ]
+    },
+    {
+      "seed": 4301,
+      "mode": "keyboard",
+      "passed": [
+        10,
+        20,
+        40
+      ],
+      "orientation": [
+        19.433,
+        44.95,
+        89.733
+      ],
+      "remaining": [
+        145.8333333332584,
+        112.03333333325706,
+        29.783333333273674
+      ]
+    },
+    {
+      "seed": 4301,
+      "mode": "direct",
+      "passed": [
+        10,
+        20,
+        40
+      ],
+      "orientation": [
+        19.2,
+        44.717,
+        90.233
+      ],
+      "remaining": [
+        145.78333333325835,
+        112.24999999992372,
+        28.883333333273725
+      ]
+    },
+    {
+      "seed": 3842110648,
+      "mode": "keyboard",
+      "passed": [
+        10,
+        21,
+        39
+      ],
+      "orientation": [
+        19.433,
+        44.95,
+        89.733
+      ],
+      "remaining": [
+        145.8333333332584,
+        112.03333333325706,
+        27.416666666607142
+      ]
+    },
+    {
+      "seed": 3842110648,
+      "mode": "direct",
+      "passed": [
+        10,
+        21,
+        39
+      ],
+      "orientation": [
+        19.2,
+        44.717,
+        90.233
+      ],
+      "remaining": [
+        145.78333333325835,
+        112.24999999992372,
+        26.56666666660719
+      ]
+    }
+  ]
+}

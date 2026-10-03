@@ -1,0 +1,103 @@
+TECHNOPROF 0.60 - VERSION LOCALE AUTONOME
+
+0.60 : 9 / 18 / 36 tableaux minimum ; 3 / 6 / 12 adversaires ; environ 10 / 20 / 40 depassements. Delais inchanges. 39 tableaux ajoutes avec les assets existants. Voir GAMEPLAY-0.60.md. La 0.59 reste conservee.
+
+0.59 : circulation plus dense a chaque trajet ; trois pieces sans ennemis par etablissement ; fuites, froid, dechets ; matin 07:00, midi 12:00, crepuscule 18:30. Voir GAMEPLAY-0.59.md. Dans Jouer-Labo.html, essais Matin / Midi / Crepuscule. La 0.58 reste conservee.
+
+0.58 : preparation, attaque et reprise des nouveaux adversaires plus lisibles ; garde directionnelle de la securite ; sons de gestes differencies. Quatre essais courts dans Jouer-Labo.html. Voir GAMEPLAY-0.58.md. La 0.57 reste conservee.
+
+0.57 : trois etablissements, trois cartes, trois boss. Hanouna / 42C, Patrick Bruel / B12, Lycee professionnel Tibo InShape / T03. Nouveaux decors et adversaires. Dans Jouer-Labo.html : scenarios Bruel et Lycee pro. Voir GAMEPLAY-0.57.md. Les anciennes versions sont conservees.
+
+0.55 : toucher ou cliquer une fleche fait emprunter le passage, y compris a gauche et a droite. Le prof s'arrete a l'arrivee ; les acces fermes restent fermes. Atelier : Passages / cour <-> hall. Voir GAMEPLAY-0.55.md. La 0.54 est conservee.
+
+0.54 : transitions a pied : maintien bas sans rebond, sorties laterales sur intention de marche, fondu court couvrant tous les assets, delai suspendu. Petit son de parole pendant les lettres des bulles, sans rafale au devoilement complet. Voir GAMEPLAY-0.54.md. La 0.53 est conservee.
+
+0.53 : passe audio. Moteur, air, roulement, tole, pneus, depassements/frôlements ; livre, dossier, tampon, pas, chutes ; porte, chaises, cahiers et craie. Reglage separe des ambiances. Sons en attente coupes aux transitions et pauses. Synthese locale sans fichiers a telecharger. Voir GAMEPLAY-0.53.md. La 0.52 est conservee.
+
+0.52 : Radio Educ France. Ponts beton et maconnerie/acier, passage continu sous le tablier. Six nouveaux sprites repartis entre habitat, equipements publics, talus et ateliers. Identite stable des objets, orientation vers la chaussee. Voir GAMEPLAY-0.52.md. La 0.51 est conservee.
+
+0.51 : panneau CADRE harmonise. Textes secondaires plus petits, delai affine, distance et unites distinctes. Tole usee, plaques encastrees, vis, oxydation et jauges detaillees. Regles et commandes conservees. Voir GAMEPLAY-0.51.md. La 0.50 est conservee.
+
+0.50 : personnages legerement descendus pour marcher sur le sol, ombres et effets raccordes. Bulles degagees des visages et queues raccourcies. L'eleve invoque le conseil des parents d'eleves preside par son pere. Voir GAMEPLAY-0.50.md. La 0.49 est conservee. Commandes identiques.
+
+Version actuelle : 0.57. Double-cliquer sur Jouer-Technoprof.html ou Jouer.cmd.
+ZQSD ou fleches : conduire / marcher / acces. Espace : saut. F ou X : frappe et dialogue.
+Souris/tactile : toucher le sol pour marcher, un adversaire pour approcher et frapper une fois, un passage pour l'emprunter. Glisser vers le haut pour sauter.
+Route : maintenir dans la scene pour accelerer, glisser horizontalement pour diriger, vers le bas pour freiner. Relacher laisse rouler.
+Dialogue : toucher affiche la reponse, puis la poursuit. Aucun bouton virtuel sur la scene.
+Menus adaptes au mobile ; paysage conseille. Confort sur vrai telephone encore a tester.
+Voir GAMEPLAY-0.49.md. Archives 0.48 conservees. Les descriptions suivantes sont historiques.
+
+0.47 : accueil, pause, commandes, volumes separes, rappels contextuels, radio sous-titree et bilan explicite.
+Lire GAMEPLAY-0.47.md pour les changements et limites de validation. Jouer-Technoprof.html lance la journee autonome. Jouer-Labo.html conserve les outils de test. Le paquet Technoprof-0.47-testeurs.zip est simplifie pour la decouverte. La 0.46 est conservee dans le projet.
+
+0.44 : conduite retravaillee. Collisions selon la largeur des carrosseries, accotements qui ralentissent progressivement, trafic espace et compose, vehicules plus lisibles de loin. Sons de depassement selon la vitesse relative, choc de carrosserie et recul adouci. Atelier : 18 scenarios, dont 40/260 km/h, freinage et accotement.
+Lire GAMEPLAY-0.44.md pour les changements et les tests. La fluidite et les sons restent a juger pendant une session humaine dans votre navigateur habituel.
+
+0.43 : atelier anime separe (Jouer-Labo.html), 14 scenarios, seed du trafic, collisions affichables, ralenti, pas de 20 ms et journal JSON local. Le panneau de pause ne masque pas l'action dans cet atelier.
+Regles corrigees : corps solides pendant les premieres repliques, contact qui interrompt la parole, blessure qui annule le livre, acces apres atterrissage et fin de frappe. Echecs expliques : retard, epuisement, panne ; Entree proposee apres deux secondes. Chrono sans perte silencieuse a faible framerate ; pause explicite apres une interruption de plus d'une seconde. P pour reprendre.
+Details et limites de validation : GAMEPLAY-0.43.md.
+
+Historique 0.42 : touches flechees sur les passages ouverts, ambre a portee. Adversaires immobiles pendant leurs deux premieres pages de dialogue (9 secondes). Inspectrice au premier etablissement, inspecteur aux suivants. Impacts redessines : eclats, traits et onomatopees animees. Galerie Retouches : inspectrice-tampon / inspectrice-pied / inspectrice-recul et fx-coup / fx-garde / fx-recu.
+Double-cliquer sur Jouer-Technoprof.html (ou Jouer.cmd).
+Le jeu fonctionne sans serveur, sans npm et sans connexion Internet.
+Les autres fichiers Jouer-*.html sont des raccourcis : garder Jouer-Technoprof.html dans le meme dossier.
+Pause automatique si vous quittez la fenetre ; appuyer sur P pour reprendre.
+Entree : commencer. ZQSD / fleches : conduire / marcher. Espace : sauter. F / X : livre et dialogue.
+Z/Haut ou S/Bas : portes et escaliers. P : pause. M : son. Souris/tactile : voir Commandes.
+La voix radio necessite une voix francaise disponible dans le navigateur.
+Les bruitages sont generes localement.
+Pour reconstruire apres modification : npm run build puis node work/export-local.cjs
+
+
+Nouveau : lien SALLE 42C / SPRITES pour tester le decor et les poses dessinees.
+
+0.21 : voiture de service dessinee, vues de virage et profil, feux stop et degats ajustes. Lien Voiture de service sous le jeu pour un essai direct.
+
+0.22 : nouveau trafic et premier quartier. Utiliser Voiture de service pour la conduite directe. Tous les sprites sont inclus dans le HTML.
+
+
+
+0.23 : ciel couvert, horizon urbain, chateau d eau, parallax lent, zones ouvertes, caniveaux et reprises de bitume.
+
+0.24 : nouvelle arrivee au college. Jouer-Arrivee.html lance directement la cinematique puis la cour. Chronometre fige pendant la cinematique et le fondu.
+
+0.25 : cour dessinee et professeur anime. Jouer-Cour.html ouvre directement la cour ; marcher vers la droite pour entrer dans le hall.
+
+0.26 : hall dessine, parent avec quatre poses (interpellation, preparation, charge, recul). Jouer-Hall.html ouvre cet essai directement. Fleche Haut devant la porte a gauche : annexe ; sauter le trou pour continuer a droite.
+
+0.27 : parent ralenti (charge 100 au lieu de 190), preparation plus longue. Hall repris : vie scolaire, vitrage rafistole, luminaire casse, sol mat et dalles manquantes.
+
+0.28 : cour reprise dans la direction du hall : vitrages rafistoles, enduit fissure, banc casse, eclairage defaillant et bitume mat. Jouer-Cour.html pour essai direct.
+
+0.29 : annexe et escalier dessines. Jouer-Escaliers.html : BAS devant porte gauche pour hall, HAUT au pied de l escalier droit pour le 2e.
+
+0.29.1 : proportions des portes hall/annexe harmonisees ; meme taille du professeur et meme ligne de seuil.
+
+0.30 : escalier central dessine. Jouer-Central.html : gauche pour revenir vers le hall et l annexe, Haut devant la porte technique a droite pour le raccourci dangereux.
+
+0.31 : passage technique dessine. Jouer-Technique.html : Espace pour sauter les deux trous, sortie a droite vers aile C ; Bas pres de la porte gauche pour revenir.
+
+0.32 : escalier de service dessine. Jouer-Service.html : Haut a gauche vers passerelle du 2e, Bas a droite vers aile C au 1er.
+
+0.33 : passerelle vitree et vigile dessines. Jouer-Passerelle.html : X pour repousser le vigile, Espace pour esquiver ; Bas a gauche vers annexe, sortie a droite vers escalier de service.
+
+0.34 : aile C et eleve dessines. Jouer-AileC.html : X pour repousser, Espace pour esquiver, fleches pour marcher. Bas devant la porte SERVICE : retour escalier. A droite : salle 42C et inspecteur.
+
+0.35 : nouveau CADRE commun, typo bitmap, chrono et distance regroupes. Lien CADRE sous le jeu : galerie statique radio/reception/route/proximite/college/urgence/cinematique. Pour jouer, choisir Journee complete ou Aile C.
+
+0.36 : DELAIS, echelle voiture, fermetures et dalles effondrees explicites, plaques vissees et dialogues en bulles. Les touches des acces sont affichees dans le CADRE.
+
+Jouer-Retouches.html : galerie statique 0.36 (decors, trous, bulles, voiture droite/virage/parking). Pour jouer, ouvrir Jouer-Technoprof.html.
+
+0.37 : trous alignes sur le sol, portiere supprimee, balisage jaune des acces condamnes, bulletin radio unique puis affectation, distance rouge sous 0,5 km.
+
+0.38 : retour de chute du cote du dernier appui, entrees de salles hors des fermetures, lieu/etage dans le CADRE. Lien Chutes / aller-retour pour tester directement depuis la rive droite du passage technique.
+
+0.39 : les trous occupent le carrelage sous la ligne des pieds ; profondeur retablie et masquage de chute recale sur leur bord avant.
+
+0.40 : vue droite dediee de la voiture, sans miroir des reparations et bagages. Feux de freinage et echappement attaches aux trois vues. Galerie Retouches : voiture, virage, virage-gauche, frein-droite.
+
+0.40 : FX comics PAF / CLAC / AIE, signes de menace et traits de mouvement. Bulles compactes, 9 secondes (4,5 par page). Plaques murales reduites et patinees. Galerie : fx-coup, fx-garde, fx-recu, fx-alerte.
+
+0.41 : pause automatique et reprise P, impacts recalés sur les petits gabarits, attaques interrompues, effets nettoyes au changement de salle, raccourcis locaux allégés.

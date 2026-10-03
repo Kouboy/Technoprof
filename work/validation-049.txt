@@ -1,0 +1,12 @@
+TECHNOPROF 0.49 - verification 2026-10-01
+npm test: PASS (work/tests-049.txt). TypeScript/Vite build: PASS (work/build-049.txt). Autonomous export and 13 shortcuts: PASS.
+Controls: ZQSD/F aliases, short presses, overlapping inputs, dialogue reveal/next/close without final strike, pause and keyboard takeover verified.
+Direct input: walk, diagonal swipe jump, approach and single strike, guard, doors/stairs, course, failure, road steering/gas/brake, cancellation and focus loss verified. Real Pointer Events adapter tested with mouse/touch events.
+Gesture-driven deterministic first route arrives: vehicle 100%, collisions 0, remaining 177.92 seconds.
+Browser: actual scene clicks advance a conversation without moving actors or clock; controls menu and welcome checked at 844x390 and 375x812. Latest standalone reloaded and mobile game captured with no virtual pad/buttons over the scene.
+Limitation: hidden browser pauses on long frames. Real-time fluidity, audio and control comfort require human testing, especially on an actual phone. No actual phone validation claimed.
+Known warnings: embedded bundle over 500 kB; experimental Node stripTypeScriptTypes.
+Standalone SHA256: 3D7095A79CCBD6C5BFCAAF197BBD78B7693C6D87B8E76932FC77BB5AF7235DF3
+0.48 baseline unchanged: CE66E8A6E9F353C87FFB24FFE85E6C3059D22438512788BFA3FF5D6F481616AF
+Technoprof-0.49-local.zip : 23 entries, matching game hash, 48461207 bytes
+Technoprof-0.49-testeurs.zip : 4 entries, matching game hash, 48433501 bytes

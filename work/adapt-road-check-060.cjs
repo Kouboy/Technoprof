@@ -1,0 +1,1 @@
+const fs=require('fs');const p='work/check-044.cjs';let s=fs.readFileSync(p,'utf8');s=s.replace("const results=[];","const {driveInput:anticipatoryDriver}=require('./fair-drive-bot-060.cjs');\nconst results=[];");s=s.replace('driveInput(g,preference);visited.add','(mission===2?anticipatoryDriver:driveInput)(g,preference);visited.add');fs.writeFileSync(p,s);

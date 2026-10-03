@@ -67,7 +67,10 @@ exports.runDay=({seed=4301,fps=60,mode='keyboard',path='detour',boss='read',driv
      // Jump from the near bank, rather than moving the avatar into a hole.
      const gap=g.floorGaps().find(([l,r])=>g.px<r);
      if(gap&&g.px>=gap[0]-18&&g.px<gap[1]&&g.py===159)jump(1);
-     else exit(next[g.room]);
+     else {
+      const target=g.room===18?40:g.room===28?60:g.room>=40&&g.room<=49?(g.room===49?14:g.room+1):g.room>=60&&g.room<=88?(g.room===88?24:g.room+1):next[g.room];
+      exit(target);
+     }
     }
    }
   }else if(g.phase==='course'){courseWait+=dt;if(courseWait>1){if(mode==='keyboard')pulse('X');else tap(160,100);}}

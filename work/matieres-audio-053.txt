@@ -1,0 +1,7 @@
+Montage des matières 0.53, mêmes PCM et gains de base que le jeu, sans ses filtres, compresseur ou réverbération.
+0-2 : pas, saut, réception.
+3-7 : livre dans le vide, livre qui touche, garde, coup reçu, dernier coup.
+8-10 : dossier, tampon, balayage.
+11-14 : dépassement distant, frôlement, camion.
+15-17 : pneus, tôle, choc.
+18-23 : porte, chaises, cahiers, craie.

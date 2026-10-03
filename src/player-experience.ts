@@ -9,8 +9,8 @@ export const RADIO_BULLETINS = [
 
 export const DAY_BRIEFS = [
   "07:00 — Prise de service. Le trafic laisse encore de la place.",
-  "12:00 — Deuxième service. Trafic plus dense et délai réduit.",
-  "18:30 — Dernier service. La voiture conserve ses dégâts ; le trafic se resserre.",
+  "12:00 — Deuxième service. Deux fois plus de traversées et de rencontres.",
+  "18:30 — Dernier service. Le périmètre double encore ; les dégâts restent.",
 ];
 export function resultLine(
   ok: boolean,

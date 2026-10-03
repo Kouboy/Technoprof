@@ -1,0 +1,6 @@
+PASS 057: 36 full three-school days, 108 assignments, keyboard/direct, both paths, 3 seeds, 30/60/120 fps; three wins, no falls/chocs, exact shared timer accounting
+PASS new encounters: manual full-page reveal/advance, 50-second reading freeze, no held-input skip, no confirming attack, no repeat on return
+PASS both maps: all rooms reachable, persistent returns, arena locked until win, correct classroom, destination arrival and late -> next assignment/report
+PASS frontal security guard/back opening/850ms turn, jumpable one-hit projectile and cleanup; parent boss cannot defeat itself on walls
+(node:17628) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

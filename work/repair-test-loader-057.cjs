@@ -1,0 +1,1 @@
+const fs=require('fs');for(const file of fs.readdirSync('work').filter(n=>/^check.*\.cjs$/.test(n))){const p='work/'+file,s=fs.readFileSync(p,'utf8');fs.writeFileSync(p,s.replaceAll('/^import .*;\\r?\\n/gm','/^import[\\s\\S]*?from\\s+[\'\"][^\'\"]+[\'\"];?\\r?\\n/gm'));}

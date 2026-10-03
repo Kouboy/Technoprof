@@ -1407,6 +1407,24 @@ class Game extends Phaser.Scene {
       this.draw();
       return;
     }
+    const workloadRooms: Record<string, [number, number]> = {
+      "bruel-workload": [1, 40],
+      "bruel-workload-dialogue": [1, 44],
+      "pro-workload": [2, 60],
+      "pro-workload-dialogue": [2, 70],
+      "pro-workload-end": [2, 88],
+    };
+    if (name in workloadRooms) {
+      [this.mission] = workloadRooms[name];
+      this.begin();
+      this.notified = true;
+      this.school();
+      this.enterRoom(workloadRooms[name][1], 50);
+      this.schoolFade = 0;
+      this.session.record("scenario", this.mission, this.room, { name });
+      this.draw();
+      return;
+    }
     if (name.startsWith("bruel") || name.startsWith("pro-")) {
       this.mission = name.startsWith("bruel") ? 1 : 2;
       this.begin();

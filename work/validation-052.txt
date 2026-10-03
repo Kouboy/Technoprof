@@ -1,0 +1,13 @@
+TECHNOPROF 0.52 - verification 2026-10-01
+npm test: PASS (work/tests-052.txt). TypeScript/Vite build: PASS (work/build-052.txt). Autonomous export and 13 shortcuts: PASS.
+Road: six new prop variants; stable identities at district boundaries; shared graphics/sprite depth; bridge continuous across player plane; truck clearance; integer clipped bridge drawing.
+Browser: concrete bridge, steel/masonry at evening, underside after crossing, public facilities, trees and workshops observed at native 640x480. No warn/error logs.
+Captures: work/route-pont-052.png, route-public-052.png, route-arbres-052.png, route-sous-pont-052.png, route-acier-052.png, route-ateliers-052.png.
+Browser limitation: IAB transport cannot load the 69.94MB single HTML (native frame limit). Visual checks used identical Vite source modules on loopback 5174, not the standalone. Export script/dependencies/hash checked; habitual browser and actual driving feel still require user validation.
+Generation: original RGBA atlas art/road-52/district.png; final prompt art/road-52/prompts.txt; no source image manipulation.
+Radio: shared Radio Educ France name in spoken bulletin and subtitle; CADRE radio label simplified. No sound overhaul in this lot.
+Known build warnings: embedded bundle over 500 kB; experimental Node stripTypeScriptTypes.
+Standalone SHA256: DF8761406E4E9D3C9D17EF01CB28E8BFB35453D806EAF99B45F5B68C8F8927BF
+0.51 baseline unchanged: 18A6E2558E29E7E2545CB9E571CDE037CDA1736CA0215A341546E9A7758ABC60
+Technoprof-0.52-local.zip : 26 entries, matching game hash, 51131083 bytes
+Technoprof-0.52-testeurs.zip : 4 entries, matching game hash, 51098206 bytes

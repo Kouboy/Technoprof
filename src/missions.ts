@@ -372,6 +372,179 @@ extendWing(collegeRooms, [3], 30, 4, "42C", 0);
 extendWing(bruelRooms, [13], 16, 14, "B12", 1);
 extendWing(proRooms, [22, 23], 26, 24, "T03", 2);
 
+// Minimum complete-route load doubles. Detours can add one room/encounter.
+export const DAY_LOAD = [
+  { rooms: 9, encounters: 3, roadPasses: 10 },
+  { rooms: 18, encounters: 6, roadPasses: 20 },
+  { rooms: 36, encounters: 12, roadPasses: 40 },
+];
+const addWorkload = (
+  rooms: Record<number, RoomSpec>,
+  from: number,
+  first: number,
+  count: number,
+  arena: number,
+  classroom: string,
+  classFrame: number,
+  threats: Record<number, { role: EnemyRole; name: string; lines: string[] }>,
+) => {
+  rooms[from].exits = rooms[from].exits!.map((e) =>
+    e.target === arena
+      ? {
+          ...e,
+          target: first,
+          spawn: 45,
+          label: "DROITE : AILES / " + classroom,
+        }
+      : e,
+  );
+  rooms[from].signs = [[179, 51, 105, ["AILES / " + classroom + " >"]]];
+  for (let i = 0; i < count; i++) {
+    const id = first + i,
+      last = i === count - 1,
+      block = Math.floor(i / 4) + 1;
+    const kind =
+      i % 4 === 0
+        ? "COULOIR"
+        : i % 4 === 1
+          ? "ETUDE"
+          : i % 4 === 2
+            ? "HALL"
+            : "PALIER";
+    const isClass = kind === "ETUDE",
+      next = last ? arena : id + 1;
+    const exits = [
+      edge("LEFT", i === 0 ? from : id - 1, 260, "GAUCHE : RETOUR"),
+      isClass
+        ? door(
+            "UP",
+            281,
+            next,
+            45,
+            "HAUT : " + (last ? "SALLE " : "AILE ") + classroom,
+          )
+        : edge(
+            "RIGHT",
+            next,
+            45,
+            "DROITE : " + (last ? "SALLE " : "AILE ") + classroom,
+          ),
+    ];
+    const threat = threats[i];
+    rooms[id] = room(
+      id,
+      kind + " / SECTEUR " + block,
+      kind === "PALIER" ? 2 : 1,
+      exits,
+      {
+        ...(isClass
+          ? {
+              quietFrame: classFrame,
+              blocked: [],
+              labels: [[281, 43, last ? classroom : "AILE"]],
+            }
+          : kind === "HALL"
+            ? { quietFrame: 3 }
+            : {}),
+        quietMirror: !isClass && i % 8 >= 4,
+        signs: [
+          [
+            170,
+            51,
+            111,
+            [
+              (isClass ? "SORTIE" : kind === "PALIER" ? "ETAGE" : "AILE") +
+                " " +
+                block +
+                " / " +
+                classroom +
+                " >",
+            ],
+          ],
+        ],
+        ...(threat
+          ? {
+              role: threat.role,
+              hp: 2,
+              encounter: { name: threat.name, pages: [threat.lines] },
+            }
+          : {}),
+      },
+    );
+  }
+};
+addWorkload(bruelRooms, 18, 40, 10, 14, "B12", 1, {
+  1: {
+    role: "student",
+    name: "ELEVE",
+    lines: ["Une salle libre ?", "Cherchez l’autre aile."],
+  },
+  4: {
+    role: "filmer",
+    name: "PARENT AU TELEPHONE",
+    lines: ["J’ai commencé à filmer.", "Justifiez votre retard."],
+  },
+  7: {
+    role: "guard",
+    name: "AGENT DE SECURITE",
+    lines: ["Votre badge ne suffit pas.", "On m’a dit de contrôler."],
+  },
+});
+// Each branch has an encounter: the reserve cannot bypass the common quota.
+proRooms[25].role = "guard";
+proRooms[25].hp = 2;
+proRooms[25].encounter = {
+  name: "AGENT DE SECURITE",
+  pages: [["L’accès de service ?", "Il faut aussi un badge."]],
+};
+addWorkload(proRooms, 28, 60, 29, 24, "T03", 2, {
+  1: {
+    role: "guard",
+    name: "AGENT DE SECURITE",
+    lines: ["On manque de personnel.", "Alors je bloque les accès."],
+  },
+  4: {
+    role: "student",
+    name: "ELEVE",
+    lines: ["Trois profs en deux semaines.", "Vous resterez combien ?"],
+  },
+  7: {
+    role: "guard",
+    name: "AGENT DE SECURITE",
+    lines: ["Aile fermée depuis lundi.", "Le cours ? Plus loin."],
+  },
+  10: {
+    role: "thrower",
+    name: "ELEVE MAJEUR",
+    lines: ["Encore déplacés de salle.", "Ça commence à bien faire."],
+  },
+  13: {
+    role: "student",
+    name: "ELEVE",
+    lines: ["On nous a supprimé l’atelier.", "Votre livre ne le répare pas."],
+  },
+  16: {
+    role: "guard",
+    name: "AGENT DE SECURITE",
+    lines: ["Une seule personne pour l’aile.", "Je fais avec les consignes."],
+  },
+  19: {
+    role: "student",
+    name: "ELEVE",
+    lines: ["Le chauffage est en panne.", "Vous venez faire cours ici ?"],
+  },
+  22: {
+    role: "guard",
+    name: "AGENT DE SECURITE",
+    lines: ["La direction a dit non.", "Moi, je fais appliquer."],
+  },
+  25: {
+    role: "thrower",
+    name: "ELEVE MAJEUR",
+    lines: ["La salle change tous les jours.", "Et c’est nous qu’on renvoie."],
+  },
+});
+
 export const MISSIONS: MissionSpec[] = [
   {
     id: "hanouna",

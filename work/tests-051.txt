@@ -1,0 +1,120 @@
+
+> technoprof@0.51.0 test
+> node work/check.cjs && node work/check-art.cjs && node work/check-car.cjs && node work/check-road.cjs && node work/check-cadre.cjs && node work/check-school.cjs && node work/check-043.cjs && node work/check-044.cjs && node work/check-045.cjs && node work/check-046.cjs && node work/check-047.cjs && node work/check-048.cjs && node work/check-049.cjs
+
+PASS cruising, mission timer, shared timer, room navigation, boss framing, door, fade, automatic return, timeout
+PASS curves drift outward; steering responds
+PASS continuous traffic, low speed, acceleration, braking, held stair input, wider door zones
+PASS notification visibility gate, km/h distance conversion, speed-dependent steering
+PASS parking stop, black intervals, key-gated course, speed amplitude, steering inertia
+PASS boss guard and recovery opening, enemy persistence across rooms
+PASS full mission: drive, detour, boss defeated, classroom entered with 148 seconds remaining
+PASS all forced arrival/fade/boss-intro time excluded
+PASS vehicle stages/persistence/panne/tow, parent scenery impact, jumpable charge, safe shortcut traversal
+PASS 110 km/h cap, assignment release, one-shot 1 km warning, 78-unit delivered sweep
+PASS centre traffic and high-speed curve require steering
+PASS gentle symmetric curve drift, zero on straight
+PASS progressive traffic: 5 / 8 / 11, first mission spaced
+PASS one-shot passing sound and temporary hard-braking tire marks
+PASS radio once per cruise, interruption, classroom sound sequence
+PASS animated fall and single damage on recovery
+PASS mirrored character body, book, arm and satchel
+PASS bridge interleaved with traffic by depth; roadside mirrors restore transforms
+PASS full-sized bodies cannot overlap or cross at ground level
+PASS full-sized book hit at 60 units, effect records contact before knockback
+PASS extended classroom entry remains outside mission timer
+PASS arrival walk reaches gate and recedes into courtyard
+PASS courtyard renderer scope and walking transition into hall
+PASS hall parent anticipation/charge/recovery and annex transition
+PASS slower parent charge and full one-second warning
+PASS central artwork and shortcut / hall transitions
+PASS technical renderer room scope
+PASS service landing up/down transitions
+PASS guard wind-up, limited directional shove, recovery, jump and pose transitions
+PASS student wind-up, short kick, jump/back evasion, poses, two-hit defeat, impact height and both exits
+PASS completed radio is not repeated, pause resumes, stale callbacks ignored, muted bulletin stays consumed, assignment follows end with fallback
+PASS both fall directions, missed-jump takeoff bank, damage once, stable room entrances and contextual orientation
+PASS focus-loss pause, immediate audio silence, explicit resume, course control keys and held-key repeat
+PASS parent/guard-scale contact, attack interruption, directional anchors, parent hit feedback and clean room transitions
+PASS complete first speeches, resumed aggression, no repeated introductions and female first inspector
+(node:22736) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS atlas bounds, left/right poses, attack anticipation/strike/recovery, jump, boss stamp/sweep/recovery, scene cleanup
+PASS female and male inspector atlas selection
+PASS classroom walk enters doorway before fading to black
+PASS parent atlas bounds, foot anchors, facing and cleanup
+PASS guard atlas, silhouette bounds, anchors and cleanup
+PASS student atlas, silhouette bounds, foot anchors, both orientations and cleanup
+(node:19044) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS car atlas bounds, dedicated left/right steering, view hysteresis, side profile reset and cleanup
+PASS equal driving body height and parking scale
+PASS right-view scale, unmirrored rendering, view hysteresis and lamp/exhaust anchors
+(node:35460) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS road atlas bounds, world anchors across segment boundaries, mixed-layer depths below player
+PASS sky parallax coverage and cleanup
+(node:32428) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS CADRE hidden destination, timer rounding, 1km threshold, km formatting, reveal, suspended state, text fit, integer pixels and viewport bounds
+PASS distance turns red strictly below 500m
+PASS terminal status, explicit failure causes, suspended timer and no terminal urgency
+(node:19304) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS props outlines, hole collision alignment, WebGL-safe crop, speech bubble bounds, readable signs and unobstructed navigation
+PASS available passage keys, locked classroom, closed edges and inspector identity
+PASS smaller dialogue lettering and legacy static page previews
+(node:37936) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS locked conversation, reveal then advance, no accidental attack, identical rules with/without art
+PASS hurt cancels book, no strike during recovery/fall, interaction waits for recovery/landing
+PASS three real failures, explicit reasons, terminal cleanup, idempotence, fresh Enter after reading delay
+PASS 15/30/60/120 fps equal mission time; long stalls pause explicitly
+PASS seed replay, paused 20ms step, real final blow/class entry, transition rejects stale attack
+(node:23848) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS widths share render/collision geometry, symmetric progressive shoulders and contact projection
+PASS two actual input trajectories, three missions, edge-exploit regression [{"preference":-1,"mission":1,"lanes":[0,-0.68],"seconds":62.08,"collisions":0,"vehicle":100,"remaining":178},{"preference":-1,"mission":2,"lanes":[0,-0.68],"seconds":62.08,"collisions":0,"vehicle":100,"remaining":163},{"preference":-1,"mission":3,"lanes":[0,-0.68],"seconds":62.08,"collisions":0,"vehicle":100,"remaining":148},{"preference":1,"mission":1,"lanes":[0,0.68],"seconds":62.08,"collisions":0,"vehicle":100,"remaining":178},{"preference":1,"mission":2,"lanes":[0,0.68],"seconds":62.08,"collisions":0,"vehicle":100,"remaining":163},{"preference":1,"mission":3,"lanes":[0,0.68],"seconds":62.08,"collisions":0,"vehicle":100,"remaining":148},{"fixedLane":-0.98,"phase":"arrival","collisions":3,"remaining":172},{"fixedLane":-1.15,"phase":"fail","collisions":0,"remaining":0},{"fixedLane":0.98,"phase":"arrival","collisions":3,"remaining":169},{"fixedLane":1.15,"phase":"fail","collisions":0,"remaining":0}]
+PASS one impact per encounter, recovery, useful shoulder penalty, single pass sound, recycling beyond visible distance
+PASS steering anticipation and visual speed at 40 26.67
+PASS steering anticipation and visual speed at 110 73.33
+PASS steering anticipation and visual speed at 260 286.00
+PASS braking preserves a late decision window
+(node:17452) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS anticipation then one contact/sound, mirrored book anchors, 15/30/60/120 fps
+PASS empty swing, guarded book rebound and no held-key autofire
+PASS late 100ms press carried once; early mashing and interruption cannot replay attacks
+PASS directional professor recoil, opaque contact, hit-stop and recovery release
+PASS four readable defeats, including parent furniture collision
+PASS reduced shake and clamped recoil at room edge
+(node:3660) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS contact shadows stay on floor, clip fractional holes, shrink in flight; frame preserves viewport and CADRE
+PASS asphalt repairs remain anchored in world space across streaming boundaries
+PASS 11 reference scenes frozen at three times, identical framing, positions, traffic and countdown
+PASS lighting separates actors from backgrounds; no residual floor or road overlays in transitions
+(node:15972) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS three-outcome day, explicit causes, next mission, report, clean restart and menu key release
+PASS failed speech preserves the 15-second text fallback before assignment
+PASS real menu actions, persisted separate volumes, captions, help priority, Escape/back, pause/resume and report relaunch
+PASS local voice only, speech error fallback and independent effects gain/mute on pause
+(node:34804) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS four conversations at 15/30/60/120 fps: frozen actors/timer, typewriter, held input, pause, last X consumed, re-entry
+PASS incoming fade discards action; bubble bounds and reveal/next/close hints
+PASS 360ms sweep, unchanged reach, one damage event and retained recovery window
+PASS speed 40 world/s 26.7 near-ground pixels/250ms 2.2
+PASS speed 110 world/s 73.3 near-ground pixels/250ms 6.6
+PASS speed 260 world/s 286.0 near-ground pixels/250ms 44.5
+PASS renamed establishment on destination and facades
+(node:22116) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS ZQSD/F and arrows/X: steering, throttle, brake, dialogues, strike; alias OR, quick taps, sources and pause
+PASS direct mouse/touch: conversations, destinations, swipe jump, single approach/strike, guard, doors, course, failure, gas/brake/steer, cancel and keyboard takeover
+PASS real pointer adapter for mouse/touch: canvas scaling, capture release, swipe, pointer cancellation and blur
+PASS gesture-driven first route {"vehicle":100,"collisions":0,"remaining":177.91999999996824}
+PASS workshop queues gestures until one step, preserves dialogue and timer while paused
+(node:41792) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

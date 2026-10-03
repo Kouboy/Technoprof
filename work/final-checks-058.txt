@@ -1,0 +1,5 @@
+PASS 058 actual render at 30/60/120 fps: preparation/active/recovery for four new actors, no pose hidden by recovery; hits cancel attacks and sound, pause remains silent
+PASS 058 security turn diagnostic, committed front, one semantic audio event per preparation/release, four gesture signatures on effects bus, no delayed playback or extra samples
+PASS 058 atlas recovery masks exclude neighbouring hands, preserve body and foot anchors
+(node:19548) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

@@ -1,0 +1,12 @@
+TECHNOPROF 0.55 - lot 0 validation
+npm test: PASS (17 scripts, work/tests-055.txt). Build TypeScript/Vite: PASS (work/build-055.txt). Local export and 13 shortcuts: PASS.
+055: all eight lateral arrows via visible centres at 15/30/60/120 fps; nine vertical exits and classroom; matching bitmap bounds; passage consumption and frozen fade.
+Keyboard directions, opposed input, recoil/attack/airborne gates, closed edges, pause/hurt cancellation, explicit marker priority and keyboard takeover: PASS.
+Actual Pointer Events adapter: mouse and touch at desktop/phone-scale canvas sizes, capture release and transition: PASS. Physical-phone testing pending.
+Browser: arrow cour -> hall -> cour -> hall, door indicator -> annexe, movement/fade/stop observed at workshop steps; no warn/error console logs. Vite source preview, giant standalone not played through IAB.
+Captures: work/passages-hall-055.png, work/passages-retour-055.png, work/passages-annexe-055.png.
+Known tooling notices: Vite bundle size and Node experimental stripTypeScriptTypes. First-mission calibration, continuous human play and phone performance remain lot 1.
+Standalone SHA256: AE9B54B1E59E8428252FA61A362CC4C57CDF4E6F639F99CC0CD9B73485B7AFD9
+0.54 baseline unchanged: 5F348A49B65CE73161F8E34A1D4454D51C7E3A2CAF6924A608086E0CD6335256
+Technoprof-0.55-local.zip : 29 entries, matching game hash, 51142947 bytes
+Technoprof-0.55-testeurs.zip : 4 entries, matching game hash, 51101821 bytes

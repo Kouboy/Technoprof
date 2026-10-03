@@ -1,0 +1,31 @@
+{
+  "version": "0.60",
+  "date": "2026-10-02",
+  "verdict": "VALIDÉ AVEC RÉSERVES",
+  "blockersEstablished": 0,
+  "important": [
+    "R07 anticipation/confirmation de dépassement"
+  ],
+  "observedExport": "Jouer-Technoprof-0.60.html via localhost HTTP",
+  "normalLandscapeCanvasCss": {
+    "viewport": [
+      844,
+      390
+    ],
+    "width": 370.65625,
+    "height": 277.9921875
+  },
+  "physicalDevice": false,
+  "audioListening": false,
+  "tests": "22 scripts npm test pass",
+  "diagnostics": [
+    "review-060-gameplay.cjs",
+    "review-060-reference.cjs",
+    "review-060-pass.cjs"
+  ],
+  "screenshots": [
+    "review-060-mobile.png",
+    "review-060-dialogue.png",
+    "review-060-contact.png"
+  ]
+}

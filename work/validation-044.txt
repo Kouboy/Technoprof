@@ -1,0 +1,68 @@
+
+> technoprof@0.44.0 test
+> node work/check.cjs && node work/check-art.cjs && node work/check-car.cjs && node work/check-road.cjs && node work/check-cadre.cjs && node work/check-school.cjs && node work/check-043.cjs && node work/check-044.cjs
+
+PASS cruising, mission timer, shared timer, room navigation, boss framing, door, fade, automatic return, timeout
+PASS curves drift outward; steering responds
+PASS continuous traffic, low speed, acceleration, braking, held stair input, wider door zones
+PASS notification visibility gate, km/h distance conversion, speed-dependent steering
+PASS parking stop, black intervals, key-gated course, speed amplitude, steering inertia
+PASS boss guard and recovery opening, enemy persistence across rooms
+PASS full mission: drive, detour, boss defeated, classroom entered with 149 seconds remaining
+PASS all forced arrival/fade/boss-intro time excluded
+PASS vehicle stages/persistence/panne/tow, parent scenery impact, jumpable charge, safe shortcut traversal
+PASS 110 km/h cap, assignment release, one-shot 1 km warning, 78-unit delivered sweep
+PASS centre traffic and high-speed curve require steering
+PASS gentle symmetric curve drift, zero on straight
+PASS progressive traffic: 5 / 8 / 11, first mission spaced
+PASS one-shot passing sound and temporary hard-braking tire marks
+PASS radio once per cruise, interruption, classroom sound sequence
+PASS animated fall and single damage on recovery
+PASS mirrored character body, book, arm and satchel
+PASS bridge interleaved with traffic by depth; roadside mirrors restore transforms
+PASS full-sized bodies cannot overlap or cross at ground level
+PASS full-sized book hit at 60 units, effect records contact before knockback
+PASS extended classroom entry remains outside mission timer
+PASS arrival walk reaches gate and recedes into courtyard
+PASS courtyard renderer scope and walking transition into hall
+PASS hall parent anticipation/charge/recovery and annex transition
+PASS slower parent charge and full one-second warning
+PASS central artwork and shortcut / hall transitions
+PASS technical renderer room scope
+PASS service landing up/down transitions
+PASS guard wind-up, limited directional shove, recovery, jump and pose transitions
+PASS student wind-up, short kick, jump/back evasion, poses, two-hit defeat, impact height and both exits
+PASS completed radio is not repeated, pause resumes, stale callbacks ignored, muted bulletin stays consumed, assignment follows end with fallback
+PASS both fall directions, missed-jump takeoff bank, damage once, stable room entrances and contextual orientation
+PASS focus-loss pause, immediate audio silence, explicit resume, course control keys and held-key repeat
+PASS parent/guard-scale contact, attack interruption, directional anchors, parent hit feedback and clean room transitions
+PASS complete first speeches, resumed aggression, no repeated introductions and female first inspector
+PASS atlas bounds, left/right poses, attack anticipation/strike/recovery, jump, boss stamp/sweep/recovery, scene cleanup
+PASS female and male inspector atlas selection
+PASS classroom walk enters doorway before fading to black
+PASS parent atlas bounds, foot anchors, facing and cleanup
+PASS guard atlas, silhouette bounds, anchors and cleanup
+PASS student atlas, silhouette bounds, foot anchors, both orientations and cleanup
+PASS car atlas bounds, dedicated left/right steering, view hysteresis, side profile reset and cleanup
+PASS equal driving body height and parking scale
+PASS right-view scale, unmirrored rendering, view hysteresis and lamp/exhaust anchors
+PASS road atlas bounds, world anchors across segment boundaries, mixed-layer depths below player
+PASS sky parallax coverage and cleanup
+PASS CADRE hidden destination, timer rounding, 1km threshold, km formatting, reveal, suspended state, text fit, integer pixels and viewport bounds
+PASS distance turns red strictly below 500m
+PASS terminal status, explicit failure causes, suspended timer and no terminal urgency
+PASS props outlines, hole collision alignment, WebGL-safe crop, speech bubble bounds, readable signs and unobstructed navigation
+PASS available passage keys, locked classroom, closed edges and inspector identity
+PASS smaller dialogue lettering and two 4.5-second pages
+PASS intro collision, intentional contact interruption, stun expiry, identical rules with/without art
+PASS hurt cancels book, no strike during recovery/fall, interaction waits for recovery/landing
+PASS three real failures, explicit reasons, terminal cleanup, idempotence, fresh Enter after reading delay
+PASS 15/30/60/120 fps equal mission time; long stalls pause explicitly
+PASS seed replay, paused 20ms step, real final blow/class entry, transition rejects stale attack
+PASS widths share render/collision geometry, symmetric progressive shoulders and contact projection
+PASS two actual input trajectories, three missions, edge-exploit regression [{"preference":-1,"mission":1,"lanes":[0,-0.68],"seconds":62.08,"collisions":0,"vehicle":100,"remaining":178},{"preference":-1,"mission":2,"lanes":[0,-0.68],"seconds":62.08,"collisions":0,"vehicle":100,"remaining":163},{"preference":-1,"mission":3,"lanes":[0,-0.68],"seconds":62.08,"collisions":0,"vehicle":100,"remaining":148},{"preference":1,"mission":1,"lanes":[0,0.68,-0.68],"seconds":62.08,"collisions":0,"vehicle":100,"remaining":178},{"preference":1,"mission":2,"lanes":[0,0.68,-0.68],"seconds":62.08,"collisions":0,"vehicle":100,"remaining":163},{"preference":1,"mission":3,"lanes":[0,0.68,-0.68],"seconds":64.02,"collisions":1,"vehicle":78,"remaining":146},{"fixedLane":-0.98,"phase":"arrival","collisions":2,"remaining":171},{"fixedLane":-1.15,"phase":"fail","collisions":0,"remaining":0},{"fixedLane":0.98,"phase":"arrival","collisions":3,"remaining":169},{"fixedLane":1.15,"phase":"fail","collisions":0,"remaining":0}]
+PASS one impact per encounter, recovery, useful shoulder penalty, single pass sound, recycling beyond visible distance
+PASS steering anticipation and visual speed at 40 11.11
+PASS steering anticipation and visual speed at 110 30.56
+PASS steering anticipation and visual speed at 260 119.17
+PASS braking preserves a late decision window

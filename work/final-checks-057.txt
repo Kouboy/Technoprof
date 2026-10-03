@@ -1,0 +1,4 @@
+Final presentation checks: check-art PASS; check-053 audio regression PASS; check-057 continuous days and rules PASS.
+Final TypeScript/Vite build PASS; assets/index-T402YXh_.js; 83683639-byte standalone. check-local PASS.
+Compiled 0.57 observed: atelier actors and doors, explicit atlas cuts, readable bubble, arrival car parked at 0 km/h with teacher leaving, deadline remains 210.00 seconds. Browser warning/error capture empty.
+Final packages verified against matching SHA256 in validation-057.txt.

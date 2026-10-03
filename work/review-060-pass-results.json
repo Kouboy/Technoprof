@@ -1,0 +1,383 @@
+{
+  "method": "Normal held inputs. Drive alongside one naturally spawned vehicle just outside contact width, then steer inward after its pass announcement. No position, speed, clock or vehicle writes.",
+  "runs": [
+    {
+      "mission": 1,
+      "seed": 4301,
+      "found": {
+        "pass": {
+          "tick": 3446,
+          "time": 57.44999999999802,
+          "distance": 24.747613743189504,
+          "car": -0.14326142650368776,
+          "lane": -0.62,
+          "type": 2,
+          "event": {
+            "at": 57.45,
+            "kind": "near-pass",
+            "mission": 1,
+            "room": 0,
+            "data": {
+              "side": -1,
+              "closing": 236.66666666666663
+            }
+          }
+        },
+        "hit": {
+          "tick": 3453,
+          "time": 57.56666666666468,
+          "distance": -2.8634973679145332,
+          "car": -0.20096583939685655,
+          "event": {
+            "at": 57.567,
+            "kind": "crash",
+            "mission": 1,
+            "room": 0,
+            "data": {
+              "lane": -0.62,
+              "type": 2,
+              "speed": 260
+            }
+          }
+        },
+        "vehicle": 4
+      }
+    },
+    {
+      "mission": 1,
+      "seed": 8317,
+      "found": {
+        "pass": {
+          "tick": 1546,
+          "time": 25.78333333333315,
+          "distance": 29.194663548833887,
+          "car": -0.09562748478018337,
+          "lane": -0.62,
+          "type": 1,
+          "event": {
+            "at": 25.783,
+            "kind": "near-pass",
+            "mission": 1,
+            "room": 0,
+            "data": {
+              "side": -1,
+              "closing": 244.66666666666663
+            }
+          }
+        },
+        "hit": {
+          "tick": 1553,
+          "time": 25.89999999999981,
+          "distance": 0.6502191043878156,
+          "car": -0.1458309864007234,
+          "event": {
+            "at": 25.9,
+            "kind": "crash",
+            "mission": 1,
+            "room": 0,
+            "data": {
+              "lane": -0.62,
+              "type": 1,
+              "speed": 260
+            }
+          }
+        },
+        "vehicle": 70
+      }
+    },
+    {
+      "mission": 1,
+      "seed": 2026,
+      "found": {
+        "pass": {
+          "tick": 1539,
+          "time": 25.66666666666649,
+          "distance": 26.173149654490317,
+          "car": -0.09526304869653762,
+          "lane": -0.62,
+          "type": 1,
+          "event": {
+            "at": 25.667,
+            "kind": "near-pass",
+            "mission": 1,
+            "room": 0,
+            "data": {
+              "side": -1,
+              "closing": 244.66666666666663
+            }
+          }
+        },
+        "hit": {
+          "tick": 1545,
+          "time": 25.766666666666485,
+          "distance": 1.7064829878222554,
+          "car": -0.13532401541401123,
+          "event": {
+            "at": 25.767,
+            "kind": "crash",
+            "mission": 1,
+            "room": 0,
+            "data": {
+              "lane": -0.62,
+              "type": 1,
+              "speed": 260
+            }
+          }
+        },
+        "vehicle": 70
+      }
+    },
+    {
+      "mission": 2,
+      "seed": 4301,
+      "found": {
+        "pass": {
+          "tick": 1151,
+          "time": 19.20000000000019,
+          "distance": 15.520255818684063,
+          "car": -0.07905571145992459,
+          "lane": -0.62,
+          "type": 1,
+          "event": {
+            "at": 19.2,
+            "kind": "near-pass",
+            "mission": 2,
+            "room": 10,
+            "data": {
+              "side": -1,
+              "closing": 130.8857557337913
+            }
+          }
+        },
+        "hit": {
+          "tick": 1157,
+          "time": 19.300000000000185,
+          "distance": 2.290884280628461,
+          "car": -0.11206274580959952,
+          "event": {
+            "at": 19.3,
+            "kind": "crash",
+            "mission": 2,
+            "room": 10,
+            "data": {
+              "lane": -0.62,
+              "type": 1,
+              "speed": 197.82724391363746
+            }
+          }
+        },
+        "vehicle": 70
+      }
+    },
+    {
+      "mission": 2,
+      "seed": 8317,
+      "found": {
+        "pass": {
+          "tick": 1142,
+          "time": 19.0500000000002,
+          "distance": 13.29815997889773,
+          "car": -0.07742566849561257,
+          "lane": -0.62,
+          "type": 1,
+          "event": {
+            "at": 19.05,
+            "kind": "near-pass",
+            "mission": 2,
+            "room": 10,
+            "data": {
+              "side": -1,
+              "closing": 127.25720079470999
+            }
+          }
+        },
+        "hit": {
+          "tick": 1147,
+          "time": 19.13333333333353,
+          "distance": 2.592514138765864,
+          "car": -0.10321229155557902,
+          "event": {
+            "at": 19.133,
+            "kind": "crash",
+            "mission": 2,
+            "room": 10,
+            "data": {
+              "lane": -0.62,
+              "type": 1,
+              "speed": 195.1515922191699
+            }
+          }
+        },
+        "vehicle": 70
+      }
+    },
+    {
+      "mission": 2,
+      "seed": 2026,
+      "found": {
+        "pass": {
+          "tick": 1143,
+          "time": 19.066666666666865,
+          "distance": 13.399162358311287,
+          "car": -0.07800698227184175,
+          "lane": -0.62,
+          "type": 1,
+          "event": {
+            "at": 19.067,
+            "kind": "near-pass",
+            "mission": 2,
+            "room": 10,
+            "data": {
+              "side": -1,
+              "closing": 127.6608834173603
+            }
+          }
+        },
+        "hit": {
+          "tick": 1148,
+          "time": 19.150000000000194,
+          "distance": 2.6599077215460056,
+          "car": -0.10406623710913603,
+          "event": {
+            "at": 19.15,
+            "kind": "crash",
+            "mission": 2,
+            "room": 10,
+            "data": {
+              "lane": -0.62,
+              "type": 1,
+              "speed": 195.42140788072243
+            }
+          }
+        },
+        "vehicle": 70
+      }
+    },
+    {
+      "mission": 3,
+      "seed": 4301,
+      "found": {
+        "pass": {
+          "tick": 1258,
+          "time": 20.983333333333423,
+          "distance": 17.610093091721865,
+          "car": 0.42008700810217114,
+          "lane": 0,
+          "type": 2,
+          "event": {
+            "at": 20.983,
+            "kind": "near-pass",
+            "mission": 3,
+            "room": 20,
+            "data": {
+              "side": -1,
+              "closing": 158.20021156626402
+            }
+          }
+        },
+        "hit": {
+          "tick": 1264,
+          "time": 21.083333333333417,
+          "distance": 1.6574122454119333,
+          "car": 0.3865475157687843,
+          "event": {
+            "at": 21.083,
+            "kind": "crash",
+            "mission": 3,
+            "room": 20,
+            "data": {
+              "lane": 0,
+              "type": 2,
+              "speed": 223.54052963227969
+            }
+          }
+        },
+        "vehicle": 78
+      }
+    },
+    {
+      "mission": 3,
+      "seed": 8317,
+      "found": {
+        "pass": {
+          "tick": 1259,
+          "time": 21.00000000000009,
+          "distance": 18.09918783792932,
+          "car": 0.41998738094608695,
+          "lane": 0,
+          "type": 2,
+          "event": {
+            "at": 21,
+            "kind": "near-pass",
+            "mission": 3,
+            "room": 20,
+            "data": {
+              "side": -1,
+              "closing": 158.57970441313023
+            }
+          }
+        },
+        "hit": {
+          "tick": 1265,
+          "time": 21.100000000000083,
+          "distance": 2.1086556038549134,
+          "car": 0.38600162848839736,
+          "event": {
+            "at": 21.1,
+            "kind": "crash",
+            "mission": 3,
+            "room": 20,
+            "data": {
+              "lane": 0,
+              "type": 2,
+              "speed": 223.7574639398274
+            }
+          }
+        },
+        "vehicle": 78
+      }
+    },
+    {
+      "mission": 3,
+      "seed": 2026,
+      "found": {
+        "pass": {
+          "tick": 1224,
+          "time": 20.41666666666679,
+          "distance": 15.101963063819085,
+          "car": 0.42095253772696334,
+          "lane": 0,
+          "type": 2,
+          "event": {
+            "at": 20.417,
+            "kind": "near-pass",
+            "mission": 3,
+            "room": 20,
+            "data": {
+              "side": -1,
+              "closing": 145.13893873320535
+            }
+          }
+        },
+        "hit": {
+          "tick": 1229,
+          "time": 20.500000000000117,
+          "distance": 2.9100435462278256,
+          "car": 0.39070907724332693,
+          "event": {
+            "at": 20.5,
+            "kind": "crash",
+            "mission": 3,
+            "room": 20,
+            "data": {
+              "lane": 0,
+              "type": 2,
+              "speed": 215.68729640032504
+            }
+          }
+        },
+        "vehicle": 78
+      }
+    }
+  ]
+}

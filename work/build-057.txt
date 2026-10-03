@@ -1,0 +1,20 @@
+
+> technoprof@0.57.0 build
+> tsc && vite build && node work/export-local.cjs
+
+vite v8.2.2 building client environment for production...
+transforming...
+✓ 54 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                    12.92 kB │ gzip:      3.67 kB
+dist/assets/index-SsyVhTDj.js  83,670.68 kB │ gzip: 61,380.58 kB
+
+✓ built in 3.56s
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+Standalone HTML written: 83683593 bytes
+13 lightweight trial shortcuts written.

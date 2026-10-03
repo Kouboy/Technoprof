@@ -1,0 +1,249 @@
+{
+  "version": "0.54",
+  "date": "2026-10-02",
+  "scope": "Logic probes without rendering/audio; not a human playtest",
+  "edgeHints": [
+    {
+      "room": 0,
+      "direction": "right",
+      "tap": [
+        298,
+        144
+      ],
+      "after": {
+        "room": 0,
+        "x": 296.0999999999996,
+        "intent": null
+      },
+      "edgeTapAfter": {
+        "room": 1,
+        "x": 18
+      }
+    },
+    {
+      "room": 1,
+      "direction": "right",
+      "tap": [
+        298,
+        144
+      ],
+      "after": {
+        "room": 1,
+        "x": 296.0999999999996,
+        "intent": null
+      },
+      "edgeTapAfter": {
+        "room": 2,
+        "x": 20
+      }
+    },
+    {
+      "room": 3,
+      "direction": "right",
+      "tap": [
+        298,
+        144
+      ],
+      "after": {
+        "room": 3,
+        "x": 296.0999999999996,
+        "intent": null
+      },
+      "edgeTapAfter": {
+        "room": 4,
+        "x": 42
+      }
+    },
+    {
+      "room": 6,
+      "direction": "right",
+      "tap": [
+        298,
+        144
+      ],
+      "after": {
+        "room": 6,
+        "x": 296.0999999999996,
+        "intent": null
+      },
+      "edgeTapAfter": {
+        "room": 7,
+        "x": 28
+      }
+    },
+    {
+      "room": 8,
+      "direction": "right",
+      "tap": [
+        298,
+        144
+      ],
+      "after": {
+        "room": 8,
+        "x": 296.0999999999996,
+        "intent": null
+      },
+      "edgeTapAfter": {
+        "room": 3,
+        "x": 100
+      }
+    },
+    {
+      "room": 1,
+      "direction": "left",
+      "tap": [
+        15,
+        144
+      ],
+      "after": {
+        "room": 1,
+        "x": 15.799999999999962,
+        "intent": null
+      },
+      "edgeTapAfter": {
+        "room": 0,
+        "x": 290
+      }
+    },
+    {
+      "room": 2,
+      "direction": "left",
+      "tap": [
+        15,
+        144
+      ],
+      "after": {
+        "room": 2,
+        "x": 15.799999999999962,
+        "intent": null
+      },
+      "edgeTapAfter": {
+        "room": 1,
+        "x": 290
+      }
+    }
+  ],
+  "ordinaryCombat": [
+    {
+      "room": 1,
+      "strategy": "stationary, attack every 0.5 s",
+      "elapsed": 9.999999999999876,
+      "playerHp": 3,
+      "enemyHp": 2,
+      "hits": 1
+    },
+    {
+      "room": 3,
+      "strategy": "stationary, attack every 0.5 s",
+      "elapsed": 0.7000000000000003,
+      "playerHp": 5,
+      "enemyHp": 0,
+      "hits": 2
+    },
+    {
+      "room": 6,
+      "strategy": "stationary, attack every 0.5 s",
+      "elapsed": 0.7000000000000003,
+      "playerHp": 5,
+      "enemyHp": 0,
+      "hits": 2
+    }
+  ],
+  "bossMash": [
+    {
+      "mission": 0,
+      "cadence": 0.5,
+      "elapsed": 14.619999999999777,
+      "playerHp": 0,
+      "bossHp": 2,
+      "hits": 4,
+      "phase": "fail"
+    },
+    {
+      "mission": 0,
+      "cadence": 0.65,
+      "elapsed": 14.639999999999777,
+      "playerHp": 0,
+      "bossHp": 2,
+      "hits": 4,
+      "phase": "fail"
+    },
+    {
+      "mission": 0,
+      "cadence": 0.85,
+      "elapsed": 14.439999999999781,
+      "playerHp": 0,
+      "bossHp": 2,
+      "hits": 4,
+      "phase": "fail"
+    },
+    {
+      "mission": 1,
+      "cadence": 0.5,
+      "elapsed": 14.619999999999777,
+      "playerHp": 0,
+      "bossHp": 3,
+      "hits": 4,
+      "phase": "fail"
+    },
+    {
+      "mission": 1,
+      "cadence": 0.65,
+      "elapsed": 14.639999999999777,
+      "playerHp": 0,
+      "bossHp": 3,
+      "hits": 4,
+      "phase": "fail"
+    },
+    {
+      "mission": 1,
+      "cadence": 0.85,
+      "elapsed": 14.439999999999781,
+      "playerHp": 0,
+      "bossHp": 3,
+      "hits": 4,
+      "phase": "fail"
+    },
+    {
+      "mission": 2,
+      "cadence": 0.5,
+      "elapsed": 14.619999999999777,
+      "playerHp": 0,
+      "bossHp": 4,
+      "hits": 4,
+      "phase": "fail"
+    },
+    {
+      "mission": 2,
+      "cadence": 0.65,
+      "elapsed": 14.639999999999777,
+      "playerHp": 0,
+      "bossHp": 4,
+      "hits": 4,
+      "phase": "fail"
+    },
+    {
+      "mission": 2,
+      "cadence": 0.85,
+      "elapsed": 14.439999999999781,
+      "playerHp": 0,
+      "bossHp": 4,
+      "hits": 4,
+      "phase": "fail"
+    }
+  ],
+  "payload": [
+    {
+      "path": "Jouer-Technoprof.html",
+      "bytes": 69951003
+    },
+    {
+      "path": "Jouer-Technoprof-0.54.html",
+      "bytes": 69951003
+    },
+    {
+      "path": "Technoprof-0.54-testeurs.zip",
+      "bytes": 51101382
+    }
+  ]
+}

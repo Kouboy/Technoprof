@@ -1,0 +1,19 @@
+TECHNOPROF — Physique appliquée
+Version de test 0.60
+
+1. Extraire l'archive dans un dossier.
+2. Ouvrir Jouer-Technoprof.html dans votre navigateur habituel.
+   Sur Windows, Jouer.cmd ouvre également le jeu.
+3. Choisir « Prendre le service ».
+
+Le jeu se joue au clavier (ZQSD ou flèches, Espace, F ou X), à la souris ou au toucher.
+Les gestes et les réglages sont dans le menu Commandes. Sur téléphone, le paysage est conseillé.
+Aucune installation, aucun compte ni serveur nécessaire.
+Le chargement initial peut prendre quelques secondes : les images sont intégrées.
+La radio reste compréhensible sans voix installée, grâce à son texte.
+
+Essayez de découvrir la journée sans explication extérieure.
+Après la partie seulement, ouvrir RETOURS-TEST.txt.
+Rien n'est envoyé automatiquement.
+
+Pour documenter un probleme : Pause / aide > Exporter mon essai. Un petit fichier JSON est sauvegarde localement. Il contient temps, incidents, seed et mesures techniques ; rien n'est transmis. Vous pouvez le joindre aux retours.
