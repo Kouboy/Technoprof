@@ -1,37 +1,49 @@
 {
-  "version": "0.40",
+  "version": "0.41",
   "importClientDate": "2026-10-03",
   "scope": "partial source backup",
   "files": [
     {
-      "original": "audio.ts",
-      "path": "src/audio.ts",
-      "bytes": 9979,
-      "sha256": "4f10acb541972de9936dfe613ca864146d0066bffa8578e122a1ad0e45621024"
+      "original": "comic-fx.ts",
+      "path": "src/comic-fx.ts",
+      "bytes": 4145,
+      "sha256": "d8bf2e6f793efbc12463361a167a1e2755bc30cc022d3059e12b0aaa46e340e1"
     },
     {
       "original": "index.html",
       "path": "index.html",
-      "bytes": 4474,
-      "sha256": "b5f3cb66de519ae8c3fadb73c65ef1127a32c16374d3b2323060ad78db994020"
+      "bytes": 4526,
+      "sha256": "ceb6743332ff66f8c41c8f56562ccfe6287e0174d7f1554dce82cd5db1c27179"
     },
     {
       "original": "main.ts",
       "path": "src/main.ts",
-      "bytes": 110919,
-      "sha256": "6ae076749ab4dc67ddfdf0a7ea9851b2bca694d751dd2d850a370ddb83461d16"
-    },
-    {
-      "original": "package-lock.json",
-      "path": "package-lock.json",
-      "bytes": 38850,
-      "sha256": "903fe40450a6a49f985e230a96b6a4e5837efe6f3938d4c0e1cebaf71a4a2572"
+      "bytes": 113227,
+      "sha256": "7fa5f4ba8508d8c2082ac416f581836b8b0768d12414569ab3748ae663cae0c3"
     },
     {
       "original": "package.json",
       "path": "package.json",
       "bytes": 581,
-      "sha256": "cbfd93f8e1a9a6044a0f03b5fe22e0c3d5a2237c13c80ba2f27628be8ca7ebb8"
+      "sha256": "887f5e927fa77bc1064ea83f00f1657322e0be9ed9af1a5fd8db5007a2009699"
+    },
+    {
+      "original": "school-props.ts",
+      "path": "src/school-props.ts",
+      "bytes": 11457,
+      "sha256": "bb305ebab85a07a50f1a78a4b44fd71a38415f804a4d9e61f96093b821546cd3"
+    },
+    {
+      "original": "slice-art.ts",
+      "path": "src/slice-art.ts",
+      "bytes": 6634,
+      "sha256": "ffb920e439a4f033b4bc1d01d290bc2f22e224b2bf8160f9bd311850fcc1c854"
+    },
+    {
+      "original": "world.ts",
+      "path": "src/world.ts",
+      "bytes": 3427,
+      "sha256": "48c2d41533d9aa8b193ec609a1f6a90586e1bdbfd27ed4dc293aad1e3706d52b"
     }
   ]
 }

@@ -2,7 +2,7 @@ import { drawComicFX } from "./comic-fx";
 import { ENCOUNTER_SECONDS } from "./world";
 import { SchoolProps, drawDialogue } from "./school-props";
 import { BLOCKED_EDGES, walkBounds, recoveryBank } from "./world";
-import { drawCadre } from "./cadre";
+import { drawCadre, bitmap, bitmapWidth } from "./cadre";
 import { WingArt } from "./wing-art";
 import { BridgeArt } from "./bridge-art";
 import { SERVICE_DATA } from "./service-data";
@@ -203,6 +203,7 @@ class Game extends Phaser.Scene {
   won = 0;
   remaining = 90;
   paused = false;
+  pauseReason = "";
   speed = 0;
   road = 0;
   car = 0;
@@ -329,9 +330,14 @@ class Game extends Phaser.Scene {
       "LEFT,RIGHT,UP,DOWN,SPACE,X,ENTER,P,M,F2,F3,F4",
     ) as typeof this.keys;
     this.input.keyboard!.addCapture(["SPACE", "UP", "DOWN", "LEFT", "RIGHT"]);
-    this.input.keyboard!.on("keydown", () => {
-      this.audio.unlock();
-      if (this.phase === "course" && this.age > 0.3) this.freshKey = true;
+    this.input.keyboard!.on("keydown", this.handleKeyDown, this);
+    const focusLost = () => this.pauseForFocusLoss();
+    this.game.events.on(Phaser.Core.Events.BLUR, focusLost);
+    this.game.events.on(Phaser.Core.Events.HIDDEN, focusLost);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.game.events.off(Phaser.Core.Events.BLUR, focusLost);
+      this.game.events.off(Phaser.Core.Events.HIDDEN, focusLost);
+      this.input.keyboard?.off("keydown", this.handleKeyDown, this);
     });
     const preview =
       new URLSearchParams(location.search).get("essai") ||
@@ -483,6 +489,8 @@ class Game extends Phaser.Scene {
         "fx-garde": 4,
         "fx-recu": 4,
         "fx-alerte": 3,
+        "fx-parent": 1,
+        "fx-vigile": 6,
       };
       if (view in rooms) {
         this.phase = "school";
@@ -503,13 +511,14 @@ class Game extends Phaser.Scene {
         this.encounterTime = 0;
         this.bossIntro = 0;
         this.px = 150;
-        this.enemies[0].x = 215;
+        this.enemies[0].x = this.room === 4 ? 215 : 190;
         if (view === "fx-alerte") this.enemies[0].wind = 0.5;
         else {
           this.attack = view === "fx-recu" ? 0 : 0.25;
           this.impact = 0.28;
-          this.impactX = view === "fx-recu" ? 166 : 193;
-          this.impactY = view === "fx-recu" ? 106 : 90;
+          const contact = this.bookContact(this.enemies[0]);
+          this.impactX = view === "fx-recu" ? 166 : contact.x;
+          this.impactY = view === "fx-recu" ? 106 : contact.y;
           this.impactKind =
             view === "fx-recu" ? "hurt" : view === "fx-garde" ? "block" : "hit";
         }
@@ -815,6 +824,9 @@ class Game extends Phaser.Scene {
     this.enterRoom(0, 25);
   }
   enterRoom(room: number, x: number) {
+    this.impact = 0;
+    this.hitStop = 0;
+    this.particles = [];
     this.falling = 0;
     this.room = room;
     this.interactLock = 0.35;
@@ -857,6 +869,52 @@ class Game extends Phaser.Scene {
       this.age = 0;
     } else this.begin();
   }
+  handleKeyDown(event: Pick<KeyboardEvent, "key" | "repeat">) {
+    this.audio.unlock();
+    if (
+      !event.repeat &&
+      !this.paused &&
+      this.phase === "course" &&
+      this.age > 0.3 &&
+      !["P", "M", "F2", "F3", "F4"].includes(event.key.toUpperCase())
+    )
+      this.freshKey = true;
+  }
+  setPaused(value: boolean, reason = "") {
+    this.paused = value;
+    this.pauseReason = value ? reason : "";
+    this.freshKey = false;
+    // Focus loss may stop the render loop: silence audio in the event itself.
+    this.audio.radio(
+      this.radioLines[Math.min(this.mission, 2)],
+      this.phase === "free",
+      value,
+    );
+    this.audio.scene(this.phase, value, this.remaining, 0);
+    this.audio.motor(
+      this.speed,
+      !value && ["free", "receive", "road", "arrival"].includes(this.phase),
+    );
+  }
+  pauseForFocusLoss() {
+    if (
+      this.paused ||
+      this.arrivalStill ||
+      this.cadreReview ||
+      this.artReview >= 0 ||
+      ["title", "report"].includes(this.phase)
+    )
+      return;
+    this.input?.keyboard?.resetKeys();
+    this.setPaused(true, "FENETRE INACTIVE");
+    this.draw();
+  }
+  bookContact(e: Enemy) {
+    return {
+      x: e.x - this.face * (this.usesSliceArt() ? 15 : 9),
+      y: this.py - (this.usesSliceArt() ? 69 : 43),
+    };
+  }
   update(_t: number, ms: number) {
     if (this.arrivalStill || this.cadreReview) {
       this.draw();
@@ -888,6 +946,8 @@ class Game extends Phaser.Scene {
       this.parkSpeed = 100;
       this.age = 0;
     }
+    if (just("P") && !["title", "report"].includes(this.phase))
+      this.setPaused(!this.paused);
     this.ambienceClock += this.paused ? 0 : dt;
     this.audio.radio(
       this.radioLines[Math.min(this.mission, 2)],
@@ -900,8 +960,6 @@ class Game extends Phaser.Scene {
       !this.paused &&
         ["free", "receive", "road", "arrival"].includes(this.phase),
     );
-    if (just("P") && !["title", "report"].includes(this.phase))
-      this.paused = !this.paused;
     if (this.paused) {
       this.draw();
       return;
@@ -1208,38 +1266,29 @@ class Game extends Phaser.Scene {
             this.py < 125
           )
             continue;
+          const contact = this.bookContact(e);
           if (e.boss && e.recovery <= 0 && e.stun <= 0) {
             this.audio.tone(800, 0.05, 0.02, 450);
             this.impact = 0.32;
-            this.impactX = this.usesSliceArt() ? e.x - this.face * 15 : e.x;
-            this.impactY = this.usesSliceArt()
-              ? this.py - 69
-              : this.room === 3
-                ? 116
-                : 132;
+            this.impactX = contact.x;
+            this.impactY = contact.y;
             this.impactKind = "block";
             if (this.usesSliceArt()) this.hitStop = 0.04;
             continue;
           }
-          const contactX = this.usesSliceArt() ? e.x - this.face * 15 : e.x;
           e.hp--;
           if (e.hp <= 0) e.downTime = 1.1;
           e.stun = 0.22;
+          e.wind = 0;
+          e.chargeTime = 0;
+          e.recovery = Math.max(e.recovery, 0.35);
           e.x = Phaser.Math.Clamp(e.x + this.face * 14, 22, 287);
           this.hitStop = 0.055;
           this.punches++;
-          this.burst(
-            contactX,
-            this.usesSliceArt() ? this.py - 69 : this.room === 3 ? 116 : 132,
-            0xeee2b9,
-          );
+          this.burst(contact.x, contact.y, 0xeee2b9);
           this.impact = 0.32;
-          this.impactX = contactX;
-          this.impactY = this.usesSliceArt()
-            ? this.py - 69
-            : this.room === 3
-              ? 116
-              : 132;
+          this.impactX = contact.x;
+          this.impactY = contact.y;
           this.impactKind = "hit";
           this.audio.tone(110, 0.1, 0.04, 35);
         }
@@ -1517,7 +1566,14 @@ class Game extends Phaser.Scene {
     if ((e.chargeTime ?? 0) > 0) {
       e.chargeTime! -= dt;
       e.x += (e.chargeDir ?? 1) * 100 * dt;
-      if (Math.abs(e.x - this.px) < 22 && this.py > 130) this.hurt();
+      if (Math.abs(e.x - this.px) < 22 && this.py > 130 && this.inv <= 0) {
+        this.hurt();
+        this.impact = 0.32;
+        this.impactKind = "hurt";
+        this.impactX = this.px - (e.chargeDir ?? 1) * 8;
+        this.impactY = this.py - 43;
+        this.hitStop = 0.045;
+      }
       if (e.x < 29 || e.x > 275) {
         e.x = Phaser.Math.Clamp(e.x, 29, 275);
         e.hp--;
@@ -2007,7 +2063,11 @@ class Game extends Phaser.Scene {
       this.txt(53, 137, "ENTREE : AFFECTATION SUIVANTE");
     }
     if (this.phase === "school") drawComicFX(this.g, this);
-    if (this.phase === "school" && this.encounterTime > 0 && this.enemies[0])
+    if (
+      this.phase === "school" &&
+      this.encounterTime > 0 &&
+      this.enemies[0]?.hp > 0
+    )
       drawDialogue(this.g, this.room, this.encounterTime, this.enemies[0].x);
     this.drawingEncounter = false;
     if (this.phase === "school" && this.schoolFade > 0)
@@ -2026,7 +2086,17 @@ class Game extends Phaser.Scene {
       this.rect(313, 0, 7, 179, 0x171e20);
       this.rect(0, 0, 320, 7, 0x171e20);
     }
-    if (this.paused) this.banner("PAUSE");
+    if (this.paused) {
+      this.g.fillStyle(0x080d13, 0.55);
+      this.g.fillRect(7, 7, 306, 168);
+      this.rect(65, 65, 190, 61, 0xb9aa89);
+      this.rect(67, 67, 186, 57, 0x141e27);
+      const line = (s: string, y: number, c: number) =>
+        bitmap(this.g, Math.round(160 - bitmapWidth(s) / 2), y, s, c, 1);
+      line("PAUSE", 75, 0xe5ae60);
+      line(this.pauseReason || "SOUFFLEZ UN INSTANT", 91, 0xb9aa89);
+      line("P : REPRENDRE", 110, 0xe3d4b3);
+    }
   }
   fadeViewport(alpha: number) {
     for (const t of this.labels) if (t.y < 179) t.setAlpha(1 - alpha);
