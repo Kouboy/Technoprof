@@ -20,6 +20,7 @@ export type Enemy = {
   facing?: number;
   walk?: number;
   downTime?: number;
+  strikeTime?: number;
   chargeDir?: number;
   chargeTime?: number;
 };

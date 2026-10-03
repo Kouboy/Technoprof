@@ -1,4 +1,18 @@
 import { drawComicFX } from "./comic-fx";
+import {
+  PLAY,
+  BOSS,
+  PARENT,
+  GUARD,
+  STUDENT,
+  combatProfile,
+  terminalReason,
+  FAILURE_LABELS,
+  SeededRandom,
+  type FailureReason,
+} from "./gameplay";
+import { SessionLog } from "./session-log";
+import { installWorkshop, drawWorkshop } from "./workshop";
 import { drawPassageHints } from "./passage-hints";
 import { ENCOUNTER_SECONDS } from "./world";
 import { SchoolProps, drawDialogue } from "./school-props";
@@ -20,6 +34,19 @@ import Phaser from "phaser";
 import { TUNING, ROOM_NAMES, EXITS, makeEnemies, type Enemy } from "./world";
 import { AudioKit } from "./audio";
 class Game extends Phaser.Scene {
+  failureReason: FailureReason | null = null;
+  playerRecovery = 0;
+  seed = 4301;
+  random = new SeededRandom();
+  session = new SessionLog();
+  workshop = false;
+  debugOverlay = false;
+  workshopSpeed = 1;
+  workshopStep = false;
+  workshopScenario = "road";
+  substepping = false;
+  queuedAttack = false;
+  lastLoggedPhase = "";
   art?: SliceArt;
   schoolProps?: SchoolProps;
   technicalBackdrop?: Phaser.GameObjects.Image;
@@ -567,6 +594,13 @@ class Game extends Phaser.Scene {
         this.parkSpeed = 0;
       }
     }
+    if (preview === "labo") {
+      this.workshop = true;
+      const query = new URLSearchParams(location.search);
+      this.seed = Number(query.get("seed")) >>> 0 || 4301;
+      this.loadScenario(query.get("scenario") || "road");
+      installWorkshop(this);
+    }
     this.draw();
   }
   inkCache = new Map<number, number>();
@@ -790,6 +824,16 @@ class Game extends Phaser.Scene {
     );
   }
   begin() {
+    this.failureReason = null;
+    this.playerRecovery = 0;
+    this.attack = 0;
+    this.hitStop = 0;
+    this.encounterTime = 0;
+    this.bossIntro = 0;
+    this.schoolFade = 0;
+    this.boardMessage = "";
+    this.messageTime = 0;
+    this.random.reset(this.seed + this.mission * 7919);
     this.falling = 0;
     this.phase = "free";
     this.notified = false;
@@ -811,6 +855,12 @@ class Game extends Phaser.Scene {
     this.arena = false;
     this.cleared.clear();
     this.roomEnemies.clear();
+    this.enemies = [];
+    this.room = 0;
+    this.py = PLAY.floor;
+    this.vy = 0;
+    this.face = 1;
+    this.impact = 0;
     this.car = 0;
     this.remaining = TUNING.missionSeconds - this.mission * TUNING.missionStep;
     this.hp = 5;
@@ -839,7 +889,7 @@ class Game extends Phaser.Scene {
     this.particles = [];
     this.falling = 0;
     this.room = room;
-    this.interactLock = 0.35;
+    this.interactLock = PLAY.interactLock;
     const bounds = walkBounds(room);
     this.px = Phaser.Math.Clamp(x, bounds.min, bounds.max);
     this.lastGroundX = this.px;
@@ -848,6 +898,7 @@ class Game extends Phaser.Scene {
     this.cam = 0;
     this.inv = 0.5;
     this.attack = 0;
+    this.playerRecovery = 0;
     this.arena = room === 4;
     this.encounterTime =
       !this.roomEnemies.has(room) && [1, 3, 4, 6].includes(room)
@@ -858,11 +909,52 @@ class Game extends Phaser.Scene {
     if (!this.roomEnemies.has(room))
       this.roomEnemies.set(room, makeEnemies(room, this.mission));
     this.enemies = this.roomEnemies.get(room)!;
+    this.session.record("room", this.mission, room, {
+      spawn: this.px,
+      introduction: this.encounterTime,
+    });
     this.audio.tone(180, 0.06, 0.013, 110);
   }
 
-  finish(ok: boolean) {
+  finish(ok: boolean, reason?: FailureReason) {
+    if (
+      [
+        "fail",
+        "opening",
+        "blackBefore",
+        "course",
+        "blackAfter",
+        "later",
+        "report",
+      ].includes(this.phase)
+    )
+      return;
     this.brokenRoad = ["free", "receive", "road"].includes(this.phase);
+    this.failureReason = ok
+      ? null
+      : (reason ??
+        terminalReason(
+          this.hp,
+          this.remaining,
+          this.vehicle,
+          this.brokenRoad,
+        ) ??
+        "late");
+    this.attack = 0;
+    this.playerRecovery = 0;
+    this.impact = 0;
+    this.hitStop = 0;
+    this.encounterTime = 0;
+    this.bossIntro = 0;
+    this.falling = 0;
+    this.particles = [];
+    this.queuedAttack = false;
+    for (const e of this.enemies) {
+      e.wind = 0;
+      e.recovery = 0;
+      e.chargeTime = 0;
+      e.strikeTime = 0;
+    }
     this.phase = ok ? "opening" : "fail";
     this.age = 0;
     if (ok) {
@@ -871,6 +963,13 @@ class Game extends Phaser.Scene {
       this.audio.tone(430, 0.22, 0.03, 670);
     }
     this.results.push(ok ? "SERVICE EFFECTUE" : "CARENCE CONSTATEE");
+    this.session.record(ok ? "success" : "failure", this.mission, this.room, {
+      reason: this.failureReason,
+      remaining: this.remaining,
+      hp: this.hp,
+      vehicle: this.vehicle,
+    });
+    this.persistJournal();
   }
   next() {
     this.mission++;
@@ -920,12 +1019,144 @@ class Game extends Phaser.Scene {
     this.draw();
   }
   bookContact(e: Enemy) {
+    const profile = combatProfile(this.room);
     return {
-      x: e.x - this.face * (this.usesSliceArt() ? 15 : 9),
-      y: this.py - (this.usesSliceArt() ? 69 : 43),
+      x: e.x - this.face * profile.contactX,
+      y: this.py - profile.contactY,
     };
   }
+  persistJournal() {
+    if (typeof localStorage === "undefined") return;
+    try {
+      localStorage.setItem(
+        "technoprof-last-session",
+        JSON.stringify(
+          this.session.snapshot(
+            this.seed,
+            this.collisions,
+            this.punches,
+            this.results,
+          ),
+        ),
+      );
+    } catch {
+      /* Export from the workshop remains available when storage is disabled. */
+    }
+  }
+  loadScenario(name: string) {
+    this.workshopScenario = name;
+    this.input?.keyboard?.resetKeys();
+    this.paused = false;
+    this.pauseReason = "";
+    this.queuedAttack = false;
+    this.workshopStep = false;
+    this.session = new SessionLog();
+    this.lastLoggedPhase = "";
+    this.vehicle = 100;
+    this.mission = 0;
+    this.results = [];
+    this.won = 0;
+    this.collisions = 0;
+    this.punches = 0;
+    this.kilometers = 0;
+    this.cadreReview = false;
+    this.arrivalStill = false;
+    this.artReview = -1;
+    this.begin();
+    this.notified = true;
+    this.returnFade = 0;
+    const rooms: Record<string, number> = {
+      parent: 1,
+      student: 3,
+      guard: 6,
+      boss: 4,
+      gap: 8,
+      hit: 6,
+      block: 4,
+      hurt: 3,
+      success: 4,
+      exhausted: 3,
+      late: 0,
+    };
+    if (name in rooms) {
+      this.school();
+      this.schoolFade = 0;
+      this.enterRoom(rooms[name], name === "gap" ? 80 : 100);
+      if (["hit", "block", "hurt", "success", "exhausted"].includes(name)) {
+        this.bossIntro = 0;
+        this.encounterTime = 0;
+        const e = this.enemies[0];
+        e.x = 220;
+        this.px = name === "block" || name === "success" ? 160 : 175;
+        e.cool = 1;
+        this.inv = 0;
+        if (name === "hit") e.recovery = 1.5;
+        if (name === "success") {
+          e.hp = 1;
+          e.recovery = 3;
+        }
+        if (name === "hurt" || name === "exhausted") {
+          e.wind = STUDENT.wind;
+          e.facing = -1;
+        }
+        if (name === "exhausted") this.hp = 1;
+      }
+      if (name === "late") this.remaining = 2;
+    } else if (name === "arrival") {
+      this.phase = "arrival";
+      this.parkSpeed = 100;
+      this.age = 0;
+    } else {
+      this.phase = "road";
+      this.speed = 110;
+      if (name === "breakdown") {
+        this.vehicle = 22;
+        this.obstacles = [{ z: 12, x: 0, type: 0 }];
+      }
+    }
+    this.session.record("scenario", this.mission, this.room, {
+      name,
+      seed: this.seed,
+    });
+    this.draw();
+  }
+  setWorkshopFocus(focused: boolean) {
+    if (!this.input?.keyboard) return;
+    this.input.keyboard.resetKeys();
+    this.input.keyboard.enabled = !focused;
+    if (focused) this.setPaused(true);
+  }
   update(_t: number, ms: number) {
+    if (
+      ms > PLAY.maxFrameMs &&
+      !this.paused &&
+      !["title", "report"].includes(this.phase) &&
+      !this.cadreReview &&
+      !this.arrivalStill &&
+      this.artReview < 0
+    ) {
+      this.input?.keyboard?.resetKeys();
+      this.setPaused(true, "INTERRUPTION LONGUE");
+      this.session.record("long-frame-pause", this.mission, this.room, { ms });
+      this.draw();
+      return;
+    }
+    const singleStep = this.workshop && this.workshopStep;
+    this.workshopStep = false;
+    const wasPaused = this.paused;
+    if (singleStep) this.paused = false;
+    const elapsed = singleStep
+      ? PLAY.maxStepMs
+      : Math.max(0, Math.min(ms, PLAY.maxFrameMs)) *
+        (this.workshop ? this.workshopSpeed : 1);
+    const steps = Math.max(1, Math.ceil(elapsed / PLAY.maxStepMs));
+    this.substepping = true;
+    for (let i = 0; i < steps; i++) this.simulate(elapsed / steps / 1000);
+    this.substepping = false;
+    if (singleStep) this.setPaused(wasPaused);
+    this.draw();
+  }
+  simulate(dt: number) {
     if (this.arrivalStill || this.cadreReview) {
       this.draw();
       return;
@@ -935,8 +1166,12 @@ class Game extends Phaser.Scene {
       return;
     }
 
-    let dt = Math.min(ms / 1000, 0.04);
     const just = (k: string) => Phaser.Input.Keyboard.JustDown(this.keys[k]);
+    // Consume one-shot controls even when an imposed transition rejects them.
+    const jumpPressed = just("SPACE");
+    const attackPressed = just("X") || this.queuedAttack;
+    this.queuedAttack = false;
+    const enterPressed = just("ENTER");
     if (just("M")) this.audio.muted = !this.audio.muted;
     if (just("F2")) {
       this.begin();
@@ -974,6 +1209,14 @@ class Game extends Phaser.Scene {
       this.draw();
       return;
     }
+    this.session.tick(this.phase, dt);
+    if (this.phase !== this.lastLoggedPhase) {
+      this.session.record("phase", this.mission, this.room, {
+        from: this.lastLoggedPhase,
+        to: this.phase,
+      });
+      this.lastLoggedPhase = this.phase;
+    }
     this.tireMarks = this.tireMarks.filter((m) => m.life > 0 && m.y < 176);
     for (const m of this.tireMarks) {
       m.life -= dt;
@@ -995,7 +1238,10 @@ class Game extends Phaser.Scene {
     }
     this.age += dt;
     if (this.phase === "title" || this.phase === "report") {
-      if (just("ENTER")) {
+      if (enterPressed) {
+        this.session = new SessionLog();
+        if (!this.workshop)
+          this.seed = Math.floor(Math.random() * 4294967295) || 1;
         this.mission = 0;
         this.won = 0;
         this.results = [];
@@ -1007,7 +1253,7 @@ class Game extends Phaser.Scene {
         this.begin();
       }
     } else if (this.phase === "opening") {
-      if (this.age > (this.usesSliceArt() ? 3.4 : 1.8)) {
+      if (this.age > PLAY.openingSeconds) {
         this.phase = "blackBefore";
         this.age = 0;
       }
@@ -1031,7 +1277,7 @@ class Game extends Phaser.Scene {
     } else if (this.phase === "later") {
       if (this.age > 2.2) this.next();
     } else if (this.phase === "fail") {
-      if (this.age > 2 && just("ENTER")) this.next();
+      if (this.age >= PLAY.failContinueSeconds && enterPressed) this.next();
     } else if (this.phase === "tow") {
       if (this.age > 3) {
         this.vehicle = 65;
@@ -1131,8 +1377,8 @@ class Game extends Phaser.Scene {
               .filter((other) => other !== o)
               .map((other) => other.z),
           );
-          o.z = tail + gap + Math.random() * 100;
-          o.x = [-0.62, 0, 0.62][Math.floor(Math.random() * 3)];
+          o.z = tail + gap + this.random.next() * 100;
+          o.x = [-0.62, 0, 0.62][Math.floor(this.random.next() * 3)];
         }
       }
 
@@ -1192,6 +1438,16 @@ class Game extends Phaser.Scene {
         this.draw();
         return;
       }
+      const terminal = terminalReason(
+        this.hp,
+        this.remaining,
+        this.vehicle,
+        false,
+      );
+      if (terminal) {
+        this.finish(false, terminal);
+        return;
+      }
       if (this.falling > 0) {
         this.falling += dt;
         this.vy += 780 * dt;
@@ -1205,6 +1461,11 @@ class Game extends Phaser.Scene {
           this.boardMessage = "CHUTE / UN POINT DE SANTE PERDU";
           this.messageTime = 1.6;
           this.hp--;
+          this.session.falls++;
+          this.session.record("fall-damage", this.mission, this.room, {
+            hp: this.hp,
+            bank: this.px,
+          });
           this.inv = 1.5;
           this.audio.noise(0.2, 0.04, 330);
           if (this.hp <= 0 || this.remaining <= 0) this.finish(false);
@@ -1213,6 +1474,8 @@ class Game extends Phaser.Scene {
         return;
       }
       this.attack = Math.max(0, this.attack - dt);
+      const recovering = this.playerRecovery > 0;
+      this.playerRecovery = Math.max(0, this.playerRecovery - dt);
       const dir =
         (this.keys.RIGHT.isDown ? 1 : 0) - (this.keys.LEFT.isDown ? 1 : 0);
       if (dir && this.attack === 0) this.face = dir;
@@ -1226,11 +1489,17 @@ class Game extends Phaser.Scene {
         this.lastGroundX = this.px;
       this.px = Phaser.Math.Clamp(
         this.px +
-          dir * (this.attack > 0 ? (this.usesSliceArt() ? 0 : 34) : 85) * dt,
+          (recovering
+            ? 0
+            : dir *
+              (this.attack > 0
+                ? combatProfile(this.room).attackWalk
+                : PLAY.walk)) *
+            dt,
         10,
         302,
       );
-      if (this.usesSliceArt()) this.separateFighters(previousX);
+      this.separateFighters(previousX);
       if (
         dir &&
         this.py === 159 &&
@@ -1244,71 +1513,91 @@ class Game extends Phaser.Scene {
           this.audio.tone(85, 0.025, 0.007, 45);
         }
       }
-      if (just("SPACE") && this.py === 159) {
-        this.vy = -220;
+      if (jumpPressed && this.py === PLAY.floor && !recovering) {
+        this.vy = -PLAY.jump;
         this.audio.tone(220, 0.07, 0.012, 330);
       }
       const bounds = walkBounds(this.room);
       this.px = Phaser.Math.Clamp(this.px, bounds.min, bounds.max);
-      this.vy += 600 * dt;
+      this.vy += PLAY.gravity * dt;
       this.py += this.vy * dt;
       if (this.py >= 159) {
         this.py = 159;
         this.vy = 0;
       }
-      if (just("X") && this.attack === 0) {
-        this.attack = 0.48;
+      if (this.tryFall()) return;
+      if (attackPressed && this.attack === 0 && !recovering) {
+        this.attack = PLAY.attackDuration;
         this.attackHit = false;
+        this.session.record("attack", this.mission, this.room, {
+          x: this.px,
+          facing: this.face,
+        });
         this.audio.tone(180, 0.09, 0.015, 85);
       }
-      if (this.attack > 0 && this.attack <= 0.34 && !this.attackHit) {
+      if (
+        this.attack > 0 &&
+        this.attack <= PLAY.attackContact &&
+        !this.attackHit
+      ) {
         this.attackHit = true;
         for (const e of this.enemies) {
           if (
             e.hp <= 0 ||
-            Math.abs(e.x - this.px) >
-              (this.usesSliceArt()
-                ? 74
-                : [3, 6].includes(this.room)
-                  ? 56
-                  : 44) ||
+            Math.abs(e.x - this.px) > combatProfile(this.room).bookReach ||
             (e.x - this.px) * this.face < -8 ||
             this.py < 125
           )
             continue;
           const contact = this.bookContact(e);
+          // The player's deliberate contact ends the conversation, never body collision.
+          if (this.encounterTime > 0 && !e.boss) {
+            this.encounterTime = 0;
+            this.session.record(
+              "introduction-interrupted",
+              this.mission,
+              this.room,
+            );
+          }
           if (e.boss && e.recovery <= 0 && e.stun <= 0) {
             this.audio.tone(800, 0.05, 0.02, 450);
             this.impact = 0.32;
             this.impactX = contact.x;
             this.impactY = contact.y;
             this.impactKind = "block";
-            if (this.usesSliceArt()) this.hitStop = 0.04;
+            this.hitStop = 0.04;
+            this.session.record("blocked", this.mission, this.room, contact);
             continue;
           }
           e.hp--;
           if (e.hp <= 0) e.downTime = 1.1;
-          e.stun = 0.22;
+          e.stun = PLAY.hitStun;
           e.wind = 0;
           e.chargeTime = 0;
+          e.strikeTime = 0;
           e.recovery = Math.max(e.recovery, 0.35);
           e.x = Phaser.Math.Clamp(e.x + this.face * 14, 22, 287);
-          this.hitStop = 0.055;
+          this.hitStop = PLAY.hitStop;
           this.punches++;
           this.impact = 0.32;
           this.impactX = contact.x;
           this.impactY = contact.y;
           this.impactKind = "hit";
+          this.session.record("contact", this.mission, this.room, {
+            ...contact,
+            hp: e.hp,
+          });
           this.audio.tone(110, 0.1, 0.04, 35);
         }
       }
       for (const e of this.enemies) {
         if (e.downTime) e.downTime = Math.max(0, e.downTime - dt);
         if (e.hp <= 0) continue;
-        // Let both introduction pages finish before approaching or preparing a hit.
-        if (!e.boss && this.encounterTime > 0) continue;
+        e.strikeTime = Math.max(0, (e.strikeTime ?? 0) - dt);
         e.stun = Math.max(0, e.stun - dt);
         if (e.stun > 0) continue;
+        // Presentation suppresses aggression only; collision and reactions stay active.
+        if (!e.boss && this.encounterTime > 0) continue;
         if (this.room === 3) {
           this.updateStudent(e, dt);
           continue;
@@ -1328,22 +1617,18 @@ class Game extends Phaser.Scene {
         if (e.wind > 0) {
           e.wind -= dt;
           if (e.wind <= 0) {
-            const range = this.usesSliceArt()
-              ? e.pattern % 2 === 0
-                ? 78
-                : 64
-              : e.boss && e.pattern % 2 === 0
-                ? 42
-                : 32;
+            const range =
+              e.pattern % 2 === 0 ? BOSS.sweepReach : BOSS.stampReach;
+            e.strikeTime = 0.12;
             const facing = e.facing ?? Math.sign(this.px - e.x);
             if (
               Math.abs(this.px - e.x) < range &&
               this.py > 130 &&
-              (!this.usesSliceArt() || (this.px - e.x) * facing > 0)
+              (this.px - e.x) * facing > 0
             ) {
               const vulnerable = this.inv <= 0;
               this.hurt();
-              if (vulnerable && this.usesSliceArt()) {
+              if (vulnerable) {
                 this.impact = 0.32;
                 this.impactKind = "hurt";
                 this.impactX = this.px - facing * 10;
@@ -1353,7 +1638,7 @@ class Game extends Phaser.Scene {
                 this.px = Phaser.Math.Clamp(this.px + facing * 10, 22, 298);
               }
             }
-            e.recovery = e.boss ? 1.1 : 0.6;
+            e.recovery = BOSS.recovery;
             this.audio.tone(e.boss ? 65 : 100, 0.12, 0.025, 35);
           }
           continue;
@@ -1361,37 +1646,22 @@ class Game extends Phaser.Scene {
         e.cool -= dt;
         const d = this.px - e.x;
         const oldEnemyX = e.x;
-        if (Math.abs(d) > (this.usesSliceArt() ? 58 : 31))
+        if (Math.abs(d) > BOSS.approach)
           e.x = Phaser.Math.Clamp(
-            e.x + Math.sign(d) * (e.boss ? 27 : 24) * dt,
+            e.x + Math.sign(d) * BOSS.speed * dt,
             22,
             287,
           );
         e.walk = (e.walk ?? 0) + Math.abs(e.x - oldEnemyX);
-        if (this.usesSliceArt()) this.separateFighters(this.px);
-        if (
-          Math.abs(d) < (e.boss ? (this.usesSliceArt() ? 82 : 95) : 35) &&
-          e.cool <= 0
-        ) {
+        this.separateFighters(this.px);
+        if (Math.abs(d) < BOSS.trigger && e.cool <= 0) {
           e.facing = Math.sign(d) || -1;
           e.pattern++;
-          e.wind = e.boss ? (e.pattern % 2 === 0 ? 0.8 : 0.55) : 0.45;
-          e.cool = 1.1;
+          e.wind = e.pattern % 2 === 0 ? BOSS.sweepWind : BOSS.stampWind;
+          e.cool = BOSS.cooldown;
         }
       }
-      const gaps = this.floorGaps();
-      if (this.py === 159)
-        for (const [left, right] of gaps) {
-          if (this.px > left && this.px < right) {
-            this.falling = 0.001;
-            this.fallReturn = recoveryBank(left, right, this.lastGroundX);
-            this.vy = 45;
-            this.attack = 0;
-            this.audio.noise(0.14, 0.03, 1300);
-            this.burst(this.px, 158, 0x8e8268);
-            break;
-          }
-        }
+      if (this.tryFall()) return;
       if (this.enemies.every((e) => e.hp <= 0)) this.cleared.add(this.room);
       if (this.remaining <= 0 || this.hp <= 0) this.finish(false);
       else {
@@ -1400,6 +1670,8 @@ class Game extends Phaser.Scene {
           action &&
           this.interactLock === 0 &&
           this.py === 159 &&
+          this.attack === 0 &&
+          this.playerRecovery === 0 &&
           (this.keys[action.key].isDown || just(action.key))
         ) {
           if (action.target === -1) this.finish(true);
@@ -1411,6 +1683,12 @@ class Game extends Phaser.Scene {
             }
             this.enterRoom(action.target, action.spawn);
           }
+        } else if (
+          this.attack > 0 ||
+          this.playerRecovery > 0 ||
+          this.py !== PLAY.floor
+        ) {
+          // Screen changes, like door interactions, wait for a controllable landing.
         } else if (this.room === 0 && this.px > 298) this.enterRoom(1, 18);
         else if (this.room === 1) {
           if (this.px < 12) this.enterRoom(0, 290);
@@ -1436,6 +1714,26 @@ class Game extends Phaser.Scene {
     )
       return "ACCES CONDAMNE / CHERCHEZ UN DETOUR";
     return "LIEU : " + ROOM_NAMES[this.room];
+  }
+  tryFall() {
+    if (this.py !== PLAY.floor || this.falling > 0) return false;
+    const gap = this.floorGaps().find(
+      ([left, right]) => this.px > left && this.px < right,
+    );
+    if (!gap) return false;
+    this.falling = 0.001;
+    this.fallReturn = recoveryBank(gap[0], gap[1], this.lastGroundX);
+    this.vy = 45;
+    this.attack = 0;
+    this.attackHit = true;
+    this.playerRecovery = 0;
+    this.session.record("fall", this.mission, this.room, {
+      x: this.px,
+      bank: this.fallReturn,
+    });
+    this.audio.noise(0.14, 0.03, 1300);
+    this.burst(this.px, 158, 0x8e8268);
+    return true;
   }
   interaction() {
     const targets =
@@ -1469,6 +1767,11 @@ class Game extends Phaser.Scene {
   crash(lane: number, type: number) {
     if (this.trafficHit > 0 || this.vehicle <= 0) return;
     this.collisions++;
+    this.session.record("crash", this.mission, this.room, {
+      lane,
+      type,
+      speed: this.speed,
+    });
     this.vehicle = Math.max(0, this.vehicle - (type === 1 ? 30 : 22));
     this.speed *= 0.48;
     this.trafficHit = 1.4;
@@ -1480,17 +1783,7 @@ class Game extends Phaser.Scene {
     this.messageTime = 3;
   }
   updateStudent(e: Enemy, dt: number) {
-    // The stance commits to a direction; moving behind or jumping evades the kick.
-    const separation = () => {
-      const d = this.px - e.x;
-      if (this.py > 145 && Math.abs(d) < 32)
-        this.px = Phaser.Math.Clamp(
-          e.x + Math.sign(d || -(e.facing ?? 1)) * 32,
-          12,
-          298,
-        );
-    };
-    separation();
+    // Body collision is resolved independently, even during speech or stun.
     if (e.recovery > 0) {
       e.recovery = Math.max(0, e.recovery - dt);
       return;
@@ -1498,9 +1791,10 @@ class Game extends Phaser.Scene {
     if (e.wind > 0) {
       e.wind -= dt;
       if (e.wind <= 0) {
+        e.strikeTime = 0.12;
         const dir = e.facing ?? -1;
         if (
-          Math.abs(this.px - e.x) < 48 &&
+          Math.abs(this.px - e.x) < STUDENT.reach &&
           (this.px - e.x) * dir > 0 &&
           this.py > 130 &&
           this.inv <= 0
@@ -1514,21 +1808,21 @@ class Game extends Phaser.Scene {
           this.impactKind = "hurt";
           this.hitStop = 0.045;
         }
-        e.recovery = 0.85;
-        e.cool = 1.15;
+        e.recovery = STUDENT.recovery;
+        e.cool = STUDENT.cooldown;
         this.audio.tone(130, 0.07, 0.012, 70);
       }
       return;
     }
     e.cool -= dt;
     const d = this.px - e.x;
-    if (Math.abs(d) > 43)
-      e.x = Phaser.Math.Clamp(e.x + Math.sign(d) * 16 * dt, 22, 287);
-    if (Math.abs(d) < 52 && e.cool <= 0) {
+    if (Math.abs(d) > STUDENT.approach)
+      e.x = Phaser.Math.Clamp(e.x + Math.sign(d) * STUDENT.speed * dt, 22, 287);
+    if (Math.abs(d) < STUDENT.trigger && e.cool <= 0) {
       e.facing = Math.sign(d) || -1;
-      e.wind = 0.7;
+      e.wind = STUDENT.wind;
     }
-    separation();
+    this.separateFighters(this.px);
   }
   updateGuard(e: Enemy, dt: number) {
     if (e.recovery > 0) {
@@ -1538,9 +1832,10 @@ class Game extends Phaser.Scene {
     if (e.wind > 0) {
       e.wind -= dt;
       if (e.wind <= 0) {
+        e.strikeTime = 0.12;
         const dir = e.facing ?? -1;
         if (
-          Math.abs(this.px - e.x) < 54 &&
+          Math.abs(this.px - e.x) < GUARD.reach &&
           (this.px - e.x) * dir > 0 &&
           this.py > 130 &&
           this.inv <= 0
@@ -1552,22 +1847,21 @@ class Game extends Phaser.Scene {
           this.impactKind = "hurt";
           this.impact = 0.32;
         }
-        e.recovery = 0.85;
-        e.cool = 1.1;
+        e.recovery = GUARD.recovery;
+        e.cool = GUARD.cooldown;
         this.audio.tone(110, 0.09, 0.015, 55);
       }
       return;
     }
     e.cool -= dt;
     const d = this.px - e.x;
-    if (Math.abs(d) > 50)
-      e.x = Phaser.Math.Clamp(e.x + Math.sign(d) * 18 * dt, 22, 287);
-    if (Math.abs(d) < 59 && e.cool <= 0) {
+    if (Math.abs(d) > GUARD.approach)
+      e.x = Phaser.Math.Clamp(e.x + Math.sign(d) * GUARD.speed * dt, 22, 287);
+    if (Math.abs(d) < GUARD.trigger && e.cool <= 0) {
       e.facing = Math.sign(d) || -1;
-      e.wind = 0.75;
+      e.wind = GUARD.wind;
     }
-    if (this.py > 145 && Math.abs(this.px - e.x) < 36)
-      this.px = Phaser.Math.Clamp(e.x + Math.sign(d || -1) * 36, 12, 298);
+    this.separateFighters(this.px);
   }
   updateParent(e: Enemy, dt: number) {
     if (e.recovery > 0) {
@@ -1576,8 +1870,12 @@ class Game extends Phaser.Scene {
     }
     if ((e.chargeTime ?? 0) > 0) {
       e.chargeTime! -= dt;
-      e.x += (e.chargeDir ?? 1) * 100 * dt;
-      if (Math.abs(e.x - this.px) < 22 && this.py > 130 && this.inv <= 0) {
+      e.x += (e.chargeDir ?? 1) * PARENT.chargeSpeed * dt;
+      if (
+        Math.abs(e.x - this.px) < PARENT.reach &&
+        this.py > 130 &&
+        this.inv <= 0
+      ) {
         this.hurt();
         this.impact = 0.32;
         this.impactKind = "hurt";
@@ -1595,24 +1893,24 @@ class Game extends Phaser.Scene {
         this.audio.tone(90, 0.16, 0.05, 28);
         this.boardMessage = "INCIDENT MOBILIER ENREGISTRE";
         this.messageTime = 3;
-      } else if (e.chargeTime! <= 0) e.recovery = 1.1;
+      } else if (e.chargeTime! <= 0) e.recovery = PARENT.recovery;
       return;
     }
     if (e.wind > 0) {
       e.wind -= dt;
       if (e.wind <= 0) {
-        e.chargeTime = 1.9;
+        e.chargeTime = PARENT.charge;
         this.audio.tone(200, 0.12, 0.02, 70);
       }
       return;
     }
     e.cool -= dt;
     if (Math.abs(e.x - this.px) < 185 && e.cool <= 0) {
-      e.wind = 1.0;
+      e.wind = PARENT.wind;
       e.chargeDir = Math.sign(this.px - e.x) || -1;
       e.cool = 1.8;
     } else if (Math.abs(e.x - this.px) > 60)
-      e.x += Math.sign(this.px - e.x) * 18 * dt;
+      e.x += Math.sign(this.px - e.x) * PARENT.speed * dt;
   }
   vehicleDamage(x: number, y: number, side = false) {
     if (this.vehicle > 70) return;
@@ -1671,19 +1969,34 @@ class Game extends Phaser.Scene {
     return (this.speed / 3.6) * (1 + 0.65 * rush ** 1.3);
   }
   separateFighters(previousX: number) {
+    const profile = combatProfile(this.room);
+    const bounds = walkBounds(this.room);
     for (const e of this.enemies) {
-      if (e.hp <= 0 || !e.boss || this.py < 135) continue;
+      if (e.hp <= 0 || this.py < profile.jumpClear || (e.chargeTime ?? 0) > 0)
+        continue;
       const side = previousX < e.x ? -1 : 1;
-      if ((this.px - e.x) * side < 52) {
-        this.px = Phaser.Math.Clamp(e.x + side * 52, 22, 298);
-        if (Math.abs(this.px - e.x) < 52) e.x = this.px - side * 52;
+      if ((this.px - e.x) * side < profile.bodyGap) {
+        this.px = Phaser.Math.Clamp(
+          e.x + side * profile.bodyGap,
+          bounds.min,
+          bounds.max,
+        );
+        if (Math.abs(this.px - e.x) < profile.bodyGap)
+          e.x = this.px - side * profile.bodyGap;
       }
     }
   }
   hurt() {
     if (this.inv > 0) return;
     this.hp--;
-    this.inv = 1.2;
+    this.inv = PLAY.invulnerability;
+    this.attack = 0;
+    this.attackHit = true;
+    this.playerRecovery = PLAY.playerRecovery;
+    this.session.record("hurt", this.mission, this.room, {
+      hp: this.hp,
+      x: this.px,
+    });
     this.audio.tone(130, 0.15, 0.025, 45);
     this.cameras.main.shake(100, 0.008);
   }
@@ -1925,6 +2238,7 @@ class Game extends Phaser.Scene {
     }
   }
   draw() {
+    if (this.substepping) return;
     this.art?.hide();
     this.hallArt?.hide();
     this.bridgeArt?.hide();
@@ -2051,9 +2365,7 @@ class Game extends Phaser.Scene {
     );
     if (this.phase === "opening") {
       this.fadeViewport(
-        this.usesSliceArt()
-          ? Phaser.Math.Clamp((this.age - 2.5) / 0.9, 0, 1)
-          : Math.min(1, this.age / 1.8),
+        Phaser.Math.Clamp((this.age - (PLAY.openingSeconds - 0.9)) / 0.9, 0, 1),
       );
     }
     if (this.phase === "course") {
@@ -2069,9 +2381,16 @@ class Game extends Phaser.Scene {
       this.banner(
         this.vehicle <= 0 ? "PANNE / MISSION PERDUE" : "CARENCE CONSTATEE",
       );
-      if (this.vehicle <= 0)
-        this.txt(40, 116, "DEPANNAGE PUIS AFFECTATION SUIVANTE", 8);
-      this.txt(53, 137, "ENTREE : AFFECTATION SUIVANTE");
+      this.txt(
+        55,
+        117,
+        FAILURE_LABELS[this.failureReason ?? "late"],
+        10,
+        "#e3d4b3",
+        true,
+      );
+      if (this.age >= PLAY.failContinueSeconds)
+        this.txt(53, 137, "ENTREE : AFFECTATION SUIVANTE", 8, "#e3d4b3", true);
     }
     if (this.phase === "school") {
       if (!this.falling && this.schoolFade === 0 && this.bossIntro === 0)
@@ -2107,7 +2426,7 @@ class Game extends Phaser.Scene {
       this.rect(313, 0, 7, 179, 0x171e20);
       this.rect(0, 0, 320, 7, 0x171e20);
     }
-    if (this.paused) {
+    if (this.paused && !this.workshop) {
       this.g.fillStyle(0x080d13, 0.55);
       this.g.fillRect(7, 7, 306, 168);
       this.rect(65, 65, 190, 61, 0xb9aa89);
@@ -2118,6 +2437,7 @@ class Game extends Phaser.Scene {
       line(this.pauseReason || "SOUFFLEZ UN INSTANT", 91, 0xb9aa89);
       line("P : REPRENDRE", 110, 0xe3d4b3);
     }
+    if (this.workshop) drawWorkshop(this);
   }
   fadeViewport(alpha: number) {
     for (const t of this.labels) if (t.y < 179) t.setAlpha(1 - alpha);
@@ -2981,7 +3301,10 @@ class Game extends Phaser.Scene {
   drawHall() {
     this.hallArt!.background.setVisible(true);
 
-    const moving = this.keys.LEFT.isDown || this.keys.RIGHT.isDown;
+    const moving =
+      this.phase === "school" &&
+      this.playerRecovery === 0 &&
+      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
     const frame =
       this.attack > 0.34
         ? 4
@@ -3021,7 +3344,10 @@ class Game extends Phaser.Scene {
   }
   drawTechnical() {
     this.technicalBackdrop!.setVisible(true);
-    const moving = this.keys.LEFT.isDown || this.keys.RIGHT.isDown;
+    const moving =
+      this.phase === "school" &&
+      this.playerRecovery === 0 &&
+      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
     const frame =
       this.attack > 0.34
         ? 4
@@ -3040,7 +3366,10 @@ class Game extends Phaser.Scene {
   }
   drawService() {
     this.serviceBackdrop!.setVisible(true);
-    const moving = this.keys.LEFT.isDown || this.keys.RIGHT.isDown;
+    const moving =
+      this.phase === "school" &&
+      this.playerRecovery === 0 &&
+      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
     const frame =
       this.attack > 0.34
         ? 4
@@ -3059,7 +3388,10 @@ class Game extends Phaser.Scene {
   }
   drawWing() {
     this.wingArt!.background.setVisible(true);
-    const moving = this.keys.LEFT.isDown || this.keys.RIGHT.isDown;
+    const moving =
+      this.phase === "school" &&
+      this.playerRecovery === 0 &&
+      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
     const frame =
       this.attack > 0.34
         ? 4
@@ -3100,7 +3432,10 @@ class Game extends Phaser.Scene {
   }
   drawBridge() {
     this.bridgeArt!.background.setVisible(true);
-    const moving = this.keys.LEFT.isDown || this.keys.RIGHT.isDown;
+    const moving =
+      this.phase === "school" &&
+      this.playerRecovery === 0 &&
+      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
     const frame =
       this.attack > 0.34
         ? 4
@@ -3141,7 +3476,10 @@ class Game extends Phaser.Scene {
   }
   drawCentralStair() {
     this.centralBackdrop!.setVisible(true);
-    const moving = this.keys.LEFT.isDown || this.keys.RIGHT.isDown;
+    const moving =
+      this.phase === "school" &&
+      this.playerRecovery === 0 &&
+      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
     const frame =
       this.attack > 0.34
         ? 4
@@ -3160,7 +3498,10 @@ class Game extends Phaser.Scene {
   }
   drawAnnexStair() {
     this.stairBackdrop!.setVisible(true);
-    const moving = this.keys.LEFT.isDown || this.keys.RIGHT.isDown;
+    const moving =
+      this.phase === "school" &&
+      this.playerRecovery === 0 &&
+      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
     const frame =
       this.attack > 0.34
         ? 4
@@ -3179,7 +3520,10 @@ class Game extends Phaser.Scene {
   }
   drawCourtyard() {
     this.courtBackdrop!.setVisible(true);
-    const moving = this.keys.LEFT.isDown || this.keys.RIGHT.isDown;
+    const moving =
+      this.phase === "school" &&
+      this.playerRecovery === 0 &&
+      (this.keys.LEFT.isDown || this.keys.RIGHT.isDown);
     const frame =
       this.attack > 0.34
         ? 4
@@ -3215,7 +3559,7 @@ class Game extends Phaser.Scene {
     if (e) {
       this.rect(108, 27, 104, 3, 0x141e27);
       this.rect(108, 27, (104 * e.hp) / (6 + this.mission), 3, 0xb9aa89);
-      if (e.wind > 0)
+      if (this.phase === "school" && e.wind > 0)
         this.txt(
           107,
           33,
@@ -3224,7 +3568,7 @@ class Game extends Phaser.Scene {
           "#e5ae60",
           true,
         );
-      else if (e.recovery > 0)
+      else if (this.phase === "school" && e.recovery > 0)
         this.txt(111, 33, "OUVERTURE", 9, "#e3d4b3", true);
     }
   }
@@ -3586,6 +3930,9 @@ new Phaser.Game({
   height: 480,
   parent: "game",
   pixelArt: true,
+  // Pass elapsed wall time to our bounded substeps, without the engine's
+  // rolling average hiding slow frames or long interruptions.
+  fps: { smoothStep: false },
   backgroundColor: "#101719",
   scale: {
     mode: Phaser.Scale.FIT,

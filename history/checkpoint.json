@@ -1,49 +1,49 @@
 {
-  "version": "0.42",
+  "version": "0.43",
   "importClientDate": "2026-10-03",
   "scope": "partial source backup",
   "files": [
     {
+      "original": "audio.ts",
+      "path": "src/audio.ts",
+      "bytes": 9979,
+      "sha256": "4f10acb541972de9936dfe613ca864146d0066bffa8578e122a1ad0e45621024"
+    },
+    {
       "original": "check.cjs",
       "path": "check.cjs",
-      "bytes": 29197,
-      "sha256": "fd2ff9e36804ad04b5f391aa879e33d1280235d7429c8c44b3c0ae7a8db996ab"
-    },
-    {
-      "original": "export-local.cjs",
-      "path": "export-local.cjs",
-      "bytes": 1817,
-      "sha256": "c622f3bff3c652d2dbbbe803e27c6da54634049d272f4ded8245ed0df4665bba"
-    },
-    {
-      "original": "index.html",
-      "path": "index.html",
-      "bytes": 4613,
-      "sha256": "fccab08957e1694672794648fdf8dbde8466cf4ac4d726ddb6bc7f4e4cc6a8b9"
+      "bytes": 29344,
+      "sha256": "a23de392ff3f43d6a31d24c4b3957d2d79ca25340d62fc9e2cdb482304d4354b"
     },
     {
       "original": "main.ts",
       "path": "src/main.ts",
-      "bytes": 113928,
-      "sha256": "f4f43365f2bdfa35af5adb9043f23bcb7d205e59857ec47835c1d4488538183b"
+      "bytes": 123922,
+      "sha256": "54197a29c1f2fe7a01df5f7357ac5b0bb262d8b9acc71cb4440806122ebb6364"
     },
     {
       "original": "package-lock.json",
       "path": "package-lock.json",
       "bytes": 38850,
-      "sha256": "fe675771a6798319e157b025ff7c480b120964be171da1922bfe7fb6c5f8c3d4"
+      "sha256": "ff7f98388027db31292be4eb39e934c5c921326289c1b41b371e576a07bdd00a"
     },
     {
       "original": "package.json",
       "path": "package.json",
-      "bytes": 581,
-      "sha256": "d621627521a682f8a28298b928b2cce3775c17b1fb85c4ce1bfa6b976c9e350d"
+      "bytes": 608,
+      "sha256": "460ef167d68f7a58d18013762f5f4da5b6543b93031c18b0f85ec008c0bd45ae"
+    },
+    {
+      "original": "workshop.ts",
+      "path": "src/workshop.ts",
+      "bytes": 9205,
+      "sha256": "423c38a364a75a2162d8dfcbc3b33cff7de5d2e322cba639f4f5d3b2677ae7bc"
     },
     {
       "original": "world.ts",
       "path": "src/world.ts",
-      "bytes": 3480,
-      "sha256": "bb9872020ee07a625f9541c56496afb905b4f221012bbde1d3007669e4f58106"
+      "bytes": 3503,
+      "sha256": "e49363e8bca05ada6a2ba5d828282ed0db31cbf2d6fd1770ceb8512df36000f4"
     }
   ]
 }
