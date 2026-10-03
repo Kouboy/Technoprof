@@ -1,61 +1,43 @@
 {
-  "version": "0.45",
+  "version": "0.46",
   "importClientDate": "2026-10-03",
   "scope": "partial source backup",
   "files": [
     {
-      "original": "cadre.ts",
-      "path": "src/cadre.ts",
-      "bytes": 11836,
-      "sha256": "6ee7acd73bca2d25efc320a74c4f44dc163525f5ea8c07dce7e3634a74fbb763"
+      "original": "audio.ts",
+      "path": "src/audio.ts",
+      "bytes": 13188,
+      "sha256": "f940c9fe1e43d80c35021b9f04abd3c5d3badecd45b16c323b48779ef6a9c52e"
     },
     {
       "original": "index.html",
       "path": "index.html",
-      "bytes": 6794,
-      "sha256": "d065535d3dcf22224b1be2a49c842b92b569ab81280f924c2a77df8a9c584971"
+      "bytes": 7341,
+      "sha256": "d6dddc934e94a628c39a1da970630ccc25f0f19d8d2926c3062ebb1993ff2895"
     },
     {
       "original": "main.ts",
       "path": "src/main.ts",
-      "bytes": 125596,
-      "sha256": "5ee46ce4531a451b6c5e2b0cdc813b84ae57145bc7b46205359644aea54d2e82"
+      "bytes": 129562,
+      "sha256": "fa5bec0e7afd359d34f32da3f1cacc55438c6c7ca981c19c586cd8fc69f6ebf2"
     },
     {
       "original": "package-lock.json",
       "path": "package-lock.json",
       "bytes": 38850,
-      "sha256": "7a4e880079e9e44b237445c30465a7c1095ff186917b0ef9cd88568116ea3f8d"
+      "sha256": "82deec9a3776815edbb9f8cb86ae9d61b26d0a6c8e209743abf09457be5c0125"
     },
     {
       "original": "package.json",
       "path": "package.json",
-      "bytes": 662,
-      "sha256": "1f8f32777d0b5dbd6762c5d8e13e954e51f73f43092ccd2fb3ee7f9dc0b501c8"
+      "bytes": 689,
+      "sha256": "2bfde1d652ab13559daab579806f78ac31496e4531bc4eaf80060685e8b34994"
     },
     {
-      "original": "passage-hints.ts",
-      "path": "src/passage-hints.ts",
-      "bytes": 2617,
-      "sha256": "bd706de61fa6f13ec34a0f843a131032dc95365b7e02dbb78ffbb0998afb0c33"
-    },
-    {
-      "original": "road-art.ts",
-      "path": "src/road-art.ts",
-      "bytes": 5174,
-      "sha256": "1fadc323984dc961288f86a74570c922d0b12b657d200b26d92498d0f600b152"
-    },
-    {
-      "original": "school-props.ts",
-      "path": "src/school-props.ts",
-      "bytes": 11540,
-      "sha256": "04f336d8bf8e541178b7ceca583b0949e1a2ce4f384c1fa1b73f936f72efd50b"
-    },
-    {
-      "original": "slice-art.ts",
-      "path": "src/slice-art.ts",
-      "bytes": 7333,
-      "sha256": "b9302b1ea5b70189780820b2ce8cd87bd4d8767d5878337f925e7077b7d63107"
+      "original": "session-log.ts",
+      "path": "src/session-log.ts",
+      "bytes": 1014,
+      "sha256": "fec5a0096a512c73fba5fbaf6184779469340d8aee947027eaf37e8ba2563f37"
     }
   ]
 }

@@ -57,6 +57,19 @@
       border: 1px solid #758080;
       background: #141e27;
     }
+    #presentation-controls {
+      max-width: min(960px, 94vw);
+      margin: 6px auto;
+    }
+    #presentation-controls .workshop-controls {
+      justify-content: center;
+    }
+    body.reference-size #game {
+      width: min(640px, 96vw);
+      margin-inline: auto;
+      height: auto;
+      aspect-ratio: 4 / 3;
+    }
     .workshop-controls {
       display: flex;
       flex-wrap: wrap;
@@ -126,7 +139,8 @@
     et escaliers · P : pause / reprise · ENTRÉE : continuer
   </p>
   <p>
-    <a href="?essai=labo">Atelier de test 0.45</a> ·
+    <a href="?essai=labo">Atelier de test 0.46</a> ·
+    <a href="?essai=presentation">Planche de référence</a> ·
     <a href="?">Jouer une journée</a>
     ·
     <label
@@ -134,6 +148,11 @@
     >
   </p>
   <section id="workshop" hidden></section>
+  <section
+    id="presentation-controls"
+    hidden
+    aria-label="Comparaison visuelle"
+  ></section>
   <details id="legacy-tests" hidden>
     <summary>Galeries et anciens essais visuels</summary>
     <p style="font-size: 12px">
@@ -157,8 +176,8 @@
     const testView = new URLSearchParams(location.search).get("essai");
     if (testView === "labo") document.body.classList.add("lab");
     const legacy = document.getElementById("legacy-tests");
-    legacy.hidden = !testView;
-    legacy.open = !!testView && testView !== "labo";
+    legacy.hidden = !testView || testView === "presentation";
+    legacy.open = !!testView && !["labo", "presentation"].includes(testView);
     if (
       new URLSearchParams(location.search).get("essai") === "retouches" ||
       (location.pathname.endsWith("Jouer-Retouches.html") && !location.search)

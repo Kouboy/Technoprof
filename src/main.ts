@@ -1,5 +1,12 @@
 import { drawComicFX } from "./comic-fx";
 import {
+  daylight,
+  drawSurround,
+  drawContactShadow,
+  drawRoadWear,
+  installPresentation,
+} from "./presentation";
+import {
   PLAY,
   BOSS,
   PARENT,
@@ -52,6 +59,10 @@ class Game extends Phaser.Scene {
   attackBuffer = 0;
   reducedShake = false;
   comicWords = true;
+  groundContact?: Phaser.GameObjects.Graphics;
+  roadWash?: Phaser.GameObjects.Graphics;
+  sceneSurround?: Phaser.GameObjects.Graphics;
+  presentationHideHud = false;
   seed = 4301;
   random = new SeededRandom();
   session = new SessionLog();
@@ -399,6 +410,10 @@ class Game extends Phaser.Scene {
     this.carArt = new CarArt(this);
     this.roadArt = new RoadArt(this);
     this.foreground = this.add.graphics().setDepth(3.2);
+    this.groundContact = this.add.graphics().setDepth(1.3);
+    this.roadWash = this.add.graphics().setDepth(3.095);
+    this.sceneSurround = this.add.graphics().setDepth(4.1);
+    drawSurround(this.sceneSurround);
     this.keys = this.input.keyboard!.addKeys(
       "LEFT,RIGHT,UP,DOWN,SPACE,X,ENTER,P,M,F2,F3,F4",
     ) as typeof this.keys;
@@ -647,6 +662,7 @@ class Game extends Phaser.Scene {
       this.loadScenario(query.get("scenario") || "road");
       installWorkshop(this);
     }
+    if (preview === "presentation") installPresentation(this);
     this.draw();
   }
   inkCache = new Map<number, number>();
@@ -1212,6 +1228,49 @@ class Game extends Phaser.Scene {
       name,
       seed: this.seed,
     });
+    this.draw();
+  }
+  loadPresentation(scene: string, mission: number) {
+    this.loadScenario(
+      scene === "road" ? "road" : scene === "arrival" ? "arrival" : "boss",
+    );
+    this.mission = Math.max(0, Math.min(2, mission));
+    this.cadreReview = true;
+    this.paused = false;
+    this.remaining = 157;
+    this.age = 0;
+    this.ambienceClock = 0;
+    this.inv = 0;
+    this.face = 1;
+    if (scene === "road") {
+      this.travel = 140;
+      this.road = 1200;
+      this.speed = 148;
+      this.car = 0;
+      this.obstacles = [
+        { z: 220, x: -0.65, type: 0, speed: 74 },
+        { z: 290, x: 0.65, type: 2, speed: 82 },
+        { z: 430, x: -0.65, type: 1, speed: 62 },
+      ];
+    } else if (scene === "arrival") {
+      this.age = 2.6;
+      this.speed = 0;
+      this.road = TUNING.routeMeters;
+    }
+    else {
+      this.enterRoom(Number(scene), Number(scene) === 4 ? 125 : 130);
+      this.schoolFade = 0;
+      this.bossIntro = 0;
+      this.encounterTime = 0;
+      this.inv = 0;
+      this.enemies.forEach((e) => {
+        e.x = 230;
+        e.cool = 2;
+        if (e.boss) e.female = true;
+      });
+    }
+    this.messageTime = 0;
+    this.returnFade = 0;
     this.draw();
   }
   setWorkshopFocus(focused: boolean) {
@@ -2541,15 +2600,24 @@ class Game extends Phaser.Scene {
         this.art?.teacher,
         this.falling > 0,
         this.py,
+        this.mission,
       );
     }
+    this.applyPresentation();
     const schoolLine =
       this.phase === "school" ? this.schoolStatus() : undefined;
-    drawCadre(
-      this.g,
-      schoolLine ? { ...this, boardMessage: schoolLine, messageTime: 1 } : this,
-      TUNING.routeMeters,
-    );
+    if (!this.presentationHideHud)
+      drawCadre(
+        this.g,
+        schoolLine
+          ? { ...this, boardMessage: schoolLine, messageTime: 1 }
+          : this,
+        TUNING.routeMeters,
+      );
+    else {
+      this.g.fillStyle(0x080d13);
+      this.g.fillRect(0, 179, 320, 61);
+    }
     if (this.phase === "opening") {
       this.fadeViewport(
         Phaser.Math.Clamp((this.age - (PLAY.openingSeconds - 0.9)) / 0.9, 0, 1),
@@ -2608,11 +2676,6 @@ class Game extends Phaser.Scene {
       : [])
       if (p.x > 8 && p.x < 308 && p.y > 8 && p.y < 173)
         this.rect(p.x, p.y, 3, 2, p.color);
-    if (this.roadArt && this.g === this.foreground) {
-      this.rect(0, 0, 7, 179, 0x171e20);
-      this.rect(313, 0, 7, 179, 0x171e20);
-      this.rect(0, 0, 320, 7, 0x171e20);
-    }
     if (this.paused && !this.workshop) {
       this.g.fillStyle(0x080d13, 0.55);
       this.g.fillRect(7, 7, 306, 168);
@@ -2630,6 +2693,81 @@ class Game extends Phaser.Scene {
     for (const t of this.labels) if (t.y < 179) t.setAlpha(1 - alpha);
     this.g.fillStyle(0x000000, alpha);
     this.g.fillRect(5, 5, 310, 172);
+  }
+  applyPresentation() {
+    const light = daylight(this.mission);
+    for (const background of [
+      this.art?.backdrop,
+      this.hallArt?.background,
+      this.wingArt?.background,
+      this.bridgeArt?.background,
+      this.courtBackdrop,
+      this.stairBackdrop,
+      this.centralBackdrop,
+      this.technicalBackdrop,
+      this.serviceBackdrop,
+      this.arrivalBackdrop,
+    ])
+      background?.setTint(light.background);
+    for (const actor of [
+      this.art?.teacher,
+      this.art?.inspector,
+      this.hallArt?.parent,
+      this.wingArt?.student,
+      this.bridgeArt?.guard,
+      this.carArt?.sprite,
+    ])
+      actor?.setTint(light.actor);
+    this.groundContact?.clear();
+    this.roadWash?.clear();
+    if (
+      ["free", "road", "receive", "tow"].includes(this.phase) ||
+      (this.phase === "fail" && this.brokenRoad)
+    ) {
+      this.roadWash?.fillStyle(light.wash, light.opacity);
+      this.roadWash?.fillRect(7, 7, 306, 168);
+    }
+    if (
+      !this.groundContact ||
+      this.brokenRoad ||
+      !["school", "fail"].includes(this.phase)
+    )
+      return;
+    const g = this.groundContact,
+      gaps = this.floorGaps();
+    // Flatten the foreground sheen without painting over the actors or signs.
+    for (let y = 160; y < 175; y++) {
+      g.fillStyle(0x141e27, 0.06 + (y - 160) * 0.006);
+      g.fillRect(7, y, 306, 1);
+    }
+    const teacher = this.art?.teacher;
+    if (teacher?.visible && !this.falling)
+      drawContactShadow(
+        g,
+        teacher.x,
+        this.py,
+        this.room === 4 ? 28 : this.room === 0 ? 15 : 22,
+        gaps,
+      );
+    const enemySprite =
+      this.room === 4
+        ? this.art?.inspector
+        : this.room === 1
+          ? this.hallArt?.parent
+          : this.room === 3
+            ? this.wingArt?.student
+            : this.room === 6
+              ? this.bridgeArt?.guard
+              : undefined;
+    if (enemySprite?.visible)
+      drawContactShadow(
+        g,
+        enemySprite.x,
+        159,
+        this.room === 4 ? 30 : 24,
+        gaps,
+        enemySprite.alpha,
+      );
   }
   banner(s: string) {
     this.rect(23, 75, 274, 34, 0x101719);
@@ -2824,7 +2962,12 @@ class Game extends Phaser.Scene {
       roadProjection(this.travel, d, lane);
     this.rect(7, 7, 306, 168, [0x7d9daa, 0x9cb3a5, 0x815762][this.mission]);
     if (this.roadArt)
-      this.roadArt.sky(horizon, 54 * this.bendDirection(), this.ambienceClock);
+      this.roadArt.sky(
+        horizon,
+        54 * this.bendDirection(),
+        this.ambienceClock,
+        this.mission,
+      );
     else this.roadSky(horizon);
     this.rect(
       7,
@@ -2842,7 +2985,7 @@ class Game extends Phaser.Scene {
       const worldZ = this.travel + d;
       const address = Math.floor((worldZ - 18) / 30);
       const open = openAddress(Math.max(0, address));
-      this.rect(7, y, 306, 1, open ? 0x555748 : 0x4b4d47);
+      this.rect(7, y, 306, 1, 0x45443a);
       for (const side of [-1, 1]) {
         const a = c + side * half,
           b = c + side * (half + 24 * scale);
@@ -2915,6 +3058,7 @@ class Game extends Phaser.Scene {
         this.rect(c - scale, y, Math.max(1, 2 * scale), 1, 0xd1ccad);
     }
 
+    drawRoadWear(this.g, this.travel, project);
     const scenery = [];
     // Immutable world anchors: types depend on the object, never on camera position.
     const first = Math.floor(this.travel / 45);
