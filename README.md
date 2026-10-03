@@ -4,7 +4,13 @@ Jeu d'action arcade rétro satirique français : un professeur remplaçant rejoi
 son affectation en voiture, traverse un établissement dégradé et tente de faire
 cours avant la fin du délai. Trois missions rythment la journée, du matin au soir.
 
-**Jouer sans installation :** télécharger et extraire
+**Jouer dans le navigateur, sur ordinateur ou téléphone :**
+[ouvrir TECHNOPROF](https://kouboy.github.io/Technoprof/).
+Les contrôles tactiles sont disponibles ; l'aide du jeu décrit les gestes.
+Le premier chargement peut prendre un moment : le prototype contient encore
+environ 88 Mo de programme et d'images. Le téléphone physique reste à tester.
+
+**Jouer hors connexion :** télécharger et extraire
 [Technoprof-0.61-testeurs.zip](https://github.com/Kouboy/Technoprof/releases/tag/v0.61),
 puis ouvrir `Jouer-Technoprof.html`. Le jeu fonctionne localement hors connexion.
 
@@ -30,6 +36,11 @@ Le build génère `Jouer-Technoprof.html` et les raccourcis d'atelier. Les expor
 `dist/` et `node_modules/` restent hors de Git ; les sources et les assets sont
 inclus. Les tests automatisés vérifient les règles, sans remplacer une session
 de découverte humaine, l'écoute ou l'essai sur téléphone physique.
+
+GitHub Pages est construit et publié automatiquement après un envoi sur `main`.
+Le workflow [pages.yml](.github/workflows/pages.yml) utilise Node.js 24 et
+`npm run build:pages` pour publier uniquement `dist/`, avec des chemins relatifs
+compatibles avec l'adresse du projet. Les exports HTML locaux restent séparés.
 
 **Commandes :** flèches ou ZQSD pour se déplacer ; Espace pour sauter ; F/X pour
 frapper ou avancer les dialogues. La souris et le toucher permettent aussi de
