@@ -1,31 +1,37 @@
 {
-  "version": "0.57",
+  "version": "0.58",
   "importClientDate": "2026-10-03",
   "scope": "retained source tree; historical build unverified",
   "files": [
     {
-      "original": "check.cjs",
-      "path": "check.cjs",
-      "bytes": 30286,
-      "sha256": "e183f8eda34819efe89d5b9fb68f74d92b1689a1ec5e6395a7572bc156106c15"
+      "original": "day-runner-057.cjs",
+      "path": "day-runner-057.cjs",
+      "bytes": 6767,
+      "sha256": "de5436e86f2887c4f5ba8cf0e3c0c53c659ae67220f77a97828d6101cb84c559"
     },
     {
       "original": "index.html",
       "path": "index.html",
       "bytes": 12903,
-      "sha256": "1cfdb1704de31b4101d33d2845f76f9d92f8350ab794742e924fbb2612e8136c"
+      "sha256": "74a1f94c10fc87740565ffa42a93c91b2faf95546ebb47d03971d4915b915e57"
+    },
+    {
+      "original": "mission-runner.cjs",
+      "path": "mission-runner.cjs",
+      "bytes": 5912,
+      "sha256": "fae088a37b761b5415ad34c5714864a6ce6425a5f5706761bc3c4255c3c27346"
     },
     {
       "original": "package-lock.json",
       "path": "package-lock.json",
       "bytes": 38850,
-      "sha256": "9266874b7b677050b1c749e98a4b5fcb25bf27b3d3c9b311869d3713cb23111b"
+      "sha256": "b8245abc8f42daad089f375c3ec76927d2ad343065351ef29a6898ed59c77f22"
     },
     {
       "original": "package.json",
       "path": "package.json",
-      "bytes": 932,
-      "sha256": "cfdd78a38eb7c0f1df254ac4cb61c708f211da229ed82098664d40dff1c05ca4"
+      "bytes": 959,
+      "sha256": "c41e2cb92398a2428dee092524e1b15e518cb0c33f85e1b7cc99dcddf372b0d4"
     },
     {
       "original": "src/arrival-data.ts",
@@ -48,8 +54,8 @@
     {
       "original": "src/audio.ts",
       "path": "src/audio.ts",
-      "bytes": 16419,
-      "sha256": "9816119d0a15f01de178a6078b3cb6dffb9ee312a2735a38e8393f80af27e39d"
+      "bytes": 17314,
+      "sha256": "979d913c6bbf837a8325938f464e632d01e8a8227d3f2333f03f690f8c9feb85"
     },
     {
       "original": "src/bridge-art.ts",
@@ -96,8 +102,8 @@
     {
       "original": "src/combat-poses.ts",
       "path": "src/combat-poses.ts",
-      "bytes": 2605,
-      "sha256": "31f5654722d66358f8129dec2405de35a3c24d4eb3188eb1ffb0eaf5d4c94628"
+      "bytes": 3045,
+      "sha256": "22b6e0cfdf45506fd83d05756d3d820a1f91d50254299f05975b696be7d6ff8b"
     },
     {
       "original": "src/comic-fx.ts",
@@ -138,8 +144,8 @@
     {
       "original": "src/gameplay.ts",
       "path": "src/gameplay.ts",
-      "bytes": 4130,
-      "sha256": "d6cea61c3be4528e47564674abc59b4b1883fd30d3012eaf16a9ee15965505f8"
+      "bytes": 4291,
+      "sha256": "640bc89967258c94b119c5762e129a5ec27a4a07af0f2a648a8c135d89ac7752"
     },
     {
       "original": "src/hall-art.ts",
@@ -168,8 +174,8 @@
     {
       "original": "src/main.ts",
       "path": "src/main.ts",
-      "bytes": 146927,
-      "sha256": "c8f9ca22d6ded8555dc48f98c9f622abf546eb6d95dc85a9a82111811fc6acc5"
+      "bytes": 148006,
+      "sha256": "18ce5e70046c7f332628c911824cd4389076bdc7fcfa66d958f7ed3307564002"
     },
     {
       "original": "src/missions.ts",
@@ -180,8 +186,8 @@
     {
       "original": "src/new-school-art.ts",
       "path": "src/new-school-art.ts",
-      "bytes": 9347,
-      "sha256": "2e120c74030a3a950516ba2afc6b584823c9799150acda3512317d04530a1aeb"
+      "bytes": 10401,
+      "sha256": "7f149a40c2b99c335d0c9adb0cf103cb07cfb26ee8c6f52a7c076e0870fee287"
     },
     {
       "original": "src/new-school-data.ts",
@@ -253,7 +259,7 @@
       "original": "src/session-log.ts",
       "path": "src/session-log.ts",
       "bytes": 4161,
-      "sha256": "a160a5395f204e10bf2db6099111bddbe7ebc0b7754e61a861c6ed7951fb961d"
+      "sha256": "5c5edc2f3e287e3c4a7ab0f87a8d1a0a90c4d362967fee22a04c389ea9a36185"
     },
     {
       "original": "src/sky-data.ts",
@@ -312,8 +318,8 @@
     {
       "original": "src/workshop.ts",
       "path": "src/workshop.ts",
-      "bytes": 11508,
-      "sha256": "3016ecf8864dd0dc4b5fb93abe1fcb28968557ba10ceb0e18e2dc986c67d2f5a"
+      "bytes": 11697,
+      "sha256": "8e5655a62985ca4c984bd79c8df119305d0fa0d366a7ba69e94626dfd18f67d2"
     },
     {
       "original": "src/world.ts",
@@ -324,8 +330,8 @@
     {
       "original": "test-harness.cjs",
       "path": "test-harness.cjs",
-      "bytes": 1892,
-      "sha256": "2daa8dd85d9ab66faf3c6fa6893bfec3e964e464914c02291afe7809b7215816"
+      "bytes": 1909,
+      "sha256": "cd68377bd44cd80f7d6f37251cd23e1dd900d5cbf3f183f7bf28654d59d101c8"
     }
   ]
 }

@@ -75,6 +75,10 @@ const SCENARIOS: Record<string, string> = {
   "pro-drive": "Lycée pro / affectation complète",
   "pro-cour": "Lycée pro / parvis et parcours",
   "pro-boss": "Lycée pro / responsable sécurité",
+  "bruel-shove": "Parent au téléphone / poussée",
+  "bruel-rush": "Parent influent / ruée",
+  "pro-throw": "Élève majeur / lancer",
+  "pro-push": "Responsable sécurité / poussée",
   student: "Élève / présentation",
   guard: "Vigile / présentation",
   boss: "Inspectrice / confrontation",
@@ -117,7 +121,7 @@ export function installWorkshop(s: Host) {
   root.hidden = false;
   root.innerHTML = "";
   const heading = document.createElement("strong");
-  heading.textContent = "ATELIER 0.57 — scénarios animés";
+  heading.textContent = "ATELIER 0.58 — scénarios animés";
   root.append(heading);
   const controls = document.createElement("div");
   controls.className = "workshop-controls";

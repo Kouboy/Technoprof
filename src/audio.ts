@@ -24,6 +24,31 @@ const CLASSROOM: ["chair" | "paper" | "chalk", number, number][] = [
   ["paper", 1.45, 0.35],
   ["chalk", 2.15, -0.15],
 ];
+// Existing materials, tuned per gesture: no extra sample downloads or timers.
+export const ENEMY_GESTURES = {
+  influential: {
+    windup: [["step", 0.65, 0.9]],
+    release: [
+      ["step", 1.1, 0.9],
+      ["sweep", 0.55, 0.85],
+    ],
+  },
+  security: {
+    windup: [["relay", 0.6, 0.85]],
+    release: [
+      ["sweep", 0.75, 0.8],
+      ["step", 0.65, 0.85],
+    ],
+  },
+  thrower: {
+    windup: [["paper", 0.55, 1.25]],
+    release: [["swing", 0.45, 1.45]],
+  },
+  filmer: {
+    windup: [["paper", 0.3, 1.1]],
+    release: [["sweep", 0.5, 1.15]],
+  },
+} satisfies Record<string, Record<string, [Material, number, number][]>>;
 export class AudioKit {
   context?: AudioContext;
   master?: GainNode;
@@ -327,6 +352,14 @@ export class AudioKit {
     };
     this.fx(material[kind], clamp(direction) * 0.25);
     if (kind === "defeat") this.play("book", clamp(direction) * 0.25, 0.7);
+  }
+  enemyGesture(
+    role: keyof typeof ENEMY_GESTURES,
+    stage: "windup" | "release",
+    x: number,
+  ) {
+    for (const [material, gain, rate] of ENEMY_GESTURES[role][stage])
+      this.play(material, clamp((x - 160) / 190) * 0.5, gain, 0, "fx", rate);
   }
   pass(side: number, close: boolean, truck: boolean, closing = 45) {
     const mix = passState(close, truck, closing);

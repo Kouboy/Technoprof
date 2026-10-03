@@ -30,6 +30,7 @@ import {
   STUDENT,
   SECURITY,
   THROWER,
+  FILMER,
   combatProfile,
   terminalReason,
   FAILURE_LABELS,
@@ -1402,13 +1403,31 @@ class Game extends Phaser.Scene {
       }
       this.notified = true;
       this.school();
+      const gestureRooms: Record<string, number> = {
+        "bruel-shove": 11,
+        "bruel-rush": 14,
+        "pro-throw": 21,
+        "pro-push": 24,
+      };
       this.enterRoom(
-        name.endsWith("boss")
-          ? this.missionSpec().arena
-          : this.missionSpec().start,
+        gestureRooms[name] ??
+          (name.endsWith("boss")
+            ? this.missionSpec().arena
+            : this.missionSpec().start),
         50,
       );
       this.schoolFade = 0;
+      if (name in gestureRooms) {
+        // Isolated workshop setup; afterwards windup/contact follow normal rules.
+        this.encounterTime = 0;
+        this.bossIntro = 0;
+        this.px = 175;
+        this.inv = 0;
+        const e = this.enemies[0];
+        e.x = 220;
+        e.facing = -1;
+        e.cool = 0;
+      }
       this.session.record("scenario", this.mission, this.room, { name });
       this.draw();
       return;
@@ -2438,7 +2457,7 @@ class Game extends Phaser.Scene {
     if (e.wind > 0) {
       e.wind -= dt;
       if (e.wind <= 0) {
-        e.strikeTime = 0.12;
+        e.strikeTime = e.role === "filmer" ? FILMER.activePose : 0.12;
         const dir = e.facing ?? -1;
         if (
           Math.abs(this.px - e.x) < STUDENT.reach &&
@@ -2457,7 +2476,9 @@ class Game extends Phaser.Scene {
         }
         e.recovery = STUDENT.recovery;
         e.cool = STUDENT.cooldown;
-        this.audio.combat("swing", dir);
+        if (e.role === "filmer")
+          this.audio.enemyGesture("filmer", "release", e.x);
+        else this.audio.combat("swing", dir);
       }
       return;
     }
@@ -2469,12 +2490,17 @@ class Game extends Phaser.Scene {
     if (Math.abs(d) < STUDENT.trigger && e.cool <= 0) {
       e.facing = Math.sign(d) || -1;
       e.wind = STUDENT.wind;
+      if (e.role === "filmer") this.audio.enemyGesture("filmer", "windup", e.x);
     }
     this.separateFighters(this.px);
   }
   updateFilmer(e: Enemy, dt: number) {
     if (e.wind > dt) {
-      e.x = Phaser.Math.Clamp(e.x + (e.facing ?? -1) * 12 * dt, 32, 280);
+      e.x = Phaser.Math.Clamp(
+        e.x + (e.facing ?? -1) * FILMER.windAdvance * dt,
+        32,
+        280,
+      );
       this.separateFighters(this.px);
     }
     this.updateStudent(e, dt);
@@ -2494,7 +2520,7 @@ class Game extends Phaser.Scene {
     if (e.wind > 0) {
       e.wind -= dt;
       if (e.wind <= 0) {
-        e.strikeTime = 0.28;
+        e.strikeTime = SECURITY.activePose;
         const facing = e.facing ?? -1;
         if (
           Math.abs(this.px - e.x) < SECURITY.reach &&
@@ -2511,7 +2537,7 @@ class Game extends Phaser.Scene {
         }
         e.recovery = SECURITY.recovery;
         e.cool = SECURITY.cooldown;
-        this.audio.combat("swing", facing);
+        this.audio.enemyGesture("security", "release", e.x);
       }
       return;
     }
@@ -2526,7 +2552,7 @@ class Game extends Phaser.Scene {
     this.separateFighters(this.px);
     if (distance < SECURITY.trigger && e.cool <= 0) {
       e.wind = SECURITY.wind;
-      this.audio.fx("paper", (e.x - 160) / 190, 0.5);
+      this.audio.enemyGesture("security", "windup", e.x);
     }
   }
   updateThrower(e: Enemy, dt: number) {
@@ -2537,7 +2563,7 @@ class Game extends Phaser.Scene {
     if (e.wind > 0) {
       e.wind -= dt;
       if (e.wind <= 0) {
-        e.strikeTime = 0.25;
+        e.strikeTime = THROWER.activePose;
         this.projectiles.push({
           x: e.x + (e.facing ?? -1) * 18,
           dir: e.facing ?? -1,
@@ -2545,7 +2571,7 @@ class Game extends Phaser.Scene {
         });
         e.recovery = THROWER.recovery;
         e.cool = THROWER.cooldown;
-        this.audio.combat("swing", e.facing ?? -1);
+        this.audio.enemyGesture("thrower", "release", e.x);
         this.session.record("projectile", this.mission, this.room, {
           x: e.x,
           facing: e.facing,
@@ -2557,6 +2583,7 @@ class Game extends Phaser.Scene {
     if (Math.abs(this.px - e.x) < THROWER.reach && e.cool <= 0) {
       e.facing = Math.sign(this.px - e.x) || -1;
       e.wind = THROWER.wind;
+      this.audio.enemyGesture("thrower", "windup", e.x);
     }
   }
   updateProjectiles(dt: number) {
@@ -2661,7 +2688,8 @@ class Game extends Phaser.Scene {
       e.wind -= dt;
       if (e.wind <= 0) {
         e.chargeTime = PARENT.charge;
-        this.audio.fx("jump", (e.x - 160) / 190, 1.3);
+        if (e.boss) this.audio.enemyGesture("influential", "release", e.x);
+        else this.audio.fx("jump", (e.x - 160) / 190, 1.3);
       }
       return;
     }
@@ -2669,6 +2697,7 @@ class Game extends Phaser.Scene {
     if (Math.abs(e.x - this.px) < 185 && e.cool <= 0) {
       e.pattern++;
       e.wind = PARENT.wind;
+      if (e.boss) this.audio.enemyGesture("influential", "windup", e.x);
       e.chargeDir = Math.sign(this.px - e.x) || -1;
       e.cool = 1.8;
     } else if (Math.abs(e.x - this.px) > 60)

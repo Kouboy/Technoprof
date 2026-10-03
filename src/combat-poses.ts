@@ -1,5 +1,15 @@
-import { PLAY } from "./gameplay";
+import { PLAY, enemyPhase } from "./gameplay";
 import type { Enemy } from "./world";
+
+// New four-pose actors share the same exclusive state priority as diagnostics.
+// Recovery starts at contact, but the active silhouette must remain visible.
+export function newEnemyFrame(e: Enemy, presentation = false) {
+  const state = enemyPhase(e, presentation);
+  if (state === "strike") return 2;
+  if (state === "windup") return 1;
+  if (["hurt", "defeated", "recovery", "turn"].includes(state)) return 3;
+  return 0;
+}
 
 export type TeacherState = {
   px: number;

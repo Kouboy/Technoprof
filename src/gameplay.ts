@@ -114,6 +114,7 @@ export const NEW_COMBAT = {
 };
 export const SECURITY = {
   turn: 0.85,
+  activePose: 0.28,
   wind: 0.85,
   reach: 49,
   recovery: 1.05,
@@ -123,12 +124,17 @@ export const SECURITY = {
   cooldown: 1.2,
 };
 export const THROWER = {
+  activePose: 0.25,
   wind: 1,
   recovery: 1.25,
   cooldown: 1.6,
   speed: 115,
   reach: 190,
   height: 130,
+};
+export const FILMER = {
+  windAdvance: 12,
+  activePose: 0.22,
 };
 export function combatProfile(room: number, role?: string) {
   if (role === "influential") return NEW_COMBAT.influential;
@@ -149,6 +155,7 @@ export type EnemyPhase =
   | "windup"
   | "strike"
   | "recovery"
+  | "turn"
   | "hurt"
   | "defeated";
 // Timers are the simulation truth. One exclusive state is derived for presentation
@@ -160,6 +167,7 @@ export function enemyPhase(e: Enemy, presentation = false): EnemyPhase {
   if (e.wind > 0) return "windup";
   if ((e.chargeTime ?? 0) > 0 || (e.strikeTime ?? 0) > 0) return "strike";
   if (e.recovery > 0) return "recovery";
+  if ((e.turnTime ?? 0) > 0) return "turn";
   return "approach";
 }
 export type FailureReason = "late" | "exhausted" | "breakdown";

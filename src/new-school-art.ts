@@ -7,7 +7,8 @@ import { STUDENT_FRAMES } from "./wing-art";
 import { GUARD_FRAMES } from "./bridge-art";
 import type { CarArt } from "./car-art";
 import type { Enemy } from "./world";
-import type { TeacherState } from "./combat-poses";
+import { newEnemyFrame, type TeacherState } from "./combat-poses";
+import { SECURITY } from "./gameplay";
 
 type ArtHost = TeacherState & {
   mission: number;
@@ -59,6 +60,14 @@ export const BACKGROUND_FRAMES: Record<string, number[][]> = {
     [840, 503, 832, 422],
   ],
 };
+// Rectangles occupied by a neighbouring pose, outside this actor's silhouette.
+// Original atlas files stay intact; these are runtime extraction masks.
+export function poseExclusions(i: number, width: number, height: number) {
+  if (i === 1) return [[410, 300, width - 410, height - 300]];
+  if (i === 2) return [[0, 0, 85, 190]];
+  if (i === 3 || i === 7) return [[0, 0, 70, height]];
+  return [];
+}
 export class NewSchoolArt {
   background: Phaser.GameObjects.Image;
   enemy: Phaser.GameObjects.Image;
@@ -83,12 +92,8 @@ export class NewSchoolArt {
         // actor's leg out, while preserving the complete pointing silhouette.
         ctx.beginPath();
         ctx.rect(0, 0, width, height);
-        if (i === 1) {
-          ctx.rect(410, 300, width - 410, height - 300);
-        }
-        if (i === 2) {
-          ctx.rect(0, 0, 85, 190);
-        }
+        for (const [cx, cy, cw, ch] of poseExclusions(i, width, height))
+          if (cw > 0 && ch > 0) ctx.rect(cx, cy, cw, ch);
         ctx.clip("evenodd");
         ctx.drawImage(raw, -x, -y);
         const t = scene.textures.addCanvas(key + "-pose-" + i, canvas)!;
@@ -153,16 +158,7 @@ export class NewSchoolArt {
           .setVisible(true);
       } else {
         const base = r.boss ? 0 : 4;
-        const pose =
-          e.hp <= 0 || e.stun > 0 || e.recovery > 0 || e.turnTime
-            ? 3
-            : e.wind > 0
-              ? r.role === "filmer"
-                ? 2
-                : 1
-              : (e.chargeTime ?? 0) > 0 || (e.strikeTime ?? 0) > 0
-                ? 2
-                : 0;
+        const pose = newEnemyFrame(e, !!s.encounterTime);
         const frame = base + pose,
           [x, y, w, h, anchorX, anchorY] = FRAMES[key][frame];
         const facing =
@@ -218,7 +214,11 @@ export class NewSchoolArt {
             : "POUSSEE !"
           : e.recovery > 0 || e.stun > 0
             ? "OUVERTURE"
-            : "";
+            : e.role === "security"
+              ? e.turnTime
+                ? "RETOURNEMENT"
+                : "GARDE DE FACE"
+              : "";
       if (cue)
         smallPrint(
           g,
@@ -236,18 +236,29 @@ export class NewSchoolArt {
       g.lineStyle(1, 0xb9aa89);
       g.lineBetween(p.x - p.dir * 10, 131, p.x - p.dir * 4, 131);
     }
-    if (e?.role === "security" && e.hp > 0 && !s.encounterTime) {
-      smallPrint(
-        g,
-        Math.max(15, Math.min(240, e.x - 25)),
-        47,
-        e.turnTime
-          ? "SE RETOURNE"
-          : e.recovery > 0
-            ? "OUVERTURE"
-            : "GARDE DE FACE",
-        e.turnTime || e.recovery > 0 ? 0xe5ae60 : 0xb9aa89,
-      );
+    if (e?.role === "security" && e.hp > 0 && !s.encounterTime && !e.stun) {
+      // A short ground marker shows the committed front without covering faces.
+      // Turning uses broken strokes; it never advertises a solid frontal guard.
+      const dir = e.facing ?? -1;
+      const turning = (e.turnTime ?? 0) > 0;
+      const open = e.recovery > 0;
+      const markerY = 169;
+      if (!open) {
+        g.lineStyle(2, 0x080d13);
+        g.lineBetween(e.x + dir * 8, markerY, e.x + dir * 24, markerY);
+        g.lineStyle(1, e.wind > 0 || turning ? 0xe5ae60 : 0xb9aa89);
+        if (turning) {
+          const progress = 1 - e.turnTime! / SECURITY.turn;
+          for (let i = 0; i < 3; i++) {
+            const x = e.x + dir * (8 + i * 6);
+            g.lineBetween(x, markerY - progress * 3, x + dir * 3, markerY);
+          }
+        } else {
+          g.lineBetween(e.x + dir * 8, markerY, e.x + dir * 24, markerY);
+          g.lineBetween(e.x + dir * 24, markerY, e.x + dir * 20, markerY - 4);
+          g.lineBetween(e.x + dir * 24, markerY, e.x + dir * 20, markerY + 4);
+        }
+      }
     }
   }
   arrival(s: ArtHost) {
