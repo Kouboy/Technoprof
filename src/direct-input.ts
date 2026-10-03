@@ -116,11 +116,16 @@ export class DirectInput {
     ) {
       g.used = true;
       const dx = x - g.x;
-      if (Math.abs(dx) > DIRECT.tapSlop)
+      if (Math.abs(dx) > DIRECT.tapSlop) {
+        const bounds = walkBounds(this.host.room);
         this.intent = {
           kind: "walk",
-          x: Math.max(8, Math.min(312, this.host.px + Math.sign(dx) * 85)),
+          x: Math.max(
+            bounds.min,
+            Math.min(bounds.max, this.host.px + Math.sign(dx) * 85),
+          ),
         };
+      }
       this.pulse("SPACE");
       this.marker(this.host.px, 150, "jump");
     }

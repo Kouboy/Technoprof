@@ -55,8 +55,11 @@ type Host = {
   bendDirection(distance?: number): number;
   setWorkshopFocus(focused: boolean): void;
   unlockAudio(): void;
+  journalSnapshot(): unknown;
+  exportJournal(): void;
 };
 const SCENARIOS: Record<string, string> = {
+  mission: "Première affectation / parcours complet",
   road: "Route / trafic reproductible",
   "road-slow": "Conduite / 40 km/h",
   "road-fast": "Conduite / 260 km/h",
@@ -88,13 +91,24 @@ const SCENARIOS: Record<string, string> = {
 };
 let status: HTMLElement | null = null;
 let lastStatus = "";
+let measurements: HTMLPreElement | null = null;
+let lastMeasurementAt = 0;
+function refreshMeasurements(s: Host) {
+  if (!measurements || measurements.hidden) return;
+  lastMeasurementAt = performance.now();
+  measurements.textContent = JSON.stringify(
+    s.journalSnapshot(),
+    (key, value) => (key === "events" ? undefined : value),
+    2,
+  );
+}
 export function installWorkshop(s: Host) {
   const root = document.getElementById("workshop");
   if (!root) return;
   root.hidden = false;
   root.innerHTML = "";
   const heading = document.createElement("strong");
-  heading.textContent = "ATELIER 0.55 — scénarios animés";
+  heading.textContent = "ATELIER 0.56 — scénarios animés";
   root.append(heading);
   const controls = document.createElement("div");
   controls.className = "workshop-controls";
@@ -194,24 +208,15 @@ export function installWorkshop(s: Host) {
   };
   wordsLabel.append(words, " Onomatopées");
   controls.append(wordsLabel);
-  button("Exporter le journal", () => {
-    const blob = new Blob(
-      [
-        JSON.stringify(
-          s.session.snapshot(s.seed, s.collisions, s.punches, s.results),
-          null,
-          2,
-        ),
-      ],
-      { type: "application/json" },
-    );
-    const url = URL.createObjectURL(blob),
-      a = document.createElement("a");
-    a.href = url;
-    a.download = "technoprof-045-" + s.workshopScenario + ".json";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  button("Exporter le journal", () => s.exportJournal());
+  measurements = document.createElement("pre");
+  measurements.hidden = true;
+  measurements.setAttribute("aria-label", "Mesures de cet essai");
+  button("Mesures de cet essai", () => {
+    measurements!.hidden = !measurements!.hidden;
+    refreshMeasurements(s);
   });
+  root.append(measurements);
   const note = document.createElement("p");
   note.textContent =
     "Commandes du jeu conservées. Les coups et échecs passent par les vraies règles. En succès : frapper puis marcher à la porte et presser ↑. Cyan : corps/pieds ; ambre : livre ; rouge : portée adverse ou trou. Sur route : largeur de caisse et limites de chaussée, avec la même projection que le jeu.";
@@ -221,6 +226,12 @@ export function installWorkshop(s: Host) {
   root.append(status);
 }
 export function drawWorkshop(s: Host) {
+  if (
+    measurements &&
+    !measurements.hidden &&
+    performance.now() - lastMeasurementAt >= 1000
+  )
+    refreshMeasurements(s);
   const profile = combatProfile(s.room);
   const player = s.roomTransition
     ? "TRANSITION → " + s.roomTransition.target

@@ -79,6 +79,7 @@ type Host = PlayerContext & {
   setPaused(value: boolean, reason?: string): void;
   setPlayerMenu(open: boolean): void;
   draw(): void;
+  exportJournal(): void;
 };
 export function installPlayerExperience(s: Host) {
   const root = document.getElementById("player-panel")!;
@@ -398,6 +399,8 @@ export function installPlayerExperience(s: Host) {
     }
     const actions = document.createElement("div");
     actions.className = "player-actions";
+    if (menuPage === "home" && mode !== "title")
+      actions.append(button("Exporter mon essai", () => s.exportJournal()));
     if (menuPage !== "home")
       actions.append(
         button(

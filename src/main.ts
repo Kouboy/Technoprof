@@ -27,7 +27,7 @@ import {
   SeededRandom,
   type FailureReason,
 } from "./gameplay";
-import { SessionLog } from "./session-log";
+import { SessionLog, RuntimeLog } from "./session-log";
 import { installWorkshop, drawWorkshop } from "./workshop";
 import { drawPassageHints } from "./passage-hints";
 import { ENCOUNTER_SECONDS } from "./world";
@@ -104,6 +104,7 @@ class Game extends Phaser.Scene {
   seed = 4301;
   random = new SeededRandom();
   session = new SessionLog();
+  runtime = new RuntimeLog();
   workshop = false;
   debugOverlay = false;
   workshopSpeed = 1;
@@ -202,6 +203,7 @@ class Game extends Phaser.Scene {
   arrivalStill = false;
   reviewFacing = 1;
   preload() {
+    this.runtime.mark("preload");
     this.audio.prepare();
     SliceArt.preload(this);
     SchoolProps.preload(this);
@@ -322,6 +324,7 @@ class Game extends Phaser.Scene {
   shoulderClock = 0;
   results: string[] = [];
   create() {
+    this.runtime.mark("create");
     const shakeOption = document.getElementById(
       "reduced-shake",
     ) as HTMLInputElement | null;
@@ -454,6 +457,7 @@ class Game extends Phaser.Scene {
     this.sceneGraphics = this.g;
     this.carArt = new CarArt(this);
     this.roadArt = new RoadArt(this);
+    this.releasePreparedSources();
     this.foreground = this.add.graphics().setDepth(3.2);
     this.sceneFade = this.add.graphics().setDepth(4.05);
     this.groundContact = this.add.graphics().setDepth(1.3);
@@ -743,9 +747,35 @@ class Game extends Phaser.Scene {
     if (!preview || preview === "accueil" || preview === "labo")
       this.direct = installDirectInput(this);
     this.draw();
+    this.runtime.mark("ready");
   }
   refreshLayout() {
     this.scale?.refresh();
+  }
+  releasePreparedSources() {
+    // These source sheets are read only by the constructors above. Drawing uses
+    // independent Canvas textures; backgrounds and playable atlases stay alive.
+    for (const key of [
+      "raw-prof",
+      "raw-inspecteur",
+      "raw-inspectrice",
+      "raw-parent",
+      "raw-guard-33",
+      "raw-student-34",
+      "raw-service",
+      "raw-service-right",
+      "raw-traffic",
+      "raw-district",
+      "raw-verge",
+      "raw-school-props-36",
+      "raw-warnings-37",
+    ]) {
+      if (!this.textures.exists(key)) continue;
+      const image = this.textures.get(key).getSourceImage() as HTMLImageElement;
+      this.runtime.releasedSources.count++;
+      this.runtime.releasedSources.rgbaBytes += image.width * image.height * 4;
+      this.textures.remove(key);
+    }
   }
   inkCache = new Map<number, number>();
   ink(c: number) {
@@ -983,6 +1013,7 @@ class Game extends Phaser.Scene {
     this.audio.radio("", false);
     this.cadreReview = false;
     this.session = new SessionLog();
+    this.runtime.resetFrames();
     if (!this.workshop) this.seed = Math.floor(Math.random() * 4294967295) || 1;
     this.mission = 0;
     this.won = 0;
@@ -1259,12 +1290,38 @@ class Game extends Phaser.Scene {
             this.collisions,
             this.punches,
             this.results,
+            this.runtime.snapshot(),
           ),
         ),
       );
     } catch {
       /* Export from the workshop remains available when storage is disabled. */
     }
+  }
+  chargeClock(category: string, dt: number) {
+    this.remaining -= dt;
+    this.session.measure(this.mission, category, dt, true);
+  }
+  journalSnapshot() {
+    return this.session.snapshot(
+      this.seed,
+      this.collisions,
+      this.punches,
+      this.results,
+      this.runtime.snapshot(),
+    );
+  }
+  exportJournal() {
+    const url = URL.createObjectURL(
+      new Blob([JSON.stringify(this.journalSnapshot(), null, 2)], {
+        type: "application/json",
+      }),
+    );
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "technoprof-056-essai.json";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   loadScenario(name: string) {
     this.controls?.reset();
@@ -1286,6 +1343,11 @@ class Game extends Phaser.Scene {
     this.cadreReview = false;
     this.arrivalStill = false;
     this.artReview = -1;
+    if (name === "mission") {
+      this.startDay();
+      this.session.record("scenario", this.mission, this.room, { name });
+      return;
+    }
     this.begin();
     this.notified = true;
     this.returnFade = 0;
@@ -1462,6 +1524,16 @@ class Game extends Phaser.Scene {
     if (focused) this.setPaused(true);
   }
   update(_t: number, ms: number) {
+    if (
+      !this.paused &&
+      !this.playerMenu &&
+      !this.workshopStep &&
+      this.artReview < 0 &&
+      !this.cadreReview &&
+      !this.arrivalStill &&
+      !["title", "report"].includes(this.phase)
+    )
+      this.runtime.frame(ms);
     if (this.controls && this.physicalKeys)
       this.controls.sampleKeyboard(this.physicalKeys, (k) =>
         Phaser.Input.Keyboard.JustDown(this.physicalKeys![k]),
@@ -1561,6 +1633,21 @@ class Game extends Phaser.Scene {
       return;
     }
     this.session.tick(this.phase, dt);
+    const category =
+      this.hitStop > 0
+        ? "hitStop"
+        : this.phase === "school"
+          ? this.roomTransition || this.schoolFade > 0
+            ? "transition"
+            : this.encounterTime > 0 || this.bossIntro > 0
+              ? "dialogue"
+              : this.room === 4 && this.enemies.some((e) => e.hp > 0)
+                ? "boss"
+                : this.enemies.some((e) => e.hp > 0)
+                  ? "encounter"
+                  : "orientation"
+          : this.phase;
+    this.session.measure(this.mission, category, dt);
     if (this.phase !== this.lastLoggedPhase) {
       this.session.record("phase", this.mission, this.room, {
         from: this.lastLoggedPhase,
@@ -1792,7 +1879,7 @@ class Game extends Phaser.Scene {
         this.road = 0;
       }
       if (this.phase === "receive" || this.phase === "road") {
-        this.remaining -= dt;
+        this.chargeClock("road", dt);
         this.road += (this.speed / 3.6) * dt;
         if (!this.arrivalAlert && TUNING.routeMeters - this.road < 1000) {
           this.arrivalAlert = true;
@@ -1835,7 +1922,7 @@ class Game extends Phaser.Scene {
       this.bossIntro = this.room === 4 ? this.encounterTime : 0;
       this.impact = Math.max(0, this.impact - dt);
       this.interactLock = Math.max(0, this.interactLock - dt);
-      if (!presentation) this.remaining -= dt;
+      if (!presentation) this.chargeClock(category, dt);
       this.inv = Math.max(0, this.inv - dt);
       if (presentation) {
         if (this.schoolFade === 0 && this.encounterTime > 0) {
