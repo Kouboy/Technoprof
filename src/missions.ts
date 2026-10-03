@@ -32,6 +32,8 @@ export type RoomSpec = {
   encounter?: Encounter;
   signs?: [number, number, number, string[]][];
   labels?: [number, number, string][];
+  navigation?: { id: string; floor: number; landmark: string };
+  care?: { x: number; reach: number };
 };
 export type MissionSpec = {
   id: string;
@@ -585,15 +587,26 @@ export const MISSIONS: MissionSpec[] = [
 ];
 export const missionSpec = (index: number) =>
   MISSIONS[Math.max(0, Math.min(MISSIONS.length - 1, index))];
-export const roomSpec = (mission: number, id: number) =>
-  missionSpec(mission).rooms[id] ?? collegeRooms[id];
+export const roomSpec = (
+  mission: number,
+  id: number,
+  profile?: MissionSpec,
+) => {
+  if (profile) {
+    const r = profile.rooms[id];
+    if (!r) throw new Error(`Zone inconnue dans ${profile.id}: ${id}`);
+    return r;
+  }
+  return missionSpec(mission).rooms[id] ?? collegeRooms[id];
+};
 export function missionPassages(
   mission: number,
   id: number,
   cleared: boolean,
+  profile?: MissionSpec,
 ): Exit[] {
-  const m = missionSpec(mission),
-    r = roomSpec(mission, id);
+  const m = profile ?? missionSpec(mission),
+    r = roomSpec(mission, id, profile);
   if (!m.rooms[id] || (m.id === "hanouna" && !r?.exits))
     return roomPassages(id, cleared);
   if (id === m.arena)
@@ -602,8 +615,12 @@ export function missionPassages(
       : [];
   return r?.exits ?? [];
 }
-export function missionEnemies(mission: number, id: number): Enemy[] {
-  const r = roomSpec(mission, id);
+export function missionEnemies(
+  mission: number,
+  id: number,
+  profile?: MissionSpec,
+): Enemy[] {
+  const r = roomSpec(mission, id, profile);
   if (id < 10) return makeEnemies(id, mission);
   if (!r?.role) return [];
   return [

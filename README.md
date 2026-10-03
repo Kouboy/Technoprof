@@ -48,8 +48,10 @@ jouer directement dans la scène. L'aide en jeu détaille les gestes.
 
 ## Versions et suivi
 
-Prochaine conception à relire : [navigation et orientation à Bruel](CONCEPTION-BRUEL-NAVIGATION.md).
-Le graphe proposé est un essai séparé ; il ne modifie pas encore le jeu 0.61.
+Sur la branche `atelier-navigation-bruel`, [l’atelier de navigation Bruel A1](ATELIER-BRUEL-NAVIGATION.md)
+implémente le [graphe validé](CONCEPTION-BRUEL-NAVIGATION.md). Lancer `npm run build:atelier`
+puis ouvrir `Jouer-Technoprof-Atelier-Bruel.html`. Cet essai reste séparé de la
+journée 0.61 publiée ; sa navigation doit encore être évaluée en découverte humaine.
 
 La branche `main` contient l'état courant. Voir [l'historique importé](HISTORIQUE.md)
 pour distinguer les sauvegardes partielles et les jalons plus complets. Les tags

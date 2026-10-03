@@ -22,6 +22,7 @@ export type TeacherState = {
   encounterTime?: number;
   schoolFade?: number;
   roomTransition?: unknown;
+  navigationCare?: { active: boolean };
   playerRecovery?: number;
   playerHitDirection?: number;
   bookBlocked?: number;
@@ -34,7 +35,12 @@ export function teacherPose(s: TeacherState) {
   const blocked = Math.min(1, (s.bookBlocked ?? 0) / PLAY.attackRecovery);
   const moving =
     s.phase === "school" &&
-    !(s.encounterTime || s.schoolFade || s.roomTransition) &&
+    !(
+      s.encounterTime ||
+      s.schoolFade ||
+      s.roomTransition ||
+      s.navigationCare?.active
+    ) &&
     (s.keys.LEFT.isDown || s.keys.RIGHT.isDown);
   const frame =
     hurt > 0

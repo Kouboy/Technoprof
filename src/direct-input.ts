@@ -36,11 +36,14 @@ type Host = {
   workshop?: boolean;
   pointerExits(): Exit[];
   movementBounds?(): { min: number; max: number };
+  careResource?(): { x: number; reach: number } | undefined;
+  navigationCare?: { active: boolean };
   combatProfile?(): ReturnType<typeof combatProfile>;
 };
 type Intent =
   | { kind: "walk"; x: number }
   | { kind: "attack"; enemy: Enemy }
+  | { kind: "care"; x: number }
   | { kind: "exit"; exit: Exit };
 export class DirectInput {
   intent: Intent | null = null;
@@ -67,7 +70,8 @@ export class DirectInput {
       (s.paused && !s.workshop) ||
       s.playerMenu ||
       s.schoolFade > 0 ||
-      !!s.roomTransition
+      !!s.roomTransition ||
+      !!s.navigationCare?.active
     );
   }
   marker(x: number, y: number, kind: string) {
@@ -162,6 +166,12 @@ export class DirectInput {
       return;
     }
     if (y > 175) return;
+    const care = s.careResource?.();
+    if (care && Math.abs(x + s.cam - care.x) < 25 && y >= 71 && y <= 146) {
+      this.intent = { kind: "care", x: care.x };
+      this.marker(care.x - s.cam, 115, "care");
+      return;
+    }
     const exits = s.pointerExits();
     // An explicitly displayed passage wins over an overlapping actor hitbox.
     const marker = markerPassage(exits, s.px, x + s.cam, y);
@@ -268,7 +278,7 @@ export class DirectInput {
     }
     const intent = this.intent;
     let x =
-      intent.kind === "walk"
+      intent.kind === "walk" || intent.kind === "care"
         ? intent.x
         : intent.kind === "exit"
           ? intent.exit.edge
@@ -279,6 +289,16 @@ export class DirectInput {
           : intent.enemy.x;
     const direction = x > s.px ? "RIGHT" : "LEFT";
     const dx = Math.abs(x - s.px);
+    if (
+      intent.kind === "care" &&
+      dx <= (s.careResource?.()?.reach ?? 0) &&
+      s.py === 159
+    ) {
+      s.controls?.setSource("direct", []);
+      this.pulse("X");
+      this.intent = null;
+      return;
+    }
     if (intent.kind === "attack") {
       if (intent.enemy.hp <= 0) {
         this.intent = null;

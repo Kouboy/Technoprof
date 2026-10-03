@@ -5,6 +5,14 @@ import {
   missionEnemies,
 } from "./missions";
 import { NewSchoolArt } from "./new-school-art";
+import {
+  BRUEL_NAV,
+  NAV_ID,
+  NAV_CARE,
+  NavigationCare,
+  NavigationMetrics,
+} from "./bruel-navigation";
+import { BruelNavigationArt } from "./bruel-navigation-art";
 import { ActionInput, BINDINGS } from "./controls";
 import { DirectInput, installDirectInput } from "./direct-input";
 import { drawComicFX } from "./comic-fx";
@@ -130,11 +138,20 @@ class Game extends Phaser.Scene {
   schoolProps?: SchoolProps;
   newSchoolArt?: NewSchoolArt;
   projectiles: { x: number; dir: number; life: number }[] = [];
+  navigationProfile = false;
+  navigationGain: 1 | 2 = 1;
+  navigationStartHp = 5;
+  navigationCare = new NavigationCare();
+  navigationMetrics = new NavigationMetrics();
+  navigationArt?: BruelNavigationArt;
+  navigationSpec() {
+    return this.workshop && this.navigationProfile ? BRUEL_NAV : undefined;
+  }
   missionSpec() {
-    return missionSpec(this.mission);
+    return this.navigationSpec() ?? missionSpec(this.mission);
   }
   roomSpec() {
-    return roomSpec(this.mission, this.room);
+    return roomSpec(this.mission, this.room, this.navigationSpec());
   }
   encounter() {
     return this.roomSpec()?.encounter;
@@ -395,6 +412,7 @@ class Game extends Phaser.Scene {
     this.art = new SliceArt(this);
     this.schoolProps = new SchoolProps(this);
     this.newSchoolArt = new NewSchoolArt(this);
+    this.navigationArt = new BruelNavigationArt(this);
     this.hallArt = new HallArt(this);
     this.bridgeArt = new BridgeArt(this);
     this.wingArt = new WingArt(this);
@@ -1054,6 +1072,8 @@ class Game extends Phaser.Scene {
     else keyboard.enableGlobalCapture();
   }
   startDay() {
+    this.navigationProfile = false;
+    this.navigationMetrics = new NavigationMetrics();
     this.audio.unlock();
     this.audio.radio("", false);
     this.cadreReview = false;
@@ -1074,6 +1094,7 @@ class Game extends Phaser.Scene {
     this.begin();
   }
   begin() {
+    this.navigationCare.reset(this.navigationGain);
     this.projectiles = [];
     this.roomTransition = null;
     this.exitHeld = false;
@@ -1143,6 +1164,7 @@ class Game extends Phaser.Scene {
     this.enterRoom(this.missionSpec().start, 25);
   }
   enterRoom(room: number, x: number) {
+    this.navigationCare.cancel();
     this.roomTransition = null;
     this.direct?.cancel();
     this.projectiles = [];
@@ -1172,8 +1194,21 @@ class Game extends Phaser.Scene {
     this.bossIntro =
       this.arena && !this.roomEnemies.has(room) ? ENCOUNTER_SECONDS : 0;
     if (!this.roomEnemies.has(room))
-      this.roomEnemies.set(room, missionEnemies(this.mission, room));
+      this.roomEnemies.set(
+        room,
+        missionEnemies(this.mission, room, this.navigationSpec()),
+      );
     this.enemies = this.roomEnemies.get(room)!;
+    const nav = this.roomSpec()?.navigation;
+    if (nav) {
+      this.navigationMetrics.start(nav.id, this.hp, this.remaining);
+      this.session.record("navigation-enter", this.mission, room, {
+        zone: nav.id,
+        floor: nav.floor,
+        hp: this.hp,
+        remaining: this.remaining,
+      });
+    }
     this.session.record("room", this.mission, room, {
       spawn: this.px,
       introduction: this.encounterTime,
@@ -1183,6 +1218,20 @@ class Game extends Phaser.Scene {
 
   changeRoom(target: number, spawn: number) {
     if (this.roomTransition) return;
+    if (this.navigationProfile) {
+      const from = this.roomSpec()!.navigation!.id;
+      const to = roomSpec(this.mission, target, this.navigationSpec())
+        .navigation!.id;
+      const choice = {
+        from,
+        to,
+        hp: this.hp,
+        remaining: this.remaining,
+        annexe: this.room === NAV_ID.hall && target === NAV_ID.annexe,
+      };
+      this.navigationMetrics.choices.push(choice);
+      this.session.record("navigation-choice", this.mission, this.room, choice);
+    }
     this.exitHeld = this.keys.UP.isDown || this.keys.DOWN.isDown;
     this.direct?.cancel();
     this.attackBuffer = 0;
@@ -1255,9 +1304,17 @@ class Game extends Phaser.Scene {
       hp: this.hp,
       vehicle: this.vehicle,
     });
+    if (this.navigationProfile)
+      this.navigationMetrics.end = {
+        outcome: ok ? "success" : "failure",
+        hp: this.hp,
+        remaining: this.remaining,
+        careUsed: this.navigationCare.used,
+      };
     this.persistJournal();
   }
   next() {
+    this.navigationProfile = false;
     this.mission++;
     if (this.mission === 3) {
       this.phase = "report";
@@ -1329,15 +1386,7 @@ class Game extends Phaser.Scene {
     try {
       localStorage.setItem(
         "technoprof-last-session",
-        JSON.stringify(
-          this.session.snapshot(
-            this.seed,
-            this.collisions,
-            this.punches,
-            this.results,
-            this.runtime.snapshot(),
-          ),
-        ),
+        JSON.stringify(this.journalSnapshot()),
       );
     } catch {
       /* Export from the workshop remains available when storage is disabled. */
@@ -1346,15 +1395,30 @@ class Game extends Phaser.Scene {
   chargeClock(category: string, dt: number) {
     this.remaining -= dt;
     this.session.measure(this.mission, category, dt, true);
+    if (this.navigationProfile && this.phase === "school")
+      this.navigationMetrics.tick(category, dt);
   }
   journalSnapshot() {
-    return this.session.snapshot(
+    const snapshot = this.session.snapshot(
       this.seed,
       this.collisions,
       this.punches,
       this.results,
       this.runtime.snapshot(),
     );
+    return this.navigationProfile || this.navigationMetrics.visits.length
+      ? {
+          ...snapshot,
+          navigation: {
+            ...this.navigationMetrics.snapshot(),
+            gain: this.navigationGain,
+            careUsed:
+              this.navigationMetrics.end?.careUsed ?? this.navigationCare.used,
+            remaining: this.navigationMetrics.end?.remaining ?? this.remaining,
+            hp: this.navigationMetrics.end?.hp ?? this.hp,
+          },
+        }
+      : snapshot;
   }
   exportJournal() {
     const url = URL.createObjectURL(
@@ -1369,6 +1433,8 @@ class Game extends Phaser.Scene {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   loadScenario(name: string) {
+    this.navigationProfile = false;
+    this.navigationMetrics = new NavigationMetrics();
     this.controls?.reset();
     this.workshopScenario = name;
     this.input?.keyboard?.resetKeys();
@@ -1388,6 +1454,30 @@ class Game extends Phaser.Scene {
     this.cadreReview = false;
     this.arrivalStill = false;
     this.artReview = -1;
+    if (this.workshop && name.startsWith("bruel-navigation")) {
+      this.navigationProfile = true;
+      this.mission = 1;
+      this.begin();
+      this.returnFade = 0;
+      if (name !== "bruel-navigation-road") {
+        this.notified = true;
+        this.phase = "school";
+        this.schoolFade = 0;
+        this.hp = this.navigationStartHp;
+        this.enterRoom(
+          name === "bruel-navigation-care" ? NAV_ID.hall : NAV_ID.cour,
+          20,
+        );
+      }
+      this.session.record("scenario", this.mission, this.room, {
+        name,
+        profile: BRUEL_NAV.id,
+        careGain: this.navigationGain,
+        startHp: this.hp,
+      });
+      this.draw();
+      return;
+    }
     if (name.includes("quiet")) {
       this.mission = name.startsWith("bruel")
         ? 1
@@ -1773,9 +1863,11 @@ class Game extends Phaser.Scene {
               ? "dialogue"
               : this.arena && this.enemies.some((e) => e.hp > 0)
                 ? "boss"
-                : this.enemies.some((e) => e.hp > 0)
-                  ? "encounter"
-                  : "orientation"
+                : this.navigationProfile && this.navigationCare.active
+                  ? "care"
+                  : this.enemies.some((e) => e.hp > 0)
+                    ? "encounter"
+                    : "orientation"
           : this.phase;
     this.session.measure(this.mission, category, dt);
     if (this.phase !== this.lastLoggedPhase) {
@@ -2115,7 +2207,53 @@ class Game extends Phaser.Scene {
         false,
       );
       if (terminal) {
+        this.navigationCare.cancel();
         this.finish(false, terminal);
+        return;
+      }
+      if (this.navigationProfile && this.navigationCare.active) {
+        const gain = this.navigationCare.tick(dt, this.hp, this.remaining);
+        if (gain) {
+          this.hp += gain;
+          this.boardMessage = `SOINS : +${gain} PV`;
+          this.messageTime = 2.2;
+          this.session.record("care-complete", this.mission, this.room, {
+            gain,
+            hp: this.hp,
+            remaining: this.remaining,
+          });
+          this.audio.fx("paper", 0, 0.4);
+        }
+        this.attackBuffer = 0;
+        this.draw();
+        return;
+      }
+      const resource = this.careResource();
+      if (
+        resource &&
+        attackPressed &&
+        Math.abs(this.px - resource.x) <= resource.reach &&
+        this.py === PLAY.floor &&
+        !this.playerRecovery &&
+        !this.attack &&
+        !this.interactLock
+      ) {
+        this.direct?.cancel();
+        if (this.navigationCare.start(this.hp)) {
+          this.session.record("care-start", this.mission, this.room, {
+            gain: this.navigationCare.gain,
+            hp: this.hp,
+            remaining: this.remaining,
+          });
+          this.audio.fx("paper", 0, 0.25);
+        } else {
+          this.boardMessage = this.navigationCare.used
+            ? "SOINS DEJA UTILISES"
+            : "RIEN A SOIGNER";
+          this.messageTime = 1.8;
+        }
+        this.attackBuffer = 0;
+        this.draw();
         return;
       }
       if (this.falling > 0) {
@@ -2414,8 +2552,15 @@ class Game extends Phaser.Scene {
     this.draw();
   }
   schoolStatus() {
+    if (this.navigationProfile && this.navigationCare.active)
+      return "SOINS EN COURS / DELAI ACTIF";
     if (this.falling > 0) return "SOL EFFONDRE / CHUTE";
     if (this.messageTime > 0) return this.boardMessage;
+    const care = this.careResource();
+    if (care && Math.abs(this.px - care.x) <= care.reach)
+      return this.navigationCare.used
+        ? "SOINS UTILISES"
+        : `${this.pointerMode ? "TOUCHER" : "F/X"} : SOINS +${this.navigationGain} PV`;
     const hint = this.interaction();
     if (hint) return hint.label;
     const edges = this.roomSpec()?.blocked ?? [];
@@ -2457,7 +2602,13 @@ class Game extends Phaser.Scene {
       this.mission,
       this.room,
       this.cleared.has(this.room),
+      this.navigationSpec(),
     );
+  }
+  careResource() {
+    return this.navigationSpec() && this.phase === "school"
+      ? this.roomSpec()?.care
+      : undefined;
   }
   interaction() {
     return this.pointerExits().find((t) => withinPassage(t, this.px));
@@ -3094,6 +3245,7 @@ class Game extends Phaser.Scene {
     if (this.substepping) return;
     this.art?.hide();
     this.newSchoolArt?.hide();
+    this.navigationArt?.hide();
     this.hallArt?.hide();
     this.bridgeArt?.hide();
     this.wingArt?.hide();
@@ -3214,6 +3366,16 @@ class Game extends Phaser.Scene {
         this.room >= 10 ? this.roomSpec() : undefined,
       );
     }
+    if (
+      this.navigationProfile &&
+      ["school", "opening", "fail"].includes(this.phase)
+    )
+      this.navigationArt?.render(
+        this.roomSpec()!,
+        this.navigationCare,
+        this.px,
+        this.pointerMode,
+      );
     this.applyPresentation();
     const schoolLine =
       this.phase === "school" ? this.schoolStatus() : undefined;
@@ -4426,7 +4588,7 @@ class Game extends Phaser.Scene {
   }
   drawSchool() {
     if (this.usesNewSchoolArt()) {
-      this.newSchoolArt!.render(this);
+      this.newSchoolArt!.render(this, this.roomSpec());
       return;
     }
     if (this.usesWingArt()) {

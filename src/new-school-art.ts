@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { QUIET_SCHOOL_DATA } from "./quiet-school-data";
 import { NEW_SCHOOL_DATA } from "./new-school-data";
-import { roomSpec } from "./missions";
+import { roomSpec, type RoomSpec } from "./missions";
 import { smallPrint, smallWidth } from "./small-lettering";
 import type { SliceArt } from "./slice-art";
 import { STUDENT_FRAMES } from "./wing-art";
@@ -136,8 +136,8 @@ export class NewSchoolArt {
       .setDisplaySize(306, 168)
       .setVisible(true);
   }
-  render(s: ArtHost) {
-    const r = roomSpec(s.mission, s.room),
+  render(s: ArtHost, layout?: RoomSpec) {
+    const r = layout ?? roomSpec(s.mission, s.room),
       key = s.mission === 1 ? "bruel" : "pro";
     this.background.setDepth(1);
     this.door.setDepth(1.6);

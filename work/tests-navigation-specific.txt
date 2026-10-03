@@ -1,0 +1,72 @@
+
+> technoprof@0.61.0 test:navigation
+> node work/check-bruel-navigation-design.cjs && node work/check-navigation-atelier.cjs
+
+{
+  "status": "proposal-not-runtime",
+  "method": "Static proposed graph, exact entry/exit offsets at current walk speed. No combat, hesitation, human comprehension or actual gameplay simulated.",
+  "zones": 12,
+  "levels": 2,
+  "encountersFromExistingBruel": [
+    11,
+    13,
+    14,
+    41,
+    44,
+    47
+  ],
+  "routes": {
+    "discovery": {
+      "visits": 10,
+      "uniqueZones": 10,
+      "encounters": 6,
+      "movementAndCareSeconds": 28.141,
+      "careApplied": false
+    },
+    "known": {
+      "visits": 8,
+      "uniqueZones": 8,
+      "encounters": 6,
+      "movementAndCareSeconds": 24.694,
+      "careApplied": false
+    },
+    "discoveryWithCare": {
+      "visits": 12,
+      "uniqueZones": 11,
+      "encounters": 6,
+      "movementAndCareSeconds": 35.047,
+      "careApplied": true
+    },
+    "knownWithCare": {
+      "visits": 10,
+      "uniqueZones": 9,
+      "encounters": 6,
+      "movementAndCareSeconds": 28.776,
+      "careApplied": true
+    },
+    "correctedWrongTurn": {
+      "visits": 14,
+      "uniqueZones": 11,
+      "encounters": 6,
+      "movementAndCareSeconds": 38.506,
+      "careApplied": false
+    },
+    "orientationLoop": {
+      "visits": 7,
+      "uniqueZones": 6,
+      "encounters": 1,
+      "movementAndCareSeconds": 11.953,
+      "careApplied": false
+    }
+  },
+  "knownRouteSavingSeconds": 3.447,
+  "careExtraDiscoverySeconds": 6.906,
+  "careExtraKnownSeconds": 4.082,
+  "wrongTurnExtraSeconds": 13.812
+}
+PASS design graph: valid destinations/spawns, returns, explicit floor changes, reachable optional care, real loop, six existing common encounters and shorter known route. Not an implementation test.
+(node:8916) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS atelier: graph matches runtime; profile isolated; 60 care comparisons through both inputs at 30/60/120 fps; capped gain, one-use reentry, pause/focus, late precedence; 48 full routes including 24 +1/+2 care runs and 6 continuous road-to-class trials with real fights and course-to-cruising ellipse.
+(node:30420) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

@@ -1,6 +1,7 @@
 # Bruel — proposition spatiale sur la base 0.61
 
-Statut : **proposition à relire avant implémentation du réseau**. Le jeu publié
+Statut : **proposition validée ; prototype isolé dans l’atelier A1**. Voir
+[l’essai et ses vérifications](ATELIER-BRUEL-NAVIGATION.md). Le jeu publié
 reste en 0.61. Ce document prépare un essai isolé dans l'atelier, sans remplacer
 la mission de la journée. Référence : note de Noema,
 `TECHNOPROF_Cadrage_navigation_orientation_0.61.md`, fournie par Nicolas.

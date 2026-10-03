@@ -49,6 +49,8 @@ type Host = {
   workshopScenario: string;
   queuedAttack: boolean;
   comicWords: boolean;
+  navigationGain: 1 | 2;
+  navigationStartHp: number;
   loadScenario(name: string): void;
   setPaused(value: boolean): void;
   floorGaps(): number[][];
@@ -60,6 +62,9 @@ type Host = {
   exportJournal(): void;
 };
 const SCENARIOS: Record<string, string> = {
+  "bruel-navigation": "Bruel / découverte du réseau (atelier)",
+  "bruel-navigation-road": "Bruel / route puis réseau (atelier)",
+  "bruel-navigation-care": "Bruel / hall et soins (preset atelier)",
   "hanouna-quiet": "Matin / liaison sans combat",
   "hanouna-quiet-class": "Matin / classe vide",
   "hanouna-quiet-hall": "Matin / hall",
@@ -183,7 +188,60 @@ export function installWorkshop(s: Host) {
     seed.value = String(s.seed);
     s.loadScenario(select.value);
   };
+  const careSettings = document.createElement("div");
+  careSettings.className = "workshop-controls";
+  const gainLabel = document.createElement("label");
+  gainLabel.textContent = "Soin du prototype ";
+  const gain = document.createElement("select");
+  gain.setAttribute("aria-label", "Gain du soin Bruel");
+  for (const value of [1, 2]) {
+    const o = document.createElement("option");
+    o.value = String(value);
+    o.textContent = `+${value} PV`;
+    gain.append(o);
+  }
+  gain.value = String(s.navigationGain);
+  gainLabel.append(gain);
+  careSettings.append(gainLabel);
+  const hpLabel = document.createElement("label");
+  hpLabel.textContent = "PV de départ (hors route) ";
+  const hp = document.createElement("select");
+  hp.setAttribute("aria-label", "PV de départ Bruel");
+  for (const value of [5, 4, 3, 2, 1]) {
+    const o = document.createElement("option");
+    o.value = String(value);
+    o.textContent = String(value);
+    hp.append(o);
+  }
+  hp.value = String(s.navigationStartHp);
+  hpLabel.append(hp);
+  careSettings.append(hpLabel);
+  const navigationNote = document.createElement("p");
+  navigationNote.textContent =
+    "BRUEL / PROTOTYPE DE NAVIGATION. Changer le soin ou les PV relance cet essai. Première visite : chercher B12 sans plan. Soins : approcher l’armoire, F/X ou toucher. Délai actif pendant le soin ; un usage par affectation.";
+  careSettings.append(navigationNote);
+  root.append(careSettings);
+  careSettings.addEventListener("focusin", () => s.setWorkshopFocus(true));
+  careSettings.addEventListener("focusout", (event) => {
+    if (!careSettings.contains(event.relatedTarget as Node | null))
+      s.setWorkshopFocus(false);
+  });
+  const updateCareSettings = () => {
+    careSettings.hidden = !select.value.startsWith("bruel-navigation");
+  };
+  updateCareSettings();
+  gain.onchange = () => {
+    s.navigationGain = Number(gain.value) as 1 | 2;
+    reset();
+    gain.blur();
+  };
+  hp.onchange = () => {
+    s.navigationStartHp = Number(hp.value);
+    reset();
+    hp.blur();
+  };
   select.onchange = () => {
+    updateCareSettings();
     reset();
     select.blur();
   };
