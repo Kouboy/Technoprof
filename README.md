@@ -1,8 +1,8 @@
-# TECHNOPROF — sauvegarde 0.46
+# TECHNOPROF — sauvegarde 0.47
 
 Import effectué le 3 octobre 2026.
 
-Sauvegarde partielle : seuls les fichiers conservés sont présents. Cet arbre ne constitue pas un projet compilable.
+Arbre de sources conservé ; certains outils ou fichiers de configuration peuvent manquer. Sa compilation et ses tests historiques ne sont pas validés par cet import.
 
 Voir `history/checkpoint.json` pour les fichiers et leurs empreintes. Aucun fichier absent n'a été remplacé par une version récente.
 

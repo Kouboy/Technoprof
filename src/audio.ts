@@ -12,6 +12,9 @@ export class AudioKit {
   radioUtterance?: SpeechSynthesisUtterance;
   classroomNodes: AudioBufferSourceNode[] = [];
   muted = false;
+  effectsVolume = 1;
+  voiceVolume = 1;
+  radioFailed = false;
   previous = "";
   pulse = 0;
   seconds = -1;
@@ -19,7 +22,7 @@ export class AudioKit {
     if (!this.context) {
       const c = (this.context = new AudioContext());
       this.master = c.createGain();
-      this.master.gain.value = this.muted ? 0 : 0.7;
+      this.master.gain.value = this.muted ? 0 : 0.7 * this.effectsVolume;
       this.master.connect(c.destination);
       this.engine = c.createOscillator();
       this.engine.type = "sawtooth";
@@ -224,10 +227,11 @@ export class AudioKit {
       this.radioPaused = false;
       this.radioText = "";
       this.radioDone = false;
+      this.radioFailed = false;
       if (playing) speechSynthesis.cancel();
       return;
     }
-    if (this.muted) {
+    if (this.muted || this.voiceVolume === 0) {
       if (this.radioPlaying) {
         this.radioUtterance = undefined;
         this.radioPlaying = false;
@@ -250,16 +254,17 @@ export class AudioKit {
     if (!this.context || this.radioText === text) return;
     const voice = speechSynthesis
       .getVoices()
-      .find((v) => v.lang.startsWith("fr"));
+      .find((v) => v.lang.startsWith("fr") && v.localService !== false);
     if (!voice) return;
     const u = new SpeechSynthesisUtterance(text);
     u.voice = voice;
     u.lang = "fr-FR";
     u.rate = 1.08;
     u.pitch = 0.85;
-    u.volume = 0.45;
+    u.volume = 0.45 * this.voiceVolume;
     this.radioPlaying = true;
     this.radioDone = false;
+    this.radioFailed = false;
     this.radioText = text;
     this.radioUtterance = u;
     const finish = () => {
@@ -269,7 +274,11 @@ export class AudioKit {
       this.radioUtterance = undefined;
     };
     u.onend = finish;
-    u.onerror = finish;
+    u.onerror = () => {
+      if (this.radioUtterance !== u) return;
+      this.radioFailed = true;
+      finish();
+    };
     speechSynthesis.speak(u);
   }
   material(kind: "chair" | "paper" | "chalk", delay: number, side = 0) {
@@ -321,7 +330,7 @@ export class AudioKit {
   scene(phase: string, paused: boolean, remaining: number, dt: number) {
     if (!this.context || !this.master) return;
     this.master.gain.setTargetAtTime(
-      this.muted || paused ? 0 : 0.7,
+      this.muted || paused ? 0 : 0.7 * this.effectsVolume,
       this.context.currentTime,
       0.025,
     );

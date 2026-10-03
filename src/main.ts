@@ -1,5 +1,10 @@
 import { drawComicFX } from "./comic-fx";
 import {
+  installPlayerExperience,
+  resultLine,
+  RADIO_BULLETINS,
+} from "./player-experience";
+import {
   daylight,
   drawSurround,
   drawContactShadow,
@@ -63,6 +68,9 @@ class Game extends Phaser.Scene {
   roadWash?: Phaser.GameObjects.Graphics;
   sceneSurround?: Phaser.GameObjects.Graphics;
   presentationHideHud = false;
+  syncPlayerUI?: () => void;
+  playerMenu = false;
+  roomEnteredAt = 0;
   seed = 4301;
   random = new SeededRandom();
   session = new SessionLog();
@@ -190,11 +198,7 @@ class Game extends Phaser.Scene {
   skidClock = 0;
   rattleClock = 0;
   tireMarks: { x: number; y: number; life: number }[] = [];
-  radioLines = [
-    "Radio Service Public. La rentrée est prête : les postes vacants seront occupés par le mot priorité.",
-    "Le ministère annonce plus d'autonomie. Chaque établissement pourra désormais choisir ce qu'il ne répare pas.",
-    "Le débat du jour : les enseignants travaillent-ils assez ? Les enseignants invités sont encore en classe.",
-  ];
+  radioLines = RADIO_BULLETINS.map((text) => "Radio Educ France. " + text);
   falling = 0;
   fallReturn = 25;
   lastGroundX = 25;
@@ -663,6 +667,28 @@ class Game extends Phaser.Scene {
       installWorkshop(this);
     }
     if (preview === "presentation") installPresentation(this);
+    if (!preview || preview === "accueil") {
+      this.phase = "title";
+      this.syncPlayerUI = installPlayerExperience(this);
+      if (preview === "accueil") {
+        const bar = document.getElementById("pose-controls")!;
+        bar.hidden = false;
+        for (const won of [2, 1]) {
+          const button = document.createElement("button");
+          button.textContent = `Aperçu du bilan ${won}/3`;
+          button.onclick = () => {
+            this.startDay();
+            for (let mission = 0; mission < 3; mission++) {
+              this.phase = mission === 1 ? "road" : "school";
+              this.finish(mission < won, mission === 1 ? "breakdown" : "late");
+              this.next();
+            }
+            this.draw();
+          };
+          bar.append(button);
+        }
+      }
+    } else document.getElementById("loading")?.setAttribute("hidden", "");
     this.draw();
   }
   inkCache = new Map<number, number>();
@@ -885,6 +911,34 @@ class Game extends Phaser.Scene {
         .setDepth(4),
     );
   }
+  setPlayerMenu(open: boolean) {
+    this.playerMenu = open;
+    const keyboard = this.input?.keyboard;
+    if (!keyboard) return;
+    keyboard.resetKeys();
+    keyboard.enabled = !open;
+    if (open) keyboard.disableGlobalCapture();
+    else keyboard.enableGlobalCapture();
+  }
+  startDay() {
+    this.audio.unlock();
+    this.audio.radio("", false);
+    this.cadreReview = false;
+    this.session = new SessionLog();
+    if (!this.workshop) this.seed = Math.floor(Math.random() * 4294967295) || 1;
+    this.mission = 0;
+    this.won = 0;
+    this.results = [];
+    this.vehicle = 100;
+    this.kilometers = 0;
+    this.collisions = 0;
+    this.punches = 0;
+    this.shortcuts = 0;
+    this.paused = false;
+    this.pauseReason = "";
+    this.setPlayerMenu(false);
+    this.begin();
+  }
   begin() {
     this.failureReason = null;
     this.playerRecovery = 0;
@@ -951,6 +1005,7 @@ class Game extends Phaser.Scene {
     this.enterRoom(0, 25);
   }
   enterRoom(room: number, x: number) {
+    this.roomEnteredAt = this.session.elapsed;
     this.impact = 0;
     this.hitStop = 0;
     this.particles = [];
@@ -1036,7 +1091,7 @@ class Game extends Phaser.Scene {
       this.won++;
       this.audio.tone(430, 0.22, 0.03, 670);
     }
-    this.results.push(ok ? "SERVICE EFFECTUE" : "CARENCE CONSTATEE");
+    this.results.push(resultLine(ok, this.failureReason, this.brokenRoad));
     this.session.record(ok ? "success" : "failure", this.mission, this.room, {
       reason: this.failureReason,
       remaining: this.remaining,
@@ -1078,6 +1133,7 @@ class Game extends Phaser.Scene {
       this.speed,
       !value && ["free", "receive", "road", "arrival"].includes(this.phase),
     );
+    this.syncPlayerUI?.();
   }
   pauseForFocusLoss() {
     if (
@@ -1256,8 +1312,7 @@ class Game extends Phaser.Scene {
       this.age = 2.6;
       this.speed = 0;
       this.road = TUNING.routeMeters;
-    }
-    else {
+    } else {
       this.enterRoom(Number(scene), Number(scene) === 4 ? 125 : 130);
       this.schoolFade = 0;
       this.bossIntro = 0;
@@ -1326,18 +1381,18 @@ class Game extends Phaser.Scene {
     this.queuedAttack = false;
     const enterPressed = just("ENTER");
     if (just("M")) this.audio.muted = !this.audio.muted;
-    if (just("F2")) {
+    if (just("F2") && this.workshop) {
       this.begin();
       this.notified = true;
       this.school();
     }
-    if (just("F3")) {
+    if (just("F3") && this.workshop) {
       this.begin();
       this.notified = true;
       this.school();
       this.enterRoom(4, 80);
     }
-    if (just("F4")) {
+    if (just("F4") && this.workshop) {
       this.begin();
       this.notified = true;
       this.phase = "arrival";
@@ -1391,20 +1446,7 @@ class Game extends Phaser.Scene {
     }
     this.age += dt;
     if (this.phase === "title" || this.phase === "report") {
-      if (enterPressed) {
-        this.session = new SessionLog();
-        if (!this.workshop)
-          this.seed = Math.floor(Math.random() * 4294967295) || 1;
-        this.mission = 0;
-        this.won = 0;
-        this.results = [];
-        this.vehicle = 100;
-        this.kilometers = 0;
-        this.collisions = 0;
-        this.punches = 0;
-        this.shortcuts = 0;
-        this.begin();
-      }
+      if (enterPressed) this.startDay();
     } else if (this.phase === "opening") {
       if (this.age > PLAY.openingSeconds) {
         this.phase = "blackBefore";
@@ -1592,7 +1634,7 @@ class Game extends Phaser.Scene {
       }
       if (
         cruising &&
-        ((this.audio.radioDone && this.age > 3) ||
+        ((this.audio.radioDone && !this.audio.radioFailed && this.age > 3) ||
           (!this.audio.radioPlaying && this.age > TUNING.cruiseSeconds) ||
           this.age > 45)
       ) {
@@ -2669,14 +2711,14 @@ class Game extends Phaser.Scene {
       this.fadeViewport(this.schoolFade / 0.7);
     if (this.phase === "tow") {
       this.banner("DEPANNAGE EN COURS");
-      this.txt(45, 120, "VEHICULE PERSONNEL : VOS FRAIS", 8);
+      this.txt(45, 120, "VOITURE DE SERVICE / DEPANNAGE", 8);
     }
     for (const p of ["free", "receive", "road", "school"].includes(this.phase)
       ? this.particles
       : [])
       if (p.x > 8 && p.x < 308 && p.y > 8 && p.y < 173)
         this.rect(p.x, p.y, 3, 2, p.color);
-    if (this.paused && !this.workshop) {
+    if (this.paused && !this.workshop && !this.syncPlayerUI) {
       this.g.fillStyle(0x080d13, 0.55);
       this.g.fillRect(7, 7, 306, 168);
       this.rect(65, 65, 190, 61, 0xb9aa89);
@@ -2688,6 +2730,7 @@ class Game extends Phaser.Scene {
       line("P : REPRENDRE", 110, 0xe3d4b3);
     }
     if (this.workshop) drawWorkshop(this);
+    this.syncPlayerUI?.();
   }
   fadeViewport(alpha: number) {
     for (const t of this.labels) if (t.y < 179) t.setAlpha(1 - alpha);
