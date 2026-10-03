@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { DRIVE, trafficWidth, roadProjection } from "./driving";
 import {
   BOSS,
   GUARD,
@@ -54,6 +55,10 @@ type Host = {
 };
 const SCENARIOS: Record<string, string> = {
   road: "Route / trafic reproductible",
+  "road-slow": "Conduite / 40 km/h",
+  "road-fast": "Conduite / 260 km/h",
+  "road-brake": "Freinage / véhicule lent",
+  "road-edge": "Accotement / perte d'adhérence",
   parent: "Parent / présentation",
   student: "Élève / présentation",
   guard: "Vigile / présentation",
@@ -76,7 +81,7 @@ export function installWorkshop(s: Host) {
   root.hidden = false;
   root.innerHTML = "";
   const heading = document.createElement("strong");
-  heading.textContent = "ATELIER 0.43 — scénarios animés";
+  heading.textContent = "ATELIER 0.44 — scénarios animés";
   root.append(heading);
   const controls = document.createElement("div");
   controls.className = "workshop-controls";
@@ -179,13 +184,13 @@ export function installWorkshop(s: Host) {
     const url = URL.createObjectURL(blob),
       a = document.createElement("a");
     a.href = url;
-    a.download = "technoprof-043-" + s.workshopScenario + ".json";
+    a.download = "technoprof-044-" + s.workshopScenario + ".json";
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
   const note = document.createElement("p");
   note.textContent =
-    "Commandes du jeu conservées. Les coups et échecs passent par les vraies règles. En succès : frapper puis marcher à la porte et presser ↑. Cyan : corps/pieds ; ambre : livre ; rouge : portée adverse ou trou. Les bandes routières montrent les seuils de contact entre centres, pas le dessin des véhicules.";
+    "Commandes du jeu conservées. Les coups et échecs passent par les vraies règles. En succès : frapper puis marcher à la porte et presser ↑. Cyan : corps/pieds ; ambre : livre ; rouge : portée adverse ou trou. Sur route : largeur de caisse et limites de chaussée, avec la même projection que le jeu.";
   root.append(note);
   status = document.createElement("pre");
   status.setAttribute("aria-label", "État de la simulation");
@@ -229,17 +234,27 @@ export function drawWorkshop(s: Host) {
   if (!s.debugOverlay) return;
   const g = s.g;
   if (["road", "free", "receive"].includes(s.phase)) {
-    const horizon = 67 + Math.sin(s.travel / 950) * 3;
     g.lineStyle(0.8, 0x7cd7df);
-    g.strokeRect(160 + s.car * 105 - 3, 158, 6, 14);
+    g.strokeRect(
+      160 + s.car * DRIVE.lanePixels - DRIVE.playerWidth / 2,
+      159,
+      DRIVE.playerWidth,
+      11,
+    );
+    for (const side of [-1, 1]) {
+      g.lineStyle(0.8, 0xe5ae60);
+      g.lineBetween(
+        160 + side * DRIVE.roadHalfPixels,
+        155,
+        160 + side * DRIVE.roadHalfPixels,
+        175,
+      );
+    }
     for (const o of s.obstacles) {
       const d = o.z - s.travel;
-      if (d < 0 || d > 160) continue;
-      const scale = 22 / (22 + d),
-        x =
-          160 + 54 * s.bendDirection(d) * (1 - scale) ** 2 + o.x * 105 * scale,
-        y = horizon + (169 - horizon) * scale;
-      const width = (o.type === 1 ? 0.3 : 0.24) * 105 * scale;
+      if (d < 0 || d > DRIVE.visibleDistance) continue;
+      const { scale, x, y } = roadProjection(s.travel, d, o.x);
+      const width = (trafficWidth(o.type) / 2) * scale;
       g.lineStyle(0.8, 0xea7770);
       g.strokeRect(x - width, y - 3, width * 2, 6);
     }

@@ -1,43 +1,61 @@
 {
-  "version": "0.43",
+  "version": "0.44",
   "importClientDate": "2026-10-03",
   "scope": "partial source backup",
   "files": [
     {
       "original": "audio.ts",
       "path": "src/audio.ts",
-      "bytes": 9979,
-      "sha256": "4f10acb541972de9936dfe613ca864146d0066bffa8578e122a1ad0e45621024"
+      "bytes": 11240,
+      "sha256": "c7a7fbd6f177369dd98f5445240ff43942e247b224a139563ef2c5f6e206d12b"
     },
     {
-      "original": "check.cjs",
-      "path": "check.cjs",
-      "bytes": 29344,
-      "sha256": "a23de392ff3f43d6a31d24c4b3957d2d79ca25340d62fc9e2cdb482304d4354b"
+      "original": "comic-fx.ts",
+      "path": "src/comic-fx.ts",
+      "bytes": 5552,
+      "sha256": "a6ac191769ac0fc6ab1c8558fa79ce071041a9b9da9b17b661079cf3a2f7cfe7"
+    },
+    {
+      "original": "gameplay.ts",
+      "path": "src/gameplay.ts",
+      "bytes": 3141,
+      "sha256": "b0b47e4efb3527549a167aca31f5483e772b5815da3d6dd7d189bfb6a502ea52"
+    },
+    {
+      "original": "index.html",
+      "path": "index.html",
+      "bytes": 6691,
+      "sha256": "5da9c15dcef25fafa87969a338e0bf280be48805e8faa8f733f4e786d4d92f0a"
     },
     {
       "original": "main.ts",
       "path": "src/main.ts",
-      "bytes": 123922,
-      "sha256": "54197a29c1f2fe7a01df5f7357ac5b0bb262d8b9acc71cb4440806122ebb6364"
+      "bytes": 126316,
+      "sha256": "4d47595487b4083e2f818899757e94c22aec451d90ea805a4fb245d6b40cca4f"
     },
     {
       "original": "package-lock.json",
       "path": "package-lock.json",
       "bytes": 38850,
-      "sha256": "ff7f98388027db31292be4eb39e934c5c921326289c1b41b371e576a07bdd00a"
+      "sha256": "59f81de482bd26037d2c56f976f10c29c834b9be1c01ed6fc8f9d3b92017c8c2"
     },
     {
       "original": "package.json",
       "path": "package.json",
-      "bytes": 608,
-      "sha256": "460ef167d68f7a58d18013762f5f4da5b6543b93031c18b0f85ec008c0bd45ae"
+      "bytes": 635,
+      "sha256": "c98ae987d5843cc3e4f502e2c5b2dc84965d12b82478873f120113026aa43cdc"
+    },
+    {
+      "original": "slice-art.ts",
+      "path": "src/slice-art.ts",
+      "bytes": 7461,
+      "sha256": "6560ef033c1862c1afd77c2823e4252eebc6ea99abe697350b068466a809415a"
     },
     {
       "original": "workshop.ts",
       "path": "src/workshop.ts",
-      "bytes": 9205,
-      "sha256": "423c38a364a75a2162d8dfcbc3b33cff7de5d2e322cba639f4f5d3b2677ae7bc"
+      "bytes": 9576,
+      "sha256": "9a5221d93766ad2779fb03ec689470d71d5a1148cd569d0d80c6194260e57b86"
     },
     {
       "original": "world.ts",

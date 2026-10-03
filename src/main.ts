@@ -31,6 +31,17 @@ import { RoadArt, districtAnchors, openAddress } from "./road-art";
 import { CarArt } from "./car-art";
 import { SliceArt } from "./slice-art";
 import Phaser from "phaser";
+import {
+  DRIVE,
+  trafficCue,
+  trafficWidth,
+  trafficSpeed,
+  contactWidth,
+  shoulderAmount,
+  shoulderDrag,
+  roadProjection,
+  type Traffic,
+} from "./driving";
 import { TUNING, ROOM_NAMES, EXITS, makeEnemies, type Enemy } from "./world";
 import { AudioKit } from "./audio";
 class Game extends Phaser.Scene {
@@ -244,7 +255,10 @@ class Game extends Phaser.Scene {
   face = 1;
   cam = 0;
   enemies: Enemy[] = [];
-  obstacles: { z: number; x: number; type: number }[] = [];
+  obstacles: Traffic[] = [];
+  trafficIndex = 0;
+  shoulder = 0;
+  shoulderClock = 0;
   results: string[] = [];
   create() {
     this.cameras.main.setZoom(2).setScroll(-160, -120);
@@ -865,15 +879,18 @@ class Game extends Phaser.Scene {
     this.remaining = TUNING.missionSeconds - this.mission * TUNING.missionStep;
     this.hp = 5;
     const trafficCount = [5, 8, 11][Math.min(this.mission, 2)];
-    const trafficGap = [190, 125, 85][Math.min(this.mission, 2)];
-    let z = 100;
-    this.obstacles = Array.from({ length: trafficCount }, (_, i) => {
-      z += trafficGap + [0, 70, 30, 110, 45][i % 5];
-      return {
-        z,
-        x: [-0.6, 0, 0.58, -0.6, 0.15][i % 5],
-        type: [0, 0, 1, 2, 0, 1, 0][i % 7],
-      };
+    this.trafficIndex = 0;
+    this.shoulder = 0;
+    this.shoulderClock = 0;
+    let z = 0;
+    this.obstacles = Array.from({ length: trafficCount }, () => {
+      const cue = trafficCue(
+        this.trafficIndex++,
+        this.mission,
+        this.random.next(),
+      );
+      z += cue.gap;
+      return { z, x: cue.x, type: cue.type, speed: cue.speed };
     });
   }
   school() {
@@ -1109,6 +1126,17 @@ class Game extends Phaser.Scene {
     } else {
       this.phase = "road";
       this.speed = 110;
+      if (name === "road-slow") this.speed = 40;
+      if (name === "road-fast") this.speed = 260;
+      if (name === "road-edge") {
+        this.speed = 180;
+        this.car = 1.1;
+        this.obstacles = [];
+      }
+      if (name === "road-brake") {
+        this.speed = 260;
+        this.obstacles = [{ z: 160, x: 0, type: 1, speed: 62 }];
+      }
       if (name === "breakdown") {
         this.vehicle = 22;
         this.obstacles = [{ z: 12, x: 0, type: 0 }];
@@ -1296,9 +1324,9 @@ class Game extends Phaser.Scene {
       const throttle = this.keys.UP.isDown,
         brake = this.keys.DOWN.isDown;
       const acceleration = brake
-        ? -95
+        ? -DRIVE.braking
         : throttle
-          ? 38 * (1 - this.speed / 340)
+          ? DRIVE.acceleration * (1 - this.speed / 340)
           : -1.5 - this.speed * 0.012;
       this.speed = Phaser.Math.Clamp(
         this.speed + acceleration * dt,
@@ -1308,22 +1336,44 @@ class Game extends Phaser.Scene {
       const steer =
         (this.keys.RIGHT.isDown ? 1 : 0) - (this.keys.LEFT.isDown ? 1 : 0);
       const target =
-        steer * (0.12 + Math.min(1, this.speed / TUNING.maxSpeed) * 1.8);
+        steer *
+        Math.min(1, this.speed / 20) *
+        (0.12 + Math.min(1, this.speed / TUNING.maxSpeed) * 1.8);
       this.steerVelocity +=
         (target - this.steerVelocity) *
-        (1 - Math.exp(-dt / (steer ? 0.24 : 0.18)));
+        (1 - Math.exp(-dt / (steer ? DRIVE.steerRise : DRIVE.steerReturn)));
       this.car = Phaser.Math.Clamp(
         this.car +
           (this.steerVelocity + this.crashPush - this.curveForce()) * dt,
-        -1.15,
-        1.15,
+        -DRIVE.maxOffset,
+        DRIVE.maxOffset,
       );
-      if (Math.abs(this.car) > 1)
-        this.speed = Math.max(0, this.speed - 100 * dt);
+      const oldShoulder = this.shoulder;
+      this.shoulder = shoulderAmount(this.car);
+      this.speed = Math.max(
+        0,
+        this.speed - shoulderDrag(this.car, this.speed) * dt,
+      );
+      this.shoulderClock = Math.max(0, this.shoulderClock - dt);
+      if (this.shoulder > 0.12 && this.speed > 20 && this.shoulderClock === 0) {
+        this.audio.noise(0.12, 0.006 + this.shoulder * 0.012, 420);
+        this.shoulderClock = 0.24;
+      }
+      if (this.shoulder > 0.12 && oldShoulder <= 0.12) {
+        this.session.record("shoulder", this.mission, this.room, {
+          side: Math.sign(this.car),
+          speed: this.speed,
+        });
+        if (!this.arrivalAlert) {
+          this.boardMessage = "ACCOTEMENT / PERTE D'ADHERENCE";
+          this.messageTime = 1.5;
+        }
+      }
       this.crashPush *= Math.exp(-dt * 8);
       this.kilometers += ((this.speed / 3.6) * dt) / 1000;
       this.trafficHit = Math.max(0, this.trafficHit - dt);
       this.returnFade = Math.max(0, this.returnFade - dt);
+      const priorTravel = this.travel;
       this.travel += this.visualSpeed() * dt;
       this.skidClock = Math.max(0, this.skidClock - dt);
       const skidding =
@@ -1346,15 +1396,29 @@ class Game extends Phaser.Scene {
         this.rattleClock = this.vehicle < 45 ? 0.65 : 1.8;
       }
       for (const o of this.obstacles) {
-        const previous = o.z - this.travel + this.visualSpeed() * dt;
-        o.z += ((o.type === 1 ? 55 : o.type === 2 ? 72 : 88) / 3.6) * dt;
+        const previous = o.z - priorTravel;
+        o.z += (trafficSpeed(o) / 3.6) * dt;
         const distance = o.z - this.travel;
-        if (previous > 0 && distance <= 0) {
+        const closing = this.visualSpeed() - trafficSpeed(o) / 3.6;
+        if (
+          !o.sounded &&
+          !o.hit &&
+          closing > 3 &&
+          distance <= closing * 0.12 &&
+          previous > 0
+        ) {
           const lateral = Math.abs(o.x - this.car),
-            width = o.type === 1 ? 0.3 : 0.24;
+            width = contactWidth(o.type);
           if (lateral >= width) {
-            const close = lateral < width + 0.22;
-            this.audio.pass(o.x - this.car, close, o.type === 1);
+            const close = lateral < width + DRIVE.closeMargin;
+            this.audio.pass(o.x - this.car, close, o.type === 1, closing);
+            o.sounded = true;
+            this.session.record(
+              close ? "near-pass" : "pass",
+              this.mission,
+              this.room,
+              { side: Math.sign(o.x - this.car), closing },
+            );
             if (close) {
               this.boardMessage = "RETROVISEUR : ENCORE PRESENT";
               this.messageTime = 1.2;
@@ -1363,22 +1427,32 @@ class Game extends Phaser.Scene {
         }
         if (
           this.trafficHit === 0 &&
-          Math.min(previous, distance) < 3 &&
-          Math.max(previous, distance) > -3 &&
-          Math.abs(o.x - this.car) < (o.type === 1 ? 0.3 : 0.24)
+          !o.hit &&
+          Math.min(previous, distance) < DRIVE.contactDepth &&
+          Math.max(previous, distance) > -DRIVE.contactDepth &&
+          Math.abs(o.x - this.car) < contactWidth(o.type)
         ) {
+          o.hit = true;
           this.crash(o.x, o.type);
         }
-        if (distance < -25 || distance > 3000) {
-          const gap = [190, 125, 85][Math.min(this.mission, 2)];
+        if (distance < -40) {
+          const cue = trafficCue(
+            this.trafficIndex++,
+            this.mission,
+            this.random.next(),
+          );
           const tail = Math.max(
-            this.travel + 350,
+            this.travel + DRIVE.visibleDistance + 80,
             ...this.obstacles
               .filter((other) => other !== o)
               .map((other) => other.z),
           );
-          o.z = tail + gap + this.random.next() * 100;
-          o.x = [-0.62, 0, 0.62][Math.floor(this.random.next() * 3)];
+          o.z = tail + cue.gap;
+          o.x = cue.x;
+          o.type = cue.type;
+          o.speed = cue.speed;
+          o.sounded = false;
+          o.hit = false;
         }
       }
 
@@ -1775,11 +1849,13 @@ class Game extends Phaser.Scene {
     this.vehicle = Math.max(0, this.vehicle - (type === 1 ? 30 : 22));
     this.speed *= 0.48;
     this.trafficHit = 1.4;
-    this.crashPush = (this.car >= lane ? 1 : -1) * 0.7;
+    this.crashPush =
+      (Math.sign(this.car - lane) || Math.sign(this.steerVelocity) || 1) *
+      (type === 1 ? 0.55 : 0.42);
     this.burst(160 + this.car * 105, 148, 0xdba15d);
-    this.audio.tone(72, 0.2, 0.065, 24);
+    this.audio.roadImpact(lane - this.car, type === 1);
     this.cameras.main.shake(170, 0.008);
-    this.boardMessage = "VEHICULE PERSONNEL : A VOTRE CHARGE";
+    this.boardMessage = "CHOC / CARROSSERIE ENDOMMAGEE";
     this.messageTime = 3;
   }
   updateStudent(e: Enemy, dt: number) {
@@ -2633,15 +2709,8 @@ class Game extends Phaser.Scene {
     const horizon = 67 + Math.sin(this.travel / 950) * 3,
       bottom = 169;
     // One depth projection for road, markings, traffic and verges.
-    const project = (d: number, lane = 0) => {
-      const scale = 22 / (22 + d);
-      const bend = 54 * this.bendDirection(d);
-      return {
-        x: 160 + bend * (1 - scale) ** 2 + lane * 105 * scale,
-        y: horizon + (bottom - horizon) * scale,
-        scale,
-      };
-    };
+    const project = (d: number, lane = 0) =>
+      roadProjection(this.travel, d, lane);
     this.rect(7, 7, 306, 168, [0x7d9daa, 0x9cb3a5, 0x815762][this.mission]);
     if (this.roadArt)
       this.roadArt.sky(horizon, 54 * this.bendDirection(), this.ambienceClock);
@@ -2655,9 +2724,9 @@ class Game extends Phaser.Scene {
     );
     for (let y = Math.ceil(horizon + 1); y <= 175; y++) {
       const scale = (Math.min(y, bottom) - horizon) / (bottom - horizon),
-        d = 22 / scale - 22,
+        d = DRIVE.focal / scale - DRIVE.focal,
         c = project(d).x,
-        half = 125 * scale;
+        half = DRIVE.roadHalfPixels * scale;
       const district = Math.floor((this.travel + d) / 750) % 3;
       const worldZ = this.travel + d;
       const address = Math.floor((worldZ - 18) / 30);
@@ -2986,9 +3055,9 @@ class Game extends Phaser.Scene {
     };
     const renderTraffic = (o: { z: number; x: number; type: number }) => {
       const d = o.z - this.travel;
-      if (d < 0 || d > 480) return;
+      if (d < 0 || d > DRIVE.visibleDistance) return;
       const p = project(d, o.x),
-        w = (o.type === 1 ? 36 : 28) * p.scale,
+        w = trafficWidth(o.type) * p.scale,
         h = (o.type === 1 ? 43 : 27) * p.scale;
       if (this.roadArt) {
         this.roadArt.draw(
@@ -2996,7 +3065,7 @@ class Game extends Phaser.Scene {
           o.type === 1 ? 2 : o.type === 2 ? 1 : 0,
           p.x,
           p.y,
-          (o.type === 1 ? 68 : o.type === 2 ? 46 : 52) * p.scale,
+          trafficWidth(o.type) * p.scale,
         );
         return;
       }
@@ -3111,7 +3180,20 @@ class Game extends Phaser.Scene {
         this.vehicle,
       );
       this.g = this.foreground;
-    } else this.rearCar(x, 169, 37, 32, 0x928269, lean, true);
+    } else this.rearCar(x, 169, DRIVE.playerWidth, 32, 0x928269, lean, true);
+    if (this.shoulder > 0 && this.speed > 10) {
+      const wheel = x + Math.sign(this.car) * 17;
+      for (let i = 0; i < 5; i++) {
+        const drift = (this.ambienceClock * 4 + i * 0.21) % 1;
+        this.g.fillStyle(0xb9aa89, (1 - drift) * this.shoulder * 0.5);
+        this.g.fillRect(
+          wheel + Math.sign(this.car) * drift * 9,
+          164 + drift * 8,
+          1 + drift * 3,
+          1 + drift * 2,
+        );
+      }
+    }
     if (this.keys.DOWN.isDown) {
       for (const [kind, fallback] of [
         ["leftLamp", x - 14.5],

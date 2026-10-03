@@ -95,7 +95,7 @@ export class AudioKit {
       g.disconnect();
     };
   }
-  pass(side: number, close: boolean, truck: boolean) {
+  pass(side: number, close: boolean, truck: boolean, closing = 45) {
     if (!this.context || !this.master || !this.noiseBuffer || this.muted)
       return;
     const c = this.context,
@@ -103,7 +103,8 @@ export class AudioKit {
       f = c.createBiquadFilter(),
       g = c.createGain(),
       pan = c.createStereoPanner();
-    const duration = close ? 0.32 : 0.48,
+    const rush = Math.max(0, Math.min(1, closing / 100));
+    const duration = 0.7 - rush * 0.32,
       now = c.currentTime;
     n.buffer = this.noiseBuffer;
     f.type = "bandpass";
@@ -111,7 +112,10 @@ export class AudioKit {
     f.frequency.setValueAtTime(truck ? 700 : 1400, now);
     f.frequency.exponentialRampToValueAtTime(truck ? 180 : 350, now + duration);
     g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(close ? 0.075 : 0.025, now + 0.045);
+    g.gain.exponentialRampToValueAtTime(
+      (close ? 0.065 : 0.023) * (0.6 + rush * 0.4),
+      now + 0.12,
+    );
     g.gain.exponentialRampToValueAtTime(0.0001, now + duration);
     pan.pan.value = Math.max(-0.85, Math.min(0.85, side));
     n.connect(f).connect(g).connect(pan).connect(this.master);
@@ -123,6 +127,39 @@ export class AudioKit {
       g.disconnect();
       pan.disconnect();
     };
+  }
+  roadImpact(side: number, truck: boolean) {
+    if (!this.context || !this.master || !this.noiseBuffer || this.muted)
+      return;
+    const c = this.context,
+      now = c.currentTime;
+    for (const [frequency, duration, volume] of [
+      [260, 0.3, truck ? 0.2 : 0.15],
+      [2100, 0.09, 0.07],
+    ]) {
+      const n = c.createBufferSource(),
+        f = c.createBiquadFilter(),
+        gain = c.createGain(),
+        pan = c.createStereoPanner();
+      n.buffer = this.noiseBuffer;
+      f.type = "lowpass";
+      f.frequency.value = frequency;
+      gain.gain.setValueAtTime(volume, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      pan.pan.value = Math.max(-0.7, Math.min(0.7, side));
+      n.connect(f).connect(gain).connect(pan).connect(this.master);
+      n.start(now);
+      n.stop(now + duration);
+      n.onended = () => {
+        n.disconnect();
+        f.disconnect();
+        gain.disconnect();
+        pan.disconnect();
+      };
+    }
+    // Two loose-metal aftershocks, distinct from the low body thump.
+    this.tone(190, 0.055, 0.011, 95, 0.11);
+    this.tone(145, 0.045, 0.008, 80, 0.21);
   }
   radio(text: string, on: boolean, paused = false) {
     if (typeof speechSynthesis === "undefined") return;
