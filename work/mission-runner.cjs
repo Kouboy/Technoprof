@@ -52,7 +52,7 @@ exports.runMission=({seed=4301,fps=60,mode='keyboard',path='detour',boss='read',
      }else {if(Math.abs(d)>(g.room===4?70:45))walk(e.x-side*40);else strike();}
     }else if(g.room===4)exit(-1);
     else {
-     const next=path==='detour'?{0:1,1:5,5:6,6:7,7:3,3:4}:{0:1,1:2,2:8,8:3,3:4};
+     const next=path==='detour'?{0:1,1:5,5:6,6:7,7:3,3:30,30:31,31:32,32:4}:{0:1,1:2,2:8,8:3,3:30,30:31,31:32,32:4};
      // Jump from the near bank, rather than moving the avatar into a hole.
      const gap=g.room===1?[140,166]:g.room===8?(g.px<150?[95,128]:[190,223]):null;
      if(gap&&g.px>=gap[0]-18&&g.px<gap[1]&&g.py===159)jump(1);

@@ -8,9 +8,9 @@ export const RADIO_BULLETINS = [
 ];
 
 export const DAY_BRIEFS = [
-  "08:00 — Prise de service. Le trafic laisse encore de la place.",
+  "07:00 — Prise de service. Le trafic laisse encore de la place.",
   "12:00 — Deuxième service. Trafic plus dense et délai réduit.",
-  "17:00 — Dernier service. La voiture conserve ses dégâts ; le trafic se resserre.",
+  "18:30 — Dernier service. La voiture conserve ses dégâts ; le trafic se resserre.",
 ];
 export function resultLine(
   ok: boolean,
@@ -384,9 +384,9 @@ export function installPlayerExperience(s: Host) {
         const item = document.createElement("li");
         item.textContent =
           [
-            "08:00 — Collège C. Hanouna",
+            "07:00 — Collège C. Hanouna",
             "12:00 — Lycée Patrick Bruel",
-            "17:00 — Lycée Pro Tibo InShape",
+            "18:30 — Lycée Pro Tibo InShape",
           ][i] +
           " — " +
           result;

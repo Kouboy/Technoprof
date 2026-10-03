@@ -21,6 +21,8 @@ export type RoomSpec = {
   id: number;
   name: string;
   frame?: number;
+  quietFrame?: number;
+  quietMirror?: boolean;
   exits?: Exit[];
   blocked: ("left" | "right")[];
   gaps: number[][];
@@ -303,6 +305,73 @@ const collegeRooms = Object.fromEntries(
     },
   ]),
 ) as Record<number, RoomSpec>;
+// Quiet wings extend both routes without adding encounters or floor hazards.
+const extendWing = (
+  rooms: Record<number, RoomSpec>,
+  approaches: number[],
+  first: number,
+  arena: number,
+  classroom: string,
+  classFrame: number,
+) => {
+  for (const id of approaches) {
+    const r = rooms[id];
+    r.exits = (r.exits ?? roomPassages(id, false)).map((e) =>
+      e.target === arena
+        ? {
+            ...e,
+            target: first,
+            spawn: 45,
+            label: "DROITE : LIAISON / " + classroom,
+          }
+        : e,
+    );
+    r.signs = [[176, 51, 106, [classroom + " / LIAISON >"]]];
+  }
+  rooms[first] = room(
+    first,
+    "LIAISON / " + classroom,
+    1,
+    [
+      edge("LEFT", approaches[0], 280, "GAUCHE : RETOUR"),
+      edge("RIGHT", first + 1, 45, "DROITE : SALLE D’ETUDE"),
+    ],
+    { quietFrame: 3, signs: [[164, 51, 126, ["ETUDE > / " + classroom]]] },
+  );
+  rooms[first + 1] = room(
+    first + 1,
+    "SALLE D’ETUDE / TRAVERSEE",
+    1,
+    [
+      edge("LEFT", first, 278, "GAUCHE : LIAISON"),
+      door("UP", 281, first + 2, 45, "HAUT : HALL / " + classroom),
+    ],
+    {
+      blocked: [],
+      quietFrame: classFrame,
+      labels: [[281, 43, "HALL"]],
+      signs: [[171, 51, 104, ["HALL / " + classroom + " >"]]],
+    },
+  );
+  rooms[first + 2] = room(
+    first + 2,
+    "HALL / AILE " + classroom,
+    1,
+    [
+      edge("LEFT", first + 1, 260, "GAUCHE : ETUDE"),
+      edge("RIGHT", arena, 45, "DROITE : SALLE " + classroom),
+    ],
+    {
+      quietFrame: 3,
+      quietMirror: true,
+      signs: [[179, 51, 105, ["SALLE " + classroom + " >"]]],
+    },
+  );
+};
+extendWing(collegeRooms, [3], 30, 4, "42C", 0);
+extendWing(bruelRooms, [13], 16, 14, "B12", 1);
+extendWing(proRooms, [22, 23], 26, 24, "T03", 2);
+
 export const MISSIONS: MissionSpec[] = [
   {
     id: "hanouna",
@@ -352,7 +421,8 @@ export function missionPassages(
 ): Exit[] {
   const m = missionSpec(mission),
     r = roomSpec(mission, id);
-  if (m.id === "hanouna" || !m.rooms[id]) return roomPassages(id, cleared);
+  if (!m.rooms[id] || (m.id === "hanouna" && !r?.exits))
+    return roomPassages(id, cleared);
   if (id === m.arena)
     return cleared
       ? [door("UP", 281, -1, 0, "HAUT : OUVRIR " + m.classroom)]

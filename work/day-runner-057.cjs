@@ -63,7 +63,7 @@ exports.runDay=({seed=4301,fps=60,mode='keyboard',path='detour',boss='read',driv
      }else {if(Math.abs(d)>(g.room===4?70:45))walk(e.x-side*40);else strike();}
     }else if(g.arena)exit(-1);
     else {
-     const next=g.mission===0?(path==='detour'?{0:1,1:5,5:6,6:7,7:3,3:4}:{0:1,1:2,2:8,8:3,3:4}):g.mission===1?(path==='detour'?{10:11,11:12,12:13,13:14}:{10:11,11:15,15:13,13:14}):(path==='detour'?{20:21,21:22,22:24}:{20:21,21:25,25:23,23:24});
+     const next=g.mission===0?(path==='detour'?{0:1,1:5,5:6,6:7,7:3,3:30,30:31,31:32,32:4}:{0:1,1:2,2:8,8:3,3:30,30:31,31:32,32:4}):g.mission===1?(path==='detour'?{10:11,11:12,12:13,13:16,16:17,17:18,18:14}:{10:11,11:15,15:13,13:16,16:17,17:18,18:14}):(path==='detour'?{20:21,21:22,22:26,26:27,27:28,28:24}:{20:21,21:25,25:23,23:26,26:27,27:28,28:24});
      // Jump from the near bank, rather than moving the avatar into a hole.
      const gap=g.floorGaps().find(([l,r])=>g.px<r);
      if(gap&&g.px>=gap[0]-18&&g.px<gap[1]&&g.py===159)jump(1);

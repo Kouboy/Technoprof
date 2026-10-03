@@ -1,4 +1,4 @@
-# TECHNOPROF — sauvegarde 0.58
+# TECHNOPROF — sauvegarde 0.59
 
 Import effectué le 3 octobre 2026.
 

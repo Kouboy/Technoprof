@@ -17,6 +17,8 @@ export const DRIVE = {
   acceleration: 38,
   braking: 95,
 };
+// One queue capacity across the day: density comes from spacing, not a longer tail.
+export const TRAFFIC = { capacity: 12, spacing: [1, 0.64, 0.44] };
 export type Traffic = {
   z: number;
   x: number;
@@ -70,7 +72,7 @@ export function trafficCue(index: number, mission: number, random: number) {
     ...cue,
     gap:
       DRIVE.motionScale *
-      (cue.gap * (mission === 0 ? 1 : mission === 1 ? 0.94 : 0.88) +
+      (cue.gap * TRAFFIC.spacing[Math.max(0, Math.min(2, mission))] +
         (index === 0 ? 0 : random * 35)),
   };
 }

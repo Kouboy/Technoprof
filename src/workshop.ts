@@ -60,6 +60,13 @@ type Host = {
   exportJournal(): void;
 };
 const SCENARIOS: Record<string, string> = {
+  "hanouna-quiet": "Matin / liaison sans combat",
+  "hanouna-quiet-class": "Matin / classe vide",
+  "hanouna-quiet-hall": "Matin / hall",
+  "bruel-quiet-class": "Midi / classe vide",
+  "bruel-quiet-hall": "Midi / hall",
+  "pro-quiet-class": "Crépuscule / classe vide",
+  "pro-quiet-hall": "Crépuscule / hall",
   mission: "Première affectation / parcours complet",
   road: "Route / trafic reproductible",
   "road-slow": "Conduite / 40 km/h",
@@ -121,7 +128,7 @@ export function installWorkshop(s: Host) {
   root.hidden = false;
   root.innerHTML = "";
   const heading = document.createElement("strong");
-  heading.textContent = "ATELIER 0.58 — scénarios animés";
+  heading.textContent = "ATELIER 0.59 — scénarios animés";
   root.append(heading);
   const controls = document.createElement("div");
   controls.className = "workshop-controls";

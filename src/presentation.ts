@@ -13,32 +13,162 @@ export const VIEW = {
 };
 export const DAYLIGHT = [
   {
-    name: "Matin · 08:00",
-    background: 0xd4dfdd,
-    actor: 0xf0f3ee,
-    sky: 0xc9d7e0,
-    wash: 0x334957,
-    opacity: 0.08,
+    name: "Aube · 07:00",
+    background: 0xa7bacd,
+    actor: 0xd7e3ee,
+    sky: 0x8297b5,
+    wash: 0x25364b,
+    opacity: 0.11,
   },
   {
     name: "Midi · 12:00",
-    background: 0xeee4cc,
+    background: 0xfff1d3,
     actor: 0xfff4df,
-    sky: 0xf1e6cb,
+    sky: 0xf5edd6,
     wash: 0xa68c60,
     opacity: 0.045,
   },
   {
-    name: "Fin de journée · 17:00",
-    background: 0xacb8cb,
-    actor: 0xdce3f0,
-    sky: 0xa9b1c9,
-    wash: 0x27304c,
-    opacity: 0.19,
+    name: "Crépuscule · 18:30",
+    background: 0x9292ac,
+    actor: 0xddc9c0,
+    sky: 0x715a7c,
+    wash: 0x2b203d,
+    opacity: 0.23,
   },
 ];
 export function daylight(mission: number) {
   return DAYLIGHT[Math.max(0, Math.min(2, Math.floor(mission)))];
+}
+
+// Decorative events stay behind actors and away from passage markers / hazards.
+// No random calls here: render frequency must not affect the gameplay seed.
+export const SCHOOL_WEAR = { dripPeriod: 1.7, bucketY: 153, litterY: 153 };
+export function drawSchoolWear(
+  g: Phaser.GameObjects.Graphics,
+  room: number,
+  mission: number,
+  clock: number,
+  gaps: number[][] = [],
+  quietFrame?: number,
+  mirrored = false,
+) {
+  g.clear();
+  if ([0, 10, 20].includes(room)) return;
+  const safe = (preferred: number, half: number) =>
+    [preferred, 52, 258].find((x) =>
+      gaps.every(([l, r]) => x + half < l || x - half > r),
+    ) ?? 52;
+  const x =
+      quietFrame === 0
+        ? 56
+        : quietFrame === 1
+          ? 82
+          : quietFrame === 3
+            ? mirrored
+              ? 160
+              : 163
+            : safe(room % 2 ? 111 : 201, 8),
+    y = quietFrame === 0 ? 142 : quietFrame === 3 ? 142 : SCHOOL_WEAR.bucketY;
+  const polygon = (points: number[], color: number) => {
+    g.fillStyle(color);
+    g.beginPath();
+    g.moveTo(points[0], points[1]);
+    for (let i = 2; i < points.length; i += 2)
+      g.lineTo(points[i], points[i + 1]);
+    g.closePath();
+    g.fillPath();
+  };
+  // Inked galvanised pail, damp plaster and a thin descending drip.
+  if (quietFrame === undefined) {
+    polygon([x - 8, y - 11, x + 8, y - 11, x + 6, y, x - 6, y], 0x141e27);
+    polygon([x - 6, y - 9, x + 6, y - 9, x + 4, y - 2, x - 4, y - 2], 0x677873);
+    g.lineStyle(1, 0x929f9a);
+    g.lineBetween(x - 7, y - 11, x - 5, y - 17);
+    g.lineBetween(x - 5, y - 17, x + 5, y - 17);
+    g.lineBetween(x + 5, y - 17, x + 7, y - 11);
+    g.fillStyle(0xa2b1a8);
+    g.fillRect(x - 7, y - 12, 14, 1);
+    g.fillStyle(0x111b20);
+    g.fillRect(x - 5, y - 11, 10, 2);
+    g.fillStyle(0x354d56);
+    g.fillRect(x - 4, y - 10, 8, 1);
+  }
+  if (quietFrame !== 2) {
+    g.fillStyle(0x73908d, 0.35);
+    g.fillRect(x - 3, 12, 6, 5);
+    g.fillRect(x - 2, 17, 4, 7);
+    const t =
+      ((clock + room * 0.31) % SCHOOL_WEAR.dripPeriod) / SCHOOL_WEAR.dripPeriod;
+    g.fillStyle(0xa4c6cc, 0.85);
+    g.fillRect(x, 27 + t * (y - 38), 1, 3);
+    if (t > 0.9) {
+      g.fillStyle(0xa4c6cc, 0.7);
+      g.fillRect(x - 4, y - 9, 2, 1);
+      g.fillRect(x + 2, y - 9, 2, 1);
+    }
+  }
+  // Full tied bin bags, separate folds and a little paper, on the back floor.
+  const bx = safe(room % 3 === 0 ? 76 : 239, 31);
+  for (let i = 0; quietFrame === undefined && i < 3; i++) {
+    const b = bx + i * 8,
+      top = 133 + (i % 2) * 4;
+    polygon(
+      [
+        b - 2,
+        top,
+        b + 2,
+        top,
+        b + 2,
+        top + 3,
+        b + 6,
+        top + 5,
+        b + 9,
+        top + 11,
+        b + 8,
+        153,
+        b - 7,
+        153,
+        b - 9,
+        top + 12,
+        b - 7,
+        top + 6,
+        b - 2,
+        top + 3,
+      ],
+      0x10171c,
+    );
+    polygon(
+      [b - 2, top, b - 4, top - 3, b, top - 2, b + 4, top - 4, b + 3, top],
+      0x10171c,
+    );
+    g.lineStyle(1, 0x384244);
+    g.lineBetween(b, top + 4, b + 2, 150);
+    g.lineBetween(b - 3, top + 9, b - 4, 151);
+  }
+  g.fillStyle(0xb9ad8d);
+  g.fillTriangle(bx + 25, 149, bx + 30, 150, bx + 26, 153);
+  for (let i = 0; i < 5; i++) {
+    g.fillStyle(i % 2 ? 0x756951 : 0xaaa084);
+    g.fillRect(bx - 18 + i * 5, 151 + (i % 2), 2 + (i % 3), 1);
+  }
+  // Two tiny flies stay near refuse. An occasional draught moves a scrap there.
+  for (let i = 0; i < 2; i++) {
+    const f = clock * (i + 1) * 2 + room;
+    g.fillStyle(0x141e27);
+    g.fillRect(bx + Math.sin(f) * 7, 130 + i * 5 + Math.cos(f) * 3, 1, 1);
+  }
+  if (mission !== 1) {
+    const drift = (clock * 0.24 + room) % 1;
+    g.fillStyle(0xbcb49e, 0.7);
+    g.fillRect(bx - 13 + drift * 24, 148 - Math.sin(drift * Math.PI) * 4, 3, 1);
+  }
+  // Cold / twilight falls on the architecture, below all gameplay silhouettes.
+  const light = daylight(mission);
+  if (mission !== 1) {
+    g.fillStyle(light.wash, mission === 2 ? 0.13 : 0.07);
+    g.fillRect(7, 7, 306, 168);
+  }
 }
 
 // A rectangular opaque surround replaces the old Canvas-only road masks.

@@ -91,6 +91,7 @@ export class RoadArt {
   images: Phaser.GameObjects.Image[] = [];
   clouds: Phaser.GameObjects.Image;
   skyline: Phaser.GameObjects.Image;
+  horizonLight?: Phaser.GameObjects.Graphics;
   layers: Phaser.GameObjects.Graphics[] = [];
   index = 0;
   depth = 3.01;
@@ -113,6 +114,7 @@ export class RoadArt {
       .setDepth(3.002)
 
       .setVisible(false);
+    this.horizonLight = scene.add.graphics().setDepth(3.0015);
     for (const key of ["traffic", "district", "verge"] as const) {
       const source = scene.textures
         .get("raw-" + key)
@@ -143,6 +145,18 @@ export class RoadArt {
     scene.load.image("raw-verge", VERGE_DATA);
   }
   sky(horizon: number, bend: number, clock: number, mission = 0) {
+    const glow = this.horizonLight;
+    glow?.clear();
+    if (glow) {
+      for (let y = 7; y < horizon; y++) {
+        const p = (y - 7) / (horizon - 7);
+        glow.fillStyle(
+          mission === 2 ? 0xd68a66 : mission === 0 ? 0xd7b786 : 0xf9e4b1,
+          (mission === 1 ? 0.1 : 0.38) * p * p,
+        );
+        glow.fillRect(7, y, 306, 1);
+      }
+    }
     const cloudHeight = (horizon - 7) * 0.82;
     this.clouds
       .setTint(daylight(mission).sky)
@@ -156,6 +170,7 @@ export class RoadArt {
       .setVisible(true);
   }
   hide() {
+    this.horizonLight?.clear();
     this.clouds?.setVisible(false);
     this.skyline?.setVisible(false);
     this.index = 0;

@@ -1,0 +1,92 @@
+{
+  "images": 24,
+  "encodedPngBytes": 51295837,
+  "sourceRgbaBytes": 151013120,
+  "largest": [
+    {
+      "source": "arrival-data.ts",
+      "width": 1672,
+      "height": 941,
+      "pngBytes": 2501492,
+      "rgbaBytes": 6293408
+    },
+    {
+      "source": "art-data.ts",
+      "width": 1672,
+      "height": 941,
+      "pngBytes": 2094292,
+      "rgbaBytes": 6293408
+    },
+    {
+      "source": "bridge-data.ts",
+      "width": 1672,
+      "height": 941,
+      "pngBytes": 2588095,
+      "rgbaBytes": 6293408
+    },
+    {
+      "source": "central-data.ts",
+      "width": 1672,
+      "height": 941,
+      "pngBytes": 2626203,
+      "rgbaBytes": 6293408
+    },
+    {
+      "source": "court-data.ts",
+      "width": 1672,
+      "height": 941,
+      "pngBytes": 2811044,
+      "rgbaBytes": 6293408
+    },
+    {
+      "source": "hall-data.ts",
+      "width": 1672,
+      "height": 941,
+      "pngBytes": 2610136,
+      "rgbaBytes": 6293408
+    },
+    {
+      "source": "service-data.ts",
+      "width": 1672,
+      "height": 941,
+      "pngBytes": 2677252,
+      "rgbaBytes": 6293408
+    },
+    {
+      "source": "stair-data.ts",
+      "width": 1672,
+      "height": 941,
+      "pngBytes": 2726694,
+      "rgbaBytes": 6293408
+    },
+    {
+      "source": "technical-data.ts",
+      "width": 1672,
+      "height": 941,
+      "pngBytes": 2575826,
+      "rgbaBytes": 6293408
+    },
+    {
+      "source": "wing-data.ts",
+      "width": 1672,
+      "height": 941,
+      "pngBytes": 2641846,
+      "rgbaBytes": 6293408
+    },
+    {
+      "source": "art-data.ts",
+      "width": 1536,
+      "height": 1024,
+      "pngBytes": 1805034,
+      "rgbaBytes": 6291456
+    },
+    {
+      "source": "art-data.ts",
+      "width": 1536,
+      "height": 1024,
+      "pngBytes": 1731548,
+      "rgbaBytes": 6291456
+    }
+  ],
+  "note": "Uncompressed source pixels only. Not a live memory measurement. Derived canvases and browser copies excluded."
+}

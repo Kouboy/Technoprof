@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { QUIET_SCHOOL_DATA } from "./quiet-school-data";
 import { NEW_SCHOOL_DATA } from "./new-school-data";
 import { roomSpec } from "./missions";
 import { smallPrint, smallWidth } from "./small-lettering";
@@ -100,6 +101,14 @@ export class NewSchoolArt {
         t.setFilter(Phaser.Textures.FilterMode.NEAREST);
       });
     }
+    const quiet = scene.textures.get("quiet-backgrounds");
+    [
+      [0, 0, 833, 469],
+      [840, 0, 832, 469],
+      [0, 475, 833, 443],
+      [840, 475, 832, 443],
+    ].forEach(([x, y, w, h], i) => quiet.add(i, 0, x, y, w, h));
+    quiet.setFilter(Phaser.Textures.FilterMode.NEAREST);
     this.background = scene.add
       .image(7, 7, "bruel-backgrounds", 0)
       .setOrigin(0)
@@ -110,6 +119,7 @@ export class NewSchoolArt {
     this.hide();
   }
   static preload(scene: Phaser.Scene) {
+    scene.load.image("quiet-backgrounds", QUIET_SCHOOL_DATA);
     for (const [key, data] of Object.entries(NEW_SCHOOL_DATA))
       scene.load.image(key, data);
   }
@@ -121,6 +131,7 @@ export class NewSchoolArt {
   showBackground(mission: number, frame: number) {
     const key = mission === 1 ? "bruel" : "pro";
     this.background
+      .setFlipX(false)
       .setTexture(key + "-backgrounds", frame)
       .setDisplaySize(306, 168)
       .setVisible(true);
@@ -130,7 +141,13 @@ export class NewSchoolArt {
       key = s.mission === 1 ? "bruel" : "pro";
     this.background.setDepth(1);
     this.door.setDepth(1.6);
-    this.showBackground(s.mission, r.frame ?? 0);
+    if (r.quietFrame !== undefined)
+      this.background
+        .setTexture("quiet-backgrounds", r.quietFrame)
+        .setDisplaySize(306, 168)
+        .setVisible(true);
+    else this.showBackground(s.mission, r.frame ?? 0);
+    this.background.setFlipX(!!r.quietMirror);
     if (s.py < 202) s.art?.drawTeacher(s, r.boss ? 0.225 : 0.18);
     const e = s.enemies[0];
     if (e && (e.hp > 0 || (e.downTime ?? 0) > 0)) {

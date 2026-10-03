@@ -20,6 +20,7 @@ import {
   drawSurround,
   drawContactShadow,
   drawRoadWear,
+  drawSchoolWear,
   installPresentation,
 } from "./presentation";
 import {
@@ -75,6 +76,7 @@ import Phaser from "phaser";
 import {
   DRIVE,
   trafficCue,
+  TRAFFIC,
   trafficWidth,
   trafficSpeed,
   contactWidth,
@@ -102,6 +104,7 @@ class Game extends Phaser.Scene {
   comicWords = true;
   groundContact?: Phaser.GameObjects.Graphics;
   roadWash?: Phaser.GameObjects.Graphics;
+  schoolWear?: Phaser.GameObjects.Graphics;
   sceneSurround?: Phaser.GameObjects.Graphics;
   presentationHideHud = false;
   syncPlayerUI?: () => void;
@@ -499,6 +502,7 @@ class Game extends Phaser.Scene {
     this.sceneFade = this.add.graphics().setDepth(4.05);
     this.groundContact = this.add.graphics().setDepth(1.3);
     this.roadWash = this.add.graphics().setDepth(3.095);
+    this.schoolWear = this.add.graphics().setDepth(1.7);
     this.sceneSurround = this.add.graphics().setDepth(4.1);
     drawSurround(this.sceneSurround);
     this.physicalKeys = this.input.keyboard!.addKeys(
@@ -1116,7 +1120,7 @@ class Game extends Phaser.Scene {
     this.car = 0;
     this.remaining = this.missionSpec().seconds;
     this.hp = 5;
-    const trafficCount = [5, 8, 11][Math.min(this.mission, 2)];
+    const trafficCount = TRAFFIC.capacity;
     this.trafficIndex = 0;
     this.shoulder = 0;
     this.shoulderClock = 0;
@@ -1384,6 +1388,25 @@ class Game extends Phaser.Scene {
     this.cadreReview = false;
     this.arrivalStill = false;
     this.artReview = -1;
+    if (name.includes("quiet")) {
+      this.mission = name.startsWith("bruel")
+        ? 1
+        : name.startsWith("pro-")
+          ? 2
+          : 0;
+      this.begin();
+      this.notified = true;
+      this.school();
+      const first = [30, 16, 26][this.mission];
+      this.enterRoom(
+        first + (name.endsWith("class") ? 1 : name.endsWith("hall") ? 2 : 0),
+        50,
+      );
+      this.schoolFade = 0;
+      this.session.record("scenario", this.mission, this.room, { name });
+      this.draw();
+      return;
+    }
     if (name.startsWith("bruel") || name.startsWith("pro-")) {
       this.mission = name.startsWith("bruel") ? 1 : 2;
       this.begin();
@@ -2383,7 +2406,11 @@ class Game extends Phaser.Scene {
       (edges.includes("right") && this.px >= 277)
     )
       return "ACCES CONDAMNE / CHERCHEZ UN DETOUR";
-    return "LIEU : " + (this.roomSpec()?.name ?? ROOM_NAMES[this.room]);
+    return (
+      ["07:00", "12:00", "18:30"][Math.min(this.mission, 2)] +
+      " / " +
+      (this.roomSpec()?.name ?? ROOM_NAMES[this.room])
+    );
   }
   tryFall() {
     if (this.py !== PLAY.floor || this.falling > 0) return false;
@@ -3327,6 +3354,17 @@ class Game extends Phaser.Scene {
   }
   applyPresentation() {
     const light = daylight(this.mission);
+    this.schoolWear?.clear();
+    if (this.schoolWear && ["school", "opening"].includes(this.phase))
+      drawSchoolWear(
+        this.schoolWear,
+        this.room,
+        this.mission,
+        this.ambienceClock,
+        this.floorGaps(),
+        this.roomSpec()?.quietFrame,
+        this.roomSpec()?.quietMirror,
+      );
     for (const background of [
       this.art?.backdrop,
       this.hallArt?.background,

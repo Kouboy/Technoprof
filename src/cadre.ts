@@ -440,7 +440,7 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
     compact(251, 224, "SERVICE " + Math.min(3, s.mission + 1) + "/3", dim, 58);
   }
   const service =
-    ["08:00", "12:00", "17:00"][Math.min(s.mission, 2)] +
+    ["07:00", "12:00", "18:30"][Math.min(s.mission, 2)] +
     " / SERVICE " +
     Math.min(s.mission + 1, 3) +
     "/3";
