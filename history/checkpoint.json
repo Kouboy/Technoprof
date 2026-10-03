@@ -1,5 +1,5 @@
 {
-  "version": "0.49",
+  "version": "0.50",
   "importClientDate": "2026-10-03",
   "scope": "retained source tree; historical build unverified",
   "files": [
@@ -7,19 +7,19 @@
       "original": "index.html",
       "path": "index.html",
       "bytes": 12903,
-      "sha256": "1d96f8d539814aba03a0ef30b3191e03654943702becf4e283f83064d79ee3c3"
+      "sha256": "3f04029f9ddb4a5d11171cfc7b3c8f574800c7c0a8dd4378ccf1680bfd9935c1"
     },
     {
       "original": "package-lock.json",
       "path": "package-lock.json",
       "bytes": 38850,
-      "sha256": "f821aaec8004e251100eca8c1e77c4949fa5eb4e4e09c5c55b95e9dceb226c59"
+      "sha256": "8ec57846968e4a2bbfd0677e4032acccb10092641ba495687a47f134dc465b57"
     },
     {
       "original": "package.json",
       "path": "package.json",
       "bytes": 770,
-      "sha256": "39d1224e25e5aea1182307a2935f3f5af345d6064dace2a012ece1b57c59ff01"
+      "sha256": "c2f30ffc4a92dc9646fbd3e0060b22678c5cd36eddc66839e648abbd50f8136d"
     },
     {
       "original": "src/arrival-data.ts",
@@ -90,8 +90,8 @@
     {
       "original": "src/comic-fx.ts",
       "path": "src/comic-fx.ts",
-      "bytes": 5982,
-      "sha256": "b818f300e17f49a92e6c5a9f3d95449fbfd6acec787dbc7c286a043a56ae1602"
+      "bytes": 6103,
+      "sha256": "b939abb05cf9f56523b5ac83f815abcb8e6d10fafd7a86a43e1d1caa138177a8"
     },
     {
       "original": "src/controls.ts",
@@ -108,8 +108,8 @@
     {
       "original": "src/dialogue.ts",
       "path": "src/dialogue.ts",
-      "bytes": 1599,
-      "sha256": "b04474575a398cefa13ce6ed4754c76055139259930c34934c2df6927ede9a3a"
+      "bytes": 1601,
+      "sha256": "340da4be3a9af621ece4d772163cd788ad4dffe487ab0f281ca138ff4f5c1eba"
     },
     {
       "original": "src/direct-input.ts",
@@ -156,8 +156,8 @@
     {
       "original": "src/main.ts",
       "path": "src/main.ts",
-      "bytes": 134104,
-      "sha256": "72a37fda820f4bbae613192c26e53dd07a081df8e4ff97df0249f522f8153c8e"
+      "bytes": 134749,
+      "sha256": "afbe744fc863a2cdee068dae929618d1853ffdf4f2b8f1be7802d3eb2e3dbb8d"
     },
     {
       "original": "src/passage-hints.ts",
@@ -174,8 +174,8 @@
     {
       "original": "src/presentation.ts",
       "path": "src/presentation.ts",
-      "bytes": 7523,
-      "sha256": "d59a38177727e9e698c09854781fcacb7aa3060c7544edf6f0010e276fc63b49"
+      "bytes": 7623,
+      "sha256": "d2b5be0b2ddb822050ad21e093d780ba0e5aee59658f4877b7ddd918e5ca7f9b"
     },
     {
       "original": "src/road-art.ts",
@@ -198,8 +198,8 @@
     {
       "original": "src/school-props.ts",
       "path": "src/school-props.ts",
-      "bytes": 12424,
-      "sha256": "bf76290b309a2211863f7d41c9e612570293f60bc8ec3f1e6cf2a5022ddd0470"
+      "bytes": 12476,
+      "sha256": "3335c323eaeff8a2ef7db82d7ef6bfe03c872d7ce7fcb87682ad2165eea0eaf1"
     },
     {
       "original": "src/service-data.ts",
@@ -211,7 +211,7 @@
       "original": "src/session-log.ts",
       "path": "src/session-log.ts",
       "bytes": 1014,
-      "sha256": "2483dc34a8cfee8876172341e2c8ce8ea6ef58157b5f4a8d8c163fef763bd769"
+      "sha256": "5c9e46911870c666bc73b28b7311f145dbb4cc42bdb1c707d85c5bf09c98140f"
     },
     {
       "original": "src/sky-data.ts",
@@ -265,7 +265,7 @@
       "original": "src/workshop.ts",
       "path": "src/workshop.ts",
       "bytes": 10393,
-      "sha256": "5eb1705aa3bbbade785ab389df9eb3cdd4c6888f9eacb70fb51f4160f80cce54"
+      "sha256": "455412953f89fecd9b02d3673537534efa9fb93cf096b43bdd56d6b901028d5f"
     },
     {
       "original": "src/world.ts",

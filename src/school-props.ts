@@ -373,9 +373,9 @@ export function dialogueLayout(
     name: room === 4 && female ? "INSPECTRICE" : data.name,
     lines,
     x,
-    y: room === 4 ? 10 : 15,
+    y: 8,
     w,
-    h: state ? 42 : 32,
+    h: state ? 34 : 28,
     hint: state
       ? !dialogueReady(room, state)
         ? actionLabel + " : AFFICHER"
@@ -385,7 +385,8 @@ export function dialogueLayout(
       : "",
     tail: Math.max(x + 14, Math.min(x + w - 14, speakerX)),
     mouthX: Math.max(15, Math.min(305, speakerX - 9)),
-    mouthY: room === 4 ? 62 : room === 3 ? 90 : 80,
+    // Short tail ends in the air above the face, never on the face itself.
+    mouthY: room === 4 ? 46 : state ? 54 : 46,
   };
 }
 export function drawDialogue(
@@ -470,17 +471,17 @@ export function drawDialogue(
     ],
     0xe3d4b3,
   );
-  smallPrint(g, x + 10, y + 5, b.name, 0x854538);
+  smallPrint(g, x + 10, y + 3, b.name, 0x854538);
   let characters = state ? Math.floor(state.characters) : Infinity;
   b.lines.forEach((line, i) => {
     smallPrint(
       g,
       x + 10,
-      y + 14 + i * 8,
+      y + 11 + i * 8,
       line.slice(0, Math.max(0, characters)),
       0x141e27,
     );
     characters -= line.length;
   });
-  if (b.hint) smallPrint(g, x + 10, y + 33, b.hint, 0x854538);
+  if (b.hint) smallPrint(g, x + 10, y + 27, b.hint, 0x854538);
 }

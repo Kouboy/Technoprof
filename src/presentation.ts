@@ -6,7 +6,9 @@ export const VIEW = {
   y: 7,
   width: 306,
   height: 168,
-  floor: 159,
+  floor: 163,
+  // Simulation stays on y=159; drawn feet sit four pixels into the floor strip.
+  actorOffsetY: 4,
   hud: 179,
 };
 export const DAYLIGHT = [

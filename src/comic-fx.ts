@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { bitmap, bitmapWidth, GLYPHS } from "./cadre";
 import { PLAY, combatProfile } from "./gameplay";
+import { VIEW } from "./presentation";
 type Fighter = {
   x: number;
   hp: number;
@@ -52,7 +53,7 @@ export function drawComicFX(g: Phaser.GameObjects.Graphics, s: State) {
     s.attack > PLAY.attackRecovery &&
     s.attack <= PLAY.attackContact
   ) {
-    const y = s.py - combatProfile(s.room).contactY,
+    const y = s.py + VIEW.actorOffsetY - combatProfile(s.room).contactY,
       dir = s.face,
       scale = s.room === 4 ? 1 : 0.8;
     const sweep =
@@ -81,7 +82,7 @@ export function drawComicFX(g: Phaser.GameObjects.Graphics, s: State) {
       continue;
     if (e.wind > 0) {
       const x = clamp(e.x - 3, 18, 297),
-        y = s.room === 4 ? 50 : s.room === 3 ? 75 : 64;
+        y = (s.room === 4 ? 50 : s.room === 3 ? 75 : 64) + VIEW.actorOffsetY;
       poly(
         [
           x - 4,
@@ -109,7 +110,7 @@ export function drawComicFX(g: Phaser.GameObjects.Graphics, s: State) {
       const dir = e.chargeDir ?? e.facing ?? 1;
       for (let i = 0; i < 3; i++) {
         const x = e.x - dir * 22,
-          y = 113 + i * 6;
+          y = 113 + i * 6 + VIEW.actorOffsetY;
         stroke(
           [clamp(x - dir * (18 - i * 3), 9, 310), y, clamp(x, 9, 310), y - 2],
           2.5,
@@ -129,7 +130,7 @@ export function drawComicFX(g: Phaser.GameObjects.Graphics, s: State) {
   const elapsed = clamp(1 - s.impact / PLAY.impactSeconds, 0, 1);
   const alpha = Math.min(1, s.impact / 0.07);
   const x = clamp(s.impactX, 23, 296),
-    y = clamp(s.impactY, 50, 153),
+    y = clamp(s.impactY + VIEW.actorOffsetY, 50, 157),
     r = (blocked ? 8 : 12) * (s.room === 4 ? 1 : 0.8) * (1 - elapsed * 0.65);
   const burst = (size: number) => {
     const p: number[] = [];

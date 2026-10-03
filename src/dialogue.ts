@@ -9,8 +9,8 @@ export const ENCOUNTERS: Record<number, { name: string; pages: string[][] }> = {
   3: {
     name: "ELEVE",
     pages: [
-      ["Mon pere preside les parents.", "Il fera sauter votre contrat."],
-      ["Retirez ce zero,", "et je vous laisse passer."],
+      ["Mon père préside le conseil", "des parents d'élèves."],
+      ["Retirez ce zéro,", "ou il fera sauter votre contrat."],
     ],
   },
   6: {

@@ -7,6 +7,7 @@ import {
   RADIO_BULLETINS,
 } from "./player-experience";
 import {
+  VIEW,
   daylight,
   drawSurround,
   drawContactShadow,
@@ -2712,6 +2713,7 @@ class Game extends Phaser.Scene {
       ].includes(this.phase)
     )
       this.sceneInk();
+    this.groundSchoolActors();
     if (
       this.schoolProps &&
       ["school", "opening", "fail"].includes(this.phase) &&
@@ -2722,7 +2724,7 @@ class Game extends Phaser.Scene {
         this.floorGaps(),
         this.art?.teacher,
         this.falling > 0,
-        this.py,
+        this.py + VIEW.actorOffsetY,
         this.mission,
       );
     }
@@ -2805,7 +2807,13 @@ class Game extends Phaser.Scene {
       ? this.particles
       : [])
       if (p.x > 8 && p.x < 308 && p.y > 8 && p.y < 173)
-        this.rect(p.x, p.y, 3, 2, p.color);
+        this.rect(
+          p.x,
+          p.y + (this.phase === "school" ? VIEW.actorOffsetY : 0),
+          3,
+          2,
+          p.color,
+        );
     const feedback = this.direct?.feedback;
     if (
       feedback &&
@@ -2841,6 +2849,19 @@ class Game extends Phaser.Scene {
     for (const t of this.labels) if (t.y < 179) t.setAlpha(1 - alpha);
     this.g.fillStyle(0x000000, alpha);
     this.g.fillRect(5, 5, 310, 172);
+  }
+  groundSchoolActors() {
+    if (this.brokenRoad || !["school", "opening", "fail"].includes(this.phase))
+      return;
+    // Every draw rebuilds actor poses first: the offset cannot accumulate on pause.
+    for (const actor of [
+      this.art?.teacher,
+      this.art?.inspector,
+      this.hallArt?.parent,
+      this.wingArt?.student,
+      this.bridgeArt?.guard,
+    ])
+      if (actor?.visible) actor.setY(actor.y + VIEW.actorOffsetY);
   }
   applyPresentation() {
     const light = daylight(this.mission);
@@ -2893,7 +2914,7 @@ class Game extends Phaser.Scene {
       drawContactShadow(
         g,
         teacher.x,
-        this.py,
+        this.py + VIEW.actorOffsetY,
         this.room === 4 ? 28 : this.room === 0 ? 15 : 22,
         gaps,
       );
@@ -2911,7 +2932,7 @@ class Game extends Phaser.Scene {
       drawContactShadow(
         g,
         enemySprite.x,
-        159,
+        VIEW.floor,
         this.room === 4 ? 30 : 24,
         gaps,
         enemySprite.alpha,
