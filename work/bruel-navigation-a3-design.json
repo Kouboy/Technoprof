@@ -1,0 +1,363 @@
+{
+  "status": "proposal-not-runtime",
+  "walkSpeed": 85,
+  "start": "bruel-cour",
+  "startX": 20,
+  "target": "bruel-seuil-b12",
+  "classDoorX": 281,
+  "health": {
+    "zone": "bruel-infirmerie",
+    "x": 180,
+    "seconds": 1.2,
+    "gain": 2,
+    "cap": 5,
+    "usesPerAssignment": 1
+  },
+  "zones": [
+    {
+      "id": "bruel-cour",
+      "floor": 0,
+      "encounterSource": 41,
+      "exits": [
+        {
+          "to": "bruel-vestibule",
+          "x": 298,
+          "spawn": 20,
+          "kind": "RIGHT",
+          "sign": "ENTREE"
+        }
+      ]
+    },
+    {
+      "id": "bruel-vestibule",
+      "floor": 0,
+      "encounterSource": 11,
+      "exits": [
+        {
+          "to": "bruel-cour",
+          "x": 10,
+          "spawn": 278,
+          "kind": "LEFT",
+          "sign": "COUR"
+        },
+        {
+          "to": "bruel-hall",
+          "x": 298,
+          "spawn": 20,
+          "kind": "RIGHT",
+          "sign": "HALL"
+        }
+      ]
+    },
+    {
+      "id": "bruel-hall",
+      "floor": 0,
+      "exits": [
+        {
+          "to": "bruel-vestibule",
+          "x": 10,
+          "spawn": 278,
+          "kind": "LEFT",
+          "sign": "VESTIBULE / COUR"
+        },
+        {
+          "to": "bruel-escalier-principal",
+          "x": 60,
+          "spawn": 50,
+          "kind": "UP",
+          "sign": "AILE B / B10-B12 / GRAND ESCALIER"
+        },
+        {
+          "to": "bruel-escalier-annexe",
+          "x": 285,
+          "spawn": 55,
+          "kind": "UP",
+          "sign": "ESCALIER ANNEXE / 1ER",
+          "stairs": true
+        }
+      ]
+    },
+    {
+      "id": "bruel-escalier-principal",
+      "floor": 0,
+      "exits": [
+        {
+          "to": "bruel-hall",
+          "x": 60,
+          "spawn": 65,
+          "kind": "DOWN",
+          "sign": "HALL / RDC"
+        },
+        {
+          "to": "bruel-palier-principal",
+          "x": 250,
+          "spawn": 50,
+          "kind": "UP",
+          "stairs": true,
+          "sign": "1ER ETAGE / AILES A-B"
+        }
+      ]
+    },
+    {
+      "id": "bruel-palier-principal",
+      "floor": 1,
+      "exits": [
+        {
+          "to": "bruel-escalier-principal",
+          "x": 60,
+          "spawn": 240,
+          "kind": "DOWN",
+          "stairs": true,
+          "sign": "GRAND ESCALIER / RDC"
+        },
+        {
+          "to": "bruel-galerie-a",
+          "x": 298,
+          "spawn": 20,
+          "kind": "RIGHT",
+          "sign": "GALERIE A / LIAISON B"
+        },
+        {
+          "to": "bruel-escalier-annexe",
+          "x": 230,
+          "spawn": 55,
+          "kind": "UP",
+          "sign": "LIAISON ANNEXE / 1ER"
+        }
+      ]
+    },
+    {
+      "id": "bruel-galerie-a",
+      "floor": 1,
+      "exits": [
+        {
+          "to": "bruel-palier-principal",
+          "x": 10,
+          "spawn": 278,
+          "kind": "LEFT",
+          "sign": "PALIER / GRAND ESCALIER"
+        },
+        {
+          "to": "bruel-jonction-b",
+          "x": 298,
+          "spawn": 20,
+          "kind": "RIGHT",
+          "sign": "LIAISON B10-B12"
+        }
+      ]
+    },
+    {
+      "id": "bruel-escalier-annexe",
+      "floor": 1,
+      "exits": [
+        {
+          "to": "bruel-hall",
+          "x": 60,
+          "spawn": 278,
+          "kind": "DOWN",
+          "sign": "HALL / RDC",
+          "stairs": true
+        },
+        {
+          "to": "bruel-palier-principal",
+          "x": 10,
+          "spawn": 230,
+          "kind": "LEFT",
+          "sign": "PALIER PRINCIPAL / 1ER"
+        },
+        {
+          "to": "bruel-jonction-b",
+          "x": 298,
+          "spawn": 55,
+          "kind": "RIGHT",
+          "sign": "JONCTION / 1ER"
+        }
+      ]
+    },
+    {
+      "id": "bruel-infirmerie",
+      "floor": 1,
+      "exits": [
+        {
+          "to": "bruel-jonction-b",
+          "x": 60,
+          "spawn": 170,
+          "kind": "DOWN",
+          "sign": "JONCTION / 1ER"
+        }
+      ]
+    },
+    {
+      "id": "bruel-jonction-b",
+      "floor": 1,
+      "encounterSource": 13,
+      "exits": [
+        {
+          "to": "bruel-galerie-a",
+          "x": 10,
+          "spawn": 278,
+          "kind": "LEFT",
+          "sign": "GALERIE A / GRAND ESCALIER"
+        },
+        {
+          "to": "bruel-escalier-annexe",
+          "x": 90,
+          "spawn": 240,
+          "kind": "UP",
+          "sign": "ANNEXE / 1ER"
+        },
+        {
+          "to": "bruel-galerie-b",
+          "x": 298,
+          "spawn": 20,
+          "kind": "RIGHT",
+          "sign": "B10-B12"
+        },
+        {
+          "to": "bruel-infirmerie",
+          "x": 170,
+          "spawn": 55,
+          "kind": "UP",
+          "sign": "INFIRMERIE / 1ER"
+        }
+      ]
+    },
+    {
+      "id": "bruel-galerie-b",
+      "floor": 1,
+      "encounterSource": 44,
+      "exits": [
+        {
+          "to": "bruel-jonction-b",
+          "x": 10,
+          "spawn": 278,
+          "kind": "LEFT",
+          "sign": "JONCTION / ANNEXE"
+        },
+        {
+          "to": "bruel-palier-b",
+          "x": 298,
+          "spawn": 20,
+          "kind": "RIGHT",
+          "sign": "B10-B12"
+        }
+      ]
+    },
+    {
+      "id": "bruel-palier-b",
+      "floor": 1,
+      "encounterSource": 47,
+      "exits": [
+        {
+          "to": "bruel-galerie-b",
+          "x": 10,
+          "spawn": 278,
+          "kind": "LEFT",
+          "sign": "GALERIE B"
+        },
+        {
+          "to": "bruel-seuil-b12",
+          "x": 298,
+          "spawn": 45,
+          "kind": "RIGHT",
+          "sign": "B12"
+        }
+      ]
+    },
+    {
+      "id": "bruel-seuil-b12",
+      "floor": 1,
+      "encounterSource": 14,
+      "boss": true,
+      "exits": []
+    }
+  ],
+  "routes": {
+    "discovery": [
+      "bruel-cour",
+      "bruel-vestibule",
+      "bruel-hall",
+      "bruel-escalier-principal",
+      "bruel-palier-principal",
+      "bruel-galerie-a",
+      "bruel-jonction-b",
+      "bruel-galerie-b",
+      "bruel-palier-b",
+      "bruel-seuil-b12"
+    ],
+    "known": [
+      "bruel-cour",
+      "bruel-vestibule",
+      "bruel-hall",
+      "bruel-escalier-annexe",
+      "bruel-jonction-b",
+      "bruel-galerie-b",
+      "bruel-palier-b",
+      "bruel-seuil-b12"
+    ],
+    "discoveryWithCare": [
+      "bruel-cour",
+      "bruel-vestibule",
+      "bruel-hall",
+      "bruel-escalier-principal",
+      "bruel-palier-principal",
+      "bruel-galerie-a",
+      "bruel-jonction-b",
+      "bruel-infirmerie",
+      "bruel-jonction-b",
+      "bruel-galerie-b",
+      "bruel-palier-b",
+      "bruel-seuil-b12"
+    ],
+    "knownWithCare": [
+      "bruel-cour",
+      "bruel-vestibule",
+      "bruel-hall",
+      "bruel-escalier-annexe",
+      "bruel-jonction-b",
+      "bruel-infirmerie",
+      "bruel-jonction-b",
+      "bruel-galerie-b",
+      "bruel-palier-b",
+      "bruel-seuil-b12"
+    ],
+    "correctedWrongTurn": [
+      "bruel-cour",
+      "bruel-vestibule",
+      "bruel-hall",
+      "bruel-escalier-annexe",
+      "bruel-jonction-b",
+      "bruel-galerie-a",
+      "bruel-palier-principal",
+      "bruel-escalier-principal",
+      "bruel-hall",
+      "bruel-escalier-annexe",
+      "bruel-jonction-b",
+      "bruel-galerie-b",
+      "bruel-palier-b",
+      "bruel-seuil-b12"
+    ],
+    "orientationLoop": [
+      "bruel-hall",
+      "bruel-escalier-principal",
+      "bruel-palier-principal",
+      "bruel-galerie-a",
+      "bruel-jonction-b",
+      "bruel-escalier-annexe",
+      "bruel-hall"
+    ],
+    "midcourseChoice": [
+      "bruel-cour",
+      "bruel-vestibule",
+      "bruel-hall",
+      "bruel-escalier-principal",
+      "bruel-palier-principal",
+      "bruel-escalier-annexe",
+      "bruel-jonction-b",
+      "bruel-galerie-b",
+      "bruel-palier-b",
+      "bruel-seuil-b12"
+    ]
+  },
+  "revision": "A3-workshop"
+}

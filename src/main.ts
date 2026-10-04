@@ -8,6 +8,7 @@ import { NewSchoolArt } from "./new-school-art";
 import {
   BRUEL_NAV,
   BRUEL_NAV_A2,
+  BRUEL_NAV_A3,
   NAV_ID,
   NAV_CARE,
   NavigationCare,
@@ -41,6 +42,7 @@ import {
   SECURITY,
   THROWER,
   FILMER,
+  enemyTuning,
   combatProfile,
   terminalReason,
   FAILURE_LABELS,
@@ -140,7 +142,7 @@ class Game extends Phaser.Scene {
   newSchoolArt?: NewSchoolArt;
   projectiles: { x: number; dir: number; life: number }[] = [];
   navigationProfile = false;
-  navigationRevision: "A1" | "A2" = "A1";
+  navigationRevision: "A1" | "A2" | "A3" = "A1";
   navigationGain: 1 | 2 = 1;
   navigationStartHp = 5;
   navigationCare = new NavigationCare();
@@ -148,13 +150,31 @@ class Game extends Phaser.Scene {
   navigationArt?: BruelNavigationArt;
   navigationSpec() {
     return this.workshop && this.navigationProfile
-      ? this.navigationRevision === "A2"
-        ? BRUEL_NAV_A2
-        : BRUEL_NAV
+      ? this.navigationRevision === "A3"
+        ? BRUEL_NAV_A3
+        : this.navigationRevision === "A2"
+          ? BRUEL_NAV_A2
+          : BRUEL_NAV
       : undefined;
   }
   missionSpec() {
     return this.navigationSpec() ?? missionSpec(this.mission);
+  }
+  pressureCombat() {
+    return this.navigationSpec() === BRUEL_NAV_A3;
+  }
+  enemyTuning() {
+    return enemyTuning(this.pressureCombat());
+  }
+  enemyAttack(e: Enemy, stage: "windup" | "release") {
+    if (this.pressureCombat())
+      this.session.record("enemy-attack", this.mission, this.room, {
+        role: e.role ?? this.roomSpec()?.role,
+        stage,
+        x: e.x,
+        facing: e.facing,
+        playerX: this.px,
+      });
   }
   roomSpec() {
     return roomSpec(this.mission, this.room, this.navigationSpec());
@@ -1199,11 +1219,15 @@ class Game extends Phaser.Scene {
     this.dialogue = { page: 0, characters: 0 };
     this.bossIntro =
       this.arena && !this.roomEnemies.has(room) ? ENCOUNTER_SECONDS : 0;
-    if (!this.roomEnemies.has(room))
+    if (!this.roomEnemies.has(room)) {
       this.roomEnemies.set(
         room,
         missionEnemies(this.mission, room, this.navigationSpec()),
       );
+      if (this.pressureCombat())
+        for (const e of this.roomEnemies.get(room)!)
+          e.cool = this.enemyTuning().initialCooldown;
+    }
     this.enemies = this.roomEnemies.get(room)!;
     const nav = this.roomSpec()?.navigation;
     if (nav) {
@@ -1462,7 +1486,11 @@ class Game extends Phaser.Scene {
     this.artReview = -1;
     if (this.workshop && name.startsWith("bruel-navigation")) {
       this.navigationProfile = true;
-      this.navigationRevision = name.includes("-a2") ? "A2" : "A1";
+      this.navigationRevision = name.includes("-a3")
+        ? "A3"
+        : name.includes("-a2")
+          ? "A2"
+          : "A1";
       this.navigationMetrics = new NavigationMetrics(this.navigationRevision);
       this.mission = 1;
       this.begin();
@@ -1472,7 +1500,21 @@ class Game extends Phaser.Scene {
         this.phase = "school";
         this.schoolFade = 0;
         this.hp = this.navigationStartHp;
-        this.enterRoom(name.endsWith("-care") ? NAV_ID.hall : NAV_ID.cour, 20);
+        if (name.endsWith("-care") && this.navigationRevision === "A3") {
+          // Declared care preset: first three encounters already passed.
+          for (const id of [NAV_ID.cour, NAV_ID.vestibule, NAV_ID.jonction]) {
+            this.roomEnemies.set(id, []);
+            this.cleared.add(id);
+          }
+        }
+        this.enterRoom(
+          name.endsWith("-care")
+            ? this.navigationRevision === "A3"
+              ? NAV_ID.jonction
+              : NAV_ID.hall
+            : NAV_ID.cour,
+          20,
+        );
       }
       this.session.record("scenario", this.mission, this.room, {
         name,
@@ -2404,11 +2446,12 @@ class Game extends Phaser.Scene {
           }
           e.hp--;
           if (e.hp <= 0) e.downTime = PLAY.defeatSeconds;
-          e.stun = PLAY.hitStun;
+          e.stun = this.enemyTuning().hitStun;
           e.wind = 0;
           e.chargeTime = 0;
           e.strikeTime = 0;
-          e.recovery = Math.max(e.recovery, 0.35);
+          e.recovery = Math.max(e.recovery, this.enemyTuning().hitRecovery);
+          if (this.pressureCombat()) e.cool = 0;
           e.facing = Math.sign(this.px - e.x) || -this.face;
           e.hitDirection = this.face;
           e.recoilTime = PLAY.hitStun;
@@ -2429,6 +2472,7 @@ class Game extends Phaser.Scene {
         }
       }
       for (const e of this.enemies) {
+        const BOSS = this.enemyTuning().boss;
         e.recoilTime = Math.max(0, (e.recoilTime ?? 0) - dt);
         e.blockTime = Math.max(0, (e.blockTime ?? 0) - dt);
         if (e.downTime) e.downTime = Math.max(0, e.downTime - dt);
@@ -2467,6 +2511,7 @@ class Game extends Phaser.Scene {
         if (e.wind > 0) {
           e.wind -= dt;
           if (e.wind <= 0) {
+            this.enemyAttack(e, "release");
             const range =
               e.pattern % 2 === 0 ? BOSS.sweepReach : BOSS.stampReach;
             e.strikeTime =
@@ -2512,6 +2557,7 @@ class Game extends Phaser.Scene {
           e.facing = Math.sign(d) || -1;
           e.pattern++;
           e.wind = e.pattern % 2 === 0 ? BOSS.sweepWind : BOSS.stampWind;
+          this.enemyAttack(e, "windup");
           this.audio.fx(
             e.pattern % 2 === 0 ? "step" : "paper",
             (e.x - 160) / 190,
@@ -2650,14 +2696,24 @@ class Game extends Phaser.Scene {
     this.messageTime = 3;
   }
   updateStudent(e: Enemy, dt: number) {
+    const STUDENT = this.enemyTuning().student;
     // Body collision is resolved independently, even during speech or stun.
     if (e.recovery > 0) {
       e.recovery = Math.max(0, e.recovery - dt);
       return;
     }
     if (e.wind > 0) {
+      if (e.role !== "filmer" && e.wind > dt && STUDENT.windAdvance > 0) {
+        e.x = Phaser.Math.Clamp(
+          e.x + (e.facing ?? -1) * STUDENT.windAdvance * dt,
+          22,
+          287,
+        );
+        this.separateFighters(this.px);
+      }
       e.wind -= dt;
       if (e.wind <= 0) {
+        this.enemyAttack(e, "release");
         e.strikeTime = e.role === "filmer" ? FILMER.activePose : 0.12;
         const dir = e.facing ?? -1;
         if (
@@ -2691,11 +2747,13 @@ class Game extends Phaser.Scene {
     if (Math.abs(d) < STUDENT.trigger && e.cool <= 0) {
       e.facing = Math.sign(d) || -1;
       e.wind = STUDENT.wind;
+      this.enemyAttack(e, "windup");
       if (e.role === "filmer") this.audio.enemyGesture("filmer", "windup", e.x);
     }
     this.separateFighters(this.px);
   }
   updateFilmer(e: Enemy, dt: number) {
+    const FILMER = this.enemyTuning().filmer;
     if (e.wind > dt) {
       e.x = Phaser.Math.Clamp(
         e.x + (e.facing ?? -1) * FILMER.windAdvance * dt,
@@ -2707,6 +2765,7 @@ class Game extends Phaser.Scene {
     this.updateStudent(e, dt);
   }
   updateSecurity(e: Enemy, dt: number) {
+    const SECURITY = this.enemyTuning().security;
     if (e.recovery > 0) {
       e.recovery = Math.max(0, e.recovery - dt);
       return;
@@ -2757,6 +2816,7 @@ class Game extends Phaser.Scene {
     }
   }
   updateThrower(e: Enemy, dt: number) {
+    const THROWER = this.enemyTuning().thrower;
     if (e.recovery > 0) {
       e.recovery = Math.max(0, e.recovery - dt);
       return;
@@ -2811,6 +2871,7 @@ class Game extends Phaser.Scene {
     });
   }
   updateGuard(e: Enemy, dt: number) {
+    const GUARD = this.enemyTuning().guard;
     if (e.recovery > 0) {
       e.recovery = Math.max(0, e.recovery - dt);
       return;
@@ -2818,6 +2879,7 @@ class Game extends Phaser.Scene {
     if (e.wind > 0) {
       e.wind -= dt;
       if (e.wind <= 0) {
+        this.enemyAttack(e, "release");
         e.strikeTime = 0.12;
         const dir = e.facing ?? -1;
         if (
@@ -2847,10 +2909,13 @@ class Game extends Phaser.Scene {
     if (Math.abs(d) < GUARD.trigger && e.cool <= 0) {
       e.facing = Math.sign(d) || -1;
       e.wind = GUARD.wind;
+      this.enemyAttack(e, "windup");
     }
     this.separateFighters(this.px);
   }
   updateParent(e: Enemy, dt: number) {
+    const tuning = this.enemyTuning(),
+      PARENT = tuning.parent;
     if (e.recovery > 0) {
       e.recovery -= dt;
       return;
@@ -2876,8 +2941,8 @@ class Game extends Phaser.Scene {
         if (e.hp <= 0) e.downTime = PLAY.defeatSeconds;
         e.hitDirection = -(e.chargeDir ?? 1);
         e.chargeTime = 0;
-        e.stun = 1.1;
-        e.recovery = 0.5;
+        e.stun = tuning.wallStun;
+        e.recovery = tuning.wallRecovery;
         this.burst(e.x, 136, 0xbab099);
         this.audio.fx("land", (e.x - 160) / 190, 1.8);
         this.boardMessage = "INCIDENT MOBILIER ENREGISTRE";
@@ -2888,6 +2953,7 @@ class Game extends Phaser.Scene {
     if (e.wind > 0) {
       e.wind -= dt;
       if (e.wind <= 0) {
+        this.enemyAttack(e, "release");
         e.chargeTime = PARENT.charge;
         if (e.boss) this.audio.enemyGesture("influential", "release", e.x);
         else this.audio.fx("jump", (e.x - 160) / 190, 1.3);
@@ -2898,9 +2964,10 @@ class Game extends Phaser.Scene {
     if (Math.abs(e.x - this.px) < 185 && e.cool <= 0) {
       e.pattern++;
       e.wind = PARENT.wind;
+      this.enemyAttack(e, "windup");
       if (e.boss) this.audio.enemyGesture("influential", "windup", e.x);
       e.chargeDir = Math.sign(this.px - e.x) || -1;
-      e.cool = 1.8;
+      e.cool = tuning.parentCooldown;
     } else if (Math.abs(e.x - this.px) > 60)
       e.x += Math.sign(this.px - e.x) * PARENT.speed * dt;
   }

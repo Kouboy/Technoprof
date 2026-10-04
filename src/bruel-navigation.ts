@@ -314,6 +314,34 @@ BRUEL_NAV_A2.rooms[n.palierB] = a2Room(n.palierB, {
   ],
 });
 
+export const BRUEL_NAV_A3: MissionSpec = {
+  ...BRUEL_NAV_A2,
+  id: "bruel-navigation-atelier-a3",
+  rooms: Object.fromEntries(
+    Object.entries(BRUEL_NAV_A2.rooms).map(([id, r]) => [
+      id,
+      {
+        ...r,
+        exits: r.exits?.map((e) => ({ ...e })),
+        blocked: [...(r.blocked ?? [])],
+        navigation: { ...r.navigation!, revision: "A3" },
+      },
+    ]),
+  ),
+};
+BRUEL_NAV_A3.rooms[n.hall].exits = BRUEL_NAV_A3.rooms[n.hall].exits!.filter(
+  (e) => e.target !== n.infirmerie,
+);
+BRUEL_NAV_A3.rooms[n.jonction].exits!.push(
+  navExit("UP", 170, n.infirmerie, 55, "HAUT : INFIRMERIE / 1ER"),
+);
+BRUEL_NAV_A3.rooms[n.infirmerie] = {
+  ...BRUEL_NAV_A3.rooms[n.infirmerie],
+  name: "INFIRMERIE / 1ER",
+  exits: [navExit("DOWN", 60, n.jonction, 170, "BAS : JONCTION / 1ER")],
+};
+BRUEL_NAV_A3.rooms[n.infirmerie].navigation!.floor = 1;
+
 export class NavigationCare {
   used = false;
   active = false;
@@ -358,8 +386,8 @@ export type NavigationVisit = {
   active: Record<string, number>;
 };
 export class NavigationMetrics {
-  revision: "A1" | "A2";
-  constructor(revision: "A1" | "A2" = "A1") {
+  revision: "A1" | "A2" | "A3";
+  constructor(revision: "A1" | "A2" | "A3" = "A1") {
     this.revision = revision;
   }
   end?: { outcome: string; hp: number; remaining: number; careUsed: boolean };
@@ -387,8 +415,8 @@ export class NavigationMetrics {
   snapshot() {
     return {
       profile:
-        this.revision === "A2"
-          ? "bruel-navigation-atelier-a2"
+        this.revision !== "A1"
+          ? "bruel-navigation-atelier-" + this.revision.toLowerCase()
           : "bruel-navigation-atelier",
       revision: this.revision,
       visits: this.visits.map((v) => ({ ...v, active: { ...v.active } })),

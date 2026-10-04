@@ -136,6 +136,72 @@ export const FILMER = {
   windAdvance: 12,
   activePose: 0.22,
 };
+// A3 is a controlled workshop comparison. Range, damage and player inputs stay
+// unchanged; preparation remains visible and a hit still cancels the attack.
+export const NORMAL_ENEMY = {
+  student: { ...STUDENT, windAdvance: 0 },
+  guard: GUARD,
+  parent: PARENT,
+  boss: BOSS,
+  security: SECURITY,
+  thrower: THROWER,
+  filmer: FILMER,
+  initialCooldown: 0.7,
+  hitStun: PLAY.hitStun,
+  hitRecovery: 0.35,
+  parentCooldown: 1.8,
+  wallStun: 1.1,
+  wallRecovery: 0.5,
+};
+export const PRESSURE_ENEMY = {
+  ...NORMAL_ENEMY,
+  student: {
+    ...STUDENT,
+    speed: 38,
+    approach: 38,
+    trigger: 58,
+    wind: 0.34,
+    recovery: 0.3,
+    cooldown: 0.24,
+    windAdvance: 22,
+  },
+  guard: {
+    ...GUARD,
+    speed: 40,
+    approach: 44,
+    trigger: 63,
+    wind: 0.38,
+    recovery: 0.38,
+    cooldown: 0.3,
+  },
+  parent: { ...PARENT, speed: 34, chargeSpeed: 140, wind: 0.5, recovery: 0.65 },
+  boss: {
+    ...BOSS,
+    speed: 42,
+    stampWind: 0.4,
+    sweepWind: 0.55,
+    recovery: 0.65,
+    cooldown: 0.5,
+  },
+  security: {
+    ...SECURITY,
+    speed: 36,
+    wind: 0.45,
+    recovery: 0.65,
+    cooldown: 0.45,
+  },
+  thrower: { ...THROWER, wind: 0.55, recovery: 0.65, cooldown: 0.55 },
+  filmer: { ...FILMER, windAdvance: 34 },
+  initialCooldown: 0.18,
+  hitStun: 0.08,
+  hitRecovery: 0,
+  parentCooldown: 0.55,
+  wallStun: 0.65,
+  wallRecovery: 0.3,
+};
+export function enemyTuning(pressure = false) {
+  return pressure ? PRESSURE_ENEMY : NORMAL_ENEMY;
+}
 export function combatProfile(room: number, role?: string) {
   if (role === "influential") return NEW_COMBAT.influential;
   if (role === "security") return NEW_COMBAT.security;

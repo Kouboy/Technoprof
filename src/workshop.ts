@@ -62,6 +62,9 @@ type Host = {
   exportJournal(): void;
 };
 const SCENARIOS: Record<string, string> = {
+  "bruel-navigation-a3": "Bruel A3 / combats plus vifs",
+  "bruel-navigation-a3-road": "Bruel A3 / route puis réseau",
+  "bruel-navigation-a3-care": "Bruel A3 / jonction et soins",
   "bruel-navigation-a2": "Bruel A2 / découverte du réseau",
   "bruel-navigation-a2-road": "Bruel A2 / route puis réseau",
   "bruel-navigation-a2-care": "Bruel A2 / hall et soins",
@@ -221,7 +224,7 @@ export function installWorkshop(s: Host) {
   careSettings.append(hpLabel);
   const navigationNote = document.createElement("p");
   navigationNote.textContent =
-    "BRUEL / NAVIGATION A2 (A1 disponible en comparaison). Première visite : chercher B12 sans plan, puis refaire le parcours. Changer le soin ou les PV relance cet essai. Soins : approcher l’armoire, F/X ou toucher. Délai actif pendant le soin ; un usage par affectation.";
+    "BRUEL / A3 : combats plus vifs, infirmerie à la jonction après trois rencontres. A1/A2 disponibles en comparaison. Changer le soin ou les PV relance cet essai. Soins : approcher l’armoire, F/X ou toucher. Délai actif pendant le soin ; un usage par affectation.";
   careSettings.append(navigationNote);
   root.append(careSettings);
   careSettings.addEventListener("focusin", () => s.setWorkshopFocus(true));

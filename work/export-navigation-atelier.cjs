@@ -5,9 +5,11 @@ const source = fs.readFileSync(
   path.join(root, "Jouer-Technoprof.html"),
   "utf8",
 );
-for (const revision of ["A1", "A2"]) {
+for (const revision of ["A1", "A2", "A3"]) {
   const scenario =
-    revision === "A2" ? "bruel-navigation-a2" : "bruel-navigation";
+    revision === "A1"
+      ? "bruel-navigation"
+      : "bruel-navigation-" + revision.toLowerCase();
   const bootstrap = `<script>
 const atelierUrl = new URL(location.href);
 if (!atelierUrl.searchParams.has('essai')) {
@@ -26,8 +28,8 @@ if (!atelierUrl.searchParams.has('essai')) {
     throw Error("Atelier bootstrap missing");
   const destination = path.join(
     root,
-    revision === "A2"
-      ? "Jouer-Technoprof-Atelier-Bruel-A2.html"
+    revision !== "A1"
+      ? `Jouer-Technoprof-Atelier-Bruel-${revision}.html`
       : "Jouer-Technoprof-Atelier-Bruel.html",
   );
   fs.writeFileSync(destination, html);

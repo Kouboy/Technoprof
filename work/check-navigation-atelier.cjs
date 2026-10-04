@@ -2,8 +2,16 @@ const assert = require("node:assert/strict"),
   fs = require("node:fs");
 const { createGame } = require("./test-harness.cjs");
 const a2 = process.argv.includes("--a2");
+const a3 = process.argv.includes("--a3");
+const revision = a3 ? "A3" : a2 ? "A2" : "A1";
+const careHome = (t) => (a3 ? t.api.NAV_ID.jonction : t.api.NAV_ID.hall);
 const scenarioName = (name) =>
-  a2 ? name.replace("bruel-navigation", "bruel-navigation-a2") : name;
+  a3 || a2
+    ? name.replace(
+        "bruel-navigation",
+        "bruel-navigation-" + revision.toLowerCase(),
+      )
+    : name;
 const setup = (scenario = "bruel-navigation", hp = 5, gain = 1) => {
   const t = createGame(),
     g = t.g;
@@ -64,7 +72,7 @@ function exit(t, target, mode) {
 }
 const d = JSON.parse(
   fs.readFileSync(
-    `work/bruel-navigation${a2 ? "-a2" : ""}-design.json`,
+    `work/bruel-navigation${revision !== "A1" ? "-" + revision.toLowerCase() : ""}-design.json`,
     "utf8",
   ),
 );
@@ -105,7 +113,7 @@ for (const name of ["mission", "bruel-cour", "bruel-drive", "road"]) {
 // Quiet branches isolate traversal rules from combat. Entry presets are declared;
 // transitions themselves must use the same physical/pointer inputs as the player.
 let branchChecks = 0;
-if (a2)
+if (a2 || a3)
   for (const fps of [30, 60, 120])
     for (const mode of ["keyboard", "direct"]) {
       for (const source of [
@@ -229,9 +237,9 @@ for (const fps of [30, 60, 120])
         }
         // No new stock on leaving and returning through real exits.
         release(t);
-        for (let i = 0; i < fps * 5 && g.room !== t.api.NAV_ID.hall; i++) {
+        for (let i = 0; i < fps * 5 && g.room !== careHome(t); i++) {
           release(t);
-          exit(t, t.api.NAV_ID.hall, mode);
+          exit(t, careHome(t), mode);
           t.step(1000 / fps);
         }
         t.advance(0.4, fps);
@@ -298,7 +306,7 @@ const runs = ["discovery", "known", "correctedWrongTurn"].map((path) => ({
   hp: 5,
   gain: 1,
 }));
-if (a2) runs.push({ path: "midcourseChoice", hp: 5, gain: 1 });
+if (a2 || a3) runs.push({ path: "midcourseChoice", hp: 5, gain: 1 });
 runs.push({ path: "known", hp: 5, gain: 1, road: true });
 for (const path of ["discoveryWithCare", "knownWithCare"])
   for (const gain of [1, 2]) runs.push({ path, hp: 2, gain });
@@ -385,7 +393,17 @@ for (const fps of [30, 60, 120])
           if (e) {
             const dx = e.x - g.px,
               side = Math.sign(dx) || 1;
-            if (e.role === "influential") {
+            if (a3 && e.role !== "influential" && e.wind > 0) {
+              // Read the actual preparation cue and dodge, rather than race the attack.
+              if (g.py === 159) {
+                if (mode === "keyboard") pulse(t, "SPACE");
+                else {
+                  g.direct.down(1, 150, 153);
+                  g.direct.move(1, 150, 124);
+                  g.direct.up(1, 150, 124);
+                }
+              }
+            } else if (e.role === "influential") {
               if ((e.chargeTime ?? 0) > 0) {
                 if (Math.abs(dx) < 58 && g.py === 159) {
                   if (mode === "keyboard") pulse(t, "SPACE");
@@ -440,7 +458,7 @@ for (const fps of [30, 60, 120])
             ? 1
             : 2,
       );
-      assert.equal(nav.revision, a2 ? "A2" : "A1");
+      assert.equal(nav.revision, revision);
       assert.equal(nav.midcourseUses, path === "midcourseChoice" ? 1 : 0);
       if (path.endsWith("WithCare")) {
         assert(nav.careUsed);
@@ -448,11 +466,13 @@ for (const fps of [30, 60, 120])
           g.session.events.filter((e) => e.kind === "care-complete").length,
           1,
         );
-        assert.equal(
-          nav.hp,
-          hp + gain - 1,
-          "same bot loses one HP over the full encounter sequence",
-        );
+        if (!a3)
+          assert.equal(
+            nav.hp,
+            hp + gain - 1,
+            "same bot loses one HP over the full encounter sequence",
+          );
+        else assert(nav.hp > 0, "responsive dodge bot must survive with care");
       }
       assert.equal(
         g.session.events.filter((e) => e.kind === "navigation-choice").length,
@@ -484,10 +504,17 @@ for (const fps of [30, 60, 120])
         remaining: +budget.toFixed(3),
         visits: nav.visits.map((v) => v.zone),
         returns: nav.returns,
+        ...(a3
+          ? {
+              enemyReleases: g.session.events.filter(
+                (e) => e.kind === "enemy-attack" && e.data.stage === "release",
+              ).length,
+            }
+          : {}),
       });
     }
 fs.writeFileSync(
-  `work/navigation${a2 ? "-a2" : ""}-atelier-results.json`,
+  `work/navigation${revision !== "A1" ? "-" + revision.toLowerCase() : ""}-atelier-results.json`,
   JSON.stringify(
     {
       method:
@@ -501,5 +528,5 @@ fs.writeFileSync(
   ) + "\n",
 );
 console.log(
-  `PASS atelier ${a2 ? "A2" : "A1"}: graph matches runtime; profile isolated; 60 care comparisons through both inputs at 30/60/120 fps; capped gain, one-use reentry, pause/focus, late precedence; ${routesReports.length} full routes including 24 +1/+2 care runs and 6 continuous road-to-class trials with real fights and course-to-cruising ellipse.`,
+  `PASS atelier ${revision}: graph matches runtime; profile isolated; 60 care comparisons through both inputs at 30/60/120 fps; capped gain, one-use reentry, pause/focus, late precedence; ${routesReports.length} full routes including 24 +1/+2 care runs and 6 continuous road-to-class trials with real fights and course-to-cruising ellipse.`,
 );

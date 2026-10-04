@@ -1,0 +1,376 @@
+{
+  "method": "Cadence uses declared invulnerability only to avoid truncation; pressure/dodge use real health, movement and attacks; not human gamefeel validation.",
+  "cadence": [
+    {
+      "fps": 30,
+      "room": 100,
+      "measures": [
+        {
+          "revision": "A2",
+          "first": 1.4,
+          "releases": 6,
+          "windFrames": 126
+        },
+        {
+          "revision": "A3",
+          "first": 0.5333333333333333,
+          "releases": 17,
+          "windFrames": 186
+        }
+      ]
+    },
+    {
+      "fps": 30,
+      "room": 101,
+      "measures": [
+        {
+          "revision": "A2",
+          "first": 1.4,
+          "releases": 6,
+          "windFrames": 126
+        },
+        {
+          "revision": "A3",
+          "first": 0.5333333333333333,
+          "releases": 17,
+          "windFrames": 186
+        }
+      ]
+    },
+    {
+      "fps": 30,
+      "room": 110,
+      "measures": [
+        {
+          "revision": "A2",
+          "first": 1.4666666666666666,
+          "releases": 6,
+          "windFrames": 138
+        },
+        {
+          "revision": "A3",
+          "first": 0.5666666666666667,
+          "releases": 15,
+          "windFrames": 172
+        }
+      ]
+    },
+    {
+      "fps": 30,
+      "room": 111,
+      "measures": [
+        {
+          "revision": "A2",
+          "first": 1.7,
+          "releases": 3,
+          "windFrames": 90
+        },
+        {
+          "revision": "A3",
+          "first": 0.7,
+          "releases": 5,
+          "windFrames": 75
+        }
+      ]
+    },
+    {
+      "fps": 60,
+      "room": 100,
+      "measures": [
+        {
+          "revision": "A2",
+          "first": 1.4,
+          "releases": 6,
+          "windFrames": 252
+        },
+        {
+          "revision": "A3",
+          "first": 0.5333333333333333,
+          "releases": 17,
+          "windFrames": 372
+        }
+      ]
+    },
+    {
+      "fps": 60,
+      "room": 101,
+      "measures": [
+        {
+          "revision": "A2",
+          "first": 1.4,
+          "releases": 6,
+          "windFrames": 252
+        },
+        {
+          "revision": "A3",
+          "first": 0.5333333333333333,
+          "releases": 17,
+          "windFrames": 372
+        }
+      ]
+    },
+    {
+      "fps": 60,
+      "room": 110,
+      "measures": [
+        {
+          "revision": "A2",
+          "first": 1.45,
+          "releases": 6,
+          "windFrames": 270
+        },
+        {
+          "revision": "A3",
+          "first": 0.5666666666666667,
+          "releases": 15,
+          "windFrames": 345
+        }
+      ]
+    },
+    {
+      "fps": 60,
+      "room": 111,
+      "measures": [
+        {
+          "revision": "A2",
+          "first": 1.7,
+          "releases": 3,
+          "windFrames": 180
+        },
+        {
+          "revision": "A3",
+          "first": 0.7,
+          "releases": 5,
+          "windFrames": 155
+        }
+      ]
+    },
+    {
+      "fps": 120,
+      "room": 100,
+      "measures": [
+        {
+          "revision": "A2",
+          "first": 1.4,
+          "releases": 6,
+          "windFrames": 504
+        },
+        {
+          "revision": "A3",
+          "first": 0.525,
+          "releases": 18,
+          "windFrames": 738
+        }
+      ]
+    },
+    {
+      "fps": 120,
+      "room": 101,
+      "measures": [
+        {
+          "revision": "A2",
+          "first": 1.4,
+          "releases": 6,
+          "windFrames": 504
+        },
+        {
+          "revision": "A3",
+          "first": 0.525,
+          "releases": 18,
+          "windFrames": 738
+        }
+      ]
+    },
+    {
+      "fps": 120,
+      "room": 110,
+      "measures": [
+        {
+          "revision": "A2",
+          "first": 1.4583333333333333,
+          "releases": 6,
+          "windFrames": 546
+        },
+        {
+          "revision": "A3",
+          "first": 0.5666666666666667,
+          "releases": 15,
+          "windFrames": 690
+        }
+      ]
+    },
+    {
+      "fps": 120,
+      "room": 111,
+      "measures": [
+        {
+          "revision": "A2",
+          "first": 1.7083333333333333,
+          "releases": 3,
+          "windFrames": 363
+        },
+        {
+          "revision": "A3",
+          "first": 0.6833333333333333,
+          "releases": 5,
+          "windFrames": 300
+        }
+      ]
+    }
+  ],
+  "pressure": [
+    {
+      "fps": 30,
+      "room": 100,
+      "runs": [
+        {
+          "revision": "A2",
+          "hp": 5,
+          "releases": 0
+        },
+        {
+          "revision": "A3",
+          "hp": 4,
+          "releases": 1
+        }
+      ],
+      "dodgeHp": 5
+    },
+    {
+      "fps": 30,
+      "room": 101,
+      "runs": [
+        {
+          "revision": "A2",
+          "hp": 5,
+          "releases": 0
+        },
+        {
+          "revision": "A3",
+          "hp": 4,
+          "releases": 1
+        }
+      ],
+      "dodgeHp": 5
+    },
+    {
+      "fps": 30,
+      "room": 110,
+      "runs": [
+        {
+          "revision": "A2",
+          "hp": 5,
+          "releases": 0
+        },
+        {
+          "revision": "A3",
+          "hp": 4,
+          "releases": 1
+        }
+      ],
+      "dodgeHp": 5
+    },
+    {
+      "fps": 60,
+      "room": 100,
+      "runs": [
+        {
+          "revision": "A2",
+          "hp": 5,
+          "releases": 0
+        },
+        {
+          "revision": "A3",
+          "hp": 4,
+          "releases": 1
+        }
+      ],
+      "dodgeHp": 5
+    },
+    {
+      "fps": 60,
+      "room": 101,
+      "runs": [
+        {
+          "revision": "A2",
+          "hp": 5,
+          "releases": 0
+        },
+        {
+          "revision": "A3",
+          "hp": 4,
+          "releases": 1
+        }
+      ],
+      "dodgeHp": 5
+    },
+    {
+      "fps": 60,
+      "room": 110,
+      "runs": [
+        {
+          "revision": "A2",
+          "hp": 5,
+          "releases": 0
+        },
+        {
+          "revision": "A3",
+          "hp": 4,
+          "releases": 1
+        }
+      ],
+      "dodgeHp": 5
+    },
+    {
+      "fps": 120,
+      "room": 100,
+      "runs": [
+        {
+          "revision": "A2",
+          "hp": 5,
+          "releases": 0
+        },
+        {
+          "revision": "A3",
+          "hp": 4,
+          "releases": 1
+        }
+      ],
+      "dodgeHp": 5
+    },
+    {
+      "fps": 120,
+      "room": 101,
+      "runs": [
+        {
+          "revision": "A2",
+          "hp": 5,
+          "releases": 0
+        },
+        {
+          "revision": "A3",
+          "hp": 4,
+          "releases": 1
+        }
+      ],
+      "dodgeHp": 5
+    },
+    {
+      "fps": 120,
+      "room": 110,
+      "runs": [
+        {
+          "revision": "A2",
+          "hp": 5,
+          "releases": 0
+        },
+        {
+          "revision": "A3",
+          "hp": 4,
+          "releases": 1
+        }
+      ],
+      "dodgeHp": 5
+    }
+  ]
+}

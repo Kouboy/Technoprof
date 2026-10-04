@@ -36,7 +36,7 @@ export type RoomSpec = {
     id: string;
     floor: number;
     landmark: string;
-    revision?: "A1" | "A2";
+    revision?: "A1" | "A2" | "A3";
   };
   care?: { x: number; reach: number };
 };

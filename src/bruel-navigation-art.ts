@@ -78,17 +78,35 @@ export class BruelNavigationArt {
     if (!r.navigation) return;
     const id = r.id,
       g = this.ink,
-      a2 = r.navigation.revision === "A2";
+      a2 = r.navigation.revision !== "A1" && !!r.navigation.revision,
+      a3 = r.navigation.revision === "A3";
     if (id === NAV_ID.hall) {
       this.patch(0, "nav-stair", 23, 24, 79, 127);
-      this.patch(1, "nav-door", 164, 25, 34, 126);
+      if (!a3) this.patch(1, "nav-door", 164, 25, 34, 126);
       this.plate(
         16,
         13,
         [a2 ? "AILE B / 1ER" : "B10-B12 / 1ER", "GRAND ESCALIER"],
         true,
       );
-      this.plate(142, 39, ["INFIRMERIE"]);
+      if (a3) {
+        // A worn notice board replaces the early care entrance; no false input hint.
+        g.fillStyle(0x182827);
+        g.fillRect(158, 33, 45, 62);
+        g.fillStyle(0x655340);
+        g.fillRect(160, 35, 41, 58);
+        for (const [x, y] of [
+          [163, 39],
+          [177, 43],
+          [166, 68],
+        ]) {
+          g.fillStyle(0xb4ac92);
+          g.fillRect(x, y, 17, 20);
+          g.fillStyle(0x697b74);
+          g.fillRect(x + 3, y + 4, 10, 1);
+          g.fillRect(x + 3, y + 8, 9, 1);
+        }
+      } else this.plate(142, 39, ["INFIRMERIE"]);
       if (a2) {
         this.patch(2, "nav-stair", 268, 35, 36, 116);
         this.plate(248, 30, ["ANNEXE", "1ER ETAGE"]);
@@ -143,12 +161,16 @@ export class BruelNavigationArt {
       g.fillStyle(0x315a4d, 0.55);
       g.fillRect(77, 28, 25, 113);
       this.copper(209);
+      if (a3) {
+        this.patch(1, "nav-door", 153, 25, 34, 126);
+        this.plate(145, 39, ["INFIRMERIE"]);
+      }
       this.plate(13, 45, ["< GALERIE A"]);
       this.plate(59, 77, [a2 ? "ANNEXE / 1ER" : "ANNEXE / RDC"]);
       this.plate(239, 44, a2 ? ["GALERIE B >", "B08-B14"] : ["B10-B12 >"], !a2);
     } else if (id === NAV_ID.infirmerie) {
       this.patch(0, "nav-door", 44, 25, 33, 126);
-      this.plate(25, 42, ["HALL / RDC"]);
+      this.plate(25, 42, [a3 ? "JONCTION / 1ER" : "HALL / RDC"]);
       // Cot is behind the flat walking plane, with narrow metal feet.
       g.fillStyle(0x080d13);
       g.fillRect(92, 118, 56, 20);
