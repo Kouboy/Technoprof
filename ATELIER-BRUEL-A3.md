@@ -8,7 +8,7 @@ jusqu'au K.O. Les journaux personnels ne sont pas copiés dans le dépôt.
 ## Lancer
 
 Ouvrir **Jouer-Technoprof-Atelier-Bruel-A3.html** dans le dossier du projet.
-Cet export autonome contient le jeu et ses images (environ 88 Mo). Il démarre
+Cet export autonome contient le jeu et ses images (environ 99 Mo). Il démarre
 sur « Bruel A3 / combats plus vifs ». A1 et A2 restent dans le sélecteur pour
 comparer, avec leur soin partiel d'origine.
 
@@ -24,6 +24,20 @@ Depuis les sources : `npm run build:atelier`, puis `npm run dev` et
 Flèches/ZQSD, Espace, F/X, souris et gestes tactiles restent les commandes.
 La journée publiée et le HTML gelé 0.61 sont inchangés. Le travail reste sur
 la branche `atelier-navigation-bruel-a3`, sans publication sur main ou Pages.
+
+## Rendu du réseau
+
+Les douze zones disposent maintenant de fonds adaptés à leur rôle : le hall
+montre les deux escaliers, les paliers montrent les descentes, la jonction
+réunit les portes de l'annexe et de l'infirmerie, et B12 termine le parcours.
+Les tableaux ne réutilisent plus tous le même couloir avec des portes collées.
+La topologie, les rencontres, les contrôles et les réglages validés restent
+identiques. Voir [la passe de rendu et ses captures](RENDU-BRUEL-A3.md).
+
+Le sélecteur de l'atelier propose des départs « décor » pour inspecter chaque
+pièce sans refaire les combats. Ces départs sont des fixtures explicites,
+avec les vrais passages et adversaires de la pièce ; ils ne remplacent pas
+l'essai complet depuis la cour.
 
 ## Infirmerie : une scène de récupération
 

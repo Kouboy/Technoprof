@@ -201,10 +201,19 @@ export class NewSchoolArt {
     if (s.phase === "opening") {
       const open = Math.min(1, s.age / 0.7),
         walk = Math.max(0, Math.min(1, (s.age - 0.6) / 1.1));
+      const doorway =
+        r.navigation?.revision === "A3"
+          ? { x: 256, y: 31, width: 49, height: 114 }
+          : { x: 267, y: 39, width: 32, height: 112 };
       this.door.fillStyle(0x080d13);
-      this.door.fillRect(267, 39, 32, 112);
+      this.door.fillRect(doorway.x, doorway.y, doorway.width, doorway.height);
       this.door.fillStyle(s.mission === 1 ? 0x584b39 : 0x3d4a4a);
-      this.door.fillRect(267, 39, Math.max(2, 32 * (1 - open)), 112);
+      this.door.fillRect(
+        doorway.x,
+        doorway.y,
+        Math.max(2, doorway.width * (1 - open)),
+        doorway.height,
+      );
       const actor = s.art?.pose(
         "prof",
         [1, 2, 3, 2][Math.floor(s.age * 8) % 4],

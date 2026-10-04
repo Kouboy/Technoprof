@@ -1544,15 +1544,22 @@ class Game extends Phaser.Scene {
             this.cleared.add(id);
           }
         }
+        const viewRoom =
+          this.navigationRevision === "A3"
+            ? Number(name.match(/-view-(\d+)$/)?.[1])
+            : NaN;
+        const visualPreset = this.navigationSpec()?.rooms[viewRoom];
         this.enterRoom(
-          name.endsWith("-care")
-            ? this.navigationRevision === "A3"
-              ? NAV_ID.jonction
-              : NAV_ID.hall
-            : name.endsWith("-parent")
-              ? NAV_ID.seuil
-              : NAV_ID.cour,
-          name.endsWith("-parent") ? 150 : 20,
+          visualPreset
+            ? visualPreset.id
+            : name.endsWith("-care")
+              ? this.navigationRevision === "A3"
+                ? NAV_ID.jonction
+                : NAV_ID.hall
+              : name.endsWith("-parent")
+                ? NAV_ID.seuil
+                : NAV_ID.cour,
+          name.endsWith("-parent") ? 150 : visualPreset ? 55 : 20,
         );
       }
       this.session.record("scenario", this.mission, this.room, {
@@ -3664,6 +3671,7 @@ class Game extends Phaser.Scene {
         this.navigationCare,
         this.px,
         this.pointerMode,
+        this.ambienceClock,
       );
     this.applyPresentation();
     const schoolLine =
@@ -3836,7 +3844,11 @@ class Game extends Phaser.Scene {
   applyPresentation() {
     const light = daylight(this.mission);
     this.schoolWear?.clear();
-    if (this.schoolWear && ["school", "opening"].includes(this.phase))
+    if (
+      this.schoolWear &&
+      ["school", "opening"].includes(this.phase) &&
+      this.roomSpec()?.navigation?.revision !== "A3"
+    )
       drawSchoolWear(
         this.schoolWear,
         this.room,
@@ -3858,6 +3870,8 @@ class Game extends Phaser.Scene {
       this.serviceBackdrop,
       this.arrivalBackdrop,
       this.newSchoolArt?.background,
+      this.navigationArt?.a3.background,
+      this.navigationArt?.a3.courtView,
     ])
       background?.setTint(light.background);
     for (const actor of [
@@ -3868,6 +3882,7 @@ class Game extends Phaser.Scene {
       this.bridgeArt?.guard,
       this.newSchoolArt?.enemy,
       this.carArt?.sprite,
+      this.navigationArt?.nurse,
     ])
       actor?.setTint(light.actor);
     this.groundContact?.clear();
@@ -4890,6 +4905,8 @@ class Game extends Phaser.Scene {
   drawSchool() {
     if (this.usesNewSchoolArt()) {
       this.newSchoolArt!.render(this, this.roomSpec());
+      if (this.roomSpec()?.navigation?.revision === "A3")
+        this.newSchoolArt!.background.setVisible(false);
       return;
     }
     if (this.usesWingArt()) {

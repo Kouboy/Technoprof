@@ -290,10 +290,14 @@ export class SchoolProps {
       blocked: ("left" | "right")[];
       signs?: [number, number, number, string[]][];
       labels?: [number, number, string][];
+      navigation?: { revision?: string };
     },
   ) {
     this.artTint = daylight(mission).background;
     for (const side of layout?.blocked ?? BLOCKED_EDGES[room] ?? []) {
+      // A3 backgrounds close the unused directions with real walls/stair bays.
+      // Keep navigation rules intact; don't plaster the old generic barrier over them.
+      if (layout?.navigation?.revision === "A3") continue;
       this.prop(
         0,
         side === "left" ? 7 : 287,

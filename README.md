@@ -48,6 +48,13 @@ jouer directement dans la scène. L'aide en jeu détaille les gestes.
 
 ## Versions et suivi
 
+Sur la branche `atelier-navigation-bruel-a3`, [Bruel A3](ATELIER-BRUEL-A3.md)
+reprend le réseau validé, l'infirmerie comme scène de récupération et le
+Parent limité à deux coups par ouverture. Les [douze décors adaptés](RENDU-BRUEL-A3.md)
+remplacent sa composition provisoire. Lancer `npm run build:atelier`, puis
+ouvrir `Jouer-Technoprof-Atelier-Bruel-A3.html` (environ 99 Mo). Cet atelier
+reste séparé de la 0.61 publiée ; A1/A2 restent sélectionnables.
+
 Sur la branche `atelier-navigation-bruel`, [l’atelier de navigation Bruel A1](ATELIER-BRUEL-NAVIGATION.md)
 implémente le [graphe validé](CONCEPTION-BRUEL-NAVIGATION.md). Lancer `npm run build:atelier`
 puis ouvrir `Jouer-Technoprof-Atelier-Bruel.html`. Cet essai reste séparé de la

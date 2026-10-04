@@ -5,16 +5,20 @@ import { smallPrint, smallWidth } from "./small-lettering";
 import { INFIRMARY_DATA } from "./infirmary-data";
 import { INFIRMARY } from "./bruel-recovery";
 import { VIEW } from "./presentation";
+import { BruelA3Art } from "./bruel-a3-art";
 
 // Recompose existing raster pieces; keep props and lettering at integer pixels.
 export class BruelNavigationArt {
   ink: Phaser.GameObjects.Graphics;
   patches: Phaser.GameObjects.Image[] = [];
   nurse: Phaser.GameObjects.Image;
+  a3: BruelA3Art;
   static preload(scene: Phaser.Scene) {
     scene.load.image("infirmary-nurse", INFIRMARY_DATA);
+    BruelA3Art.preload(scene);
   }
   constructor(private scene: Phaser.Scene) {
+    this.a3 = new BruelA3Art(scene);
     const t = scene.textures.get("bruel-backgrounds");
     t.add("nav-stair", 0, 402, 474, 420, 444);
     t.add("nav-door", 0, 890, 40, 150, 405);
@@ -43,6 +47,7 @@ export class BruelNavigationArt {
     this.ink.clear();
     for (const p of this.patches) p.setVisible(false);
     this.nurse.setVisible(false);
+    this.a3.hide();
   }
   patch(i: number, frame: string, x: number, y: number, w: number, h: number) {
     this.patches[i]
@@ -91,39 +96,32 @@ export class BruelNavigationArt {
       g.fillRect(x - 2, y, 6, 1);
     }
   }
-  render(r: RoomSpec, care: NavigationCare, px: number, pointer: boolean) {
+  render(
+    r: RoomSpec,
+    care: NavigationCare,
+    px: number,
+    pointer: boolean,
+    clock = 0,
+  ) {
     if (!r.navigation) return;
+    if (r.navigation.revision === "A3") {
+      this.a3.render(r.id, clock);
+      this.nurse.setVisible(r.id === NAV_ID.infirmerie);
+      return;
+    }
     const id = r.id,
       g = this.ink,
-      a2 = r.navigation.revision !== "A1" && !!r.navigation.revision,
-      a3 = r.navigation.revision === "A3";
+      a2 = r.navigation.revision !== "A1" && !!r.navigation.revision;
     if (id === NAV_ID.hall) {
       this.patch(0, "nav-stair", 23, 24, 79, 127);
-      if (!a3) this.patch(1, "nav-door", 164, 25, 34, 126);
+      this.patch(1, "nav-door", 164, 25, 34, 126);
       this.plate(
         16,
         13,
         [a2 ? "AILE B / 1ER" : "B10-B12 / 1ER", "GRAND ESCALIER"],
         true,
       );
-      if (a3) {
-        // A worn notice board replaces the early care entrance; no false input hint.
-        g.fillStyle(0x182827);
-        g.fillRect(158, 33, 45, 62);
-        g.fillStyle(0x655340);
-        g.fillRect(160, 35, 41, 58);
-        for (const [x, y] of [
-          [163, 39],
-          [177, 43],
-          [166, 68],
-        ]) {
-          g.fillStyle(0xb4ac92);
-          g.fillRect(x, y, 17, 20);
-          g.fillStyle(0x697b74);
-          g.fillRect(x + 3, y + 4, 10, 1);
-          g.fillRect(x + 3, y + 8, 9, 1);
-        }
-      } else this.plate(142, 39, ["INFIRMERIE"]);
+      this.plate(142, 39, ["INFIRMERIE"]);
       if (a2) {
         this.patch(2, "nav-stair", 268, 35, 36, 116);
         this.plate(248, 30, ["ANNEXE", "1ER ETAGE"]);
@@ -178,16 +176,12 @@ export class BruelNavigationArt {
       g.fillStyle(0x315a4d, 0.55);
       g.fillRect(77, 28, 25, 113);
       this.copper(209);
-      if (a3) {
-        this.patch(1, "nav-door", 153, 25, 34, 126);
-        this.plate(145, 39, ["INFIRMERIE"]);
-      }
       this.plate(13, 45, ["< GALERIE A"]);
       this.plate(59, 77, [a2 ? "ANNEXE / 1ER" : "ANNEXE / RDC"]);
       this.plate(239, 44, a2 ? ["GALERIE B >", "B08-B14"] : ["B10-B12 >"], !a2);
     } else if (id === NAV_ID.infirmerie) {
       this.patch(0, "nav-door", 44, 25, 33, 126);
-      this.plate(25, 42, [a3 ? "JONCTION / 1ER" : "HALL / RDC"]);
+      this.plate(25, 42, ["HALL / RDC"]);
       // Cot is behind the flat walking plane, with narrow metal feet.
       g.fillStyle(0x080d13);
       g.fillRect(92, 118, 56, 20);
@@ -221,10 +215,7 @@ export class BruelNavigationArt {
       g.fillStyle(0x343b3c);
       g.fillRect(196, 103, 2, 9);
       g.fillRect(181, 72, 1, 76);
-      if (a3) {
-        this.nurse.setVisible(true);
-        this.plate(136, 47, ["PREMIERS SOINS"]);
-      } else if (care.used) {
+      if (care.used) {
         g.fillStyle(0x141e27);
         g.fillRect(164, 105, 27, 33);
         g.fillStyle(0x647873);
