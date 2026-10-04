@@ -1,0 +1,389 @@
+{
+  "status": "proposal-not-runtime",
+  "reference": "Bruel A3 validated by human, 2026-10-04",
+  "implementationAllowed": false,
+  "clockTuning": "Deferred until driving and school are reunited",
+  "hanouna": {
+    "start": "h-cour",
+    "target": "h-seuil",
+    "zones": [
+      {
+        "id": "h-cour",
+        "name": "Cour",
+        "floor": 0
+      },
+      {
+        "id": "h-vestibule",
+        "name": "Vestibule",
+        "floor": 0
+      },
+      {
+        "id": "h-hall",
+        "name": "Hall",
+        "floor": 0
+      },
+      {
+        "id": "h-escalier",
+        "name": "Grand escalier",
+        "floor": 0
+      },
+      {
+        "id": "h-palier",
+        "name": "Palier C",
+        "floor": 1
+      },
+      {
+        "id": "h-galerie",
+        "name": "Galerie C30-C41",
+        "floor": 1
+      },
+      {
+        "id": "h-jonction",
+        "name": "Jonction C42-C45",
+        "floor": 1
+      },
+      {
+        "id": "h-seuil",
+        "name": "Seuil 42C",
+        "floor": 1
+      },
+      {
+        "id": "h-infirmerie",
+        "name": "Infirmerie",
+        "floor": 1
+      }
+    ],
+    "connections": [
+      [
+        "h-cour",
+        "h-vestibule"
+      ],
+      [
+        "h-vestibule",
+        "h-hall"
+      ],
+      [
+        "h-hall",
+        "h-escalier"
+      ],
+      [
+        "h-escalier",
+        "h-palier",
+        "grand-escalier"
+      ],
+      [
+        "h-palier",
+        "h-galerie"
+      ],
+      [
+        "h-galerie",
+        "h-jonction"
+      ],
+      [
+        "h-jonction",
+        "h-seuil"
+      ],
+      [
+        "h-jonction",
+        "h-infirmerie"
+      ]
+    ],
+    "routes": {
+      "first": [
+        "h-cour",
+        "h-vestibule",
+        "h-hall",
+        "h-escalier",
+        "h-palier",
+        "h-galerie",
+        "h-jonction",
+        "h-seuil"
+      ],
+      "known": [
+        "h-cour",
+        "h-vestibule",
+        "h-hall",
+        "h-escalier",
+        "h-palier",
+        "h-galerie",
+        "h-jonction",
+        "h-seuil"
+      ],
+      "care": [
+        "h-jonction",
+        "h-infirmerie",
+        "h-jonction"
+      ]
+    },
+    "encounterSources": {
+      "h-vestibule": 1,
+      "h-galerie": 3,
+      "h-seuil": 4
+    },
+    "quietHazards": [],
+    "care": "h-infirmerie"
+  },
+  "inshape": {
+    "start": "i-parvis",
+    "target": "i-seuil",
+    "zones": [
+      {
+        "id": "i-parvis",
+        "name": "Parvis",
+        "floor": 0
+      },
+      {
+        "id": "i-accueil",
+        "name": "Accueil",
+        "floor": 0
+      },
+      {
+        "id": "i-couloir",
+        "name": "Couloir principal",
+        "floor": 0
+      },
+      {
+        "id": "i-escalier",
+        "name": "Escalier principal",
+        "floor": 0
+      },
+      {
+        "id": "i-galerie",
+        "name": "Galerie T01-T02",
+        "floor": 1
+      },
+      {
+        "id": "i-jonction",
+        "name": "Jonction T",
+        "floor": 1
+      },
+      {
+        "id": "i-liaison",
+        "name": "Liaison des laboratoires",
+        "floor": 1
+      },
+      {
+        "id": "i-preparation",
+        "name": "Préparation T",
+        "floor": 1
+      },
+      {
+        "id": "i-sas",
+        "name": "Sas T03",
+        "floor": 1
+      },
+      {
+        "id": "i-seuil",
+        "name": "Seuil T03",
+        "floor": 1
+      },
+      {
+        "id": "i-cour",
+        "name": "Cour technique",
+        "floor": 0
+      },
+      {
+        "id": "i-atelier",
+        "name": "Atelier A",
+        "floor": 0
+      },
+      {
+        "id": "i-vestiaire",
+        "name": "Vestiaire et pied d'escalier atelier",
+        "floor": 0
+      },
+      {
+        "id": "i-service",
+        "name": "Passage de service",
+        "floor": 0
+      },
+      {
+        "id": "i-palier-service",
+        "name": "Palier de service",
+        "floor": 1
+      },
+      {
+        "id": "i-infirmerie",
+        "name": "Infirmerie",
+        "floor": 1
+      },
+      {
+        "id": "i-prefab",
+        "name": "Préfabriqué de vie scolaire",
+        "floor": 0
+      }
+    ],
+    "connections": [
+      [
+        "i-parvis",
+        "i-accueil"
+      ],
+      [
+        "i-accueil",
+        "i-couloir"
+      ],
+      [
+        "i-accueil",
+        "i-cour"
+      ],
+      [
+        "i-couloir",
+        "i-escalier"
+      ],
+      [
+        "i-escalier",
+        "i-galerie",
+        "escalier-principal"
+      ],
+      [
+        "i-galerie",
+        "i-jonction"
+      ],
+      [
+        "i-cour",
+        "i-atelier"
+      ],
+      [
+        "i-atelier",
+        "i-vestiaire"
+      ],
+      [
+        "i-cour",
+        "i-vestiaire"
+      ],
+      [
+        "i-vestiaire",
+        "i-jonction",
+        "escalier-ateliers"
+      ],
+      [
+        "i-cour",
+        "i-service"
+      ],
+      [
+        "i-service",
+        "i-palier-service",
+        "escalier-service"
+      ],
+      [
+        "i-palier-service",
+        "i-galerie"
+      ],
+      [
+        "i-atelier",
+        "i-prefab"
+      ],
+      [
+        "i-jonction",
+        "i-infirmerie"
+      ],
+      [
+        "i-jonction",
+        "i-liaison"
+      ],
+      [
+        "i-liaison",
+        "i-preparation"
+      ],
+      [
+        "i-preparation",
+        "i-sas"
+      ],
+      [
+        "i-sas",
+        "i-seuil"
+      ]
+    ],
+    "routes": {
+      "first": [
+        "i-parvis",
+        "i-accueil",
+        "i-couloir",
+        "i-escalier",
+        "i-galerie",
+        "i-jonction",
+        "i-liaison",
+        "i-preparation",
+        "i-sas",
+        "i-seuil"
+      ],
+      "workshops": [
+        "i-parvis",
+        "i-accueil",
+        "i-cour",
+        "i-atelier",
+        "i-vestiaire",
+        "i-jonction",
+        "i-liaison",
+        "i-preparation",
+        "i-sas",
+        "i-seuil"
+      ],
+      "known": [
+        "i-parvis",
+        "i-accueil",
+        "i-cour",
+        "i-vestiaire",
+        "i-jonction",
+        "i-liaison",
+        "i-preparation",
+        "i-sas",
+        "i-seuil"
+      ],
+      "service": [
+        "i-parvis",
+        "i-accueil",
+        "i-cour",
+        "i-service",
+        "i-palier-service",
+        "i-galerie",
+        "i-jonction",
+        "i-liaison",
+        "i-preparation",
+        "i-sas",
+        "i-seuil"
+      ],
+      "care": [
+        "i-jonction",
+        "i-infirmerie",
+        "i-jonction"
+      ],
+      "wrongTurn": [
+        "i-cour",
+        "i-atelier",
+        "i-prefab",
+        "i-atelier",
+        "i-vestiaire",
+        "i-jonction"
+      ]
+    },
+    "encounterSources": {
+      "i-parvis": 61,
+      "i-couloir": 64,
+      "i-galerie": 67,
+      "i-atelier": 21,
+      "i-vestiaire": 25,
+      "i-jonction": 73,
+      "i-liaison": 70,
+      "i-preparation": 76,
+      "i-sas": 79,
+      "i-seuil": 24
+    },
+    "quietHazards": [
+      "i-palier-service"
+    ],
+    "care": "i-infirmerie",
+    "combatBudgetRequiresValidation": {
+      "publishedCompleteRoute": 12,
+      "proposedInstitutional": 8,
+      "proposedWorkshops": 8,
+      "proposedKnown": 7,
+      "proposedService": 7,
+      "sourceEncountersUnused": [
+        22,
+        82,
+        85
+      ]
+    }
+  }
+}

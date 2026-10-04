@@ -1,0 +1,76 @@
+{
+  "status": "proposal-not-runtime",
+  "method": "Static topology and existing encounter sources only; no runtime or human play test",
+  "schools": {
+    "hanouna": {
+      "zones": 9,
+      "decisions": [
+        "h-jonction"
+      ],
+      "commonEncounters": [
+        "h-vestibule",
+        "h-galerie",
+        "h-seuil"
+      ],
+      "routes": {
+        "first": {
+          "visits": 8,
+          "encounters": 3
+        },
+        "known": {
+          "visits": 8,
+          "encounters": 3
+        },
+        "care": {
+          "visits": 3,
+          "encounters": 0
+        }
+      }
+    },
+    "inshape": {
+      "zones": 17,
+      "decisions": [
+        "i-accueil",
+        "i-galerie",
+        "i-jonction",
+        "i-cour",
+        "i-atelier",
+        "i-vestiaire"
+      ],
+      "commonEncounters": [
+        "i-parvis",
+        "i-jonction",
+        "i-liaison",
+        "i-preparation",
+        "i-sas",
+        "i-seuil"
+      ],
+      "routes": {
+        "first": {
+          "visits": 10,
+          "encounters": 8
+        },
+        "workshops": {
+          "visits": 10,
+          "encounters": 8
+        },
+        "known": {
+          "visits": 9,
+          "encounters": 7
+        },
+        "service": {
+          "visits": 11,
+          "encounters": 7
+        },
+        "care": {
+          "visits": 3,
+          "encounters": 1
+        },
+        "wrongTurn": {
+          "visits": 6,
+          "encounters": 3
+        }
+      }
+    }
+  }
+}
