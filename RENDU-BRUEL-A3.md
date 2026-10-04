@@ -1,8 +1,9 @@
 # Bruel A3 — rendre le réseau reconnaissable
 
 La navigation et le rythme des ennemis ont reçu la validation humaine.
-Cette passe adapte uniquement leur présentation au graphe actuel. Elle reste
-sur la branche d'atelier A3 ; main et le HTML publié 0.61 sont intacts.
+Cette passe adapte leur présentation au graphe actuel, puis ajoute deux
+ruptures de plancher dans les pièces calmes de l'étage, à la demande du joueur.
+Elle reste sur la branche d'atelier A3 ; main et le HTML publié 0.61 sont intacts.
 
 ## Douze tableaux, trois planches
 
@@ -14,18 +15,18 @@ sur la branche d'atelier A3 ; main et le HTML publié 0.61 sont intacts.
 | Grand escalier | Montée en profondeur à droite ; porte de retour au hall à gauche |
 | Palier principal | Descente à gauche, vue sur la cour, passage intérieur vers l'annexe |
 | Annexe | Descente au hall, liaison latérale avec le palier, tuyau cuivre réparé |
-| Galerie A | Trois travaux graphiques affichés avec soin entre les passages |
+| Galerie A | Posters d'événement, directives et vie scolaire déchirés, fixés au ruban |
 | Jonction B | Porte verte de l'annexe, porte grise de l'infirmerie, même cuivre réparé |
 | Galerie B | Long radiateur en fonte et chauffage apparent ; plage B08–B10 |
 | Palier B | Vitrine d'emploi du temps au verre fendu ; accès aux salles B11–B14 |
 | Infirmerie | Lit, drap propre, armoire murale, horloge et bureau ; infirmière conservée |
-| Seuil B12 | Porte fermée à droite, mur calme derrière la confrontation |
+| Seuil B12 | Porte fermée à droite, affiches de directives et réunion ; aucun trou |
 
 La pierre, le bois, les traces de réparation et le vert usé reprennent
 la direction comics pulp du lycée urbain ancien. Des fenêtres rafistolées,
 du plâtre écaillé, des carreaux ternes au RDC et un plancher rayé à l'étage
-racontent son état ; les travaux
-d'élèves et le linge de l'infirmerie montrent la persistance du soin.
+racontent son état ; l'affichage de vie scolaire et le linge de l'infirmerie
+montrent la persistance du travail et du soin.
 
 ## Raccords et lecture
 
@@ -59,12 +60,14 @@ d'élèves et le linge de l'infirmerie montrent la persistance du soin.
 Création et retouches avec **l'outil imagegen intégré**, puis copie des PNG
 sélectionnés dans le dépôt. Aucune retouche raster par script ; les originaux
 de génération restent conservés. Sources finales :
-[entrée](art/bruel-a3/entree-v2.png), [réseau](art/bruel-a3/reseau-plancher-v4.png) et
-[aile B](art/bruel-a3/aile-b-plancher-v3.png).
+[entrée](art/bruel-a3/entree-v2.png), [réseau](art/bruel-a3/reseau-affiches-v5.png),
+[aile B](art/bruel-a3/aile-b-affiches-v4.png) et
+[rupture de plancher](art/bruel-a3/trou-plancher.png).
 Les [prompts complets et la provenance](art/bruel-a3/PROMPTS.md) incluent les
 corrections des descentes, du grand escalier, de la position de B12 et du
 passage intérieur du palier, aligné sur sa zone d'action existante, puis
-les sols de l'étage et leurs vues extérieures.
+les sols de l'étage et leurs vues extérieures, les affiches scolaires et le
+sprite du trou.
 
 ## Correction du premier étage
 
@@ -81,16 +84,39 @@ Les passages latéraux restent des circulations intérieures au même niveau.
 La ligne de sol, les dimensions des accès et les proportions des acteurs
 restent celles de la première passe.
 
-Choix humain confirmé : valider ce rendu avant de réintroduire les trous.
-Cette passe n'ajoute ni ouverture dans le sol ni collision, et conserve
-les galeries sans danger nouveau. Une rupture future devra montrer les
-lames cassées et le vide sous le plancher, au niveau des pieds ; son placement
-et le comportement de chute feront l'objet d'une passe distincte.
+Le plancher a été livré avant la réintroduction des trous. Après autorisation
+humaine, deux ruptures sont désormais actives dans les pièces de l'étage sans
+ennemi : palier principal **[138,170]** et galerie A **[145,177]**. Rien au RDC,
+à l'infirmerie ni dans une pièce de combat. Les portes et les points de retour
+restent éloignés des ouvertures. Les intervalles sont regroupés dans
+`A3_FLOOR_GAPS`, sans modifier A1/A2 ni les missions publiées.
+
+Le sprite montre du bois éclaté, des pointes et un vide noir. Son cadre tient
+entre y=153 et y=175 : derrière les pieds à y=163, sous les plinthes, au-dessus
+du CADRE. Le bord avant masque la descente. L'ancien masquage brutal à y=202
+est désactivé uniquement pendant une chute d'A3 ; le crop masque progressivement
+le corps. Chute, coût d'un PV et retour sur la rive conservent les règles du jeu.
+Le saut existant reste suffisant avec une courte anticipation : Espace au
+clavier, glissement vers le haut avec composante latérale au toucher/souris.
+
+Les anciens tableaux artistiques de galerie A et B12 sont remplacés par des
+papiers déchirés d'événements, de consignes et de vie scolaire, sans cadre.
+Les pictogrammes et lignes sont intégrés au fond, sans nouveau texte flottant.
 
 Validation de la retouche : huit tableaux d'étage inspectés avec les acteurs
 dans le navigateur ; crops, nettoyage des calques et profils A1/A2 vérifiés
 par `test:rendu-a3`. La suite `test:navigation` conserve les parcours, le soin
-et le cycle du Parent. L'export A3 reconstruit fait environ 99 Mo.
+et le cycle du Parent, avec franchissement réel des trous par les commandes
+de saut du pilote de test. `test:holes-a3` contrôle 24 franchissements et
+chutes dans les deux sens, à 30/60/120 images/s, clavier/direct : pause, soin
+inchangé, rive de retour, dommage unique et annulation de destination après
+chute. La descente tardive passe aussi par le vrai renderer. L'export A3
+reconstruit fait environ 101 Mo.
+
+Dans le navigateur : chute, occultation progressive, retour avec **4/5 PV**
+et saut par glissement réel vers l'autre rive observés en galerie A.
+Captures : [chute](work/bruel-a3-chute-plancher.png),
+[retour](work/bruel-a3-retour-rive.png), [saut franchi](work/bruel-a3-saut-plancher.png).
 
 `src/bruel-a3-art.ts` regroupe crops, pièces et écriteaux. Les textes et
 animations sont rendus par le moteur. `src/bruel-a3-data.ts` embarque les
@@ -100,8 +126,8 @@ nouveau tableau et chaque changement de phase, sans créer d'images par frame.
 
 ## Vérifications
 
-- `npm run build:atelier` : exports autonomes reconstruits, environ 99 Mo
-  pour A3 (augmentation d'environ 11 Mo due aux trois planches).
+- `npm run build:atelier` : exports autonomes reconstruits, environ 101 Mo
+  pour A3, avec les trois planches et le sprite transparent du plancher rompu.
 - `npm test` : suite existante réussie ; navigation publiée, phases de
   dialogue, collisions et entrée en classe restent vérifiées.
 - `npm run test:navigation` : A1/A2/A3 réussis, y compris soin unique,

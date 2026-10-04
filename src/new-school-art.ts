@@ -12,6 +12,7 @@ import { newEnemyFrame, type TeacherState } from "./combat-poses";
 import { SECURITY } from "./gameplay";
 
 type ArtHost = TeacherState & {
+  falling?: number;
   mission: number;
   room: number;
   enemies: Enemy[];
@@ -148,7 +149,10 @@ export class NewSchoolArt {
         .setVisible(true);
     else this.showBackground(s.mission, r.frame ?? 0);
     this.background.setFlipX(!!r.quietMirror);
-    if (s.py < 202) s.art?.drawTeacher(s, r.boss ? 0.225 : 0.18);
+    // A3 timber holes clip the body against the front lip in SchoolProps.
+    // Keep drawing through the descent rather than hiding the torso halfway.
+    if (s.py < 202 || (r.navigation?.revision === "A3" && (s.falling ?? 0) > 0))
+      s.art?.drawTeacher(s, r.boss ? 0.225 : 0.18);
     const e = s.enemies[0];
     if (e && (e.hp > 0 || (e.downTime ?? 0) > 0)) {
       if (r.role === "student" || r.role === "guard") {

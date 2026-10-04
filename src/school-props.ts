@@ -9,6 +9,7 @@ import { ENCOUNTER_SECONDS } from "./world";
 import Phaser from "phaser";
 import { WARNINGS_DATA } from "./warnings-data";
 import { SCHOOL_PROPS_DATA } from "./school-props-data";
+import { WOOD_HOLE_DATA } from "./wood-hole-data";
 import { bitmap, bitmapWidth } from "./cadre";
 import { BLOCKED_EDGES } from "./world";
 import { daylight } from "./presentation";
@@ -117,6 +118,28 @@ export const DOOR_LABELS: Record<number, [number, number, string][]> = {
 export const HOLE_BACK_Y = 159;
 export const HOLE_DEPTH = 16;
 export const HOLE_FRONT_Y = HOLE_BACK_Y + (305 / 422) * HOLE_DEPTH;
+// Match the visible timber mouth with the actual fall interval, not the whole
+// splintered rim. The source stays intact; the front lip is a separate crop.
+export const WOOD_HOLE = {
+  width: 1852,
+  height: 849,
+  left: 450,
+  right: 1420,
+  y: 153,
+  depth: 22,
+  front: 610,
+};
+export function woodHoleLayout(left: number, right: number) {
+  const scale = (right - left) / (WOOD_HOLE.right - WOOD_HOLE.left);
+  return {
+    x: left - WOOD_HOLE.left * scale,
+    y: WOOD_HOLE.y,
+    w: WOOD_HOLE.width * scale,
+    h: WOOD_HOLE.depth,
+    frontY:
+      WOOD_HOLE.y + (WOOD_HOLE.front / WOOD_HOLE.height) * WOOD_HOLE.depth,
+  };
+}
 export function holeLayout(left: number, right: number) {
   const scale = (right - left) / 500;
   return {
@@ -131,12 +154,13 @@ export function fallingCrop(
   originY: number,
   scale: number,
   feet: number,
+  frontY = HOLE_FRONT_Y,
 ) {
   return Math.max(
     0,
     Math.min(
       frameHeight,
-      originY * frameHeight + (HOLE_FRONT_Y - feet) / Math.abs(scale),
+      originY * frameHeight + (frontY - feet) / Math.abs(scale),
     ),
   );
 }
@@ -146,6 +170,9 @@ export class SchoolProps {
   used = 0;
   lettering: Phaser.GameObjects.Graphics;
   constructor(scene: Phaser.Scene) {
+    scene.textures
+      .get("wood-floor-hole")
+      .setFilter(Phaser.Textures.FilterMode.NEAREST);
     const raw = scene.textures
       .get("raw-school-props-36")
       .getSourceImage() as HTMLImageElement;
@@ -249,6 +276,7 @@ export class SchoolProps {
     this.hide();
   }
   static preload(scene: Phaser.Scene) {
+    scene.load.image("wood-floor-hole", WOOD_HOLE_DATA);
     scene.load.image("raw-school-props-36", SCHOOL_PROPS_DATA);
     scene.load.image("raw-warnings-37", WARNINGS_DATA);
   }
@@ -315,7 +343,24 @@ export class SchoolProps {
       else this.prop(4, left ? 14 : 285, 132, 20, 28, 2.2);
     }
     if (room === 2) this.prop(4, 145, 131, 21, 29, 2.2);
+    const timber = layout?.navigation?.revision === "A3";
     for (const [left, right] of gaps) {
+      if (timber) {
+        const p = woodHoleLayout(left, right);
+        for (const depth of [1.4, 2.1]) {
+          const sprite = this.prop(2, p.x, p.y, p.w, p.h, depth)
+            .setTexture("wood-floor-hole")
+            .setDisplaySize(p.w, p.h);
+          if (depth === 2.1)
+            sprite.setCrop(
+              0,
+              WOOD_HOLE.front,
+              WOOD_HOLE.width,
+              WOOD_HOLE.height - WOOD_HOLE.front,
+            );
+        }
+        continue;
+      }
       const p = holeLayout(left, right);
       this.prop(2, p.x, p.y, p.w, p.h, 1.4);
       // The front rubble lip occludes the falling body; the void itself stays behind it.
@@ -327,6 +372,7 @@ export class SchoolProps {
         teacher.originY,
         teacher.scaleY,
         feet,
+        timber ? woodHoleLayout(0, 32).frontY : HOLE_FRONT_Y,
       );
       teacher.setCrop(0, 0, teacher.frame.width, h);
     }

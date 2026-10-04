@@ -52,9 +52,10 @@ Sur la branche `atelier-navigation-bruel-a3`, [Bruel A3](ATELIER-BRUEL-A3.md)
 reprend le réseau validé, l'infirmerie comme scène de récupération et le
 Parent limité à deux coups par ouverture. Les [douze décors adaptés](RENDU-BRUEL-A3.md)
 remplacent sa composition provisoire : plancher usé au premier étage,
-carrelage au RDC, vues extérieures corrigées en hauteur. Les trous restent
-réservés à une passe ultérieure. Lancer `npm run build:atelier`, puis
-ouvrir `Jouer-Technoprof-Atelier-Bruel-A3.html` (environ 99 Mo). Cet atelier
+carrelage au RDC, vues extérieures corrigées en hauteur et affiches scolaires
+déchirées. Deux trous sont actifs dans les pièces de l'étage sans ennemi.
+Lancer `npm run build:atelier`, puis
+ouvrir `Jouer-Technoprof-Atelier-Bruel-A3.html` (environ 101 Mo). Cet atelier
 reste séparé de la 0.61 publiée ; A1/A2 restent sélectionnables.
 
 Sur la branche `atelier-navigation-bruel`, [l’atelier de navigation Bruel A1](ATELIER-BRUEL-NAVIGATION.md)

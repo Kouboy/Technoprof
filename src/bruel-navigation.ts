@@ -342,6 +342,15 @@ BRUEL_NAV_A3.rooms[n.infirmerie] = {
 };
 BRUEL_NAV_A3.rooms[n.infirmerie].navigation!.floor = 1;
 
+// Quiet first-floor traversal only: never mix an opening with an encounter,
+// healing scene or doorway. Both directions have room to anticipate the jump.
+export const A3_FLOOR_GAPS: Record<number, number[][]> = {
+  [n.palier]: [[138, 170]],
+  [n.galerieA]: [[145, 177]],
+};
+for (const [id, gaps] of Object.entries(A3_FLOOR_GAPS))
+  BRUEL_NAV_A3.rooms[Number(id)].gaps = gaps.map((g) => [...g]);
+
 export class NavigationCare {
   used = false;
   active = false;

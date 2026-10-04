@@ -1,0 +1,240 @@
+{
+  "holes": [
+    {
+      "id": 104,
+      "gaps": [
+        [
+          138,
+          170
+        ]
+      ]
+    },
+    {
+      "id": 105,
+      "gaps": [
+        [
+          145,
+          177
+        ]
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "room": 104,
+      "fps": 30,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 104,
+      "fps": 30,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 104,
+      "fps": 30,
+      "mode": "direct",
+      "dir": -1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 104,
+      "fps": 30,
+      "mode": "direct",
+      "dir": 1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 104,
+      "fps": 60,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 104,
+      "fps": 60,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 104,
+      "fps": 60,
+      "mode": "direct",
+      "dir": -1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 104,
+      "fps": 60,
+      "mode": "direct",
+      "dir": 1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 104,
+      "fps": 120,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 104,
+      "fps": 120,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 104,
+      "fps": 120,
+      "mode": "direct",
+      "dir": -1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 104,
+      "fps": 120,
+      "mode": "direct",
+      "dir": 1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 105,
+      "fps": 30,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 105,
+      "fps": 30,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 105,
+      "fps": 30,
+      "mode": "direct",
+      "dir": -1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 105,
+      "fps": 30,
+      "mode": "direct",
+      "dir": 1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 105,
+      "fps": 60,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 105,
+      "fps": 60,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 105,
+      "fps": 60,
+      "mode": "direct",
+      "dir": -1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 105,
+      "fps": 60,
+      "mode": "direct",
+      "dir": 1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 105,
+      "fps": 120,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 105,
+      "fps": 120,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 105,
+      "fps": 120,
+      "mode": "direct",
+      "dir": -1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    },
+    {
+      "room": 105,
+      "fps": 120,
+      "mode": "direct",
+      "dir": 1,
+      "jump": "clear",
+      "fall": "one-health",
+      "pause": "frozen"
+    }
+  ]
+}

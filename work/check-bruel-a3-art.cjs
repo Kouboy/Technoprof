@@ -16,8 +16,8 @@ const data = JSON.parse(
 const dimensions = {};
 const selectedFiles = {
   entree: "entree-v2.png",
-  reseau: "reseau-plancher-v4.png",
-  "aile-b": "aile-b-plancher-v3.png",
+  reseau: "reseau-affiches-v5.png",
+  "aile-b": "aile-b-affiches-v4.png",
 };
 for (const [name, uri] of Object.entries(data)) {
   const embedded = Buffer.from(uri.split(",")[1], "base64");
@@ -167,10 +167,12 @@ assert.equal(
 fixture.g.workshop = true;
 fixture.g.loadScenario("bruel-navigation-a3");
 const layout = fixture.g.navigationSpec();
-assert(
-  Object.values(layout.rooms).every((r) => r.gaps.length === 0),
-  "floor art pass keeps workshop free of gameplay holes until separately approved",
-);
+for (const room of Object.values(layout.rooms))
+  if (room.gaps.length) {
+    assert.equal(room.navigation.floor, 1);
+    assert.equal(room.encounter, undefined, "no hole during a fight");
+    assert.equal(room.care, undefined, "no hole in recovery scene");
+  }
 assert.equal(Object.keys(scope.rooms).length, Object.keys(layout.rooms).length);
 const before = JSON.stringify(layout);
 for (let visit = 0; visit < 3; visit++)

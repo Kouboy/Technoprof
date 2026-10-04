@@ -1,6 +1,33 @@
 # Bruel A3 — fonds adaptés au graphe validé
 
-## Sélection actuelle : premier étage en plancher
+## Sélection actuelle : affiches scolaires et trous du plancher
+
+Outil imagegen intégré, sources intactes dans le dépôt : `entree-v2.png`,
+`reseau-affiches-v5.png` (1689 × 931), `aile-b-affiches-v4.png` (1690 × 931)
+et `trou-plancher.png` (1852 × 849, RGBA). Les affiches remplacent les dessins
+artistiques dans la galerie A et au seuil B12 ; les affiches médicales de
+l'infirmerie restent pertinentes. Le trou est un sprite séparé du fond,
+avec crop de sa lèvre avant et calibrage explicite sur l'intervalle de chute.
+
+### Réseau — affiches
+
+Use case: precise-object-edit. Target supplied four-panel game background atlas. Preserve EXACT dimensions 1689x931, grid x844/y468, ALL floorboards, first-floor window views, wall/floor seams, geometry, door positions/sizes, depth, radiator, pipes, textures, palette, sharp French social comics pulp pixel art. ONLY change wall-mounted fine-art pictures: BOTTOM LEFT panel only: remove ALL three large framed artworks (portrait bust, furniture sketch, drawing). Replace them with a cluster of shabby school notices PINNED DIRECTLY to worn wall, no decorative frames. Left paper is faded blue torn school event poster with tiny pictogram of school building/crowd; centre pale yellow directives A4 sheets with short ink-rule lines, uneven tape and missing lower corner; right dirty cream school-life club/parent meeting notice, half ripped, overlapping old paper layers. Broad printed areas/faded stamps, lines not legible words; preserve useful calm wall and positions above radiator. Do NOT change top panels or bottom right. No tasteful fine art, classical statues, life drawing or gallery decor. Old French public lycée used underfunded, not art gallery. Textures matte nicotine beige faded institutional teal, ink-black outlines. No people, UI or new opening, no floor holes. Do not move any entrance or change the floor.
+
+Source : `C:/Users/don_n/.codex/generated_images/01a0716b-6fbe-7730-9787-2febc1648803/exec-2a6437a3-dfdd-420a-8cb3-67b76179d0eb.png`.
+
+### Aile B — affiches
+
+Use case: precise-object-edit. Target supplied four-panel game background atlas. Preserve EXACT dimensions 1690x931, grid x844/y468, ALL floorboards, first-floor window views, wall/floor seams, geometry, door positions/sizes, depth, radiator, pipes, textures, palette, sharp French social comics pulp pixel art. ONLY change wall-mounted fine-art pictures: BOTTOM RIGHT panel only: remove ALL four classical/bust/architectural framed sketches on the left/centre wall. Replace with tatty overlapping paper notices fixed with masking tape: a dark-red striped school EVENT cancellation sheet, faded cream institutional directive A4 with dense tiny line marks and a torn school-life announcement poster with simple meeting pictogram. Blank header bands, ink lines not legible words. Keep them on the wall behind confrontation, never near door. Do NOT change other three panels, sanitary linoleum, timetable cabinet, or B12 door. Old French public lycée used underfunded, not art gallery. Textures matte nicotine beige faded institutional teal, ink-black outlines. No people, UI or new opening, no floor holes. Do not move any entrance or change the floor.
+
+Source : `C:/Users/don_n/.codex/generated_images/01a0716b-6fbe-7730-9787-2febc1648803/exec-01cb404c-a48e-406b-873c-a415479b068a.png`.
+
+### Rupture de plancher — sprite transparent
+
+Use case: stylized-concept. PRODUCTION GAME SPRITE, fully TRANSPARENT background. One isolated broken old wooden-floor HOLE with splintered rim, French social comics pulp pixel art, hard black outlines, matte grey-brown oak, few pale raw split wood fibres, dark rust nailheads, deep ink-black void. Same detailed but angular hand drawn pixel style as a worn old French public lycée. Very WIDE shallow floor opening seen obliquely FROM ABOVE in a side-view beat-em-up. Desired canvas approx1536x704 (ratio2.18), sprite covers most of image width. Reference geometry on normalized canvas: outer broken-plank patch spans x2% to98%, y8% to96%; the EMPTY BLACK DANGEROUS opening is x23% to77%, back edge y23%, front edge y72%. Clear central empty rectangle widening subtly toward front, jagged splintered side edges. ONLY perimeter remnants of floorboards run vertically into depth, as in long oak-board flooring; NOT broken stone, dirt, concrete, tiles, rubble or circular crater. Fractured timber thickness visible at inside back/side rims, a few dark joist ENDS below perimeter, NO intact beams bridging the void (must read as fall-through). Front timber lip y72%-96% wide with individual split ends and small detached wood splinters overlapping intact plank rim. Outer silhouette organically angular. Transparent alpha OUTSIDE this isolated floor fragment, NO opaque coloured background or checkerboard drawn in, NO room, character, text, signs, UI, shadows outside silhouette. Keep outline clean and separation between dark void and splintered oak rim legible when scaled down to roughly60x16game pixels. This is a floor hole, not a freestanding object, stairs, wall hole or mound.
+
+Source : `C:/Users/don_n/.codex/generated_images/01a0716b-6fbe-7730-9787-2febc1648803/exec-9a1b100c-e842-44a4-87e5-8a9797c7538b.png`.
+
+## Passe précédente : premier étage en plancher, avant les trous
 
 Sources utilisées : `entree-v2.png`, `reseau-plancher-v4.png` (1689 × 931)
 et `aile-b-plancher-v3.png` (1690 × 931). Les versions précédentes ci-dessous

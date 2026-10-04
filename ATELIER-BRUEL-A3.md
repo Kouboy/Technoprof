@@ -8,7 +8,7 @@ jusqu'au K.O. Les journaux personnels ne sont pas copiés dans le dépôt.
 ## Lancer
 
 Ouvrir **Jouer-Technoprof-Atelier-Bruel-A3.html** dans le dossier du projet.
-Cet export autonome contient le jeu et ses images (environ 99 Mo). Il démarre
+Cet export autonome contient le jeu et ses images (environ 101 Mo). Il démarre
 sur « Bruel A3 / combats plus vifs ». A1 et A2 restent dans le sélecteur pour
 comparer, avec leur soin partiel d'origine.
 
@@ -33,7 +33,10 @@ réunit les portes de l'annexe et de l'infirmerie, et B12 termine le parcours.
 Les tableaux ne réutilisent plus tous le même couloir avec des portes collées.
 L'étage utilise un plancher usé, prolongé dans les passages en profondeur,
 avec vues extérieures en hauteur ; l'infirmerie reçoit un lino terne.
-Les trous attendent la validation de ce rendu avant une passe distincte.
+Deux trous de plancher sont actifs au palier principal et dans la galerie A,
+uniquement dans ces pièces de l'étage sans ennemi. Les accès sont dégagés.
+Saut : Espace ou glissement vers le haut avec composante latérale.
+Les dessins artistiques sont remplacés par des affiches scolaires déchirées.
 La topologie, les rencontres, les contrôles et les réglages validés restent
 identiques. Voir [la passe de rendu et ses captures](RENDU-BRUEL-A3.md).
 

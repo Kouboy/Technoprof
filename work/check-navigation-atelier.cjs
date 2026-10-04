@@ -51,6 +51,30 @@ function walk(t, x, mode) {
   if (mode === "keyboard") {
     if (Math.abs(x - t.g.px) > 1) hold(t, x > t.g.px ? "RIGHT" : "LEFT");
   } else if (t.g.direct.intent?.kind !== "walk") tap(t, x, 164);
+  jumpGap(t, x, mode);
+}
+// The route driver now reads the floor hazard and uses actual jump controls;
+// it never removes gaps, moves actors across them or grants invulnerability.
+function jumpGap(t, x, mode) {
+  const g = t.g;
+  if (g.py !== 159 || g.falling > 0) return;
+  const direction = Math.sign(x - g.px);
+  if (
+    !g
+      .floorGaps()
+      .some(([l, r]) =>
+        direction > 0
+          ? x > r && g.px <= l && l - g.px <= 18
+          : x < l && g.px >= r && g.px - r <= 18,
+      )
+  )
+    return;
+  if (mode === "keyboard") pulse(t, "SPACE");
+  else if (g.direct.pendingAction !== "SPACE") {
+    g.direct.down(1, g.px, 153);
+    g.direct.move(1, g.px, 121);
+    g.direct.up(1, g.px, 121);
+  }
 }
 function exit(t, target, mode) {
   const g = t.g,
@@ -69,6 +93,7 @@ function exit(t, target, mode) {
       if (m) tap(t, m.x + m.w / 2, m.y + m.h / 2);
     }
   }
+  jumpGap(t, (e.from + e.to) / 2, mode);
 }
 const d = JSON.parse(
   fs.readFileSync(
@@ -128,7 +153,7 @@ if (a2 || a3)
           const t = setup("bruel-navigation-care"),
             g = t.g;
           if (a3 && source === "infirmerie") g.navigationCare.used = true; // Quiet, already-visited branch preset.
-          g.enterRoom(id, 150);
+          g.enterRoom(id, spec.rooms[id].gaps.length ? 100 : 150);
           t.advance(0.4, fps);
           for (let i = 0; i < fps * 6 && g.room === id; i++) {
             release(t);
