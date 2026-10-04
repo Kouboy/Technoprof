@@ -194,7 +194,7 @@ class Game extends Phaser.Scene {
     );
   }
   enemyTuning() {
-    return enemyTuning(this.pressureCombat());
+    return enemyTuning(this.pressureCombat(), this.isHanounaProfile());
   }
   enemyAttack(e: Enemy, stage: "windup" | "release") {
     if (this.pressureCombat())
@@ -2564,14 +2564,17 @@ class Game extends Phaser.Scene {
           const contact = this.bookContact(e);
           if (
             e.boss &&
-            (e.parentCycle
-              ? e.parentCycle.phase !== "opening" ||
-                e.recovery <= 0 ||
-                e.parentCycle.hits >= PARENT_CYCLE.maxHits
-              : e.recovery <= 0 &&
-                e.stun <= 0 &&
-                (e.role !== "security" ||
-                  (this.px - e.x) * (e.facing ?? -1) > 0))
+            ((this.isHanounaProfile() &&
+              e.role === "inspector" &&
+              (e.strikeTime ?? 0) > 0) ||
+              (e.parentCycle
+                ? e.parentCycle.phase !== "opening" ||
+                  e.recovery <= 0 ||
+                  e.parentCycle.hits >= PARENT_CYCLE.maxHits
+                : e.recovery <= 0 &&
+                  e.stun <= 0 &&
+                  (e.role !== "security" ||
+                    (this.px - e.x) * (e.facing ?? -1) > 0)))
           ) {
             this.audio.combat("block", this.face);
             this.bookBlocked = PLAY.attackRecovery;
@@ -4983,7 +4986,11 @@ class Game extends Phaser.Scene {
           "#e5ae60",
           true,
         );
-      else if (this.phase === "school" && e.recovery > 0)
+      else if (
+        this.phase === "school" &&
+        e.recovery > 0 &&
+        (!this.isHanounaProfile() || (e.strikeTime ?? 0) <= 0)
+      )
         this.txt(111, 33, "OUVERTURE", 9, "#e3d4b3", true);
     }
   }

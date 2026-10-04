@@ -80,3 +80,29 @@ de choisir le détour ou de le laisser, et de revenir sans hésitation inutile.
 Bruel A3 et le HTML 0.61 gelé restent intacts. Branche
 `atelier-navigation-bruel-a3`, sans publication sur main ou Pages.
 InShape I1 est le prochain lot après cet essai H1.
+
+## Inspectrice — correction après essai humain du 4 octobre
+
+Le retour humain signalait un boss trop difficile à toucher. Le journal montre
+24 tentatives, 20 gardes et deux contacts. H1 avait hérité du boss accéléré A3 :
+sa récupération de 0,65 s comprenait aussi la pose de frappe, laissant trop peu
+de temps pour identifier l'ouverture, revenir et placer le livre.
+
+Réglage propre à H1 : préparation du tampon 0,55 s, balayage 0,8 s,
+récupération 1,35 s, cooldown 0,65 s. Les poses restent 0,18/0,36 s : l'ouverture
+effective dure donc environ 1,17/0,99 s après leur fin. Le signal « OUVERTURE »
+et la possibilité de toucher commencent ensemble après cette pose. Six PV,
+portées, dégâts et vitesse d'approche inchangés. Les coups n'allongent pas
+automatiquement la récupération ; la garde et la prochaine préparation reviennent.
+Les autres ennemis, A3 et la 0.61 gardent leurs paramètres.
+
+`npm run test:hanouna-h1` inclut maintenant `check-inspector-h1.cjs` :
+12 reproductions de l'ancienne fenêtre trop courte et 12 combats gagnés sans
+dégât en reculant, attendant 350 ms après la frappe, revenant et plaçant un contre.
+Clavier/pointage, 30/60/120 fps, tampon ou balayage en première attaque.
+Il vérifie aussi pause/focus, correspondance pose/ouverture et fin de fenêtre
+malgré les frappes répétées. [Rapport](work/inspector-h1-results.json).
+Un contre après recul a également été observé dans le navigateur natif.
+Le prochain essai humain reste nécessaire pour juger le confort du nouveau rythme.
+
+![Contre à l'Inspectrice après l'esquive](work/hanouna-h1-inspector-counter.png)

@@ -1,0 +1,246 @@
+{
+  "delayedCounters": [
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "first": "stamp",
+      "old": true,
+      "attempts": 1,
+      "releases": 1,
+      "contacts": 0,
+      "hp": 5
+    },
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "first": "stamp",
+      "old": false,
+      "attempts": 6,
+      "releases": 6,
+      "contacts": 6,
+      "hp": 5
+    },
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "first": "sweep",
+      "old": true,
+      "attempts": 1,
+      "releases": 1,
+      "contacts": 0,
+      "hp": 5
+    },
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "first": "sweep",
+      "old": false,
+      "attempts": 6,
+      "releases": 6,
+      "contacts": 6,
+      "hp": 5
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "first": "stamp",
+      "old": true,
+      "attempts": 1,
+      "releases": 1,
+      "contacts": 0,
+      "hp": 5
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "first": "stamp",
+      "old": false,
+      "attempts": 6,
+      "releases": 6,
+      "contacts": 6,
+      "hp": 5
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "first": "sweep",
+      "old": true,
+      "attempts": 1,
+      "releases": 1,
+      "contacts": 0,
+      "hp": 5
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "first": "sweep",
+      "old": false,
+      "attempts": 6,
+      "releases": 6,
+      "contacts": 6,
+      "hp": 5
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "first": "stamp",
+      "old": true,
+      "attempts": 1,
+      "releases": 1,
+      "contacts": 0,
+      "hp": 5
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "first": "stamp",
+      "old": false,
+      "attempts": 6,
+      "releases": 6,
+      "contacts": 6,
+      "hp": 5
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "first": "sweep",
+      "old": true,
+      "attempts": 1,
+      "releases": 1,
+      "contacts": 0,
+      "hp": 5
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "first": "sweep",
+      "old": false,
+      "attempts": 6,
+      "releases": 6,
+      "contacts": 6,
+      "hp": 5
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "first": "stamp",
+      "old": true,
+      "attempts": 1,
+      "releases": 1,
+      "contacts": 0,
+      "hp": 5
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "first": "stamp",
+      "old": false,
+      "attempts": 6,
+      "releases": 6,
+      "contacts": 6,
+      "hp": 5
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "first": "sweep",
+      "old": true,
+      "attempts": 1,
+      "releases": 1,
+      "contacts": 0,
+      "hp": 5
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "first": "sweep",
+      "old": false,
+      "attempts": 6,
+      "releases": 6,
+      "contacts": 6,
+      "hp": 5
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "first": "stamp",
+      "old": true,
+      "attempts": 1,
+      "releases": 1,
+      "contacts": 0,
+      "hp": 5
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "first": "stamp",
+      "old": false,
+      "attempts": 6,
+      "releases": 6,
+      "contacts": 6,
+      "hp": 5
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "first": "sweep",
+      "old": true,
+      "attempts": 1,
+      "releases": 1,
+      "contacts": 0,
+      "hp": 5
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "first": "sweep",
+      "old": false,
+      "attempts": 6,
+      "releases": 6,
+      "contacts": 6,
+      "hp": 5
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "first": "stamp",
+      "old": true,
+      "attempts": 1,
+      "releases": 1,
+      "contacts": 0,
+      "hp": 5
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "first": "stamp",
+      "old": false,
+      "attempts": 6,
+      "releases": 6,
+      "contacts": 6,
+      "hp": 5
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "first": "sweep",
+      "old": true,
+      "attempts": 1,
+      "releases": 1,
+      "contacts": 0,
+      "hp": 5
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "first": "sweep",
+      "old": false,
+      "attempts": 6,
+      "releases": 6,
+      "contacts": 6,
+      "hp": 5
+    }
+  ],
+  "pause": true,
+  "poseMatchesOpening": true
+}

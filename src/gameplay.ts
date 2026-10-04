@@ -199,8 +199,20 @@ export const PRESSURE_ENEMY = {
   wallStun: 0.65,
   wallRecovery: 0.3,
 };
-export function enemyTuning(pressure = false) {
-  return pressure ? PRESSURE_ENEMY : NORMAL_ENEMY;
+// First-school boss: ordinary encounters retain A3 pressure. The Inspector's
+// full strike pose leaves ~1 second to read recovery, return and hit afterwards.
+export const HANOUNA_ENEMY = {
+  ...PRESSURE_ENEMY,
+  boss: {
+    ...PRESSURE_ENEMY.boss,
+    stampWind: BOSS.stampWind,
+    sweepWind: BOSS.sweepWind,
+    recovery: 1.35,
+    cooldown: 0.65,
+  },
+};
+export function enemyTuning(pressure = false, firstSchool = false) {
+  return firstSchool ? HANOUNA_ENEMY : pressure ? PRESSURE_ENEMY : NORMAL_ENEMY;
 }
 export function combatProfile(room: number, role?: string) {
   if (role === "inspector") return COMBAT.arena;
