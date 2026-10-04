@@ -23,7 +23,8 @@ sur la branche d'atelier A3 ; main et le HTML publié 0.61 sont intacts.
 
 La pierre, le bois, les traces de réparation et le vert usé reprennent
 la direction comics pulp du lycée urbain ancien. Des fenêtres rafistolées,
-du plâtre écaillé et des carreaux ternes racontent son état ; les travaux
+du plâtre écaillé, des carreaux ternes au RDC et un plancher rayé à l'étage
+racontent son état ; les travaux
 d'élèves et le linge de l'infirmerie montrent la persistance du soin.
 
 ## Raccords et lecture
@@ -34,8 +35,9 @@ d'élèves et le linge de l'infirmerie montrent la persistance du soin.
 - Les escaliers sont dans la profondeur du décor. Les paliers supérieurs
   montrent des marches descendant dans une cage sombre ; les phases de
   jeu restent sur un plan horizontal, sans scrolling.
-- Le banc et l'arbre de la cour sont réutilisés dans la vitre basse du
-  palier. Le tuyau à coude et son ruban constituent le repère partagé
+- Le banc et l'arbre de la cour sont redessinés vus d'en haut dans la fenêtre
+  du palier. L'ancien crop à hauteur de sol est retiré, pour éviter un faux
+  raccord de perspective. Le tuyau à coude et son ruban constituent le repère partagé
   annexe/jonction.
 - Les anciens fonds sont masqués, les portes et escaliers provisoires ne
   sont plus superposés à A3, et les barrières génériques ne couvrent plus
@@ -57,11 +59,38 @@ d'élèves et le linge de l'infirmerie montrent la persistance du soin.
 Création et retouches avec **l'outil imagegen intégré**, puis copie des PNG
 sélectionnés dans le dépôt. Aucune retouche raster par script ; les originaux
 de génération restent conservés. Sources finales :
-[entrée](art/bruel-a3/entree-v2.png), [réseau](art/bruel-a3/reseau-v3.png) et
-[aile B](art/bruel-a3/aile-b-v2.png).
+[entrée](art/bruel-a3/entree-v2.png), [réseau](art/bruel-a3/reseau-plancher-v4.png) et
+[aile B](art/bruel-a3/aile-b-plancher-v3.png).
 Les [prompts complets et la provenance](art/bruel-a3/PROMPTS.md) incluent les
 corrections des descentes, du grand escalier, de la position de B12 et du
-passage intérieur du palier, aligné sur sa zone d'action existante.
+passage intérieur du palier, aligné sur sa zone d'action existante, puis
+les sols de l'étage et leurs vues extérieures.
+
+## Correction du premier étage
+
+Les sept tableaux de circulation à l'étage utilisent désormais de longues
+lames de bois gris brun, usées, clouées et réparées par endroits : palier
+principal, annexe, galeries A/B, jonction B, palier B et seuil B12.
+Le même matériau se prolonge dans les passages vus en profondeur. Les
+sols du rez-de-chaussée et les marches ne changent pas. L'infirmerie reçoit
+un revêtement de lino gris vert terne, avec réparations et traces d'usage.
+
+Les extérieurs se lisent depuis le premier étage : fenêtres des façades
+opposées, branches et, au palier, cour en contrebas avec le banc vu de dessus.
+Les passages latéraux restent des circulations intérieures au même niveau.
+La ligne de sol, les dimensions des accès et les proportions des acteurs
+restent celles de la première passe.
+
+Choix humain confirmé : valider ce rendu avant de réintroduire les trous.
+Cette passe n'ajoute ni ouverture dans le sol ni collision, et conserve
+les galeries sans danger nouveau. Une rupture future devra montrer les
+lames cassées et le vide sous le plancher, au niveau des pieds ; son placement
+et le comportement de chute feront l'objet d'une passe distincte.
+
+Validation de la retouche : huit tableaux d'étage inspectés avec les acteurs
+dans le navigateur ; crops, nettoyage des calques et profils A1/A2 vérifiés
+par `test:rendu-a3`. La suite `test:navigation` conserve les parcours, le soin
+et le cycle du Parent. L'export A3 reconstruit fait environ 99 Mo.
 
 `src/bruel-a3-art.ts` regroupe crops, pièces et écriteaux. Les textes et
 animations sont rendus par le moteur. `src/bruel-a3-data.ts` embarque les

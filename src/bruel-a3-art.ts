@@ -87,7 +87,6 @@ const SIGNS: Record<number, Plate[]> = {
 
 export class BruelA3Art {
   background: Phaser.GameObjects.Image;
-  courtView: Phaser.GameObjects.Image;
   ink: Phaser.GameObjects.Graphics;
   ambient: Phaser.GameObjects.Graphics;
   static preload(scene: Phaser.Scene) {
@@ -102,28 +101,17 @@ export class BruelA3Art {
       );
       texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
     }
-    // Same tree and damaged bench as the actual courtyard, reused in the lower
-    // window pane to connect the landing with a place already visited.
-    scene.textures
-      .get("bruel-a3-entree")
-      .add("court-view", 0, 0, 100, 580, 285);
     this.background = scene.add
       .image(VIEW.x, VIEW.y, "bruel-a3-entree", 0)
       .setOrigin(0)
       .setDisplaySize(VIEW.width, VIEW.height)
       .setDepth(1.08);
-    this.courtView = scene.add
-      .image(126, 85, "bruel-a3-entree", "court-view")
-      .setOrigin(0)
-      .setDisplaySize(64, 35)
-      .setDepth(1.1);
     this.ambient = scene.add.graphics().setDepth(1.2);
     this.ink = scene.add.graphics().setDepth(1.88);
     this.hide();
   }
   hide() {
     this.background.setVisible(false);
-    this.courtView.setVisible(false);
     this.ambient.clear();
     this.ink.clear();
   }
@@ -157,13 +145,6 @@ export class BruelA3Art {
       .setDisplaySize(VIEW.width, VIEW.height)
       .setVisible(true);
     for (const sign of SIGNS[room] ?? []) this.plate(...sign);
-    if (room === NAV_ID.palier) {
-      this.courtView.setVisible(true);
-      this.ambient.lineStyle(1, 0x303c3b);
-      this.ambient.strokeRect(125, 84, 66, 37);
-      this.ambient.lineBetween(156, 84, 156, 121);
-      this.ambient.lineBetween(125, 99, 191, 99);
-    }
     if (room === NAV_ID.jonction) {
       // Tiny leak behind the walking lane; never a gameplay hazard or a RNG call.
       const t = (clock % 1.8) / 1.8;

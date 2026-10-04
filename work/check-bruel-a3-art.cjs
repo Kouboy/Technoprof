@@ -14,9 +14,14 @@ const data = JSON.parse(
     .replace(/;$/, ""),
 );
 const dimensions = {};
+const selectedFiles = {
+  entree: "entree-v2.png",
+  reseau: "reseau-plancher-v4.png",
+  "aile-b": "aile-b-plancher-v3.png",
+};
 for (const [name, uri] of Object.entries(data)) {
   const embedded = Buffer.from(uri.split(",")[1], "base64");
-  const source = fs.readFileSync(`art/bruel-a3/${name}-${name === "reseau" ? "v3" : "v2"}.png`);
+  const source = fs.readFileSync(`art/bruel-a3/${selectedFiles[name]}`);
   assert(
     source.equals(embedded),
     `${name}: export uses the selected original PNG`,
@@ -162,6 +167,10 @@ assert.equal(
 fixture.g.workshop = true;
 fixture.g.loadScenario("bruel-navigation-a3");
 const layout = fixture.g.navigationSpec();
+assert(
+  Object.values(layout.rooms).every((r) => r.gaps.length === 0),
+  "floor art pass keeps workshop free of gameplay holes until separately approved",
+);
 assert.equal(Object.keys(scope.rooms).length, Object.keys(layout.rooms).length);
 const before = JSON.stringify(layout);
 for (let visit = 0; visit < 3; visit++)
@@ -180,7 +189,6 @@ for (let visit = 0; visit < 3; visit++)
     assert.equal(renderer.a3.background.width, 306);
     assert.equal(renderer.a3.background.height, 168);
     assert.equal(renderer.nurse.visible, room.id === 107);
-    assert.equal(renderer.a3.courtView.visible, room.id === 104);
     assert(
       renderer.patches.every((p) => !p.visible),
       "old door/stair patches are not drawn over A3",

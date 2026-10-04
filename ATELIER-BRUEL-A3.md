@@ -31,6 +31,9 @@ Les douze zones disposent maintenant de fonds adaptés à leur rôle : le hall
 montre les deux escaliers, les paliers montrent les descentes, la jonction
 réunit les portes de l'annexe et de l'infirmerie, et B12 termine le parcours.
 Les tableaux ne réutilisent plus tous le même couloir avec des portes collées.
+L'étage utilise un plancher usé, prolongé dans les passages en profondeur,
+avec vues extérieures en hauteur ; l'infirmerie reçoit un lino terne.
+Les trous attendent la validation de ce rendu avant une passe distincte.
 La topologie, les rencontres, les contrôles et les réglages validés restent
 identiques. Voir [la passe de rendu et ses captures](RENDU-BRUEL-A3.md).
 

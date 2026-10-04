@@ -3871,7 +3871,6 @@ class Game extends Phaser.Scene {
       this.arrivalBackdrop,
       this.newSchoolArt?.background,
       this.navigationArt?.a3.background,
-      this.navigationArt?.a3.courtView,
     ])
       background?.setTint(light.background);
     for (const actor of [
