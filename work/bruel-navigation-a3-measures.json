@@ -30,14 +30,14 @@
       "visits": 12,
       "uniqueZones": 11,
       "encounters": 6,
-      "movementAndCareSeconds": 32.224,
+      "movementAndCareSeconds": 28.141,
       "careApplied": true
     },
     "knownWithCare": {
       "visits": 10,
       "uniqueZones": 9,
       "encounters": 6,
-      "movementAndCareSeconds": 28.776,
+      "movementAndCareSeconds": 24.694,
       "careApplied": true
     },
     "correctedWrongTurn": {
@@ -69,7 +69,7 @@
     "bruel-jonction-b"
   ],
   "knownRouteSavingSeconds": 3.447,
-  "careExtraDiscoverySeconds": 4.083,
-  "careExtraKnownSeconds": 4.082,
+  "careExtraDiscoverySeconds": 0,
+  "careExtraKnownSeconds": 0,
   "wrongTurnExtraSeconds": 13.812
 }

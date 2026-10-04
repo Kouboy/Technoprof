@@ -54,7 +54,7 @@ function measure(route, care = false) {
   for (let i = 0; i < route.length; i++) {
     const z = zones.get(route[i]); assert(z);
     if (care && z.id === d.health.zone && !cared) {
-      seconds += Math.abs(x - d.health.x) / walk + d.health.seconds;
+      if (d.health.mode !== 'recovery') seconds += Math.abs(x - d.health.x) / walk + d.health.seconds;
       x = d.health.x; cared = true;
     }
     if (i === route.length - 1) {

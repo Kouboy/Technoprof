@@ -127,6 +127,7 @@ if (a2 || a3)
         for (const edge of spec.rooms[id].exits) {
           const t = setup("bruel-navigation-care"),
             g = t.g;
+          if (a3 && source === "infirmerie") g.navigationCare.used = true; // Quiet, already-visited branch preset.
           g.enterRoom(id, 150);
           t.advance(0.4, fps);
           for (let i = 0; i < fps * 6 && g.room === id; i++) {
@@ -185,121 +186,131 @@ if (a2 || a3)
     }
 
 const careReports = [];
-for (const fps of [30, 60, 120])
-  for (const mode of ["keyboard", "direct"])
-    for (const gain of [1, 2])
-      for (const hp of [1, 2, 3, 4, 5]) {
-        const t = setup("bruel-navigation-care", hp, gain),
-          g = t.g;
-        // Use actual passage input from hall, then actual cabinet input from its entry.
-        for (
-          let i = 0;
-          i < fps * 8 && g.room !== t.api.NAV_ID.infirmerie;
-          i++
-        ) {
+if (a3) careReports.push(...require("./check-recovery-a3.cjs").run());
+if (!a3) {
+  for (const fps of [30, 60, 120])
+    for (const mode of ["keyboard", "direct"])
+      for (const gain of [1, 2])
+        for (const hp of [1, 2, 3, 4, 5]) {
+          const t = setup("bruel-navigation-care", hp, gain),
+            g = t.g;
+          // Use actual passage input from hall, then actual cabinet input from its entry.
+          for (
+            let i = 0;
+            i < fps * 8 && g.room !== t.api.NAV_ID.infirmerie;
+            i++
+          ) {
+            release(t);
+            exit(t, t.api.NAV_ID.infirmerie, mode);
+            t.step(1000 / fps);
+          }
+          assert.equal(g.room, t.api.NAV_ID.infirmerie);
+          t.advance(0.4, fps);
           release(t);
-          exit(t, t.api.NAV_ID.infirmerie, mode);
-          t.step(1000 / fps);
-        }
-        assert.equal(g.room, t.api.NAV_ID.infirmerie);
-        t.advance(0.4, fps);
-        release(t);
-        for (let i = 0; i < fps * 6 && !g.navigationCare.used; i++) {
+          for (let i = 0; i < fps * 6 && !g.navigationCare.used; i++) {
+            release(t);
+            if (g.navigationCare.active) {
+              hold(t, "RIGHT");
+              pulse(t, "SPACE");
+              pulse(t, "X");
+            } // ignored while administering care
+            else if (mode === "direct") {
+              if (g.direct.intent?.kind !== "care") tap(t, 180, 109);
+            } else if (Math.abs(g.px - 180) > 20) walk(t, 180, mode);
+            else pulse(t, "X");
+            t.step(1000 / fps);
+            if (hp === 5 && g.messageTime > 0) break;
+          }
+          assert.equal(g.hp, Math.min(5, hp + gain));
+          assert.equal(g.navigationCare.used, hp < 5);
+          assert.equal(g.attack, 0, "a care action cannot strike");
+          assert.equal(g.py, 159, "locked care cannot jump");
+          const starts = g.session.events.filter(
+              (e) => e.kind === "care-start",
+            ),
+            completes = g.session.events.filter(
+              (e) => e.kind === "care-complete",
+            );
+          if (hp < 5) {
+            assert.equal(completes.length, 1);
+            assert.equal(starts.length, 1);
+            assert(
+              Math.abs(
+                starts[0].data.remaining - completes[0].data.remaining - 1.2,
+              ) < 0.021,
+            );
+          }
+          // No new stock on leaving and returning through real exits.
           release(t);
-          if (g.navigationCare.active) {
-            hold(t, "RIGHT");
-            pulse(t, "SPACE");
-            pulse(t, "X");
-          } // ignored while administering care
-          else if (mode === "direct") {
-            if (g.direct.intent?.kind !== "care") tap(t, 180, 109);
-          } else if (Math.abs(g.px - 180) > 20) walk(t, 180, mode);
-          else pulse(t, "X");
-          t.step(1000 / fps);
-          if (hp === 5 && g.messageTime > 0) break;
+          for (let i = 0; i < fps * 5 && g.room !== careHome(t); i++) {
+            release(t);
+            exit(t, careHome(t), mode);
+            t.step(1000 / fps);
+          }
+          t.advance(0.4, fps);
+          for (
+            let i = 0;
+            i < fps * 5 && g.room !== t.api.NAV_ID.infirmerie;
+            i++
+          ) {
+            release(t);
+            exit(t, t.api.NAV_ID.infirmerie, mode);
+            t.step(1000 / fps);
+          }
+          t.advance(0.4, fps);
+          assert.equal(g.navigationCare.used, hp < 5);
+          assert.equal(g.hp, Math.min(5, hp + gain));
+          careReports.push({
+            fps,
+            mode,
+            gain,
+            startHp: hp,
+            endHp: g.hp,
+            careUses: completes.length,
+            remaining: +g.remaining.toFixed(3),
+          });
         }
-        assert.equal(g.hp, Math.min(5, hp + gain));
-        assert.equal(g.navigationCare.used, hp < 5);
-        assert.equal(g.attack, 0, "a care action cannot strike");
-        assert.equal(g.py, 159, "locked care cannot jump");
-        const starts = g.session.events.filter((e) => e.kind === "care-start"),
-          completes = g.session.events.filter(
-            (e) => e.kind === "care-complete",
-          );
-        if (hp < 5) {
-          assert.equal(completes.length, 1);
-          assert.equal(starts.length, 1);
-          assert(
-            Math.abs(
-              starts[0].data.remaining - completes[0].data.remaining - 1.2,
-            ) < 0.021,
-          );
-        }
-        // No new stock on leaving and returning through real exits.
-        release(t);
-        for (let i = 0; i < fps * 5 && g.room !== careHome(t); i++) {
-          release(t);
-          exit(t, careHome(t), mode);
-          t.step(1000 / fps);
-        }
-        t.advance(0.4, fps);
-        for (
-          let i = 0;
-          i < fps * 5 && g.room !== t.api.NAV_ID.infirmerie;
-          i++
-        ) {
-          release(t);
-          exit(t, t.api.NAV_ID.infirmerie, mode);
-          t.step(1000 / fps);
-        }
-        t.advance(0.4, fps);
-        assert.equal(g.navigationCare.used, hp < 5);
-        assert.equal(g.hp, Math.min(5, hp + gain));
-        careReports.push({
-          fps,
-          mode,
-          gain,
-          startHp: hp,
-          endHp: g.hp,
-          careUses: completes.length,
-          remaining: +g.remaining.toFixed(3),
-        });
-      }
-for (const fps of [30, 60, 120]) {
-  const t = setup("bruel-navigation-care", 2, 2),
-    g = t.g;
-  g.enterRoom(t.api.NAV_ID.infirmerie, 180);
-  t.advance(0.4, fps);
-  pulse(t, "X");
-  t.step(1000 / fps);
-  assert(g.navigationCare.active);
-  const state = [g.hp, g.navigationCare.elapsed, g.remaining, g.px];
-  g.setPaused(true);
-  t.advance(5, fps);
-  assert.deepEqual([g.hp, g.navigationCare.elapsed, g.remaining, g.px], state);
-  g.setPaused(false);
-  g.pauseForFocusLoss();
-  t.advance(2, fps);
-  assert.deepEqual([g.hp, g.navigationCare.elapsed, g.remaining, g.px], state);
-  g.setPaused(false);
-  t.advance(1.3, fps);
-  assert.equal(g.hp, 4);
-  assert.equal(
-    g.session.events.filter((e) => e.kind === "care-complete").length,
-    1,
-  );
-  const late = setup("bruel-navigation-care", 2, 2);
-  late.g.enterRoom(late.api.NAV_ID.infirmerie, 180);
-  late.advance(0.4, fps);
-  late.g.remaining = 0.5;
-  pulse(late, "X");
-  late.step(1000 / fps);
-  late.advance(0.7, fps);
-  assert.equal(late.g.phase, "fail");
-  assert.equal(late.g.hp, 2);
-  assert(!late.g.navigationCare.used);
+  for (const fps of [30, 60, 120]) {
+    const t = setup("bruel-navigation-care", 2, 2),
+      g = t.g;
+    g.enterRoom(t.api.NAV_ID.infirmerie, 180);
+    t.advance(0.4, fps);
+    pulse(t, "X");
+    t.step(1000 / fps);
+    assert(g.navigationCare.active);
+    const state = [g.hp, g.navigationCare.elapsed, g.remaining, g.px];
+    g.setPaused(true);
+    t.advance(5, fps);
+    assert.deepEqual(
+      [g.hp, g.navigationCare.elapsed, g.remaining, g.px],
+      state,
+    );
+    g.setPaused(false);
+    g.pauseForFocusLoss();
+    t.advance(2, fps);
+    assert.deepEqual(
+      [g.hp, g.navigationCare.elapsed, g.remaining, g.px],
+      state,
+    );
+    g.setPaused(false);
+    t.advance(1.3, fps);
+    assert.equal(g.hp, 4);
+    assert.equal(
+      g.session.events.filter((e) => e.kind === "care-complete").length,
+      1,
+    );
+    const late = setup("bruel-navigation-care", 2, 2);
+    late.g.enterRoom(late.api.NAV_ID.infirmerie, 180);
+    late.advance(0.4, fps);
+    late.g.remaining = 0.5;
+    pulse(late, "X");
+    late.step(1000 / fps);
+    late.advance(0.7, fps);
+    assert.equal(late.g.phase, "fail");
+    assert.equal(late.g.hp, 2);
+    assert(!late.g.navigationCare.used);
+  }
 }
-
 const routesReports = [];
 const runs = ["discovery", "known", "correctedWrongTurn"].map((path) => ({
   path,
@@ -382,11 +393,13 @@ for (const fps of [30, 60, 120])
         };
       for (let i = 0; i < fps * 220 && g.phase === "school"; i++) {
         release(t);
+        if (a3 && g.navigationMetrics.visits.length > ri + 1)
+          ri = g.navigationMetrics.visits.length - 1;
         if (g.roomTransition || g.schoolFade || g.navigationCare.active) {
-        } else if (g.encounterTime) {
+        } else if (g.encounterTime || g.recoveryScene.state === "dialogue") {
           if (mode === "keyboard") pulse(t, "X");
           else tap(t, 160, 164);
-        } else if (g.playerRecovery || g.hitStop) {
+        } else if (g.recoveryScene.active || g.playerRecovery || g.hitStop) {
         } else {
           if (g.room === route[ri + 1]) ri++;
           const e = g.enemies.find((e) => e.hp > 0);
@@ -528,5 +541,5 @@ fs.writeFileSync(
   ) + "\n",
 );
 console.log(
-  `PASS atelier ${revision}: graph matches runtime; profile isolated; 60 care comparisons through both inputs at 30/60/120 fps; capped gain, one-use reentry, pause/focus, late precedence; ${routesReports.length} full routes including 24 +1/+2 care runs and 6 continuous road-to-class trials with real fights and course-to-cruising ellipse.`,
+  `PASS atelier ${revision}: graph matches runtime; profile isolated; 60 care comparisons through both inputs at 30/60/120 fps; ${a3 ? "full recovery, free scene/exit clock, reserved unique usage" : "capped partial gain, one-use reentry, late precedence"}; pause/focus; ${routesReports.length} full routes including 24 care runs and 6 continuous road-to-class trials with real fights and course-to-cruising ellipse.`,
 );

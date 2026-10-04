@@ -4,542 +4,542 @@
     {
       "fps": 30,
       "mode": "keyboard",
-      "gain": 1,
+      "gain": "full",
       "startHp": 1,
-      "endHp": 2,
-      "careUses": 1,
-      "remaining": 214.033
-    },
-    {
-      "fps": 30,
-      "mode": "keyboard",
-      "gain": 1,
-      "startHp": 2,
-      "endHp": 3,
-      "careUses": 1,
-      "remaining": 214.033
-    },
-    {
-      "fps": 30,
-      "mode": "keyboard",
-      "gain": 1,
-      "startHp": 3,
-      "endHp": 4,
-      "careUses": 1,
-      "remaining": 214.033
-    },
-    {
-      "fps": 30,
-      "mode": "keyboard",
-      "gain": 1,
-      "startHp": 4,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 214.033
+      "remaining": 223.417
     },
     {
       "fps": 30,
       "mode": "keyboard",
-      "gain": 1,
-      "startHp": 5,
-      "endHp": 5,
-      "careUses": 0,
-      "remaining": 215.233
-    },
-    {
-      "fps": 30,
-      "mode": "keyboard",
-      "gain": 2,
-      "startHp": 1,
-      "endHp": 3,
-      "careUses": 1,
-      "remaining": 214.033
-    },
-    {
-      "fps": 30,
-      "mode": "keyboard",
-      "gain": 2,
+      "gain": "full",
       "startHp": 2,
-      "endHp": 4,
+      "endHp": 5,
       "careUses": 1,
-      "remaining": 214.033
+      "remaining": 223.417
     },
     {
       "fps": 30,
       "mode": "keyboard",
-      "gain": 2,
+      "gain": "full",
       "startHp": 3,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 214.033
+      "remaining": 223.417
     },
     {
       "fps": 30,
       "mode": "keyboard",
-      "gain": 2,
+      "gain": "full",
       "startHp": 4,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 214.033
+      "remaining": 223.417
     },
     {
       "fps": 30,
       "mode": "keyboard",
-      "gain": 2,
+      "gain": "full",
       "startHp": 5,
       "endHp": 5,
-      "careUses": 0,
-      "remaining": 215.233
+      "careUses": 1,
+      "remaining": 223.417
     },
     {
       "fps": 30,
-      "mode": "direct",
-      "gain": 1,
+      "mode": "keyboard",
+      "gain": "full",
       "startHp": 1,
-      "endHp": 2,
-      "careUses": 1,
-      "remaining": 219.233
-    },
-    {
-      "fps": 30,
-      "mode": "direct",
-      "gain": 1,
-      "startHp": 2,
-      "endHp": 3,
-      "careUses": 1,
-      "remaining": 219.233
-    },
-    {
-      "fps": 30,
-      "mode": "direct",
-      "gain": 1,
-      "startHp": 3,
-      "endHp": 4,
-      "careUses": 1,
-      "remaining": 219.233
-    },
-    {
-      "fps": 30,
-      "mode": "direct",
-      "gain": 1,
-      "startHp": 4,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 219.233
+      "remaining": 223.417
     },
     {
       "fps": 30,
-      "mode": "direct",
-      "gain": 1,
-      "startHp": 5,
-      "endHp": 5,
-      "careUses": 0,
-      "remaining": 220.433
-    },
-    {
-      "fps": 30,
-      "mode": "direct",
-      "gain": 2,
-      "startHp": 1,
-      "endHp": 3,
-      "careUses": 1,
-      "remaining": 219.233
-    },
-    {
-      "fps": 30,
-      "mode": "direct",
-      "gain": 2,
+      "mode": "keyboard",
+      "gain": "full",
       "startHp": 2,
-      "endHp": 4,
+      "endHp": 5,
       "careUses": 1,
-      "remaining": 219.233
+      "remaining": 223.417
     },
     {
       "fps": 30,
-      "mode": "direct",
-      "gain": 2,
+      "mode": "keyboard",
+      "gain": "full",
       "startHp": 3,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 219.233
+      "remaining": 223.417
+    },
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 4,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.417
+    },
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 5,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.417
     },
     {
       "fps": 30,
       "mode": "direct",
-      "gain": 2,
-      "startHp": 4,
+      "gain": "full",
+      "startHp": 1,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 219.233
+      "remaining": 223.467
     },
     {
       "fps": 30,
       "mode": "direct",
-      "gain": 2,
-      "startHp": 5,
-      "endHp": 5,
-      "careUses": 0,
-      "remaining": 220.433
-    },
-    {
-      "fps": 60,
-      "mode": "keyboard",
-      "gain": 1,
-      "startHp": 1,
-      "endHp": 2,
-      "careUses": 1,
-      "remaining": 214.133
-    },
-    {
-      "fps": 60,
-      "mode": "keyboard",
-      "gain": 1,
+      "gain": "full",
       "startHp": 2,
-      "endHp": 3,
-      "careUses": 1,
-      "remaining": 214.133
-    },
-    {
-      "fps": 60,
-      "mode": "keyboard",
-      "gain": 1,
-      "startHp": 3,
-      "endHp": 4,
-      "careUses": 1,
-      "remaining": 214.133
-    },
-    {
-      "fps": 60,
-      "mode": "keyboard",
-      "gain": 1,
-      "startHp": 4,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 214.133
+      "remaining": 223.467
     },
     {
-      "fps": 60,
-      "mode": "keyboard",
-      "gain": 1,
-      "startHp": 5,
-      "endHp": 5,
-      "careUses": 0,
-      "remaining": 215.333
-    },
-    {
-      "fps": 60,
-      "mode": "keyboard",
-      "gain": 2,
-      "startHp": 1,
-      "endHp": 3,
-      "careUses": 1,
-      "remaining": 214.133
-    },
-    {
-      "fps": 60,
-      "mode": "keyboard",
-      "gain": 2,
-      "startHp": 2,
-      "endHp": 4,
-      "careUses": 1,
-      "remaining": 214.133
-    },
-    {
-      "fps": 60,
-      "mode": "keyboard",
-      "gain": 2,
+      "fps": 30,
+      "mode": "direct",
+      "gain": "full",
       "startHp": 3,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 214.133
+      "remaining": 223.467
     },
     {
-      "fps": 60,
-      "mode": "keyboard",
-      "gain": 2,
+      "fps": 30,
+      "mode": "direct",
+      "gain": "full",
       "startHp": 4,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 214.133
+      "remaining": 223.467
     },
     {
-      "fps": 60,
-      "mode": "keyboard",
-      "gain": 2,
+      "fps": 30,
+      "mode": "direct",
+      "gain": "full",
       "startHp": 5,
       "endHp": 5,
-      "careUses": 0,
-      "remaining": 215.333
+      "careUses": 1,
+      "remaining": 223.467
     },
     {
-      "fps": 60,
+      "fps": 30,
       "mode": "direct",
-      "gain": 1,
+      "gain": "full",
       "startHp": 1,
-      "endHp": 2,
-      "careUses": 1,
-      "remaining": 219.267
-    },
-    {
-      "fps": 60,
-      "mode": "direct",
-      "gain": 1,
-      "startHp": 2,
-      "endHp": 3,
-      "careUses": 1,
-      "remaining": 219.267
-    },
-    {
-      "fps": 60,
-      "mode": "direct",
-      "gain": 1,
-      "startHp": 3,
-      "endHp": 4,
-      "careUses": 1,
-      "remaining": 219.267
-    },
-    {
-      "fps": 60,
-      "mode": "direct",
-      "gain": 1,
-      "startHp": 4,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 219.267
+      "remaining": 223.467
     },
     {
-      "fps": 60,
+      "fps": 30,
       "mode": "direct",
-      "gain": 1,
-      "startHp": 5,
-      "endHp": 5,
-      "careUses": 0,
-      "remaining": 220.467
-    },
-    {
-      "fps": 60,
-      "mode": "direct",
-      "gain": 2,
-      "startHp": 1,
-      "endHp": 3,
-      "careUses": 1,
-      "remaining": 219.267
-    },
-    {
-      "fps": 60,
-      "mode": "direct",
-      "gain": 2,
+      "gain": "full",
       "startHp": 2,
-      "endHp": 4,
+      "endHp": 5,
       "careUses": 1,
-      "remaining": 219.267
+      "remaining": 223.467
     },
     {
-      "fps": 60,
+      "fps": 30,
       "mode": "direct",
-      "gain": 2,
+      "gain": "full",
       "startHp": 3,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 219.267
+      "remaining": 223.467
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 4,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.467
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 5,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.467
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 1,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.417
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 2,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.417
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 3,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.417
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 4,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.417
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 5,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.417
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 1,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.417
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 2,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.417
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 3,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.417
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 4,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.417
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 5,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.417
     },
     {
       "fps": 60,
       "mode": "direct",
-      "gain": 2,
-      "startHp": 4,
+      "gain": "full",
+      "startHp": 1,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 219.267
+      "remaining": 223.467
     },
     {
       "fps": 60,
       "mode": "direct",
-      "gain": 2,
-      "startHp": 5,
-      "endHp": 5,
-      "careUses": 0,
-      "remaining": 220.467
-    },
-    {
-      "fps": 120,
-      "mode": "keyboard",
-      "gain": 1,
-      "startHp": 1,
-      "endHp": 2,
-      "careUses": 1,
-      "remaining": 214.2
-    },
-    {
-      "fps": 120,
-      "mode": "keyboard",
-      "gain": 1,
+      "gain": "full",
       "startHp": 2,
-      "endHp": 3,
-      "careUses": 1,
-      "remaining": 214.2
-    },
-    {
-      "fps": 120,
-      "mode": "keyboard",
-      "gain": 1,
-      "startHp": 3,
-      "endHp": 4,
-      "careUses": 1,
-      "remaining": 214.2
-    },
-    {
-      "fps": 120,
-      "mode": "keyboard",
-      "gain": 1,
-      "startHp": 4,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 214.2
+      "remaining": 223.467
     },
     {
-      "fps": 120,
-      "mode": "keyboard",
-      "gain": 1,
-      "startHp": 5,
-      "endHp": 5,
-      "careUses": 0,
-      "remaining": 215.4
-    },
-    {
-      "fps": 120,
-      "mode": "keyboard",
-      "gain": 2,
-      "startHp": 1,
-      "endHp": 3,
-      "careUses": 1,
-      "remaining": 214.2
-    },
-    {
-      "fps": 120,
-      "mode": "keyboard",
-      "gain": 2,
-      "startHp": 2,
-      "endHp": 4,
-      "careUses": 1,
-      "remaining": 214.2
-    },
-    {
-      "fps": 120,
-      "mode": "keyboard",
-      "gain": 2,
+      "fps": 60,
+      "mode": "direct",
+      "gain": "full",
       "startHp": 3,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 214.2
+      "remaining": 223.467
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 4,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.467
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 5,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.467
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 1,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.467
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 2,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.467
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 3,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.467
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 4,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.467
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 5,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.467
     },
     {
       "fps": 120,
       "mode": "keyboard",
-      "gain": 2,
-      "startHp": 4,
+      "gain": "full",
+      "startHp": 1,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 214.2
+      "remaining": 223.425
     },
     {
       "fps": 120,
       "mode": "keyboard",
-      "gain": 2,
-      "startHp": 5,
-      "endHp": 5,
-      "careUses": 0,
-      "remaining": 215.4
-    },
-    {
-      "fps": 120,
-      "mode": "direct",
-      "gain": 1,
-      "startHp": 1,
-      "endHp": 2,
-      "careUses": 1,
-      "remaining": 219.342
-    },
-    {
-      "fps": 120,
-      "mode": "direct",
-      "gain": 1,
+      "gain": "full",
       "startHp": 2,
-      "endHp": 3,
-      "careUses": 1,
-      "remaining": 219.342
-    },
-    {
-      "fps": 120,
-      "mode": "direct",
-      "gain": 1,
-      "startHp": 3,
-      "endHp": 4,
-      "careUses": 1,
-      "remaining": 219.342
-    },
-    {
-      "fps": 120,
-      "mode": "direct",
-      "gain": 1,
-      "startHp": 4,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 219.342
+      "remaining": 223.425
     },
     {
       "fps": 120,
-      "mode": "direct",
-      "gain": 1,
-      "startHp": 5,
-      "endHp": 5,
-      "careUses": 0,
-      "remaining": 220.542
-    },
-    {
-      "fps": 120,
-      "mode": "direct",
-      "gain": 2,
-      "startHp": 1,
-      "endHp": 3,
-      "careUses": 1,
-      "remaining": 219.342
-    },
-    {
-      "fps": 120,
-      "mode": "direct",
-      "gain": 2,
-      "startHp": 2,
-      "endHp": 4,
-      "careUses": 1,
-      "remaining": 219.342
-    },
-    {
-      "fps": 120,
-      "mode": "direct",
-      "gain": 2,
+      "mode": "keyboard",
+      "gain": "full",
       "startHp": 3,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 219.342
+      "remaining": 223.425
     },
     {
       "fps": 120,
-      "mode": "direct",
-      "gain": 2,
+      "mode": "keyboard",
+      "gain": "full",
       "startHp": 4,
       "endHp": 5,
       "careUses": 1,
-      "remaining": 219.342
+      "remaining": 223.425
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 5,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.425
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 1,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.425
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 2,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.425
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 3,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.425
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 4,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.425
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "gain": "full",
+      "startHp": 5,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.425
     },
     {
       "fps": 120,
       "mode": "direct",
-      "gain": 2,
+      "gain": "full",
+      "startHp": 1,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.483
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 2,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.483
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 3,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.483
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 4,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.483
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "gain": "full",
       "startHp": 5,
       "endHp": 5,
-      "careUses": 0,
-      "remaining": 220.542
+      "careUses": 1,
+      "remaining": 223.483
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 1,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.483
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 2,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.483
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 3,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.483
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 4,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.483
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "gain": "full",
+      "startHp": 5,
+      "endHp": 5,
+      "careUses": 1,
+      "remaining": 223.483
     }
   ],
   "branchChecks": 75,
@@ -552,8 +552,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 180.5,
+      "hp": 2,
+      "remaining": 177.267,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -567,7 +567,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 30,
@@ -577,8 +577,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 183.883,
+      "hp": 2,
+      "remaining": 180.65,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -590,7 +590,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 30,
@@ -600,8 +600,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 168.8,
+      "hp": 2,
+      "remaining": 165.567,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -619,7 +619,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 3,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 30,
@@ -629,8 +629,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 182.35,
+      "hp": 2,
+      "remaining": 179.117,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -644,7 +644,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 30,
@@ -654,8 +654,8 @@
       "roadSpent": 56.033,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 127.85,
+      "hp": 2,
+      "remaining": 124.617,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -667,7 +667,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 30,
@@ -678,7 +678,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 2,
-      "remaining": 177.133,
+      "remaining": 177.433,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -694,7 +694,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 30,
@@ -704,8 +704,8 @@
       "roadSpent": 0,
       "startHp": 2,
       "gain": 2,
-      "hp": 3,
-      "remaining": 177.133,
+      "hp": 2,
+      "remaining": 177.433,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -721,7 +721,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 30,
@@ -732,7 +732,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 2,
-      "remaining": 180.517,
+      "remaining": 180.817,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -746,7 +746,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 30,
@@ -756,8 +756,8 @@
       "roadSpent": 0,
       "startHp": 2,
       "gain": 2,
-      "hp": 3,
-      "remaining": 180.517,
+      "hp": 2,
+      "remaining": 180.817,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -771,7 +771,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 30,
@@ -782,7 +782,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 181.417,
+      "remaining": 178.383,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -796,7 +796,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 30,
@@ -807,7 +807,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 184.8,
+      "remaining": 181.767,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -819,7 +819,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 30,
@@ -830,7 +830,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 169.75,
+      "remaining": 166.717,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -848,7 +848,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 3,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 30,
@@ -859,7 +859,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 183.3,
+      "remaining": 180.267,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -873,7 +873,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 30,
@@ -884,7 +884,7 @@
       "startHp": 5,
       "gain": 0,
       "hp": 4,
-      "remaining": 130.85,
+      "remaining": 127.817,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -896,7 +896,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 30,
@@ -906,8 +906,8 @@
       "roadSpent": 0,
       "startHp": 2,
       "gain": 1,
-      "hp": 2,
-      "remaining": 178.25,
+      "hp": 4,
+      "remaining": 178.6,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -923,7 +923,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 30,
@@ -933,8 +933,8 @@
       "roadSpent": 0,
       "startHp": 2,
       "gain": 2,
-      "hp": 3,
-      "remaining": 178.25,
+      "hp": 4,
+      "remaining": 178.6,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -950,7 +950,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 30,
@@ -960,8 +960,8 @@
       "roadSpent": 0,
       "startHp": 2,
       "gain": 1,
-      "hp": 2,
-      "remaining": 181.633,
+      "hp": 4,
+      "remaining": 181.983,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -975,7 +975,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 30,
@@ -985,8 +985,8 @@
       "roadSpent": 0,
       "startHp": 2,
       "gain": 2,
-      "hp": 3,
-      "remaining": 181.633,
+      "hp": 4,
+      "remaining": 181.983,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1000,7 +1000,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 60,
@@ -1010,8 +1010,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 3,
-      "remaining": 179.917,
+      "hp": 1,
+      "remaining": 176.633,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1025,7 +1025,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 60,
@@ -1035,8 +1035,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 3,
-      "remaining": 183.3,
+      "hp": 1,
+      "remaining": 180.017,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1048,7 +1048,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 60,
@@ -1058,8 +1058,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 3,
-      "remaining": 168.283,
+      "hp": 1,
+      "remaining": 165,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1077,7 +1077,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 3,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 60,
@@ -1087,8 +1087,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 3,
-      "remaining": 181.783,
+      "hp": 1,
+      "remaining": 178.5,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1102,7 +1102,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 60,
@@ -1112,8 +1112,8 @@
       "roadSpent": 53.7,
       "startHp": 5,
       "gain": 0,
-      "hp": 3,
-      "remaining": 129.6,
+      "hp": 1,
+      "remaining": 126.317,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1125,7 +1125,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 60,
@@ -1136,7 +1136,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 1,
-      "remaining": 176.667,
+      "remaining": 176.833,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1152,7 +1152,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 60,
@@ -1162,8 +1162,8 @@
       "roadSpent": 0,
       "startHp": 2,
       "gain": 2,
-      "hp": 2,
-      "remaining": 176.667,
+      "hp": 1,
+      "remaining": 176.833,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1179,7 +1179,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 60,
@@ -1190,7 +1190,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 1,
-      "remaining": 180.05,
+      "remaining": 180.217,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1204,7 +1204,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 60,
@@ -1214,8 +1214,8 @@
       "roadSpent": 0,
       "startHp": 2,
       "gain": 2,
-      "hp": 2,
-      "remaining": 180.05,
+      "hp": 1,
+      "remaining": 180.217,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1229,7 +1229,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 60,
@@ -1239,8 +1239,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 181.667,
+      "hp": 2,
+      "remaining": 178.65,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1254,7 +1254,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 60,
@@ -1264,8 +1264,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 185.017,
+      "hp": 2,
+      "remaining": 182,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1277,7 +1277,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 60,
@@ -1287,8 +1287,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 170.017,
+      "hp": 2,
+      "remaining": 167,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1306,7 +1306,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 3,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 60,
@@ -1316,8 +1316,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 183.533,
+      "hp": 2,
+      "remaining": 180.517,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1331,7 +1331,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 60,
@@ -1341,8 +1341,8 @@
       "roadSpent": 53.55,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 131.467,
+      "hp": 2,
+      "remaining": 128.45,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1354,7 +1354,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 60,
@@ -1365,7 +1365,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 2,
-      "remaining": 178.533,
+      "remaining": 178.883,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1381,7 +1381,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 60,
@@ -1391,8 +1391,8 @@
       "roadSpent": 0,
       "startHp": 2,
       "gain": 2,
-      "hp": 3,
-      "remaining": 178.533,
+      "hp": 2,
+      "remaining": 178.883,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1408,7 +1408,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 60,
@@ -1419,7 +1419,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 2,
-      "remaining": 181.883,
+      "remaining": 182.233,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1433,7 +1433,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 60,
@@ -1443,8 +1443,8 @@
       "roadSpent": 0,
       "startHp": 2,
       "gain": 2,
-      "hp": 3,
-      "remaining": 181.883,
+      "hp": 2,
+      "remaining": 182.233,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1458,7 +1458,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 120,
@@ -1468,8 +1468,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 3,
-      "remaining": 179.517,
+      "hp": 1,
+      "remaining": 176.092,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1483,7 +1483,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 120,
@@ -1493,8 +1493,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 3,
-      "remaining": 183.35,
+      "hp": 1,
+      "remaining": 179.925,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1506,7 +1506,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 120,
@@ -1516,8 +1516,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 3,
-      "remaining": 168.375,
+      "hp": 1,
+      "remaining": 164.95,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1535,7 +1535,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 3,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 120,
@@ -1545,8 +1545,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 3,
-      "remaining": 181.867,
+      "hp": 1,
+      "remaining": 178.442,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1560,7 +1560,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 120,
@@ -1570,8 +1570,8 @@
       "roadSpent": 53.442,
       "startHp": 5,
       "gain": 0,
-      "hp": 3,
-      "remaining": 129.908,
+      "hp": 1,
+      "remaining": 126.483,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1583,7 +1583,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 120,
@@ -1594,7 +1594,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 1,
-      "remaining": 176.242,
+      "remaining": 176.225,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1610,7 +1610,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 120,
@@ -1620,8 +1620,8 @@
       "roadSpent": 0,
       "startHp": 2,
       "gain": 2,
-      "hp": 2,
-      "remaining": 176.242,
+      "hp": 1,
+      "remaining": 176.225,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1637,7 +1637,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 120,
@@ -1648,7 +1648,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 1,
-      "remaining": 180.167,
+      "remaining": 180.15,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1662,7 +1662,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 120,
@@ -1672,8 +1672,8 @@
       "roadSpent": 0,
       "startHp": 2,
       "gain": 2,
-      "hp": 2,
-      "remaining": 180.167,
+      "hp": 1,
+      "remaining": 180.15,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1687,7 +1687,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 17
+      "enemyReleases": 14
     },
     {
       "fps": 120,
@@ -1697,8 +1697,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 182.2,
+      "hp": 2,
+      "remaining": 178.992,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1712,7 +1712,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 120,
@@ -1722,8 +1722,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 185.533,
+      "hp": 2,
+      "remaining": 182.325,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1735,7 +1735,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 120,
@@ -1745,8 +1745,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 170.658,
+      "hp": 2,
+      "remaining": 167.45,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1764,7 +1764,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 3,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 120,
@@ -1774,8 +1774,8 @@
       "roadSpent": 0,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 184.075,
+      "hp": 2,
+      "remaining": 180.867,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1789,7 +1789,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 120,
@@ -1799,8 +1799,8 @@
       "roadSpent": 53.45,
       "startHp": 5,
       "gain": 0,
-      "hp": 4,
-      "remaining": 132.083,
+      "hp": 2,
+      "remaining": 128.875,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1812,7 +1812,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 0,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 120,
@@ -1823,7 +1823,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 2,
-      "remaining": 179.108,
+      "remaining": 179.242,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1839,7 +1839,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 120,
@@ -1849,8 +1849,8 @@
       "roadSpent": 0,
       "startHp": 2,
       "gain": 2,
-      "hp": 3,
-      "remaining": 179.108,
+      "hp": 2,
+      "remaining": 179.242,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1866,7 +1866,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 120,
@@ -1877,7 +1877,7 @@
       "startHp": 2,
       "gain": 1,
       "hp": 2,
-      "remaining": 182.442,
+      "remaining": 182.575,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1891,7 +1891,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 16
+      "enemyReleases": 13
     },
     {
       "fps": 120,
@@ -1901,8 +1901,8 @@
       "roadSpent": 0,
       "startHp": 2,
       "gain": 2,
-      "hp": 3,
-      "remaining": 182.442,
+      "hp": 2,
+      "remaining": 182.575,
       "visits": [
         "bruel-cour",
         "bruel-vestibule",
@@ -1916,7 +1916,7 @@
         "bruel-seuil-b12"
       ],
       "returns": 1,
-      "enemyReleases": 16
+      "enemyReleases": 13
     }
   ]
 }

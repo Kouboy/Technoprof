@@ -1,0 +1,9 @@
+# Infirmière de Bruel A3
+
+Création avec l'outil intégré imagegen, fond transparent demandé et alpha
+conservé. Fichier utilisé : `art/infirmiere-bruel-a3.png`. Aucune retouche ni
+réduction du fichier source ; le moteur ajuste sa taille avec filtrage nearest.
+
+## Prompt final
+
+Use case: stylized-concept. Production game asset for TECHNOPROF, French social pulp comic pixel-art action game. Generate ONE transparent-background full-body sprite of a French public secondary-school nurse, a woman around fifty, credible human proportions, warmly attentive and quietly tired, absolutely not a caricature, gag, pin-up or heroic pose. She stands in strict side profile facing LEFT, feet on an invisible horizontal baseline, head slightly inclined towards a tired teacher, one hand extended gently at waist height in welcome, other hand relaxed holding a folded clean cloth. Short greying brown hair tucked behind ear, rectangular discreet glasses, light oatmeal open work coat over faded teal blouse, straight dark slate trousers, comfortable worn flat shoes, small plain pocket on coat. No nurse cap, no cross symbol, no stethoscope theatre, no text. Style matches French comics pulp game: strong black ink angular outlines, confident cut pixel edges, clear hard shadows, recognizable small details, realistic adult anatomy, modest humane expression, limited palette ink black, slate blue, worn institutional teal, nicotine beige, cream and muted rust. No soft digital painting, gradients, 3D, chibi or rounded toy shapes. Entire silhouette isolated in real alpha transparency, no shadow on ground, no backdrop or scenery. Central composition generous transparent margins, from head to soles fully included, approximately 700 pixels tall on 1024x1024 canvas. Pixel-art texture designed to remain readable when rendered about 74 pixels tall. Just the single nurse, no multiple poses, no captions, no checkerboard drawn into image.

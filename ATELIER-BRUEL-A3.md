@@ -1,98 +1,155 @@
-# Bruel — atelier A3 : pression des combats et soin plus tardif
+# Bruel — atelier A3 : récupération et alternance du boss
 
-A3 répond aux deux journaux A2 fournis le 4 octobre : les cinq adversaires
-ordinaires étaient vaincus en deux à trois secondes, sans perte de vie avant
-le boss. Les frappes répétées interrompaient leur préparation puis cumulaient
-étourdissement, récupération et attente. Raccourcir seulement l'anticipation
-ne suffisait pas. Les journaux personnels ne sont pas copiés dans le dépôt.
+Cette passe suit le dernier essai humain : conserver l'agressivité des
+ennemis ordinaires et l'infirmerie à la jonction B, puis transformer le soin
+en respiration humaine et empêcher le Parent influent d'être enchaîné
+jusqu'au K.O. Les journaux personnels ne sont pas copiés dans le dépôt.
 
 ## Lancer
 
 Ouvrir **Jouer-Technoprof-Atelier-Bruel-A3.html** dans le dossier du projet.
 Cet export autonome contient le jeu et ses images (environ 88 Mo). Il démarre
 sur « Bruel A3 / combats plus vifs ». A1 et A2 restent dans le sélecteur pour
-comparer. Le scénario « jonction et soins » commence après les trois premières
-rencontres, déclarées terminées, pour tester directement le nouveau détour.
+comparer, avec leur soin partiel d'origine.
 
 Depuis les sources : `npm run build:atelier`, puis `npm run dev` et
-`/?essai=labo&scenario=bruel-navigation-a3`. Le scénario `-road` inclut le trajet.
+`/?essai=labo&scenario=bruel-navigation-a3`.
+
+- `bruel-navigation-a3-road` : trajet puis établissement.
+- `bruel-navigation-a3-care` : jonction B après les trois premières rencontres,
+  déclarées terminées, pour tester le détour avec les PV choisis.
+- `bruel-navigation-a3-parent` : rencontre du boss, avec sa présentation et
+  les PV choisis, pour comparer esquive et frappe répétée.
+
 Flèches/ZQSD, Espace, F/X, souris et gestes tactiles restent les commandes.
-La journée publiée et le HTML gelé 0.61 sont inchangés.
+La journée publiée et le HTML gelé 0.61 sont inchangés. Le travail reste sur
+la branche `atelier-navigation-bruel-a3`, sans publication sur main ou Pages.
 
-## Combats
+## Infirmerie : une scène de récupération
 
-Les ennemis approchent plus vite, préparent leurs coups plus rapidement et
-reprennent l'initiative plus souvent. L'élève prépare en 0,34 s, le vigile
-en 0,38 s et le parent en 0,50 s. Le boss est également plus vif.
+L'accès reste à la jonction B au premier étage. L'entrée déclenche la scène
+automatiquement : le professeur rejoint l'infirmière, s'immobilise pendant
+les trois répliques, puis repart vers la même jonction. Le chrono est suspendu
+pendant toute la scène et les fondus ; le CADRE affiche cette suspension.
 
-Une frappe interrompt encore le coup adverse, mais l'étourdissement logique
-ne dure plus que 0,08 s ; elle n'ajoute plus une longue attente systématique.
-Les vraies récupérations après attaque restent des occasions de riposte.
-Le recul visuel, les impacts et le hit stop conservent leur durée. L'élève
-avance légèrement pendant sa préparation, avec une orientation engagée,
-afin que le recul reçu ne fasse pas systématiquement manquer sa riposte.
+L'infirmière accueille le professeur sans gag : « Vous avez l'air à bout ».
+La commande Action révèle la réplique en cours, puis une nouvelle pression
+avance à la suivante. Un toucher dans la scène fait de même. Aucune attente
+imposée ne coûte du temps de mission. Les déplacements et les frappes sont
+ignorés pendant cet échange.
 
-Les portées, dégâts, PV et commandes du professeur ne changent pas. Les
-dialogues protègent toujours les combattants. Le saut peut servir à éviter
-un coup, y compris pendant une frappe du professeur si celui-ci n'est pas
-en récupération. Les réglages A3 sont regroupés dans `PRESSURE_ENEMY` dans
-`src/gameplay.ts` et ne s'appliquent qu'au profil d'atelier A3.
+À la dernière réplique, les PV reviennent à **5/5**. L'usage est réservé dès
+l'entrée, même si le professeur était déjà en pleine santé : une autre visite
+ne rejoue ni le dialogue ni le soin. Le retour libère les contrôles et reprend
+le chrono. Une pause ou une perte de focus suspend aussi l'animation de cette
+séquence. Recommencer l'affectation réinitialise son usage.
 
-## Infirmerie
+Le sélecteur +1/+2 est masqué pour A3 ; il reste disponible pour A1/A2.
+Le journal A3 indique `careMode: recovery` et la variante
+`recovery-parent-cycle`. Les événements `care-start`, `care-dialogue`,
+`care-complete` et `care-exit` permettent de vérifier le soin unique et le
+temps restant. Le champ historique `gain` ne règle plus le soin d'A3 ;
+`care-complete.gain` indique les PV effectivement récupérés.
 
-L'accès quitte le hall pour la jonction B, au premier étage, après les
-rencontres de la cour, du vestibule et de la jonction sur les deux routes.
-Une porte et une plaque identifient le nouvel accès ; le retour mène à cette
-même jonction. Le hall reçoit un panneau d'affichage à la place de l'ancien
-accès. Cela ne crée pas de verrou obligeant à vaincre chaque ennemi pour
-emprunter les passages ordinaires.
+**Conséquence spatiale à observer :** l'entrée et le retour se font au même
+point de la jonction. Avec le chrono suspendu dans l'infirmerie, le modèle
+statique mesure désormais zéro seconde supplémentaire pour une visite faite
+au passage. Revenir depuis une zone plus éloignée coûte toujours le temps de
+marche jusqu'à la jonction. Aucun délai artificiel ni déplacement de porte
+n'a été ajouté pour recréer les 4,08 s de l'ancien soin partiel.
 
-Les douze zones, les six rencontres et la boucle de navigation A2 restent
-présentes. Le soin reste optionnel, plafonné à 5 PV, utilisable une seule
-fois, avec le délai actif pendant le geste. +1 reste le réglage de départ ;
-+2 est conservé pour comparaison. Le modèle statique mesure environ 4,08 s
-de détour sur chaque route, sans combat ni hésitation.
+Les textes et placements sont regroupés dans `src/bruel-recovery.ts`.
+L'infirmière est un nouveau sprite créé avec l'outil intégré imagegen,
+sur fond transparent, sans retouche du fichier source :
+[image](art/infirmiere-bruel-a3.png) et
+[prompt final et provenance](art/infirmiere-bruel-a3.prompt.md).
+
+## Parent influent : deux coups par ouverture
+
+Le boss conserve **6 PV**. Son anticipation de charge et sa vitesse ne sont
+pas augmentées. Il reprend sa garde après chaque ouverture selon la boucle :
+
+**charge annoncée → esquive → ouverture → un ou deux coups → reprise d'appui
+→ nouvelle charge annoncée.**
+
+L'ouverture suit la fin de sa charge, y compris lorsqu'il atteint un mur.
+Un premier coup reste possible à enchaîner avec un second. Après le deuxième,
+le boss retire son corps, relève son appui et recrée de la distance avec une
+petite poussée sans dégâts. Le professeur suit ce déplacement sans pouvoir
+prolonger la frappe. Les traits de mouvement et « REPRISE D'APPUI » confirment
+la transition ; « OUVERTURE » identifie le moment de punition.
+
+Cette reprise dure **0,38 s** et vise **84 pixels** d'écart, au-delà de la
+portée du livre. Aux murs, la poussée du professeur préserve cet écart même
+si le boss ne peut plus reculer. Ensuite, sa garde normale revient et une
+nouvelle anticipation commence. Il n'existe pas de longue invulnérabilité
+chronométrée ajoutée. Une frappe confirmant un dialogue ne se transforme pas
+en attaque ; les intentions de frappe précédentes sont annulées à la reprise.
+
+Les réglages sont regroupés dans `PARENT_CYCLE` : deux coups maximum,
+ouverture 1,15 s, possibilité de second coup maintenue au moins 0,65 s après
+le premier, reprise 0,38 s, recul 34 pixels, écart final 84 pixels.
+Les états sont explicites : garde, anticipation, charge, ouverture, reprise.
+Les événements `boss-opening`, `boss-breakaway` et `boss-guard-restored`,
+ainsi que `contact.openingHit`, rendent le cycle vérifiable dans le journal.
+
+## Périmètre conservé
+
+Les douze zones, les six rencontres, les deux routes et leur reconnexion,
+la signalétique, l'emplacement de l'infirmerie et le chrono général restent
+ceux d'A3. Les réglages des adversaires ordinaires dans `PRESSURE_ENEMY`
+ne changent pas. Le nouveau cycle concerne seulement le Parent boss d'A3 ;
+A1/A2 et les missions publiées gardent leurs règles précédentes.
 
 ## Vérifications
 
 - `npm run build:atelier` : compilation et exports A1/A2/A3 réussis.
-- `npm test` : suite existante réussie.
-- `npm run test:navigation` : graphes et accès vérifiés ; 54 parcours complets
-  A3, dont six voiture → cours, 60 comparaisons du soin et 75 vérifications
-  d'embranchements ; A1/A2 passent également.
-- Douze comparaisons de cadence A2/A3 et neuf comparaisons frappe répétée /
-  esquive à 30/60/120 images/s, avec protection du dialogue et pause testées.
-  À 60 images/s, dans le preset de contact, l'élève exécute 17 attaques en
-  16 s contre 6 en A2. L'invulnérabilité n'est utilisée que pour mesurer cette
-  cadence ; les comparaisons de combat et d'esquive utilisent les vrais PV.
-- Les bots qui lisent les préparations et sautent réussissent les combats
-  ordinaires avec moins de dégâts que ceux qui martèlent la frappe.
-- Navigateur local : préparation et coup de l'élève observés, ainsi que
-  l'entrée à la souris dans l'infirmerie, le soin 3 → 4 PV et le retour à la
-  jonction. Aucun avertissement ni erreur dans la console de cet essai.
+- `npm test` : suite existante réussie jusqu'aux contrôles 0.61.
+- `npm run test:navigation` : A1/A2/A3, branches, parcours complets et
+  comparaisons de soin réussis ; la comparaison de pression A2/A3 reste verte.
+- `work/check-recovery-a3.cjs` : 60 combinaisons à 30/60/120 images/s,
+  clavier et toucher, PV de départ 1 à 5, anciens gains +1/+2 ignorés par A3.
+  Vérification du soin complet unique, lecture prolongée sans consommation
+  du délai, retour puis nouvelle blessure et revisite sans double soin.
+  Douze contrôles de pause/focus couvrent entrée, dialogue, sortie et fondu.
+  Maintenir Action ou un déplacement ne saute pas les répliques et ne fait
+  pas rebondir entre les portes. Aucun soin ne réanime un professeur à 0 PV
+  ou une affectation dont le délai était déjà expiré.
+- `work/check-parent-cycle-a3.cjs` : douze combats à 30/60/120 images/s,
+  clavier et toucher, avec esquive ou frappe répétée. Chaque victoire contre
+  les 6 PV demande au moins trois charges/ouvertures et deux reprises ;
+  jamais plus de deux contacts par ouverture. Les combats avec esquive
+  utilisent les vrais PV ; l'invulnérabilité est déclarée uniquement dans
+  le stress test de martèlement. Six situations aux deux murs contrôlent
+  la continuité de la poussée, l'écart final et la pause en pleine reprise.
+- Navigateur local, par commandes réelles : accueil de l'infirmière,
+  lecture avec délai figé, soin **1 → 5 PV**, sortie automatique et reprise
+  du délai à la jonction observés. Contre le Parent, deux coups font passer
+  ses PV de **6 à 4**, sa reprise repousse le professeur, puis une troisième
+  tentative ne retire aucun PV et la nouvelle charge est annoncée.
 
-Les résultats sont dans `work/pressure-a3-results.json` et
-`work/navigation-a3-atelier-results.json`. Les captures
-`work/combat-a3-preparation.png` et `work/navigation-a3-jonction.png` montrent
-les vérifications visuelles. Les panneaux restent des recompositions d'atelier.
-Les avertissements de compilation connus sur la taille du bundle et le
-stripping TypeScript subsistent.
+Les rapports sont dans `work/navigation-a3-atelier-results.json`,
+`work/parent-cycle-a3-results.json` et `work/pressure-a3-results.json`.
+Les captures montrent l'[accueil](work/infirmerie-a3-accueil.png), le
+[soin terminé](work/infirmerie-a3-soin-complet.png) et la
+[reprise du Parent](work/parent-a3-reprise.png).
 
-Ces vérifications ne valident pas encore la sensation à vitesse normale
-avec un joueur humain. L'ouverture directe de l'export HTML, le téléphone
-physique et l'écoute restent à confirmer chez Nicolas ; l'observation locale
-utilise le serveur de développement.
+L'observation du boss utilise aussi les pas de simulation et la vitesse
+ralentie de l'atelier pour examiner la transition. Elle ne remplace pas
+l'évaluation humaine du rythme à vitesse normale. L'ouverture directe de
+l'export HTML sur téléphone et l'écoute restent à confirmer chez Nicolas.
+Les avertissements connus sur la taille du bundle et le stripping TypeScript
+subsistent.
 
 ## Prochain essai humain
 
-1. Jouer A3 depuis la cour, à vitesse normale, avec 5 PV et le soin +1.
-2. Comparer frappe répétée puis saut à la préparation : l'attaque doit être
-   menaçante et identifiable, sans exiger de deviner une règle invisible.
-3. Noter les PV et le besoin de soin à l'arrivée à la jonction ; décider
-   librement du détour, puis comparer +2 au même état de blessure.
-4. Exporter le journal. A3 y indique les débuts et les exécutions des attaques
-   adverses, afin de distinguer une attaque interrompue d'une attaque évitée.
-
-Si les premières rencontres deviennent coûteuses même après avoir compris
-le saut, ajuster d'abord la préparation et la reprise par rôle, avant de
-modifier les dégâts ou d'ajouter une immunité aux frappes.
+1. Jouer depuis la cour à vitesse normale avec 5 PV, puis décider librement
+   d'entrer ou non dans l'infirmerie à la jonction.
+2. Vérifier que cette visite se lit comme une courte respiration humaine,
+   que le soin et la reprise du délai sont évidents, sans interaction de
+   gestion supplémentaire.
+3. Contre le Parent, comparer une ou deux frappes après l'esquive. La reprise
+   d'appui doit expliquer immédiatement la fin du combo et laisser le temps
+   de relire la prochaine charge.
+4. Exporter le journal et noter toute sensation de déplacement forcé trop
+   brusque, d'ouverture trop courte ou de transition peu lisible.

@@ -51,6 +51,7 @@ type Host = {
   comicWords: boolean;
   navigationGain: 1 | 2;
   navigationStartHp: number;
+  recoveryScene?: { active: boolean; state: string };
   loadScenario(name: string): void;
   setPaused(value: boolean): void;
   floorGaps(): number[][];
@@ -65,6 +66,7 @@ const SCENARIOS: Record<string, string> = {
   "bruel-navigation-a3": "Bruel A3 / combats plus vifs",
   "bruel-navigation-a3-road": "Bruel A3 / route puis réseau",
   "bruel-navigation-a3-care": "Bruel A3 / jonction et soins",
+  "bruel-navigation-a3-parent": "Bruel A3 / Parent influent",
   "bruel-navigation-a2": "Bruel A2 / découverte du réseau",
   "bruel-navigation-a2-road": "Bruel A2 / route puis réseau",
   "bruel-navigation-a2-care": "Bruel A2 / hall et soins",
@@ -224,7 +226,7 @@ export function installWorkshop(s: Host) {
   careSettings.append(hpLabel);
   const navigationNote = document.createElement("p");
   navigationNote.textContent =
-    "BRUEL / A3 : combats plus vifs, infirmerie à la jonction après trois rencontres. A1/A2 disponibles en comparaison. Changer le soin ou les PV relance cet essai. Soins : approcher l’armoire, F/X ou toucher. Délai actif pendant le soin ; un usage par affectation.";
+    "BRUEL / A3 : l’infirmière accueille le professeur dès l’entrée. F/X ou toucher : afficher puis avancer les répliques. Soin complet, délai suspendu et sortie automatique ; une visite par affectation. Le Parent influent reprend sa garde après deux coups. A1/A2 conservent le soin partiel pour comparaison.";
   careSettings.append(navigationNote);
   root.append(careSettings);
   careSettings.addEventListener("focusin", () => s.setWorkshopFocus(true));
@@ -234,6 +236,11 @@ export function installWorkshop(s: Host) {
   });
   const updateCareSettings = () => {
     careSettings.hidden = !select.value.startsWith("bruel-navigation");
+    const a3 = select.value.startsWith("bruel-navigation-a3");
+    gainLabel.hidden = a3;
+    navigationNote.textContent = a3
+      ? "BRUEL / A3 : l’infirmière accueille le professeur dès l’entrée. F/X ou toucher : afficher puis avancer les répliques. Soin complet, délai suspendu et sortie automatique ; une visite par affectation. Le Parent influent reprend sa garde après deux coups."
+      : "BRUEL / A1-A2 : approcher l’armoire, F/X ou toucher pour le soin partiel +1/+2. Délai actif pendant le soin ; un usage par affectation. Changer le soin ou les PV relance cet essai.";
   };
   updateCareSettings();
   gain.onchange = () => {
@@ -324,17 +331,19 @@ export function drawWorkshop(s: Host) {
   const profile = s.combatProfile?.() ?? combatProfile(s.room);
   const player = s.roomTransition
     ? "TRANSITION → " + s.roomTransition.target
-    : s.phase === "school" && s.encounterTime > 0
-      ? "DIALOGUE"
-      : s.falling > 0
-        ? "CHUTE"
-        : s.playerRecovery > 0
-          ? "TOUCHE"
-          : s.py < PLAY.floor
-            ? "SAUT"
-            : s.attack > 0
-              ? "FRAPPE"
-              : "LIBRE";
+    : s.recoveryScene?.active
+      ? "INFIRMERIE / " + s.recoveryScene.state
+      : s.phase === "school" && s.encounterTime > 0
+        ? "DIALOGUE"
+        : s.falling > 0
+          ? "CHUTE"
+          : s.playerRecovery > 0
+            ? "TOUCHE"
+            : s.py < PLAY.floor
+              ? "SAUT"
+              : s.attack > 0
+                ? "FRAPPE"
+                : "LIBRE";
   const seconds = Object.entries(s.session.phaseSeconds)
     .map(([name, t]) => `${name} ${t.toFixed(1)}s`)
     .join(" · ");
@@ -348,7 +357,7 @@ export function drawWorkshop(s: Host) {
     s.enemies
       .map(
         (e) =>
-          `Adversaire : ${s.phase === "school" ? enemyPhase(e, s.encounterTime > 0) : "figé"} · PV ${e.hp} · prép. ${e.wind.toFixed(2)} · reprise ${e.recovery.toFixed(2)} · touché ${e.stun.toFixed(2)}`,
+          `Adversaire : ${s.phase === "school" ? enemyPhase(e, s.encounterTime > 0) : "figé"} · PV ${e.hp} · prép. ${e.wind.toFixed(2)} · reprise ${e.recovery.toFixed(2)} · touché ${e.stun.toFixed(2)}${e.parentCycle ? " · cycle " + e.parentCycle.phase + " / " + e.parentCycle.hits + " coups" : ""}`,
       )
       .join("\n") +
     `\nTemps simulé ${s.session.elapsed.toFixed(1)}s / ${s.collisions} chocs / ${s.session.falls} chutes / ${s.punches} coups réussis\n${seconds}` +

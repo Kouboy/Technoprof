@@ -2,11 +2,18 @@ import Phaser from "phaser";
 import { NAV_ID, NAV_CARE, type NavigationCare } from "./bruel-navigation";
 import type { RoomSpec } from "./missions";
 import { smallPrint, smallWidth } from "./small-lettering";
+import { INFIRMARY_DATA } from "./infirmary-data";
+import { INFIRMARY } from "./bruel-recovery";
+import { VIEW } from "./presentation";
 
 // Recompose existing raster pieces; keep props and lettering at integer pixels.
 export class BruelNavigationArt {
   ink: Phaser.GameObjects.Graphics;
   patches: Phaser.GameObjects.Image[] = [];
+  nurse: Phaser.GameObjects.Image;
+  static preload(scene: Phaser.Scene) {
+    scene.load.image("infirmary-nurse", INFIRMARY_DATA);
+  }
   constructor(private scene: Phaser.Scene) {
     const t = scene.textures.get("bruel-backgrounds");
     t.add("nav-stair", 0, 402, 474, 420, 444);
@@ -14,6 +21,15 @@ export class BruelNavigationArt {
     // Include the distinctive broken bench and tree trunk seen at the entrance.
     t.add("nav-court-view", 0, 0, 104, 485, 307);
     this.ink = scene.add.graphics().setDepth(1.88);
+    scene.textures
+      .get("infirmary-nurse")
+      .setFilter(Phaser.Textures.FilterMode.NEAREST);
+    this.nurse = scene.add
+      .image(INFIRMARY.nurseX, VIEW.floor, "infirmary-nurse")
+      .setOrigin(0.5, 0.97)
+      .setDisplaySize(77, 77)
+      .setDepth(2)
+      .setVisible(false);
     for (let i = 0; i < 3; i++)
       this.patches.push(
         scene.add
@@ -26,6 +42,7 @@ export class BruelNavigationArt {
   hide() {
     this.ink.clear();
     for (const p of this.patches) p.setVisible(false);
+    this.nurse.setVisible(false);
   }
   patch(i: number, frame: string, x: number, y: number, w: number, h: number) {
     this.patches[i]
@@ -204,7 +221,10 @@ export class BruelNavigationArt {
       g.fillStyle(0x343b3c);
       g.fillRect(196, 103, 2, 9);
       g.fillRect(181, 72, 1, 76);
-      if (care.used) {
+      if (a3) {
+        this.nurse.setVisible(true);
+        this.plate(136, 47, ["PREMIERS SOINS"]);
+      } else if (care.used) {
         g.fillStyle(0x141e27);
         g.fillRect(164, 105, 27, 33);
         g.fillStyle(0x647873);

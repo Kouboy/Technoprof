@@ -15,6 +15,12 @@ import {
   NavigationMetrics,
 } from "./bruel-navigation";
 import { BruelNavigationArt } from "./bruel-navigation-art";
+import {
+  INFIRMARY,
+  InfirmaryRecovery,
+  PARENT_CYCLE,
+  parentCycle,
+} from "./bruel-recovery";
 import { ActionInput, BINDINGS } from "./controls";
 import { DirectInput, installDirectInput } from "./direct-input";
 import { drawComicFX } from "./comic-fx";
@@ -146,6 +152,7 @@ class Game extends Phaser.Scene {
   navigationGain: 1 | 2 = 1;
   navigationStartHp = 5;
   navigationCare = new NavigationCare();
+  recoveryScene = new InfirmaryRecovery();
   navigationMetrics = new NavigationMetrics();
   navigationArt?: BruelNavigationArt;
   navigationSpec() {
@@ -296,6 +303,7 @@ class Game extends Phaser.Scene {
     HallArt.preload(this);
     BridgeArt.preload(this);
     WingArt.preload(this);
+    BruelNavigationArt.preload(this);
     this.load.image("service-stair", SERVICE_DATA);
     this.load.image("technical", TECHNICAL_DATA);
     this.load.image("central-stair", CENTRAL_DATA);
@@ -1121,6 +1129,7 @@ class Game extends Phaser.Scene {
   }
   begin() {
     this.navigationCare.reset(this.navigationGain);
+    this.recoveryScene.reset();
     this.projectiles = [];
     this.roomTransition = null;
     this.exitHeld = false;
@@ -1191,6 +1200,7 @@ class Game extends Phaser.Scene {
   }
   enterRoom(room: number, x: number) {
     this.navigationCare.cancel();
+    this.recoveryScene.reset();
     this.roomTransition = null;
     this.direct?.cancel();
     this.projectiles = [];
@@ -1225,8 +1235,10 @@ class Game extends Phaser.Scene {
         missionEnemies(this.mission, room, this.navigationSpec()),
       );
       if (this.pressureCombat())
-        for (const e of this.roomEnemies.get(room)!)
+        for (const e of this.roomEnemies.get(room)!) {
           e.cool = this.enemyTuning().initialCooldown;
+          if (e.boss && e.role === "influential") e.parentCycle = parentCycle();
+        }
     }
     this.enemies = this.roomEnemies.get(room)!;
     const nav = this.roomSpec()?.navigation;
@@ -1244,6 +1256,23 @@ class Game extends Phaser.Scene {
       introduction: this.encounterTime,
     });
     this.audio.fx("step", (this.px - 160) / 190, 0.8);
+    if (
+      this.pressureCombat() &&
+      room === NAV_ID.infirmerie &&
+      !this.navigationCare.used &&
+      this.hp > 0 &&
+      this.remaining > 0
+    ) {
+      this.navigationCare.used = true;
+      this.recoveryScene.start();
+      this.inv = 0;
+      this.face = 1;
+      this.session.record("care-start", this.mission, room, {
+        kind: "recovery",
+        hp: this.hp,
+        remaining: this.remaining,
+      });
+    }
   }
 
   changeRoom(target: number, spawn: number) {
@@ -1311,6 +1340,7 @@ class Game extends Phaser.Scene {
     this.falling = 0;
     this.particles = [];
     this.queuedAttack = false;
+    this.recoveryScene.reset();
     for (const e of this.enemies) {
       e.wind = 0;
       e.recovery = 0;
@@ -1382,7 +1412,10 @@ class Game extends Phaser.Scene {
       this.remaining,
       0,
       this.roomSpec()?.frame === 0 ? 0 : this.room,
-      this.encounterTime > 0 || this.schoolFade > 0 || !!this.roomTransition,
+      this.encounterTime > 0 ||
+        this.schoolFade > 0 ||
+        !!this.roomTransition ||
+        this.recoveryScene.active,
     );
     this.audio.motor(
       this.speed,
@@ -1442,6 +1475,9 @@ class Game extends Phaser.Scene {
           navigation: {
             ...this.navigationMetrics.snapshot(),
             gain: this.navigationGain,
+            ...(this.pressureCombat()
+              ? { careMode: "recovery", variant: "recovery-parent-cycle" }
+              : {}),
             careUsed:
               this.navigationMetrics.end?.careUsed ?? this.navigationCare.used,
             remaining: this.navigationMetrics.end?.remaining ?? this.remaining,
@@ -1463,6 +1499,7 @@ class Game extends Phaser.Scene {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   loadScenario(name: string) {
+    this.recoveryScene.reset();
     this.navigationProfile = false;
     this.navigationMetrics = new NavigationMetrics();
     this.controls?.reset();
@@ -1512,8 +1549,10 @@ class Game extends Phaser.Scene {
             ? this.navigationRevision === "A3"
               ? NAV_ID.jonction
               : NAV_ID.hall
-            : NAV_ID.cour,
-          20,
+            : name.endsWith("-parent")
+              ? NAV_ID.seuil
+              : NAV_ID.cour,
+          name.endsWith("-parent") ? 150 : 20,
         );
       }
       this.session.record("scenario", this.mission, this.room, {
@@ -1887,7 +1926,10 @@ class Game extends Phaser.Scene {
       this.remaining,
       dt,
       this.room,
-      this.encounterTime > 0 || this.schoolFade > 0 || !!this.roomTransition,
+      this.encounterTime > 0 ||
+        this.schoolFade > 0 ||
+        !!this.roomTransition ||
+        this.recoveryScene.active,
     );
     this.audio.motor(
       this.speed,
@@ -1906,15 +1948,17 @@ class Game extends Phaser.Scene {
         : this.phase === "school"
           ? this.roomTransition || this.schoolFade > 0
             ? "transition"
-            : this.encounterTime > 0 || this.bossIntro > 0
-              ? "dialogue"
-              : this.arena && this.enemies.some((e) => e.hp > 0)
-                ? "boss"
-                : this.navigationProfile && this.navigationCare.active
-                  ? "care"
-                  : this.enemies.some((e) => e.hp > 0)
-                    ? "encounter"
-                    : "orientation"
+            : this.recoveryScene.active
+              ? "recovery"
+              : this.encounterTime > 0 || this.bossIntro > 0
+                ? "dialogue"
+                : this.arena && this.enemies.some((e) => e.hp > 0)
+                  ? "boss"
+                  : this.navigationProfile && this.navigationCare.active
+                    ? "care"
+                    : this.enemies.some((e) => e.hp > 0)
+                      ? "encounter"
+                      : "orientation"
           : this.phase;
     this.session.measure(this.mission, category, dt);
     if (this.phase !== this.lastLoggedPhase) {
@@ -2188,6 +2232,12 @@ class Game extends Phaser.Scene {
         this.draw();
         return;
       }
+      if (this.recoveryScene.active) {
+        this.updateRecoveryScene(dt, attackPressed);
+        this.attackBuffer = 0;
+        this.draw();
+        return;
+      }
       const presentation =
         this.schoolFade > 0 || this.encounterTime > 0 || this.bossIntro > 0;
       this.schoolFade = Math.max(0, this.schoolFade - dt);
@@ -2256,6 +2306,16 @@ class Game extends Phaser.Scene {
       if (terminal) {
         this.navigationCare.cancel();
         this.finish(false, terminal);
+        return;
+      }
+      const reprising = this.enemies.find(
+        (e) => e.hp > 0 && e.parentCycle?.phase === "breakaway",
+      );
+      if (reprising) {
+        this.updateParentBreakaway(reprising, dt);
+        this.attack = this.attackBuffer = 0;
+        this.direct?.cancel();
+        this.draw();
         return;
       }
       if (this.navigationProfile && this.navigationCare.active) {
@@ -2427,9 +2487,14 @@ class Game extends Phaser.Scene {
           const contact = this.bookContact(e);
           if (
             e.boss &&
-            e.recovery <= 0 &&
-            e.stun <= 0 &&
-            (e.role !== "security" || (this.px - e.x) * (e.facing ?? -1) > 0)
+            (e.parentCycle
+              ? e.parentCycle.phase !== "opening" ||
+                e.recovery <= 0 ||
+                e.parentCycle.hits >= PARENT_CYCLE.maxHits
+              : e.recovery <= 0 &&
+                e.stun <= 0 &&
+                (e.role !== "security" ||
+                  (this.px - e.x) * (e.facing ?? -1) > 0))
           ) {
             this.audio.combat("block", this.face);
             this.bookBlocked = PLAY.attackRecovery;
@@ -2467,8 +2532,16 @@ class Game extends Phaser.Scene {
           this.session.record("contact", this.mission, this.room, {
             ...contact,
             hp: e.hp,
+            ...(e.parentCycle ? { openingHit: e.parentCycle.hits + 1 } : {}),
           });
           this.audio.combat(e.hp <= 0 ? "defeat" : "hit", this.face);
+          if (e.parentCycle) {
+            e.parentCycle.hits++;
+            if (e.hp > 0 && e.parentCycle.hits >= PARENT_CYCLE.maxHits)
+              this.beginParentBreakaway(e);
+            else
+              e.recovery = Math.max(e.recovery, PARENT_CYCLE.firstHitOpening);
+          }
         }
       }
       for (const e of this.enemies) {
@@ -2603,6 +2676,9 @@ class Game extends Phaser.Scene {
     this.draw();
   }
   schoolStatus() {
+    if (this.recoveryScene.active) return "INFIRMERIE / DELAI SUSPENDU";
+    if (this.pressureCombat() && this.room === NAV_ID.infirmerie)
+      return "UNE PAUSE BIENVENUE";
     if (this.navigationProfile && this.navigationCare.active)
       return "SOINS EN COURS / DELAI ACTIF";
     if (this.falling > 0) return "SOL EFFONDRE / CHUTE";
@@ -2657,7 +2733,9 @@ class Game extends Phaser.Scene {
     );
   }
   careResource() {
-    return this.navigationSpec() && this.phase === "school"
+    return this.navigationSpec() &&
+      !this.pressureCombat() &&
+      this.phase === "school"
       ? this.roomSpec()?.care
       : undefined;
   }
@@ -2914,10 +2992,18 @@ class Game extends Phaser.Scene {
     this.separateFighters(this.px);
   }
   updateParent(e: Enemy, dt: number) {
+    if (e.parentCycle?.phase === "breakaway") {
+      this.updateParentBreakaway(e, dt);
+      return;
+    }
     const tuning = this.enemyTuning(),
       PARENT = tuning.parent;
     if (e.recovery > 0) {
-      e.recovery -= dt;
+      e.recovery = Math.max(0, e.recovery - dt);
+      if (e.parentCycle && e.recovery === 0) {
+        e.parentCycle.phase = "guard";
+        e.parentCycle.hits = 0;
+      }
       return;
     }
     if ((e.chargeTime ?? 0) > 0) {
@@ -2943,11 +3029,15 @@ class Game extends Phaser.Scene {
         e.chargeTime = 0;
         e.stun = tuning.wallStun;
         e.recovery = tuning.wallRecovery;
+        if (e.parentCycle) this.openParentWindow(e);
         this.burst(e.x, 136, 0xbab099);
         this.audio.fx("land", (e.x - 160) / 190, 1.8);
         this.boardMessage = "INCIDENT MOBILIER ENREGISTRE";
         this.messageTime = 3;
-      } else if (e.chargeTime! <= 0) e.recovery = PARENT.recovery;
+      } else if (e.chargeTime! <= 0) {
+        e.recovery = PARENT.recovery;
+        if (e.parentCycle) this.openParentWindow(e);
+      }
       return;
     }
     if (e.wind > 0) {
@@ -2955,6 +3045,7 @@ class Game extends Phaser.Scene {
       if (e.wind <= 0) {
         this.enemyAttack(e, "release");
         e.chargeTime = PARENT.charge;
+        if (e.parentCycle) e.parentCycle.phase = "charge";
         if (e.boss) this.audio.enemyGesture("influential", "release", e.x);
         else this.audio.fx("jump", (e.x - 160) / 190, 1.3);
       }
@@ -2964,12 +3055,138 @@ class Game extends Phaser.Scene {
     if (Math.abs(e.x - this.px) < 185 && e.cool <= 0) {
       e.pattern++;
       e.wind = PARENT.wind;
+      if (e.parentCycle) {
+        e.parentCycle.phase = "windup";
+        e.parentCycle.hits = 0;
+      }
       this.enemyAttack(e, "windup");
       if (e.boss) this.audio.enemyGesture("influential", "windup", e.x);
       e.chargeDir = Math.sign(this.px - e.x) || -1;
       e.cool = tuning.parentCooldown;
     } else if (Math.abs(e.x - this.px) > 60)
       e.x += Math.sign(this.px - e.x) * PARENT.speed * dt;
+  }
+  openParentWindow(e: Enemy) {
+    e.parentCycle!.phase = "opening";
+    e.parentCycle!.hits = 0;
+    e.stun = 0;
+    e.recovery = PARENT_CYCLE.openingSeconds;
+    this.session.record("boss-opening", this.mission, this.room, { hp: e.hp });
+  }
+  beginParentBreakaway(e: Enemy) {
+    const c = e.parentCycle!,
+      dir = Math.sign(e.x - this.px) || this.face;
+    c.phase = "breakaway";
+    c.elapsed = 0;
+    c.fromX = e.x;
+    c.targetX = Phaser.Math.Clamp(e.x + dir * PARENT_CYCLE.retreat, 29, 275);
+    c.playerFrom = this.px;
+    c.playerTarget = Phaser.Math.Clamp(
+      c.targetX - dir * PARENT_CYCLE.distance,
+      10,
+      302,
+    );
+    e.facing = -dir;
+    e.stun = e.recovery = e.wind = e.cool = 0;
+    e.chargeTime = e.strikeTime = 0;
+    // This is a displacement without damage; don't play the hurt sound or pose.
+    this.attack = this.attackBuffer = 0;
+    this.direct?.cancel();
+    this.session.record("boss-breakaway", this.mission, this.room, {
+      hits: c.hits,
+      hp: e.hp,
+      x: e.x,
+      playerX: this.px,
+    });
+    this.audio.fx("step", (e.x - 160) / 190, 0.7);
+  }
+  updateParentBreakaway(e: Enemy, dt: number) {
+    const c = e.parentCycle!;
+    c.elapsed = Math.min(PARENT_CYCLE.breakSeconds, c.elapsed + dt);
+    const t = c.elapsed / PARENT_CYCLE.breakSeconds,
+      ease = t * (2 - t);
+    e.x = c.fromX! + (c.targetX! - c.fromX!) * ease;
+    this.px = c.playerFrom! + (c.playerTarget! - c.playerFrom!) * ease;
+    if (this.py < PLAY.floor) {
+      this.vy += PLAY.gravity * dt;
+      this.py = Math.min(PLAY.floor, this.py + this.vy * dt);
+      if (this.py === PLAY.floor) this.vy = 0;
+    }
+    e.recoilTime = Math.max(0, (e.recoilTime ?? 0) - dt);
+    e.walk = (e.walk ?? 0) + dt * 12;
+    if (t >= 1) {
+      c.phase = "guard";
+      c.hits = 0;
+      // Next update prepares the charge, restoring its visible anticipation.
+      this.session.record("boss-guard-restored", this.mission, this.room, {
+        x: e.x,
+        playerX: this.px,
+      });
+    }
+  }
+  updateRecoveryScene(dt: number, action: boolean) {
+    const scene = this.recoveryScene;
+    if (this.hp <= 0) {
+      this.finish(false, "exhausted");
+      return;
+    }
+    this.navigationMetrics.tick("recovery", dt);
+    this.attack = this.attackBuffer = this.playerRecovery = 0;
+    this.py = PLAY.floor;
+    this.vy = 0;
+    const walking = scene.state === "enter" || scene.state === "leave";
+    if (walking) {
+      const target =
+        scene.state === "enter" ? INFIRMARY.teacherX : INFIRMARY.exitX;
+      const d = target - this.px;
+      this.face = Math.sign(d) || this.face;
+      this.px += Math.sign(d) * Math.min(Math.abs(d), INFIRMARY.walk * dt);
+      this.walkClock += dt * 13;
+      if (Math.abs(target - this.px) < 0.01) {
+        if (scene.state === "enter") {
+          scene.state = "dialogue";
+          this.face = 1;
+        } else {
+          scene.reset();
+          this.direct?.cancel();
+          this.session.record("care-exit", this.mission, this.room, {
+            hp: this.hp,
+            remaining: this.remaining,
+          });
+          this.changeRoom(NAV_ID.jonction, 170);
+        }
+      }
+      return;
+    }
+    const before = scene.dialogue.characters;
+    const result = scene.tick(dt, action);
+    this.dialogueSoundWait = Math.max(0, this.dialogueSoundWait - dt);
+    if (
+      !action &&
+      !this.dialogueSoundWait &&
+      dialogueLetters(0, scene.dialogue, before, INFIRMARY.encounter)
+    ) {
+      this.audio.talk(2, true, (INFIRMARY.nurseX - 160) / 190);
+      this.dialogueSoundWait = DIALOGUE.soundInterval;
+    }
+    if (result) {
+      this.session.record("care-dialogue", this.mission, this.room, {
+        page: scene.dialogue.page,
+        result,
+      });
+      if (scene.dialogue.page === 2 && !scene.healed) {
+        const gain = NAV_CARE.cap - this.hp;
+        this.hp = NAV_CARE.cap;
+        scene.healed = true;
+        this.session.record("care-complete", this.mission, this.room, {
+          kind: "recovery",
+          gain,
+          hp: this.hp,
+          remaining: this.remaining,
+        });
+        this.audio.fx("paper", 0, 0.2);
+      }
+    }
   }
   vehicleDamage(x: number, y: number, side = false) {
     if (this.vehicle > 70) return;
@@ -3507,7 +3724,8 @@ class Game extends Phaser.Scene {
         !this.falling &&
         this.schoolFade === 0 &&
         this.bossIntro === 0 &&
-        this.encounterTime === 0
+        this.encounterTime === 0 &&
+        !this.recoveryScene.active
       )
         drawPassageHints(
           this.g,
@@ -3518,6 +3736,17 @@ class Game extends Phaser.Scene {
         );
       drawComicFX(this.g, this);
     }
+    if (this.phase === "school" && this.recoveryScene.state === "dialogue")
+      drawDialogue(
+        this.g,
+        this.room,
+        1,
+        INFIRMARY.nurseX,
+        true,
+        this.recoveryScene.dialogue,
+        this.pointerMode ? "TOUCHER" : "X/F",
+        INFIRMARY.encounter,
+      );
     if (
       this.phase === "school" &&
       this.encounterTime > 0 &&

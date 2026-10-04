@@ -4,6 +4,8 @@ import type { Enemy } from "./world";
 // New four-pose actors share the same exclusive state priority as diagnostics.
 // Recovery starts at contact, but the active silhouette must remain visible.
 export function newEnemyFrame(e: Enemy, presentation = false) {
+  if (e.hp > 0 && e.parentCycle?.phase === "breakaway")
+    return e.parentCycle.elapsed < 0.12 ? 3 : 1;
   const state = enemyPhase(e, presentation);
   if (state === "strike") return 2;
   if (state === "windup") return 1;
@@ -23,6 +25,7 @@ export type TeacherState = {
   schoolFade?: number;
   roomTransition?: unknown;
   navigationCare?: { active: boolean };
+  recoveryScene?: { active: boolean; state: string };
   playerRecovery?: number;
   playerHitDirection?: number;
   bookBlocked?: number;
@@ -33,15 +36,19 @@ export type TeacherState = {
 export function teacherPose(s: TeacherState) {
   const hurt = Math.min(1, (s.playerRecovery ?? 0) / PLAY.playerRecovery);
   const blocked = Math.min(1, (s.bookBlocked ?? 0) / PLAY.attackRecovery);
+  const sceneWalk =
+    s.recoveryScene?.state === "enter" || s.recoveryScene?.state === "leave";
   const moving =
-    s.phase === "school" &&
-    !(
-      s.encounterTime ||
-      s.schoolFade ||
-      s.roomTransition ||
-      s.navigationCare?.active
-    ) &&
-    (s.keys.LEFT.isDown || s.keys.RIGHT.isDown);
+    sceneWalk ||
+    (s.phase === "school" &&
+      !(
+        s.encounterTime ||
+        s.schoolFade ||
+        s.roomTransition ||
+        s.navigationCare?.active ||
+        s.recoveryScene?.active
+      ) &&
+      (s.keys.LEFT.isDown || s.keys.RIGHT.isDown));
   const frame =
     hurt > 0
       ? 6

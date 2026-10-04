@@ -38,6 +38,7 @@ type Host = {
   movementBounds?(): { min: number; max: number };
   careResource?(): { x: number; reach: number } | undefined;
   navigationCare?: { active: boolean };
+  recoveryScene?: { active: boolean; state: string };
   combatProfile?(): ReturnType<typeof combatProfile>;
 };
 type Intent =
@@ -71,7 +72,8 @@ export class DirectInput {
       s.playerMenu ||
       s.schoolFade > 0 ||
       !!s.roomTransition ||
-      !!s.navigationCare?.active
+      !!s.navigationCare?.active ||
+      (!!s.recoveryScene?.active && s.recoveryScene.state !== "dialogue")
     );
   }
   marker(x: number, y: number, kind: string) {
@@ -118,6 +120,7 @@ export class DirectInput {
       !g.used &&
       this.host.phase === "school" &&
       !this.host.encounterTime &&
+      !this.host.recoveryScene?.active &&
       g.y - y > DIRECT.swipe
     ) {
       g.used = true;
@@ -161,7 +164,7 @@ export class DirectInput {
       return;
     }
     if (s.phase !== "school") return;
-    if (s.encounterTime > 0) {
+    if (s.encounterTime > 0 || s.recoveryScene?.state === "dialogue") {
       this.pulse("X");
       return;
     }
@@ -219,7 +222,9 @@ export class DirectInput {
       ":" +
       (["free", "receive", "road"].includes(s.phase) ? "drive" : s.phase) +
       ":" +
-      (s.encounterTime > 0);
+      (s.encounterTime > 0) +
+      ":" +
+      (s.recoveryScene?.state ?? "idle");
     if (context !== this.context) {
       this.cancel();
       this.context = context;

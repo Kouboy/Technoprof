@@ -1,0 +1,113 @@
+{
+  "method": "Real input dodge/punish battles; mash stress alone declares invulnerability. Wall/pause fixtures explicitly declared. Human gamefeel still needs observation.",
+  "results": [
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "mash": false,
+      "releaseCount": 3,
+      "openings": 3,
+      "reprises": 2,
+      "endHp": 3
+    },
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "mash": true,
+      "releaseCount": 3,
+      "openings": 3,
+      "reprises": 2,
+      "endHp": 5
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "mash": false,
+      "releaseCount": 3,
+      "openings": 3,
+      "reprises": 2,
+      "endHp": 5
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "mash": true,
+      "releaseCount": 3,
+      "openings": 3,
+      "reprises": 2,
+      "endHp": 5
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "mash": false,
+      "releaseCount": 3,
+      "openings": 3,
+      "reprises": 2,
+      "endHp": 2
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "mash": true,
+      "releaseCount": 3,
+      "openings": 3,
+      "reprises": 2,
+      "endHp": 5
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "mash": false,
+      "releaseCount": 3,
+      "openings": 3,
+      "reprises": 2,
+      "endHp": 2
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "mash": true,
+      "releaseCount": 3,
+      "openings": 3,
+      "reprises": 2,
+      "endHp": 5
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "mash": false,
+      "releaseCount": 3,
+      "openings": 3,
+      "reprises": 2,
+      "endHp": 2
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "mash": true,
+      "releaseCount": 3,
+      "openings": 3,
+      "reprises": 2,
+      "endHp": 5
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "mash": false,
+      "releaseCount": 3,
+      "openings": 3,
+      "reprises": 2,
+      "endHp": 2
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "mash": true,
+      "releaseCount": 3,
+      "openings": 3,
+      "reprises": 2,
+      "endHp": 5
+    }
+  ]
+}

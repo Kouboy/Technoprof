@@ -124,6 +124,7 @@ export type CadreState = {
   roomTransition?: unknown;
   bossIntro: number;
   encounterTime: number;
+  recoveryScene?: { active: boolean };
   failureReason?: "late" | "exhausted" | "breakdown" | null;
 };
 export function cadreModel(s: CadreState, routeMeters: number) {
@@ -155,6 +156,7 @@ export function cadreModel(s: CadreState, routeMeters: number) {
           (s.schoolFade > 0 ||
             s.bossIntro > 0 ||
             s.encounterTime > 0 ||
+            s.recoveryScene?.active ||
             !!s.roomTransition))));
   const urgent = assigned && !suspended && s.remaining <= 30;
   const status =

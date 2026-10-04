@@ -230,6 +230,7 @@ export function enemyPhase(e: Enemy, presentation = false): EnemyPhase {
   if (e.hp <= 0) return "defeated";
   if (e.stun > 0) return "hurt";
   if (presentation) return "presentation";
+  if (e.parentCycle?.phase === "breakaway") return "recovery";
   if (e.wind > 0) return "windup";
   if ((e.chargeTime ?? 0) > 0 || (e.strikeTime ?? 0) > 0) return "strike";
   if (e.recovery > 0) return "recovery";

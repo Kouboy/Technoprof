@@ -4,6 +4,10 @@ const d = JSON.parse(
   fs.readFileSync("work/bruel-navigation-a2-design.json", "utf8"),
 );
 d.revision = "A3-workshop";
+d.health.mode = "recovery";
+d.health.gain = "full";
+d.health.seconds = 0;
+d.health.x = 60; // Automatic exit. All movement inside the scene is uncharged.
 const zone = (id) => d.zones.find((z) => z.id === "bruel-" + id);
 zone("hall").exits = zone("hall").exits.filter((e) => e.to !== d.health.zone);
 zone("jonction-b").exits.push({

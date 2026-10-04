@@ -29,6 +29,7 @@ export type Enemy = {
   blockTime?: number;
   chargeDir?: number;
   chargeTime?: number;
+  parentCycle?: import("./bruel-recovery").ParentCycle;
 };
 export type Exit = {
   from: number;

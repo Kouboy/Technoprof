@@ -7,11 +7,12 @@
   "classDoorX": 281,
   "health": {
     "zone": "bruel-infirmerie",
-    "x": 180,
-    "seconds": 1.2,
-    "gain": 2,
+    "x": 60,
+    "seconds": 0,
+    "gain": "full",
     "cap": 5,
-    "usesPerAssignment": 1
+    "usesPerAssignment": 1,
+    "mode": "recovery"
   },
   "zones": [
     {

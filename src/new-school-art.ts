@@ -225,17 +225,19 @@ export class NewSchoolArt {
       g.fillStyle(0xb9aa89);
       g.fillRect(110, 16, (100 * Math.max(0, e.hp)) / (r.hp ?? 6), 3);
       const cue =
-        e.wind > 0
-          ? e.parent
-            ? "RUEE !"
-            : "POUSSEE !"
-          : e.recovery > 0 || e.stun > 0
-            ? "OUVERTURE"
-            : e.role === "security"
-              ? e.turnTime
-                ? "RETOURNEMENT"
-                : "GARDE DE FACE"
-              : "";
+        e.parentCycle?.phase === "breakaway"
+          ? "REPRISE D'APPUI"
+          : e.wind > 0
+            ? e.parent
+              ? "RUEE !"
+              : "POUSSEE !"
+            : e.parentCycle?.phase === "opening" || e.recovery > 0 || e.stun > 0
+              ? "OUVERTURE"
+              : e.role === "security"
+                ? e.turnTime
+                  ? "RETOURNEMENT"
+                  : "GARDE DE FACE"
+                : "";
       if (cue)
         smallPrint(
           g,

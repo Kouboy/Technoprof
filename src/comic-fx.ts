@@ -12,6 +12,7 @@ type Fighter = {
   boss: boolean;
   role?: string;
   stun?: number;
+  parentCycle?: { phase: string; elapsed: number };
 };
 type State = {
   room: number;
@@ -78,6 +79,16 @@ export function drawComicFX(g: Phaser.GameObjects.Graphics, s: State) {
     }
   }
   for (const e of s.enemies) {
+    if (e.hp > 0 && e.parentCycle?.phase === "breakaway") {
+      const dir = -(e.facing ?? -1);
+      for (let i = 0; i < 3; i++) {
+        const y = 118 + i * 8;
+        g.lineStyle(2, ink);
+        g.lineBetween(e.x - dir * 22, y, e.x - dir * 34, y + 2);
+        g.lineStyle(1, paper);
+        g.lineBetween(e.x - dir * 23, y, e.x - dir * 33, y + 2);
+      }
+    }
     if (
       e.hp <= 0 ||
       (e.stun ?? 0) > 0 ||
