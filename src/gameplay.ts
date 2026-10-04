@@ -203,6 +203,7 @@ export function enemyTuning(pressure = false) {
   return pressure ? PRESSURE_ENEMY : NORMAL_ENEMY;
 }
 export function combatProfile(room: number, role?: string) {
+  if (role === "inspector") return COMBAT.arena;
   if (role === "influential") return NEW_COMBAT.influential;
   if (role === "security") return NEW_COMBAT.security;
   if (role === "student") return COMBAT.student;

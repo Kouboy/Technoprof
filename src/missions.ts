@@ -36,7 +36,7 @@ export type RoomSpec = {
     id: string;
     floor: number;
     landmark: string;
-    revision?: "A1" | "A2" | "A3";
+    revision?: "A1" | "A2" | "A3" | "H1";
   };
   care?: { x: number; reach: number };
 };
@@ -634,8 +634,8 @@ export function missionEnemies(
       hp: r.hp ?? 2,
       boss: !!r.boss,
       role: r.role,
-      female: r.role === "filmer",
-      parent: r.role === "influential",
+      female: r.role === "filmer" || (r.role === "inspector" && mission === 0),
+      parent: r.role === "influential" || r.role === "parent",
       facing: -1,
       cool: 0.7,
       wind: 0,

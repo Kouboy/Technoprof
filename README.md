@@ -48,6 +48,14 @@ jouer directement dans la scène. L'aide en jeu détaille les gestes.
 
 ## Versions et suivi
 
+Sur cette même branche, [Hanouna H1](ATELIER-HANOUNA-H1.md) implémente le premier
+lot de la [conception Hanouna / InShape validée](CONCEPTION-HANOUNA-INSHAPE.md) :
+huit zones jusqu'à 42C, deux rencontres ordinaires, l'Inspectrice et un détour
+facultatif par l'infirmerie à l'étage. `npm run build:atelier` produit aussi
+`Jouer-Technoprof-Atelier-Hanouna-H1.html` (environ 101 Mo). Les fonds existants
+sont adaptés pour tester la navigation avant le rendu définitif. InShape I1
+attend le court essai humain H1. Ni la journée publiée ni Bruel A3 ne changent.
+
 Sur la branche `atelier-navigation-bruel-a3`, [Bruel A3](ATELIER-BRUEL-A3.md)
 reprend le réseau validé, l'infirmerie comme scène de récupération et le
 Parent limité à deux coups par ouverture. Les [douze décors adaptés](RENDU-BRUEL-A3.md)

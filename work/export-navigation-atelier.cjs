@@ -41,3 +41,26 @@ if (!atelierUrl.searchParams.has('essai')) {
       " bytes)",
   );
 }
+
+const h1Bootstrap = `<script>
+const atelierUrl = new URL(location.href);
+if (!atelierUrl.searchParams.has('essai')) {
+  atelierUrl.searchParams.set('essai', 'labo');
+  atelierUrl.searchParams.set('scenario', 'hanouna-navigation-h1');
+  location.replace(atelierUrl.href);
+}
+</script>`;
+const h1 = source
+  .replace(/(<html\b[^>]*>)/, "$1" + h1Bootstrap)
+  .replace(
+    /<title>[\s\S]*?<\/title\s*>/,
+    "<title>TECHNOPROF — Atelier Hanouna H1</title>",
+  );
+if (!h1.includes(h1Bootstrap)) throw Error("H1 bootstrap missing");
+fs.writeFileSync(
+  path.join(root, "Jouer-Technoprof-Atelier-Hanouna-H1.html"),
+  h1,
+);
+console.log(
+  "Standalone atelier Hanouna H1: " + Buffer.byteLength(h1) + " bytes",
+);

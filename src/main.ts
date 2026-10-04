@@ -15,6 +15,8 @@ import {
   NavigationMetrics,
 } from "./bruel-navigation";
 import { BruelNavigationArt } from "./bruel-navigation-art";
+import { HANOUNA_NAV, HANOUNA_ID } from "./hanouna-navigation";
+import { HanounaNavigationArt } from "./hanouna-navigation-art";
 import {
   INFIRMARY,
   InfirmaryRecovery,
@@ -148,27 +150,48 @@ class Game extends Phaser.Scene {
   newSchoolArt?: NewSchoolArt;
   projectiles: { x: number; dir: number; life: number }[] = [];
   navigationProfile = false;
-  navigationRevision: "A1" | "A2" | "A3" = "A1";
+  navigationRevision: "A1" | "A2" | "A3" | "H1" = "A1";
   navigationGain: 1 | 2 = 1;
   navigationStartHp = 5;
   navigationCare = new NavigationCare();
   recoveryScene = new InfirmaryRecovery();
   navigationMetrics = new NavigationMetrics();
   navigationArt?: BruelNavigationArt;
+  hanounaArt?: HanounaNavigationArt;
   navigationSpec() {
     return this.workshop && this.navigationProfile
-      ? this.navigationRevision === "A3"
-        ? BRUEL_NAV_A3
-        : this.navigationRevision === "A2"
-          ? BRUEL_NAV_A2
-          : BRUEL_NAV
+      ? this.navigationRevision === "H1"
+        ? HANOUNA_NAV
+        : this.navigationRevision === "A3"
+          ? BRUEL_NAV_A3
+          : this.navigationRevision === "A2"
+            ? BRUEL_NAV_A2
+            : BRUEL_NAV
       : undefined;
   }
   missionSpec() {
     return this.navigationSpec() ?? missionSpec(this.mission);
   }
   pressureCombat() {
-    return this.navigationSpec() === BRUEL_NAV_A3;
+    return this.navigationSpec() === BRUEL_NAV_A3 || this.isHanounaProfile();
+  }
+  recoveryProfile() {
+    return this.navigationSpec() === BRUEL_NAV_A3 || this.isHanounaProfile();
+  }
+  isHanounaProfile() {
+    return (
+      this.workshop &&
+      this.navigationProfile &&
+      this.navigationRevision === "H1"
+    );
+  }
+  usesHanounaArt() {
+    return (
+      this.isHanounaProfile() &&
+      !!this.hanounaArt &&
+      !this.brokenRoad &&
+      ["school", "opening", "fail"].includes(this.phase)
+    );
   }
   enemyTuning() {
     return enemyTuning(this.pressureCombat());
@@ -202,6 +225,7 @@ class Game extends Phaser.Scene {
   usesNewSchoolArt() {
     return (
       !!this.newSchoolArt &&
+      !this.isHanounaProfile() &&
       this.room >= 10 &&
       !this.brokenRoad &&
       ["school", "opening", "fail"].includes(this.phase)
@@ -536,6 +560,7 @@ class Game extends Phaser.Scene {
       .setDisplaySize(306, 168)
       .setDepth(1)
       .setVisible(false);
+    this.hanounaArt = new HanounaNavigationArt(this);
     this.textures
       .get("arrival-college")
       .setFilter(Phaser.Textures.FilterMode.NEAREST);
@@ -1010,6 +1035,7 @@ class Game extends Phaser.Scene {
   }
   sceneInk() {
     if (
+      this.usesHanounaArt() ||
       this.usesNewSchoolArt() ||
       this.usesSliceArt() ||
       this.usesCourtArt() ||
@@ -1257,8 +1283,8 @@ class Game extends Phaser.Scene {
     });
     this.audio.fx("step", (this.px - 160) / 190, 0.8);
     if (
-      this.pressureCombat() &&
-      room === NAV_ID.infirmerie &&
+      this.recoveryProfile() &&
+      !!this.roomSpec()?.care &&
       !this.navigationCare.used &&
       this.hp > 0 &&
       this.remaining > 0
@@ -1475,8 +1501,14 @@ class Game extends Phaser.Scene {
           navigation: {
             ...this.navigationMetrics.snapshot(),
             gain: this.navigationGain,
-            ...(this.pressureCombat()
-              ? { careMode: "recovery", variant: "recovery-parent-cycle" }
+            ...(this.recoveryProfile()
+              ? {
+                  careMode: "recovery",
+                  variant:
+                    this.navigationRevision === "H1"
+                      ? "hanouna-h1-recovery"
+                      : "recovery-parent-cycle",
+                }
               : {}),
             careUsed:
               this.navigationMetrics.end?.careUsed ?? this.navigationCare.used,
@@ -1521,6 +1553,44 @@ class Game extends Phaser.Scene {
     this.cadreReview = false;
     this.arrivalStill = false;
     this.artReview = -1;
+    if (this.workshop && name.startsWith("hanouna-navigation-h1")) {
+      this.navigationProfile = true;
+      this.navigationRevision = "H1";
+      this.navigationMetrics = new NavigationMetrics("H1");
+      this.mission = 0;
+      this.begin();
+      this.returnFade = 0;
+      if (!name.endsWith("-road")) {
+        this.notified = true;
+        this.phase = "school";
+        this.schoolFade = 0;
+        this.hp = this.navigationStartHp;
+        if (name.endsWith("-care"))
+          for (const id of [HANOUNA_ID.vestibule, HANOUNA_ID.galerie]) {
+            this.roomEnemies.set(id, []);
+            this.cleared.add(id);
+          }
+        const view = Number(name.match(/-view-(\d+)$/)?.[1]);
+        const start =
+          this.navigationSpec()?.rooms[view]?.id ??
+          (name.endsWith("-care")
+            ? HANOUNA_ID.jonction
+            : name.endsWith("-boss")
+              ? HANOUNA_ID.seuil
+              : HANOUNA_ID.cour);
+        this.enterRoom(
+          start,
+          name.endsWith("-boss") ? 150 : start === HANOUNA_ID.cour ? 20 : 60,
+        );
+      }
+      this.session.record("scenario", this.mission, this.room, {
+        name,
+        profile: this.missionSpec().id,
+        startHp: this.hp,
+      });
+      this.draw();
+      return;
+    }
     if (this.workshop && name.startsWith("bruel-navigation")) {
       this.navigationProfile = true;
       this.navigationRevision = name.includes("-a3")
@@ -2684,7 +2754,7 @@ class Game extends Phaser.Scene {
   }
   schoolStatus() {
     if (this.recoveryScene.active) return "INFIRMERIE / DELAI SUSPENDU";
-    if (this.pressureCombat() && this.room === NAV_ID.infirmerie)
+    if (this.recoveryProfile() && this.roomSpec()?.care)
       return "UNE PAUSE BIENVENUE";
     if (this.navigationProfile && this.navigationCare.active)
       return "SOINS EN COURS / DELAI ACTIF";
@@ -2699,8 +2769,9 @@ class Game extends Phaser.Scene {
     if (hint) return hint.label;
     const edges = this.roomSpec()?.blocked ?? [];
     if (
-      (edges.includes("left") && this.px <= 43) ||
-      (edges.includes("right") && this.px >= 277)
+      !this.isHanounaProfile() &&
+      ((edges.includes("left") && this.px <= 43) ||
+        (edges.includes("right") && this.px >= 277))
     )
       return "ACCES CONDAMNE / CHERCHEZ UN DETOUR";
     return (
@@ -2741,7 +2812,7 @@ class Game extends Phaser.Scene {
   }
   careResource() {
     return this.navigationSpec() &&
-      !this.pressureCombat() &&
+      !this.recoveryProfile() &&
       this.phase === "school"
       ? this.roomSpec()?.care
       : undefined;
@@ -3160,7 +3231,8 @@ class Game extends Phaser.Scene {
             hp: this.hp,
             remaining: this.remaining,
           });
-          this.changeRoom(NAV_ID.jonction, 170);
+          const exit = this.roomSpec()?.exits?.[0];
+          if (exit) this.changeRoom(exit.target, exit.spawn);
         }
       }
       return;
@@ -3542,6 +3614,7 @@ class Game extends Phaser.Scene {
     this.art?.hide();
     this.newSchoolArt?.hide();
     this.navigationArt?.hide();
+    this.hanounaArt?.hide();
     this.hallArt?.hide();
     this.bridgeArt?.hide();
     this.wingArt?.hide();
@@ -3562,6 +3635,7 @@ class Game extends Phaser.Scene {
     this.labels.forEach((t) => t.destroy());
     this.labels = [];
     if (
+      !this.usesHanounaArt() &&
       !this.usesNewSchoolArt() &&
       !this.usesSliceArt() &&
       !this.usesCourtArt() &&
@@ -3666,13 +3740,15 @@ class Game extends Phaser.Scene {
       this.navigationProfile &&
       ["school", "opening", "fail"].includes(this.phase)
     )
-      this.navigationArt?.render(
-        this.roomSpec()!,
-        this.navigationCare,
-        this.px,
-        this.pointerMode,
-        this.ambienceClock,
-      );
+      if (this.isHanounaProfile()) this.hanounaArt?.render(this.roomSpec()!);
+      else
+        this.navigationArt?.render(
+          this.roomSpec()!,
+          this.navigationCare,
+          this.px,
+          this.pointerMode,
+          this.ambienceClock,
+        );
     this.applyPresentation();
     const schoolLine =
       this.phase === "school" ? this.schoolStatus() : undefined;
@@ -3847,6 +3923,7 @@ class Game extends Phaser.Scene {
     if (
       this.schoolWear &&
       ["school", "opening"].includes(this.phase) &&
+      !(this.isHanounaProfile() && this.roomSpec()?.care) &&
       this.roomSpec()?.navigation?.revision !== "A3"
     )
       drawSchoolWear(
@@ -3871,6 +3948,7 @@ class Game extends Phaser.Scene {
       this.arrivalBackdrop,
       this.newSchoolArt?.background,
       this.navigationArt?.a3.background,
+      this.hanounaArt?.background,
     ])
       background?.setTint(light.background);
     for (const actor of [
@@ -3882,6 +3960,7 @@ class Game extends Phaser.Scene {
       this.newSchoolArt?.enemy,
       this.carArt?.sprite,
       this.navigationArt?.nurse,
+      this.hanounaArt?.nurse,
     ])
       actor?.setTint(light.actor);
     this.groundContact?.clear();
@@ -3915,8 +3994,15 @@ class Game extends Phaser.Scene {
         this.room === 4 ? 28 : this.room === 0 ? 15 : 22,
         gaps,
       );
-    const enemySprite =
-      this.room >= 10
+    const enemySprite = this.isHanounaProfile()
+      ? this.roomSpec()?.boss
+        ? this.art?.inspector
+        : this.roomSpec()?.role === "parent"
+          ? this.hallArt?.parent
+          : this.roomSpec()?.role === "student"
+            ? this.wingArt?.student
+            : undefined
+      : this.room >= 10
         ? this.newSchoolArt?.enemy
         : this.room === 4
           ? this.art?.inspector
@@ -4902,6 +4988,14 @@ class Game extends Phaser.Scene {
     }
   }
   drawSchool() {
+    if (this.usesHanounaArt()) {
+      const r = this.roomSpec();
+      if (r.boss) this.drawSliceSchool();
+      else if (r.role === "parent") this.drawHall();
+      else if (r.role === "student") this.drawWing();
+      else this.art?.drawTeacher(this, r.id === HANOUNA_ID.cour ? 0.13 : 0.18);
+      return;
+    }
     if (this.usesNewSchoolArt()) {
       this.newSchoolArt!.render(this, this.roomSpec());
       if (this.roomSpec()?.navigation?.revision === "A3")

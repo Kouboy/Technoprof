@@ -9,10 +9,11 @@
     "build:pages": "tsc && vite build --base=./",
     "build:atelier": "npm run build && node work/export-navigation-atelier.cjs",
     "test": "node work/check.cjs && node work/check-art.cjs && node work/check-car.cjs && node work/check-road.cjs && node work/check-cadre.cjs && node work/check-school.cjs && node work/check-043.cjs && node work/check-044.cjs && node work/check-045.cjs && node work/check-046.cjs && node work/check-047.cjs && node work/check-048.cjs && node work/check-049.cjs && node work/check-052.cjs && node work/check-053.cjs && node work/check-054.cjs && node work/check-055.cjs && node work/check-056.cjs && node work/check-057.cjs && node work/check-058.cjs && node work/check-059.cjs && node work/check-060.cjs && node work/check-061.cjs",
-    "test:navigation": "node work/check-bruel-navigation-design.cjs && node work/check-bruel-navigation-design.cjs bruel-navigation-a2-design.json - && node work/check-bruel-navigation-design.cjs bruel-navigation-a3-design.json bruel-navigation-a3-measures.json && node work/check-navigation-atelier.cjs && node work/check-navigation-atelier.cjs --a2 && node work/check-navigation-atelier.cjs --a3 && node work/check-pressure-a3.cjs && node work/check-parent-cycle-a3.cjs && node work/check-floor-gaps-a3.cjs",
+    "test:navigation": "node work/check-bruel-navigation-design.cjs && node work/check-bruel-navigation-design.cjs bruel-navigation-a2-design.json - && node work/check-bruel-navigation-design.cjs bruel-navigation-a3-design.json bruel-navigation-a3-measures.json && node work/check-navigation-atelier.cjs && node work/check-navigation-atelier.cjs --a2 && node work/check-navigation-atelier.cjs --a3 && node work/check-pressure-a3.cjs && node work/check-parent-cycle-a3.cjs && node work/check-floor-gaps-a3.cjs && node work/check-hanouna-h1.cjs",
     "format": "prettier --write src index.html",
     "test:rendu-a3": "node work/check-bruel-a3-art.cjs",
-    "test:holes-a3": "node work/check-floor-gaps-a3.cjs"
+    "test:holes-a3": "node work/check-floor-gaps-a3.cjs",
+    "test:hanouna-h1": "node work/check-hanouna-h1.cjs && node work/check-hanouna-h1-art.cjs"
   },
   "dependencies": {
     "phaser": "4.2.1"

@@ -1,7 +1,8 @@
 {
-  "status": "proposal-not-runtime",
+  "status": "validated-design-h1-workshop",
   "reference": "Bruel A3 validated by human, 2026-10-04",
-  "implementationAllowed": false,
+  "implementationAllowed": true,
+  "implementationStage": "Hanouna H1 playable; InShape I1 follows human H1 test",
   "clockTuning": "Deferred until driving and school are reunited",
   "hanouna": {
     "start": "h-cour",

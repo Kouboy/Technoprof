@@ -395,8 +395,8 @@ export type NavigationVisit = {
   active: Record<string, number>;
 };
 export class NavigationMetrics {
-  revision: "A1" | "A2" | "A3";
-  constructor(revision: "A1" | "A2" | "A3" = "A1") {
+  revision: "A1" | "A2" | "A3" | "H1";
+  constructor(revision: "A1" | "A2" | "A3" | "H1" = "A1") {
     this.revision = revision;
   }
   end?: { outcome: string; hp: number; remaining: number; careUsed: boolean };
@@ -424,9 +424,11 @@ export class NavigationMetrics {
   snapshot() {
     return {
       profile:
-        this.revision !== "A1"
-          ? "bruel-navigation-atelier-" + this.revision.toLowerCase()
-          : "bruel-navigation-atelier",
+        this.revision === "H1"
+          ? "hanouna-navigation-atelier-h1"
+          : this.revision !== "A1"
+            ? "bruel-navigation-atelier-" + this.revision.toLowerCase()
+            : "bruel-navigation-atelier",
       revision: this.revision,
       visits: this.visits.map((v) => ({ ...v, active: { ...v.active } })),
       choices: [...this.choices],

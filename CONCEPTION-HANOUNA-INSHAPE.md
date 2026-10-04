@@ -1,6 +1,8 @@
 # TECHNOPROF — proposition spatiale Hanouna / InShape
 
-**Statut : proposition à valider, aucun niveau modifié.** 4 octobre 2026.
+**Statut : conception validée par Nicolas, 4 octobre 2026.**
+Hanouna H1 est maintenant [jouable dans son atelier](ATELIER-HANOUNA-H1.md).
+InShape I1 est validé pour le lot suivant, après le court essai humain H1.
 Bruel A3 est la référence intermédiaire validée par Nicolas, avec ses combats,
 son infirmerie et ses deux ruptures de plancher. Son graphe reste intact.
 La journée publiée et le HTML 0.61 restent intacts.
@@ -11,14 +13,14 @@ de guidage sont des intentions de lecture, pas des mesures calculables sur le gr
 
 ## Vue d'ensemble
 
-| | Hanouna H1 proposé | Bruel A3 validé | InShape I1 proposé |
+| | Hanouna H1 en atelier | Bruel A3 validé | InShape I1 validé, à implémenter |
 |---|---|---|---|
 | Zones uniques | 9 | 12 | 17 |
 | Parcours principal, sans soin | 8 zones | 10 zones | 10 zones |
 | Choix locaux, hors simple retour | 1 | 4 : hall, palier, annexe, jonction | 6 : accueil, cour, atelier, vestiaire, galerie, jonction |
 | Étages | RDC + premier | RDC + premier | RDC + premier, avec trois escaliers distincts |
 | Valeur de la connaissance | Moins hésiter ; retrouver le soin | Annexe, raccords, soin | Couper par la cour ; reconnaître les trois arrivées vers l'aile T |
-| Rencontres sur le trajet | 3 proposées, boss compris | 6 | 7 ou 8 proposées, boss compris — arbitrage ci-dessous |
+| Rencontres sur le trajet | 3, boss compris | 6 | 7 ou 8, boss compris — budget validé ci-dessous |
 
 InShape possède davantage de connexions et de variantes, mais son premier
 parcours ne traverse pas plus de tableaux que celui de Bruel. Chaque détour a
@@ -232,11 +234,10 @@ scolaire ou atelier compte huit rencontres, la coupe par le vestiaire et le
 service sept. Le raccourci peut éviter une rencontre, à la différence du premier
 banc d'essai Bruel où les six étaient communes.
 
-**Ce budget de 7–8 au lieu de 12 est une proposition à valider explicitement.**
-Il sert à observer les choix sans réintroduire une fin interminable. Si douze
-rencontres restent impératives sur chaque route, il faudra refaire le placement
-avant le prototype ; ne pas les rétablir par des vagues nouvelles ou des
-couloirs artificiels. Les sources non retenues pour I1 restent dans la 0.61.
+**Le budget de 7–8 au lieu de 12 est validé avec cette proposition.**
+Il sert à observer les choix sans réintroduire une fin interminable. Les sources
+non retenues pour I1 restent dans la 0.61 ; aucune vague ni chaîne de couloirs
+n'est ajoutée pour rejoindre l'ancien quota.
 
 Hanouna conserve ses deux rencontres ordinaires et son Inspectrice. Son vigile
 de l'ancienne branche n'est pas repris dans H1. Bruel reste entièrement inchangé.
@@ -288,6 +289,6 @@ confirme une bifurcation pour H1, six pour I1 et six rencontres communes à I1.
 Ces contrôles ne constituent pas un test du jouable ni de la compréhension humaine.
 Voir [le relevé statique](work/etablissements-ld-proposition-verification.json).
 
-Ordre recommandé après validation : **H1 jouable → essai humain court → I1
+Ordre validé : **H1 jouable → essai humain court → I1
 jouable → deux parcours humains → rendu propre aux deux établissements →
 réintégration dans la journée et réglage global du chrono.**

@@ -1,0 +1,247 @@
+{
+  "passages": 90,
+  "care": [
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "hp": 1,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "hp": 3,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "hp": 5,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "hp": 1,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "hp": 3,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "hp": 5,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "hp": 1,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "hp": 3,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "hp": 5,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "hp": 1,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "hp": 3,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "hp": 5,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "hp": 1,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "hp": 3,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "hp": 5,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "hp": 1,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "hp": 3,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "hp": 5,
+      "healed": 5,
+      "suspendedClock": true,
+      "unique": true
+    }
+  ],
+  "routes": [
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "care": false,
+      "hp": 2,
+      "visits": 8,
+      "remaining": 201.86666666663632
+    },
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "care": true,
+      "hp": 5,
+      "visits": 10,
+      "remaining": 202.0499999999698
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "care": false,
+      "hp": 1,
+      "visits": 8,
+      "remaining": 206.41666666663994
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "care": true,
+      "hp": 1,
+      "visits": 10,
+      "remaining": 206.63333333330678
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "care": false,
+      "hp": 2,
+      "visits": 8,
+      "remaining": 202.06666666663648
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "care": true,
+      "hp": 5,
+      "visits": 10,
+      "remaining": 202.28333333330332
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "care": false,
+      "hp": 1,
+      "visits": 8,
+      "remaining": 205.89999999997286
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "care": true,
+      "hp": 1,
+      "visits": 10,
+      "remaining": 206.13333333330638
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "care": false,
+      "hp": 2,
+      "visits": 8,
+      "remaining": 202.39166666670087
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "care": true,
+      "hp": 5,
+      "visits": 10,
+      "remaining": 202.61666666670067
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "care": false,
+      "hp": 1,
+      "visits": 8,
+      "remaining": 206.20000000003074
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "care": true,
+      "hp": 1,
+      "visits": 10,
+      "remaining": 206.4500000000305
+    }
+  ]
+}
