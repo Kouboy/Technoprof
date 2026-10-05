@@ -328,6 +328,7 @@ class Game extends Phaser.Scene {
     BridgeArt.preload(this);
     WingArt.preload(this);
     BruelNavigationArt.preload(this);
+    HanounaNavigationArt.preload(this);
     this.load.image("service-stair", SERVICE_DATA);
     this.load.image("technical", TECHNICAL_DATA);
     this.load.image("central-stair", CENTRAL_DATA);
@@ -3743,8 +3744,13 @@ class Game extends Phaser.Scene {
       this.navigationProfile &&
       ["school", "opening", "fail"].includes(this.phase)
     )
-      if (this.isHanounaProfile()) this.hanounaArt?.render(this.roomSpec()!);
-      else
+      if (this.isHanounaProfile()) {
+        this.hanounaArt?.render(
+          this.roomSpec()!,
+          this.phase === "opening" ? this.age : undefined,
+        );
+        if (this.phase === "opening") this.art?.door.clear();
+      } else
         this.navigationArt?.render(
           this.roomSpec()!,
           this.navigationCare,
@@ -3926,7 +3932,7 @@ class Game extends Phaser.Scene {
     if (
       this.schoolWear &&
       ["school", "opening"].includes(this.phase) &&
-      !(this.isHanounaProfile() && this.roomSpec()?.care) &&
+      !this.isHanounaProfile() &&
       this.roomSpec()?.navigation?.revision !== "A3"
     )
       drawSchoolWear(
@@ -4997,10 +5003,12 @@ class Game extends Phaser.Scene {
   drawSchool() {
     if (this.usesHanounaArt()) {
       const r = this.roomSpec();
-      if (r.boss) this.drawSliceSchool();
-      else if (r.role === "parent") this.drawHall();
+      if (r.boss) {
+        this.drawSliceSchool();
+        if (this.art) this.hanounaArt?.fitArenaActors(this.art);
+      } else if (r.role === "parent") this.drawHall();
       else if (r.role === "student") this.drawWing();
-      else this.art?.drawTeacher(this, r.id === HANOUNA_ID.cour ? 0.13 : 0.18);
+      else this.art?.drawTeacher(this, 0.18);
       return;
     }
     if (this.usesNewSchoolArt()) {

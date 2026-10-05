@@ -8,7 +8,7 @@ une aile et un étage, puis reconnaître un détour de soin facultatif.
 
 Ouvrir **Jouer-Technoprof-Atelier-Hanouna-H1.html**, dans le dossier du projet.
 Le HTML contient le programme et les images, sans serveur ni réseau requis
-(environ 101 Mo). Il démarre sur « Hanouna H1 / découverte du collège ».
+(environ 113 Mo). Il démarre sur « Hanouna H1 / découverte du collège ».
 
 Depuis les sources : `npm run build:atelier`, puis `npm run dev` et
 `/?essai=labo&scenario=hanouna-navigation-h1`.
@@ -47,14 +47,16 @@ L'équilibrage global attend la réunion des trois établissements et de la cond
 
 ## Rendu de l'atelier
 
-Fonds existants français des années 1970, panneaux physiques vers l'aile C,
-un escalier ouvert, une porte d'infirmerie alignée sur son accès et sa scène
-avec l'infirmière. L'étage est indiqué explicitement. La vue en hauteur du
-palier est encore schématique ; hall et escalier partagent provisoirement
-un fond. Les panoramas distincts, raccords architecturaux fins et landmarks
-définitifs restent pour le lot de rendu, après l'essai de navigation.
+La topologie a été validée lors de l'essai humain. Les [neuf décors dédiés](RENDU-HANOUNA-H1.md)
+suivent maintenant ce parcours : collège français en béton des années 1970,
+vitres rafistolées, rampe verte, affiches abîmées, carrelage usé. Le hall et
+l'escalier ont des compositions distinctes. Le palier donne une vue de la cour
+depuis l'étage, avec le bouleau et le toit du préau comme repères partagés.
+Les plaques sont intégrées au décor et les accès conservent leurs commandes.
+Dans l'infirmerie, mobilier et adultes ont une échelle cohérente ; l'infirmière
+est ancrée sur la même ligne de sol que le professeur.
 
-![Hall H1 et accès au grand escalier](work/hanouna-h1-hall.png)
+![Hall H1 et accès au grand escalier](work/hanouna-h1-rendu-hall.png)
 
 ## Vérification et essai humain
 
@@ -79,7 +81,7 @@ de choisir le détour ou de le laisser, et de revenir sans hésitation inutile.
 
 Bruel A3 et le HTML 0.61 gelé restent intacts. Branche
 `atelier-navigation-bruel-a3`, sans publication sur main ou Pages.
-InShape I1 est le prochain lot après cet essai H1.
+InShape I1 est le prochain lot après la vérification humaine du rendu H1.
 
 ## Inspectrice — correction après essai humain du 4 octobre
 

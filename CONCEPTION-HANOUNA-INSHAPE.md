@@ -2,7 +2,8 @@
 
 **Statut : conception validée par Nicolas, 4 octobre 2026.**
 Hanouna H1 est maintenant [jouable dans son atelier](ATELIER-HANOUNA-H1.md).
-InShape I1 est validé pour le lot suivant, après le court essai humain H1.
+La topologie H1 est validée par l'essai humain ; son rendu dédié est intégré.
+InShape I1 est validé pour le lot suivant, après la vérification de ce rendu.
 Bruel A3 est la référence intermédiaire validée par Nicolas, avec ses combats,
 son infirmerie et ses deux ruptures de plancher. Son graphe reste intact.
 La journée publiée et le HTML 0.61 restent intacts.

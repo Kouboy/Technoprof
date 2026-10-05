@@ -8,6 +8,59 @@ t.g.workshop = true;
 t.g.loadScenario("hanouna-navigation-h1");
 const layout = t.g.navigationSpec(),
   images = [];
+const dataSource = fs.readFileSync("src/hanouna-h1-data.ts", "utf8");
+const data = JSON.parse(
+  dataSource
+    .slice(dataSource.indexOf("= ") + 2)
+    .trim()
+    .replace(/;$/, ""),
+);
+const dimensions = {},
+  frames = new Map();
+for (const [key, file] of Object.entries({
+  entree: "entree-v3.png",
+  etage: "etage-v2.png",
+  infirmerie: "infirmerie-v1.png",
+})) {
+  const original = fs.readFileSync("art/hanouna-h1/" + file);
+  assert(
+    original.equals(Buffer.from(data[key].split(",")[1], "base64")),
+    "original source embedded intact",
+  );
+  dimensions["hanouna-h1-" + key] = [
+    original.readUInt32BE(16),
+    original.readUInt32BE(20),
+  ];
+}
+const scene = {
+  load: {
+    image(key, uri) {
+      assert(dimensions[key]);
+      assert(uri.startsWith("data:image/png;base64,"));
+    },
+  },
+  textures: {
+    get(key) {
+      return {
+        add(i, source, x, y, w, h) {
+          const [width, height] = dimensions[key];
+          assert(
+            x >= 0 &&
+              y >= 0 &&
+              w > 0 &&
+              h > 0 &&
+              x + w <= width &&
+              y + h <= height,
+          );
+          frames.set(key + "/" + i, [x, y, w, h]);
+        },
+        setFilter(filter) {
+          assert.equal(filter, 0);
+        },
+      };
+    },
+  },
+};
 const strip = (s) =>
   s
     .replace(/import[\s\S]*?from\s+['"][^'"]+['"];?/g, "")
@@ -43,7 +96,10 @@ function image(x, y, key, frame) {
     Object.assign(obj, { width, height });
     return obj;
   };
-  obj.setOrigin = () => obj;
+  obj.setOrigin = (x, y = x) => {
+    obj.origin = [x, y];
+    return obj;
+  };
   obj.setDepth = (depth) => {
     obj.depth = depth;
     return obj;
@@ -52,6 +108,8 @@ function image(x, y, key, frame) {
   return obj;
 }
 const scope = {
+  HANOUNA_H1_DATA: data,
+  Phaser: { Textures: { FilterMode: { NEAREST: 0 } } },
   h: t.api.HANOUNA_ID,
   INFIRMARY: { nurseX: 225 },
   VIEW: { x: 7, y: 7, width: 306, height: 168, floor: 163 },
@@ -67,22 +125,52 @@ vm.runInContext(
   ),
   scope,
 );
-const art = new scope.Renderer({ add: { image, graphics: () => ink } }),
+scope.Renderer.preload(scene);
+const art = new scope.Renderer({
+    ...scene,
+    add: { image, graphics: () => ink },
+  }),
   count = images.length;
 t.g.hanounaArt = art;
 const before = JSON.stringify(layout);
-const known = {
-  courtyard: ["playable"],
-  hall: ["floor"],
-  "annex-stair": ["playable"],
-  "wing-34": ["floor"],
-  corridor: ["__BASE"],
-  "bruel-a3-aile-b": [2],
+assert.equal(frames.size, 9, "nine distinct compositions");
+assert.equal(
+  new Set(Object.values(scope.backgrounds).map(([k, f]) => k + "/" + f)).size,
+  9,
+);
+assert.equal(
+  art.nurse.height,
+  86,
+  "adult nurse equals teacher head-to-sole scale",
+);
+assert.deepEqual(art.nurse.origin, [0.5, 0.986]);
+assert.equal(art.nurse.y, 163, "nurse stands on the shared floor");
+const arenaActor = {
+  visible: true,
+  scaleX: -0.225,
+  scaleY: 0.225,
+  setScale(x, y) {
+    this.scaleX = x;
+    this.scaleY = y;
+  },
 };
+for (let frame = 0; frame < 3; frame++) {
+  arenaActor.scaleX = -0.225;
+  arenaActor.scaleY = 0.225;
+  art.fitArenaActors({ teacher: arenaActor, inspector: { visible: false } });
+  assert(
+    Math.abs(arenaActor.scaleX + 0.18) < 1e-10,
+    "arena keeps facing and common teacher scale",
+  );
+  assert(
+    Math.abs(arenaActor.scaleY - 0.18) < 1e-10,
+    "fresh render scale stable",
+  );
+}
 for (let pass = 0; pass < 3; pass++)
   for (const room of Object.values(layout.rooms)) {
     const [key, frame] = scope.backgrounds[room.id];
-    assert(known[key]?.includes(frame), "loaded texture and frame");
+    assert(frames.has(key + "/" + frame), "loaded texture and frame");
     assert(scope.signs[room.id]?.length);
     art.hide();
     art.render(room);
@@ -106,11 +194,13 @@ assert.equal(
   before,
   "render does not mutate the level",
 );
-assert.equal(
-  scope.backgrounds[scope.h.hall][0],
-  "annex-stair",
-  "open staircase, not the condemned central stair",
+assert.notDeepEqual(
+  scope.backgrounds[scope.h.hall],
+  scope.backgrounds[scope.h.escalier],
+  "hall and stair no longer reuse a panorama",
 );
+art.render(layout.rooms[scope.h.seuil], 0.5);
+assert(art.background.visible, "class-entry presentation retains the room");
 art.hide();
 assert(images.every((i) => !i.visible));
 for (const room of Object.values(layout.rooms)) {

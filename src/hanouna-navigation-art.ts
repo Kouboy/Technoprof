@@ -4,52 +4,73 @@ import { HANOUNA_ID as h } from "./hanouna-navigation";
 import { smallPrint, smallWidth } from "./small-lettering";
 import { INFIRMARY } from "./bruel-recovery";
 import { VIEW } from "./presentation";
+import { HANOUNA_H1_DATA } from "./hanouna-h1-data";
+import type { SliceArt } from "./slice-art";
 
-// Spatial workshop using existing textures. Final panoramas follow the human test.
+// Original sources stay intact: these frames trim dividers and excess foreground.
+export const H1_CROPS: Record<string, number[][]> = {
+  entree: [
+    [0, 110, 832, 357],
+    [840, 0, 832, 467],
+    [0, 475, 832, 444],
+    [840, 475, 832, 444],
+  ],
+  etage: [
+    [0, 0, 832, 430],
+    [840, 0, 832, 430],
+    [0, 475, 832, 409],
+    [840, 475, 832, 409],
+  ],
+  infirmerie: [[0, 0, 1672, 835]],
+};
+export const H1_NURSE = { size: 86, soleOrigin: 0.986 };
+export const H1_ARENA_SCALE = 0.8;
+export const H1_CLASS_DOOR = { x: 241, y: 51, width: 43, height: 98 };
 export const H1_BACKGROUNDS: Record<number, [string, string | number]> = {
-  [h.cour]: ["courtyard", "playable"],
-  [h.vestibule]: ["hall", "floor"],
-  [h.hall]: ["annex-stair", "playable"],
-  [h.escalier]: ["annex-stair", "playable"],
-  [h.palier]: ["hall", "floor"],
-  [h.galerie]: ["wing-34", "floor"],
-  [h.jonction]: ["hall", "floor"],
-  [h.seuil]: ["corridor", "__BASE"],
-  [h.infirmerie]: ["bruel-a3-aile-b", 2],
+  [h.cour]: ["hanouna-h1-entree", 0],
+  [h.vestibule]: ["hanouna-h1-entree", 1],
+  [h.hall]: ["hanouna-h1-entree", 2],
+  [h.escalier]: ["hanouna-h1-entree", 3],
+  [h.palier]: ["hanouna-h1-etage", 0],
+  [h.galerie]: ["hanouna-h1-etage", 1],
+  [h.jonction]: ["hanouna-h1-etage", 2],
+  [h.seuil]: ["hanouna-h1-etage", 3],
+  [h.infirmerie]: ["hanouna-h1-infirmerie", 0],
 };
 type Plate = [number, number, string[], boolean?];
 export const H1_SIGNS: Record<number, Plate[]> = {
-  [h.cour]: [[216, 27, ["COLLEGE C. HANOUNA", "ENTREE >"], true]],
+  [h.cour]: [[216, 33, ["COLLEGE C. HANOUNA", "ENTREE >"], true]],
   [h.vestibule]: [
     [12, 28, ["< COUR"]],
-    [257, 28, ["HALL >"], true],
+    [276, 38, ["HALL >"], true],
   ],
   [h.hall]: [
-    [180, 17, ["AILE C / 1ER ETAGE", "C30-C45 / ESCALIER"], true],
+    [194, 33, ["AILE C / 1ER ETAGE", "C30-C45 / ESCALIER"], true],
     [12, 32, ["< VESTIBULE"]],
   ],
   [h.escalier]: [
-    [18, 28, ["HALL / RDC"]],
+    [36, 43, ["HALL / RDC"]],
     [211, 28, ["PALIER C / 1ER"], true],
   ],
   [h.palier]: [
-    [16, 27, ["ESCALIER / RDC"]],
-    [232, 27, ["C30-C45 >"], true],
-    [138, 108, ["1ER ETAGE"]],
+    [43, 30, ["ESCALIER / RDC"]],
+    [232, 16, ["C30-C45 >"], true],
+    [226, 119, ["1ER ETAGE"]],
   ],
   [h.galerie]: [
     [12, 27, ["< PALIER C"]],
-    [132, 27, ["C30-C41"]],
-    [234, 27, ["C42-C45 >"], true],
+    [146, 42, ["C30"]],
+    [246, 42, ["C31"]],
+    [234, 18, ["C42-C45 >"], true],
   ],
   [h.jonction]: [
     [12, 27, ["< C30-C41"]],
-    [151, 15, ["INFIRMERIE"]],
+    [192, 38, ["INFIRMERIE"]],
     [245, 27, ["C42-C45 >"], true],
   ],
-  [h.seuil]: [[274, 12, ["42C"], true]],
+  [h.seuil]: [[264, 34, ["42C"], true]],
   [h.infirmerie]: [
-    [26, 32, ["JONCTION C / 1ER"]],
+    [42, 46, ["JONCTION C / 1ER"]],
     [163, 31, ["PREMIERS SOINS"]],
   ],
 };
@@ -57,17 +78,26 @@ export class HanounaNavigationArt {
   background: Phaser.GameObjects.Image;
   nurse: Phaser.GameObjects.Image;
   ink: Phaser.GameObjects.Graphics;
+  static preload(scene: Phaser.Scene) {
+    for (const [key, data] of Object.entries(HANOUNA_H1_DATA))
+      scene.load.image("hanouna-h1-" + key, data);
+  }
   constructor(scene: Phaser.Scene) {
+    for (const [key, crops] of Object.entries(H1_CROPS)) {
+      const texture = scene.textures.get("hanouna-h1-" + key);
+      crops.forEach(([x, y, w, h], index) => texture.add(index, 0, x, y, w, h));
+      texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    }
     this.background = scene.add
-      .image(VIEW.x, VIEW.y, "hall", "floor")
+      .image(VIEW.x, VIEW.y, "hanouna-h1-entree", 0)
       .setOrigin(0)
       .setDisplaySize(VIEW.width, VIEW.height)
       .setDepth(1.09);
     this.ink = scene.add.graphics().setDepth(1.89);
     this.nurse = scene.add
       .image(INFIRMARY.nurseX, VIEW.floor, "infirmary-nurse")
-      .setOrigin(0.5, 0.97)
-      .setDisplaySize(77, 77)
+      .setOrigin(0.5, H1_NURSE.soleOrigin)
+      .setDisplaySize(H1_NURSE.size, H1_NURSE.size)
       .setDepth(2);
     this.hide();
   }
@@ -75,6 +105,16 @@ export class HanounaNavigationArt {
     this.background.setVisible(false);
     this.nurse.setVisible(false);
     this.ink.clear();
+  }
+  fitArenaActors(art: SliceArt) {
+    // SliceArt rebuilds poses each frame. Apply once after drawing, retaining
+    // facing and the classroom walk's depth scaling, never accumulating.
+    for (const actor of [art.teacher, art.inspector])
+      if (actor.visible)
+        actor.setScale(
+          actor.scaleX * H1_ARENA_SCALE,
+          actor.scaleY * H1_ARENA_SCALE,
+        );
   }
   plate(x: number, y: number, lines: string[], primary = false) {
     const w = Math.max(20, ...lines.map((s) => smallWidth(s) + 8)),
@@ -93,7 +133,8 @@ export class HanounaNavigationArt {
       smallPrint(g, x + 4, y + 3 + i * 8, line, 0x21302f),
     );
   }
-  render(r: RoomSpec) {
+  render(r: RoomSpec, openingAge?: number) {
+    this.ink.clear();
     const [key, frame] = H1_BACKGROUNDS[r.id];
     this.background
       .setTexture(key, frame)
@@ -101,47 +142,16 @@ export class HanounaNavigationArt {
       .setVisible(true);
     this.nurse.setVisible(r.id === h.infirmerie);
     const g = this.ink;
-    if (r.id === h.jonction) {
-      // Real care door behind the trigger, separate from the class corridor.
-      g.fillStyle(0x111b1e);
-      g.fillRect(158, 33, 44, 121);
-      g.fillStyle(0x768580);
-      g.fillRect(162, 37, 36, 116);
-      g.fillStyle(0xbcbda9);
-      g.fillRect(166, 44, 28, 19);
-      g.fillStyle(0x45665b);
-      g.fillRect(178, 47, 4, 13);
-      g.fillRect(173, 51, 14, 4);
-      g.fillStyle(0x293638);
-      g.fillRect(163, 139, 34, 13);
-      g.fillStyle(0xb7b6a6);
-      g.fillRect(191, 101, 5, 2);
+    if (r.id === h.seuil && openingAge !== undefined) {
+      const d = H1_CLASS_DOOR,
+        open = Math.min(1, openingAge / 0.7);
+      g.fillStyle(0x080d13);
+      g.fillRect(d.x, d.y, d.width, d.height);
+      g.fillStyle(0x426361);
+      g.fillRect(d.x, d.y, Math.max(3, d.width * (1 - open)), d.height);
+      g.fillStyle(0xc3c1a4);
+      g.fillRect(d.x + Math.max(1, d.width * (1 - open) - 5), 111, 3, 1);
     }
-    if (r.id === h.palier) {
-      // Schematic elevated view for H1: no ground-level photo pasted upstairs.
-      g.fillStyle(0x182b30);
-      g.fillRect(113, 30, 84, 72);
-      g.fillStyle(0x64716d);
-      g.fillRect(116, 33, 78, 66);
-      g.fillStyle(0x3f4a47);
-      g.fillRect(117, 69, 76, 29);
-      g.fillStyle(0x24343a);
-      g.fillRect(123, 73, 31, 7);
-      g.fillRect(125, 80, 2, 12);
-      g.fillRect(149, 80, 2, 12);
-      g.lineStyle(2, 0xa7a58d);
-      g.lineBetween(176, 84, 178, 39);
-      g.lineBetween(178, 53, 167, 40);
-      g.lineBetween(178, 58, 188, 43);
-      g.lineStyle(2, 0x354744);
-      g.strokeRect(113, 30, 84, 72);
-      g.lineBetween(155, 31, 155, 101);
-    }
-    if (!r.boss)
-      for (const side of r.blocked) {
-        g.fillStyle(0x263938);
-        g.fillRect(side === "left" ? 7 : 299, 35, 14, 118);
-      }
     for (const [x, y, lines, primary] of H1_SIGNS[r.id])
       this.plate(x, y, lines, primary);
   }

@@ -265,7 +265,7 @@ export function installWorkshop(s: Host) {
     const a3 = select.value.startsWith("bruel-navigation-a3");
     gainLabel.hidden = a3 || h1;
     navigationNote.textContent = h1
-      ? "HANOUNA / H1 : parcours guidé vers 42C, un détour facultatif à la jonction C. Deux rencontres puis l’Inspectrice. Infirmerie : accueil, soin complet, délai suspendu et retour automatique ; un usage par affectation. Décors d’atelier provisoires."
+      ? "HANOUNA / H1 : parcours guidé vers 42C, un détour facultatif à la jonction C. Deux rencontres puis l’Inspectrice. Infirmerie : accueil, soin complet, délai suspendu et retour automatique ; un usage par affectation. Neuf décors adaptés au parcours."
       : a3
         ? "BRUEL / A3 : l’infirmière accueille le professeur dès l’entrée. F/X ou toucher : afficher puis avancer les répliques. Soin complet, délai suspendu et sortie automatique ; une visite par affectation. Le Parent influent reprend sa garde après deux coups."
         : "BRUEL / A1-A2 : approcher l’armoire, F/X ou toucher pour le soin partiel +1/+2. Délai actif pendant le soin ; un usage par affectation. Changer le soin ou les PV relance cet essai.";

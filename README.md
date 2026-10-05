@@ -52,9 +52,10 @@ Sur cette même branche, [Hanouna H1](ATELIER-HANOUNA-H1.md) implémente le prem
 lot de la [conception Hanouna / InShape validée](CONCEPTION-HANOUNA-INSHAPE.md) :
 huit zones jusqu'à 42C, deux rencontres ordinaires, l'Inspectrice et un détour
 facultatif par l'infirmerie à l'étage. `npm run build:atelier` produit aussi
-`Jouer-Technoprof-Atelier-Hanouna-H1.html` (environ 101 Mo). Les fonds existants
-sont adaptés pour tester la navigation avant le rendu définitif. InShape I1
-attend le court essai humain H1. Ni la journée publiée ni Bruel A3 ne changent.
+`Jouer-Technoprof-Atelier-Hanouna-H1.html` (environ 113 Mo). La topologie est
+validée ; les [neuf décors dédiés](RENDU-HANOUNA-H1.md) l'accompagnent désormais.
+InShape I1 attend la vérification humaine du rendu H1. Ni la journée publiée
+ni Bruel A3 ne changent.
 
 Sur la branche `atelier-navigation-bruel-a3`, [Bruel A3](ATELIER-BRUEL-A3.md)
 reprend le réseau validé, l'infirmerie comme scène de récupération et le
