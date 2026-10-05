@@ -3,7 +3,9 @@
 **Statut : conception validée par Nicolas, 4 octobre 2026.**
 Hanouna H1 est maintenant [jouable dans son atelier](ATELIER-HANOUNA-H1.md).
 La topologie H1 est validée par l'essai humain ; son rendu dédié est intégré.
-InShape I1 est validé pour le lot suivant, après la vérification de ce rendu.
+InShape I1 est désormais [jouable dans son atelier](ATELIER-INSHAPE-I1.md),
+avec fonds existants recomposés pour l'essai du parcours. Son rendu définitif
+attend la validation humaine des itinéraires.
 Bruel A3 est la référence intermédiaire validée par Nicolas, avec ses combats,
 son infirmerie et ses deux ruptures de plancher. Son graphe reste intact.
 La journée publiée et le HTML 0.61 restent intacts.
@@ -14,7 +16,7 @@ de guidage sont des intentions de lecture, pas des mesures calculables sur le gr
 
 ## Vue d'ensemble
 
-| | Hanouna H1 en atelier | Bruel A3 validé | InShape I1 validé, à implémenter |
+| | Hanouna H1 en atelier | Bruel A3 validé | InShape I1 en atelier |
 |---|---|---|---|
 | Zones uniques | 9 | 12 | 17 |
 | Parcours principal, sans soin | 8 zones | 10 zones | 10 zones |

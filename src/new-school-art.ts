@@ -151,7 +151,11 @@ export class NewSchoolArt {
     this.background.setFlipX(!!r.quietMirror);
     // A3 timber holes clip the body against the front lip in SchoolProps.
     // Keep drawing through the descent rather than hiding the torso halfway.
-    if (s.py < 202 || (r.navigation?.revision === "A3" && (s.falling ?? 0) > 0))
+    if (
+      s.py < 202 ||
+      ((r.navigation?.revision === "A3" || r.navigation?.revision === "I1") &&
+        (s.falling ?? 0) > 0)
+    )
       s.art?.drawTeacher(s, r.boss ? 0.225 : 0.18);
     const e = s.enemies[0];
     if (e && (e.hp > 0 || (e.downTime ?? 0) > 0)) {

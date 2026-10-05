@@ -54,7 +54,13 @@ huit zones jusqu'à 42C, deux rencontres ordinaires, l'Inspectrice et un détour
 facultatif par l'infirmerie à l'étage. `npm run build:atelier` produit aussi
 `Jouer-Technoprof-Atelier-Hanouna-H1.html` (environ 113 Mo). La topologie est
 validée ; les [neuf décors dédiés](RENDU-HANOUNA-H1.md) l'accompagnent désormais.
-InShape I1 attend la vérification humaine du rendu H1. Ni la journée publiée
+Après validation de H1, [InShape I1](ATELIER-INSHAPE-I1.md) est jouable sur la
+même branche : 17 zones, trois montées, passage couvert, service et infirmerie
+à la jonction. `npm run build:atelier` produit
+`Jouer-Technoprof-Atelier-InShape-I1.html` (environ 113 Mo).
+Les décors recomposés sont provisoires, pour tester le LD avant le rendu
+définitif. Vérification ciblée : `npm run test:inshape-i1`.
+Ni la journée publiée
 ni Bruel A3 ne changent.
 
 Sur la branche `atelier-navigation-bruel-a3`, [Bruel A3](ATELIER-BRUEL-A3.md)

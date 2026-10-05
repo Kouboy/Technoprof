@@ -325,7 +325,8 @@ export class SchoolProps {
     for (const side of layout?.blocked ?? BLOCKED_EDGES[room] ?? []) {
       // A3 backgrounds close the unused directions with real walls/stair bays.
       // Keep navigation rules intact; don't plaster the old generic barrier over them.
-      if (["A3", "H1"].includes(layout?.navigation?.revision ?? "")) continue;
+      if (["A3", "H1", "I1"].includes(layout?.navigation?.revision ?? ""))
+        continue;
       this.prop(
         0,
         side === "left" ? 7 : 287,

@@ -63,6 +63,21 @@ type Host = {
   exportJournal(): void;
 };
 const SCENARIOS: Record<string, string> = {
+  "inshape-navigation-i1": "InShape I1 / découverte du lycée pro",
+  "inshape-navigation-i1-road": "InShape I1 / route puis établissement",
+  "inshape-navigation-i1-care": "InShape I1 / jonction et soins",
+  "inshape-navigation-i1-boss": "InShape I1 / Responsable sécurité",
+  "inshape-navigation-i1-service": "InShape I1 / sol du palier service",
+  "inshape-navigation-i1-view-301": "InShape I1 / accueil",
+  "inshape-navigation-i1-view-303": "InShape I1 / escalier principal",
+  "inshape-navigation-i1-view-304": "InShape I1 / galerie T",
+  "inshape-navigation-i1-view-305": "InShape I1 / jonction T",
+  "inshape-navigation-i1-view-310": "InShape I1 / cour technique",
+  "inshape-navigation-i1-view-311": "InShape I1 / atelier A",
+  "inshape-navigation-i1-view-312": "InShape I1 / vestiaire",
+  "inshape-navigation-i1-view-313": "InShape I1 / passage service",
+  "inshape-navigation-i1-view-315": "InShape I1 / infirmerie",
+  "inshape-navigation-i1-view-316": "InShape I1 / vie scolaire",
   "hanouna-navigation-h1": "Hanouna H1 / découverte du collège",
   "hanouna-navigation-h1-road": "Hanouna H1 / route puis collège",
   "hanouna-navigation-h1-care": "Hanouna H1 / jonction et soins",
@@ -257,18 +272,29 @@ export function installWorkshop(s: Host) {
   });
   const updateCareSettings = () => {
     const h1 = select.value.startsWith("hanouna-navigation-h1");
+    const i1 = select.value.startsWith("inshape-navigation-i1");
     hp.setAttribute(
       "aria-label",
-      h1 ? "PV de départ Hanouna" : "PV de départ Bruel",
+      i1
+        ? "PV de départ InShape"
+        : h1
+          ? "PV de départ Hanouna"
+          : "PV de départ Bruel",
     );
-    careSettings.hidden = !(h1 || select.value.startsWith("bruel-navigation"));
+    careSettings.hidden = !(
+      i1 ||
+      h1 ||
+      select.value.startsWith("bruel-navigation")
+    );
     const a3 = select.value.startsWith("bruel-navigation-a3");
-    gainLabel.hidden = a3 || h1;
-    navigationNote.textContent = h1
-      ? "HANOUNA / H1 : parcours guidé vers 42C, un détour facultatif à la jonction C. Deux rencontres puis l’Inspectrice. Infirmerie : accueil, soin complet, délai suspendu et retour automatique ; un usage par affectation. Neuf décors adaptés au parcours."
-      : a3
-        ? "BRUEL / A3 : l’infirmière accueille le professeur dès l’entrée. F/X ou toucher : afficher puis avancer les répliques. Soin complet, délai suspendu et sortie automatique ; une visite par affectation. Le Parent influent reprend sa garde après deux coups."
-        : "BRUEL / A1-A2 : approcher l’armoire, F/X ou toucher pour le soin partiel +1/+2. Délai actif pendant le soin ; un usage par affectation. Changer le soin ou les PV relance cet essai.";
+    gainLabel.hidden = a3 || h1 || i1;
+    navigationNote.textContent = i1
+      ? "INSHAPE / I1 : prototype du parcours validé. Bâtiment principal, ateliers et service rejoignent l’aile T au premier étage. Passage couvert facultatif, infirmerie à la jonction, danger de sol au palier service. Décors recomposés provisoires ; 7 ou 8 rencontres selon le chemin."
+      : h1
+        ? "HANOUNA / H1 : parcours guidé vers 42C, un détour facultatif à la jonction C. Deux rencontres puis l’Inspectrice. Infirmerie : accueil, soin complet, délai suspendu et retour automatique ; un usage par affectation. Neuf décors adaptés au parcours."
+        : a3
+          ? "BRUEL / A3 : l’infirmière accueille le professeur dès l’entrée. F/X ou toucher : afficher puis avancer les répliques. Soin complet, délai suspendu et sortie automatique ; une visite par affectation. Le Parent influent reprend sa garde après deux coups."
+          : "BRUEL / A1-A2 : approcher l’armoire, F/X ou toucher pour le soin partiel +1/+2. Délai actif pendant le soin ; un usage par affectation. Changer le soin ou les PV relance cet essai.";
   };
   updateCareSettings();
   gain.onchange = () => {

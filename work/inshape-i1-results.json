@@ -1,0 +1,465 @@
+{
+  "connections": 222,
+  "care": [
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "startHp": 1,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "startHp": 3,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "startHp": 5,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "startHp": 1,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "startHp": 3,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "startHp": 5,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "startHp": 1,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "startHp": 3,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "startHp": 5,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "startHp": 1,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "startHp": 3,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "startHp": 5,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "startHp": 1,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "startHp": 3,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "startHp": 5,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "startHp": 1,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "startHp": 3,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "startHp": 5,
+      "full": true,
+      "unique": true,
+      "frozen": true
+    }
+  ],
+  "gaps": [
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    }
+  ],
+  "routes": [
+    {
+      "route": "first",
+      "fps": 30,
+      "mode": "keyboard",
+      "hp": 4,
+      "visits": 10,
+      "encounters": 8,
+      "remaining": 160.11666666662697
+    },
+    {
+      "route": "workshops",
+      "fps": 30,
+      "mode": "keyboard",
+      "hp": 3,
+      "visits": 10,
+      "encounters": 8,
+      "remaining": 164.54999999996383
+    },
+    {
+      "route": "known",
+      "fps": 30,
+      "mode": "keyboard",
+      "hp": 4,
+      "visits": 9,
+      "encounters": 7,
+      "remaining": 169.0666666666341
+    },
+    {
+      "route": "service",
+      "fps": 30,
+      "mode": "keyboard",
+      "hp": 4,
+      "visits": 11,
+      "encounters": 7,
+      "remaining": 162.81666666662912
+    },
+    {
+      "route": "first",
+      "fps": 30,
+      "mode": "direct",
+      "hp": 4,
+      "visits": 10,
+      "encounters": 8,
+      "remaining": 161.64999999996152
+    },
+    {
+      "route": "workshops",
+      "fps": 30,
+      "mode": "direct",
+      "hp": 3,
+      "visits": 10,
+      "encounters": 8,
+      "remaining": 166.01666666663166
+    },
+    {
+      "route": "known",
+      "fps": 30,
+      "mode": "direct",
+      "hp": 4,
+      "visits": 9,
+      "encounters": 7,
+      "remaining": 170.59999999996865
+    },
+    {
+      "route": "service",
+      "fps": 30,
+      "mode": "direct",
+      "hp": 4,
+      "visits": 11,
+      "encounters": 7,
+      "remaining": 164.43333333329707
+    },
+    {
+      "route": "first",
+      "fps": 60,
+      "mode": "keyboard",
+      "hp": 4,
+      "visits": 10,
+      "encounters": 8,
+      "remaining": 160.5166666666273
+    },
+    {
+      "route": "workshops",
+      "fps": 60,
+      "mode": "keyboard",
+      "hp": 3,
+      "visits": 10,
+      "encounters": 8,
+      "remaining": 164.88333333329743
+    },
+    {
+      "route": "known",
+      "fps": 60,
+      "mode": "keyboard",
+      "hp": 4,
+      "visits": 9,
+      "encounters": 7,
+      "remaining": 169.43333333330105
+    },
+    {
+      "route": "service",
+      "fps": 60,
+      "mode": "keyboard",
+      "hp": 4,
+      "visits": 11,
+      "encounters": 7,
+      "remaining": 163.18333333329608
+    },
+    {
+      "route": "first",
+      "fps": 60,
+      "mode": "direct",
+      "hp": 4,
+      "visits": 10,
+      "encounters": 8,
+      "remaining": 164.01666666663007
+    },
+    {
+      "route": "workshops",
+      "fps": 60,
+      "mode": "direct",
+      "hp": 3,
+      "visits": 10,
+      "encounters": 8,
+      "remaining": 168.43333333330025
+    },
+    {
+      "route": "known",
+      "fps": 60,
+      "mode": "direct",
+      "hp": 4,
+      "visits": 9,
+      "encounters": 7,
+      "remaining": 173.03333333330391
+    },
+    {
+      "route": "service",
+      "fps": 60,
+      "mode": "direct",
+      "hp": 4,
+      "visits": 11,
+      "encounters": 7,
+      "remaining": 166.74999999996558
+    },
+    {
+      "route": "first",
+      "fps": 120,
+      "mode": "keyboard",
+      "hp": 4,
+      "visits": 10,
+      "encounters": 8,
+      "remaining": 160.61666666671158
+    },
+    {
+      "route": "workshops",
+      "fps": 120,
+      "mode": "keyboard",
+      "hp": 3,
+      "visits": 10,
+      "encounters": 8,
+      "remaining": 165.04166666670756
+    },
+    {
+      "route": "known",
+      "fps": 120,
+      "mode": "keyboard",
+      "hp": 4,
+      "visits": 9,
+      "encounters": 7,
+      "remaining": 169.57500000003677
+    },
+    {
+      "route": "service",
+      "fps": 120,
+      "mode": "keyboard",
+      "hp": 4,
+      "visits": 11,
+      "encounters": 7,
+      "remaining": 163.31666666670912
+    },
+    {
+      "route": "first",
+      "fps": 120,
+      "mode": "direct",
+      "hp": 4,
+      "visits": 10,
+      "encounters": 8,
+      "remaining": 163.95000000004188
+    },
+    {
+      "route": "workshops",
+      "fps": 120,
+      "mode": "direct",
+      "hp": 3,
+      "visits": 10,
+      "encounters": 8,
+      "remaining": 168.40833333337116
+    },
+    {
+      "route": "known",
+      "fps": 120,
+      "mode": "direct",
+      "hp": 4,
+      "visits": 9,
+      "encounters": 7,
+      "remaining": 172.93333333336705
+    },
+    {
+      "route": "service",
+      "fps": 120,
+      "mode": "direct",
+      "hp": 4,
+      "visits": 11,
+      "encounters": 7,
+      "remaining": 166.70000000003938
+    }
+  ]
+}

@@ -64,3 +64,22 @@ fs.writeFileSync(
 console.log(
   "Standalone atelier Hanouna H1: " + Buffer.byteLength(h1) + " bytes",
 );
+
+const i1Bootstrap = h1Bootstrap.replace(
+  "hanouna-navigation-h1",
+  "inshape-navigation-i1",
+);
+const i1 = source
+  .replace(/(<html\b[^>]*>)/, "$1" + i1Bootstrap)
+  .replace(
+    /<title>[\s\S]*?<\/title\s*>/,
+    "<title>TECHNOPROF — Atelier InShape I1</title>",
+  );
+if (!i1.includes(i1Bootstrap)) throw Error("I1 bootstrap missing");
+fs.writeFileSync(
+  path.join(root, "Jouer-Technoprof-Atelier-InShape-I1.html"),
+  i1,
+);
+console.log(
+  "Standalone atelier InShape I1: " + Buffer.byteLength(i1) + " bytes",
+);
