@@ -2,8 +2,8 @@ const fs = require("node:fs");
 const path = require("node:path");
 const root = path.resolve(__dirname, "..");
 const sources = {
-  entree: "entree-v3.png",
-  etage: "etage-v2.png",
+  entree: "entree-v5.png",
+  etage: "etage-v4.png",
   infirmerie: "infirmerie-v1.png",
 };
 const data = Object.fromEntries(

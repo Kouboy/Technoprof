@@ -18,8 +18,8 @@ const data = JSON.parse(
 const dimensions = {},
   frames = new Map();
 for (const [key, file] of Object.entries({
-  entree: "entree-v3.png",
-  etage: "etage-v2.png",
+  entree: "entree-v5.png",
+  etage: "etage-v4.png",
   infirmerie: "infirmerie-v1.png",
 })) {
   const original = fs.readFileSync("art/hanouna-h1/" + file);
@@ -65,23 +65,29 @@ const strip = (s) =>
   s
     .replace(/import[\s\S]*?from\s+['"][^'"]+['"];?/g, "")
     .replace(/export /g, "");
-const ink = {
-  clear() {
-    return this;
-  },
-};
-for (const method of [
-  "fillStyle",
-  "fillRect",
-  "lineStyle",
-  "lineBetween",
-  "strokeRect",
-  "setDepth",
-])
-  ink[method] = (...args) => {
-    assert(args.every(Number.isFinite));
-    return ink;
+function graphics() {
+  const ink = {
+    calls: [],
+    clear() {
+      this.calls = [];
+      return this;
+    },
   };
+  for (const method of [
+    "fillStyle",
+    "fillRect",
+    "lineStyle",
+    "lineBetween",
+    "strokeRect",
+    "setDepth",
+  ])
+    ink[method] = (...args) => {
+      assert(args.every(Number.isFinite));
+      ink.calls.push([method, ...args]);
+      return ink;
+    };
+  return ink;
+}
 function image(x, y, key, frame) {
   const obj = { x, y, key, frame, visible: false };
   obj.setTexture = (key, frame) => {
@@ -128,7 +134,7 @@ vm.runInContext(
 scope.Renderer.preload(scene);
 const art = new scope.Renderer({
     ...scene,
-    add: { image, graphics: () => ink },
+    add: { image, graphics },
   }),
   count = images.length;
 t.g.hanounaArt = art;
@@ -201,7 +207,46 @@ assert.notDeepEqual(
 );
 art.render(layout.rooms[scope.h.seuil], 0.5);
 assert(art.background.visible, "class-entry presentation retains the room");
+for (const room of [scope.h.hall, scope.h.palier]) {
+  art.render(layout.rooms[room], undefined, 0.5);
+  const frozen = JSON.stringify(art.ambient.calls);
+  assert(
+    art.ambient.calls.some(([method]) => method === "fillRect"),
+    "leak visible in its room",
+  );
+  art.render(layout.rooms[room], undefined, 0.5);
+  assert.equal(
+    JSON.stringify(art.ambient.calls),
+    frozen,
+    "paused clock keeps the same drip without accumulating strokes",
+  );
+  art.render(layout.rooms[room], undefined, 1);
+  assert.notEqual(
+    JSON.stringify(art.ambient.calls),
+    frozen,
+    "supplied clock advances the drip",
+  );
+}
+for (const room of [
+  scope.h.cour,
+  scope.h.vestibule,
+  scope.h.galerie,
+  scope.h.seuil,
+  scope.h.infirmerie,
+]) {
+  art.render(layout.rooms[room], undefined, 0.5);
+  assert.equal(
+    art.ambient.calls.length,
+    0,
+    "no residual drip after changing rooms; quiet care/boss presentation",
+  );
+}
 art.hide();
+assert.equal(
+  art.ambient.calls.length,
+  0,
+  "phase cleanup clears the ambient layer",
+);
 assert(images.every((i) => !i.visible));
 for (const room of Object.values(layout.rooms)) {
   t.g.loadScenario("hanouna-navigation-h1-view-" + room.id);

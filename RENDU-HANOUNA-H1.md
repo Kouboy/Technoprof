@@ -64,3 +64,35 @@ personnages et interfaces réels. La lecture humaine du nouveau décor reste
 ![Infirmerie et deux adultes à la même échelle](work/hanouna-h1-rendu-infirmerie.png)
 ![Vue du palier sur la cour](work/hanouna-h1-rendu-palier.png)
 ![Porte du détour médical](work/hanouna-h1-rendu-jonction.png)
+
+## Retouche après retour humain — 5 octobre
+
+Le hall répète visuellement le vestibule parce que son accès gauche montre
+à nouveau la cour, alors que le professeur vient de franchir une porte
+intérieure. `entree-v5.png` remplace cette baie par une ouverture intérieure :
+on retrouve le panneau et le radiateur du vestibule dans la profondeur.
+Le soubassement vert et la ligne des plinthes du vestibule sont également
+rapprochés de ceux du hall. Les transitions et les spawns restent les mêmes.
+
+Les huit fonds hors infirmerie reçoivent des traces localisées de manque
+d'entretien : sacs noirs noués, cartons, fragments de carrelage et de plâtre,
+salissures humides. Les sols deviennent plus mats. L'étage conserve les vues
+sur les branches et sur le préau en contrebas. Les déchets sont adossés aux
+murs et au mobilier, en retrait de la marche et des accès. Ils sont décoratifs,
+sans collision ni dommage, et l'infirmerie garde son caractère de refuge.
+
+Deux goutte-à-goutte sont animés au hall et au palier, sur une couche derrière
+les personnages. Chaque goutte tombe verticalement dans son seau, avec un
+petit éclat à l'arrivée. `H1_LEAKS` centralise les ancrages et périodes ;
+l'animation utilise l'horloge existante de la simulation, respecte la pause,
+ne tire aucun nombre aléatoire et s'efface au changement de salle ou de phase.
+La source d'étage sélectionnée est `etage-v4.png`.
+
+Vérification du passage réel hall → vestibule → hall par pointage, des fonds
+modifiés avec personnages, des marqueurs d'accès, du nettoyage de l'animation
+et de son immobilité à horloge figée. Les tests H1 gardent leurs parcours,
+combats et soins complets. L'entrée en classe conserve son alignement de porte.
+
+![Vestibule : cour à gauche, hall intérieur à droite](work/hanouna-h1-raccord-vestibule.png)
+![Hall : retour intérieur, sacs et fuite](work/hanouna-h1-raccord-hall.png)
+![Palier : traces d'humidité et seau](work/hanouna-h1-vetuste-palier.png)

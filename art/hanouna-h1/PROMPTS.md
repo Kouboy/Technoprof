@@ -2,7 +2,7 @@
 
 Outil : image_gen.imagegen intégré. Sources PNG copiées sans modification ; les originaux restent dans `.codex/generated_images/01a0716b-6fbe-7730-9787-2febc1648803`.
 Référence initiale : `art/stair-29/annexe.png`. Les retouches utilisent la variante précédente.
-Sélection finale : `entree-v3.png`, `etage-v2.png`, `infirmerie-v1.png`. Recadrage uniquement à l'exécution dans `src/hanouna-navigation-art.ts`.
+Sélection actuelle : `entree-v5.png`, `etage-v4.png`, `infirmerie-v1.png`. Les premières variantes sont conservées comme étapes de travail. Recadrage uniquement à l'exécution dans `src/hanouna-navigation-art.ts`.
 
 ## Entrée v1
 
@@ -56,3 +56,52 @@ No framed art, no American hospital ward, no futuristic clinic, no glossy floors
 - Étage v2 : `exec-78c34680-5091-4b53-8fbd-f12bd180081c.png`.
 - Infirmerie : `exec-b35e9aa7-690d-4dee-9cce-36b6ae0cc403.png`.
 
+## Retouche après les captures du 5 octobre — raccords et vétusté
+
+Outil : image_gen.imagegen intégré. Sélection actuelle : `entree-v5.png` et `etage-v4.png` ; l'infirmerie reste `infirmerie-v1.png`. Les versions précédentes restent dans l'historique. Les variantes intermédiaires de cette retouche sont conservées à leur destination originale de génération, sans être consommées par le jeu.
+
+### Entrée v4 — retour intérieur et déchets
+
+Source générée : `exec-d9972f9d-b701-40f0-8e35-4bc5eb325cae.png`.
+
+Use case: precise-object-edit.
+Asset: four-panel 2x2 production background atlas for TECHNOPROF H1.
+Edit target: attached atlas. Preserve exact source dimensions 1672x941, dividers at x832-839 and y467-474, all panel positions, door sizes, building identity, camera framing, pixel art, materials, lighting and palette. NO characters, UI, letters, numbers or arrows.
+Primary correction: in the LOWER LEFT HALL panel, REPLACE ONLY THE LEFTMOST exterior glass bay (x0-12% of that panel) with an OPEN INTERIOR RETURN PASSAGE to the vestibule. It is cut by the left image edge; teal metal jamb, opaque nicotine plaster above, interior visible in depth with the vestibule's repaired wired-glass partition and notice board. NO DIRECT VIEW of the courtyard, tree, outdoor building or sky at this left passage. The upper-right vestibule's right doorway leads into this lower-left hall, so they must read as opposite sides of an interior connection. Keep the lower-left hall's staircase, radiator, noticeboard, pipes, and bucket at their existing positions. Do NOT add another door.
+Aesthetic additions, restrained and spatially placed:
+- TOP LEFT COUR: leave architecture and tree unchanged; a small pile of plaster/concrete crumbs against the wall by the bench, two tied dark rubbish sacks partly behind the bench. Foreground walking lane clear.
+- TOP RIGHT VESTIBULE: one tied heavy black rubbish sack and a folded cardboard bag below the notice board, beside radiator; a few tile/plaster chips at wall base. Keep both side passages fully open. Flaking ceiling stain, dark damp trail under pipe elbow.
+- LOWER LEFT HALL: two tied black rubbish sacks tucked against the radiator's LEFT end, knee-height at most. Retain the existing metal bucket at panel x43%, catching a ceiling leak: damp stain on ceiling/pipe and thin broken droplets straight above bucket. Subtle wet patch immediately below bucket. Keep noticeboard, stair and access signage spaces unobstructed.
+- LOWER RIGHT STAIR: modest plaster fragments against radiator, damp discoloured stair-side wall, small tied rubbish bag under the high window, entirely behind foreground travel lane. Keep the return door and staircase open.
+Floors: matte scuffed French school tiles, same neutral grey-beige throughout the interiors. REMOVE the shiny mirror reflections across the general floor. Small localized wet patches at actual leaks only; no flooded floor.
+Keep every prop at the wall-side rear of the foreground, at plausible adult scale, without creating new hazards, foreground barriers or visual false exits. Social pulp pixel art, firm ink shapes, dirty realism, no apocalyptic ruin, no cartoon. Do not redraw or relocate doors, stair rails, windows elsewhere.
+
+### Entrée v5 — soubassement du vestibule
+
+Source générée : `exec-9c25df65-a026-4e5d-ae2b-fd5e92316fa5.png`.
+
+Use case: precise-object-edit. Edit ONLY the UPPER RIGHT VESTIBULE panel in this 1672x941 four-panel atlas. All other three panels must remain unchanged. Preserve all objects, open side passages, door widths, rubbish sack, cardboard and radiator, same pixel-art style.
+Correct the visual scale of the vestibule's wall so it matches the LOWER LEFT HALL: raise the top horizontal edge of the green washable paint band to y245 within the upper-right panel (about 52 percent panel height), instead of its present y295. The beige plaster stays above y245, worn green paint below. Its wall-floor/plinth baseline should be y397 (85 percent panel height), instead of y411. Keep the existing radiator base, objects and door thresholds resting on that common y397 baseline, with same size, no floating objects. The upper-right interior passage at the RIGHT stays OPEN to the hall with human-sized lintel, not outdoors. Keep the left glazing that looks to the courtyard.
+Use matte neutral grey-beige scuffed tiles on floor, no mirror reflections. Keep all grid dividers, dimensions, colours and details, no text, characters or new objects. IMPORTANT: do not change the newly corrected INTERIOR passage at the LEFT of the lower-left hall.
+
+### Étage v3 — traces de vétusté
+
+Source générée : `exec-c4a47863-9adf-428d-a408-e4ea3d693a7a.png`.
+
+Use case: precise-object-edit.
+Asset: upper floor four-panel 2x2 production background atlas for TECHNOPROF H1.
+Edit target: attached atlas. Preserve exact 1672x941 dimensions and all dividers, the EXACT architecture, door positions/sizes, stairs, window views, furniture, lighting and style. No people, lettering, UI or symbols except existing green medical cross.
+Primary request: introduce selected grounded signs of material neglect and improve continuity between rooms.
+- TOP LEFT LANDING: keep the descending stair LEFT and courtyard view through the middle window unchanged. Its RIGHTmost corridor continuation must show an interior passage, not a doorway straight outdoors. Retain first-floor view through the large central window. Add a modest metal leak bucket at 47% panel width, just in FRONT of the radiator but behind foreground walking lane. A damp pipe elbow above it, damp vertical trail and fine interrupted droplets directly over bucket. Add one tied rubbish sack beside radiator and tiny plaster chips. Keep stairs and right passage completely free.
+- TOP RIGHT GALLERY: both SIDE passages show indoor corridor returns; far windows within those corridor returns may show sky and upper branches, never ground-level yard. Retain two closed classroom doors and cabinets. Two tied dark rubbish sacks with a crumpled paper bag tucked against the LEFT cabinet, not over side passage. Torn school notices retain shapes but not text. Few loose tile fragments and plaster debris at base of cupboards and radiator.
+- LOWER LEFT JUNCTION: retain medical door and cross, hallway openings both sides and cleaning cart. Indoor side passages connect gallery and classroom vestibule; no exterior court on this floor. Add one tied full black sack and discarded cardboard behind cleaning cart, tiny plaster chips at wall base, damp ceiling patch above radiator. Keep medical door, side access mouths and foreground unobstructed.
+- LOWER RIGHT CLASSROOM THRESHOLD: keep classroom door at precisely its present position, window and pupil drawing unchanged. A small pile of plaster flakes, broken tile corner and one tied rubbish sack at far LEFT under radiator. Keep central combat zone and doorway fully clear; no distracting animated leak in this boss room.
+ALL tiled floors: matte, scuffed and dull with varied chips, not shiny mirrors. Only a localized wet mark around landing leak bucket; no water across travel lane. Preserve adult human scale and shared school palette: ink black, slate, nicotine plaster, worn institutional green. Minimal localized details, calm areas, no uniform noise, no postapocalyptic debris field, no new obstacles, no changed perspective or new doors.
+
+### Étage v4 — seau et fuite
+
+Source générée : `exec-dbf5dfcc-0b37-4395-83a6-b5d502f8f980.png`.
+
+Use case: precise-object-edit. Edit ONLY the leaking bucket detail in the UPPER LEFT LANDING panel. All other three panels and every architectural object must stay unchanged, in same four-panel 1672x941 atlas, exact dividers.
+The leaking pipe elbow near x365 at the top currently drips diagonally to a bucket that is too far to the right. Correct gravity: move that metal bucket LEFT so its centre is EXACTLY DIRECTLY VERTICALLY BELOW the already leaking pipe elbow. Align the mouth of bucket on same vertical x365, its outer edges approximately x344 and x390 in this upper-left panel. Bucket stands at the wall-base beside the radiator, rim near y330, bottom y376; behind the foreground walking lane. Restore radiator/paint where the previous bucket was.
+Remove ALL visible airborne water streaks or drops from this source image, leaving only damp stain on pipe and a subtle wet mark around the bucket feet. The game will animate falling droplets on the exact vertical later. No diagonal water, no waterfall. Preserve the sack, window showing courtyard below, stair, signs blank plaques, all doorway geometry, tile floor and palette. Only the one bucket's position and source-water marks change; no characters or text.

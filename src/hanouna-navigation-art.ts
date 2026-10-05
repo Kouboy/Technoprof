@@ -26,6 +26,15 @@ export const H1_CROPS: Record<string, number[][]> = {
 export const H1_NURSE = { size: 86, soleOrigin: 0.986 };
 export const H1_ARENA_SCALE = 0.8;
 export const H1_CLASS_DOOR = { x: 241, y: 51, width: 43, height: 98 };
+// Decorative leaks only: clock is supplied by the paused simulation. Anchors
+// follow the selected buckets, away from passage markers and the walking lane.
+export const H1_LEAKS: Record<
+  number,
+  { x: number; top: number; rim: number; period: number }
+> = {
+  [h.hall]: { x: 139, top: 24, rim: 134, period: 1.65 },
+  [h.palier]: { x: 127, top: 23, rim: 133, period: 1.85 },
+};
 export const H1_BACKGROUNDS: Record<number, [string, string | number]> = {
   [h.cour]: ["hanouna-h1-entree", 0],
   [h.vestibule]: ["hanouna-h1-entree", 1],
@@ -78,6 +87,7 @@ export class HanounaNavigationArt {
   background: Phaser.GameObjects.Image;
   nurse: Phaser.GameObjects.Image;
   ink: Phaser.GameObjects.Graphics;
+  ambient: Phaser.GameObjects.Graphics;
   static preload(scene: Phaser.Scene) {
     for (const [key, data] of Object.entries(HANOUNA_H1_DATA))
       scene.load.image("hanouna-h1-" + key, data);
@@ -94,6 +104,7 @@ export class HanounaNavigationArt {
       .setDisplaySize(VIEW.width, VIEW.height)
       .setDepth(1.09);
     this.ink = scene.add.graphics().setDepth(1.89);
+    this.ambient = scene.add.graphics().setDepth(1.18);
     this.nurse = scene.add
       .image(INFIRMARY.nurseX, VIEW.floor, "infirmary-nurse")
       .setOrigin(0.5, H1_NURSE.soleOrigin)
@@ -105,6 +116,7 @@ export class HanounaNavigationArt {
     this.background.setVisible(false);
     this.nurse.setVisible(false);
     this.ink.clear();
+    this.ambient.clear();
   }
   fitArenaActors(art: SliceArt) {
     // SliceArt rebuilds poses each frame. Apply once after drawing, retaining
@@ -133,14 +145,16 @@ export class HanounaNavigationArt {
       smallPrint(g, x + 4, y + 3 + i * 8, line, 0x21302f),
     );
   }
-  render(r: RoomSpec, openingAge?: number) {
+  render(r: RoomSpec, openingAge?: number, clock = 0) {
     this.ink.clear();
+    this.ambient.clear();
     const [key, frame] = H1_BACKGROUNDS[r.id];
     this.background
       .setTexture(key, frame)
       .setDisplaySize(VIEW.width, VIEW.height)
       .setVisible(true);
     this.nurse.setVisible(r.id === h.infirmerie);
+    this.drawLeak(r.id, clock);
     const g = this.ink;
     if (r.id === h.seuil && openingAge !== undefined) {
       const d = H1_CLASS_DOOR,
@@ -154,5 +168,23 @@ export class HanounaNavigationArt {
     }
     for (const [x, y, lines, primary] of H1_SIGNS[r.id])
       this.plate(x, y, lines, primary);
+  }
+  drawLeak(room: number, clock: number) {
+    const leak = H1_LEAKS[room];
+    if (!leak) return;
+    const t =
+      (((clock % leak.period) + leak.period) % leak.period) / leak.period;
+    const g = this.ambient;
+    if (t < 0.72) {
+      const fall = t / 0.72;
+      const y = Math.round(leak.top + fall * fall * (leak.rim - leak.top - 3));
+      g.fillStyle(0x9aaba6, 0.75);
+      g.fillRect(leak.x, y, 1, 2);
+    } else if (t < 0.87) {
+      const spread = 1 + Math.floor((t - 0.72) * 20);
+      g.fillStyle(0x859590, 0.65 * (1 - (t - 0.72) / 0.15));
+      g.fillRect(leak.x - spread, leak.rim - 1, 1, 1);
+      g.fillRect(leak.x + spread, leak.rim - 1, 1, 1);
+    }
   }
 }

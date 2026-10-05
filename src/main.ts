@@ -3748,6 +3748,7 @@ class Game extends Phaser.Scene {
         this.hanounaArt?.render(
           this.roomSpec()!,
           this.phase === "opening" ? this.age : undefined,
+          this.ambienceClock,
         );
         if (this.phase === "opening") this.art?.door.clear();
       } else

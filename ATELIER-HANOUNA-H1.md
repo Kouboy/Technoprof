@@ -55,6 +55,10 @@ depuis l'étage, avec le bouleau et le toit du préau comme repères partagés.
 Les plaques sont intégrées au décor et les accès conservent leurs commandes.
 Dans l'infirmerie, mobilier et adultes ont une échelle cohérente ; l'infirmière
 est ancrée sur la même ligne de sol que le professeur.
+Une retouche de raccord clarifie le retour intérieur du hall vers le vestibule.
+Débris, sacs et traces d'humidité sont regroupés en arrière de la ligne de marche ;
+deux fuites discrètes sont animées au hall et au palier. Ce sont des éléments
+de décor, sans nouveaux obstacles ni dégâts.
 
 ![Hall H1 et accès au grand escalier](work/hanouna-h1-rendu-hall.png)
 
