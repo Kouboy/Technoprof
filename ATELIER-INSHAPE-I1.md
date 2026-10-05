@@ -35,9 +35,23 @@ jonction T, avant la liaison, la préparation, le sas et T03.
 - Coupe connue : accueil → cour → passage couvert → vestiaire → jonction.
   Une zone et une rencontre évitées, sept rencontres sur l'affectation.
 - Service : cour → service → palier service → galerie → jonction. Sept
-  rencontres ; une rupture de sol dans une pièce sans ennemi, loin des accès.
+  rencontres ; deux ruptures de sol dans des pièces sans ennemi, loin des accès.
 
-Les rencontres réutilisent exactement les dix sources prévues. Les adversaires
+Les dix emplacements et leurs PV sont conservés. L'élève du sas est désormais
+une lycéenne de terminale : dossier jaune, veste prune, sac à dos et quatre poses
+propres. Elle réclame les mois de cours perdus faute de remplaçants et évoque
+Parcoursup avant de barrer le passage. Son interception garde les règles de
+l'attaque courte de l'élève : anticipation, saut ou recul pour l'éviter, puis
+reprise punissable. La main est maintenue 0,20 s ; l'impact se situe au torse.
+Les paramètres de portée, dégâts, PV et agressivité restent les mêmes.
+
+Une rupture est ajoutée au palier de l'escalier principal, une autre au passage
+de service ; la troisième reste au palier de service. Toutes sont en pièce calme,
+séparées des accès et des points de retour, avec une plaque SOL FRAGILE ou
+PLANCHER CORRODE. Marcher dans le vide déclenche une chute, une perte d'un PV,
+puis un retour sur la même rive ; on peut sauter dans les deux sens.
+
+Les adversaires
 ordinaires reprennent le rythme validé d'A3 ; la Sécurité garde ses six PV,
 sa garde frontale, sa poussée et son retournement. Sauter derrière elle permet
 de punir son changement d'orientation. Aucune nouvelle attaque ni ressource.
@@ -53,7 +67,8 @@ réussi n'affiche pas une radiation pour n'avoir testé qu'un service sur trois.
 ## Rendu de travail
 
 Cette livraison sert à tester le parcours avant les nouvelles planches : elle
-réutilise les pixels des ateliers et les personnages existants. Les accès et
+réutilise les pixels des ateliers. Seule la lycéenne du sas possède une nouvelle
+planche imagegen ; source et prompt : `art/catchup-student-i1/`. Les accès et
 escaliers sont recomposés avec des cadres provisoires, tous aux mêmes gabarits.
 Les plaques indiquent les voisins, l'étage et les plages de salles. Pas de minimap.
 La flèche à proximité conserve la convention de contrôle déjà apprise.
@@ -73,11 +88,25 @@ les machines, les vues croisées et le délabrement propre à chaque zone devron
 ## Vérification et essai humain
 
 `npm run test:inshape-i1` vérifie le graphe approuvé, les sources de rencontres,
-222 connexions par commandes réelles, 18 soins complets uniques, 12 sauts et
+222 connexions par commandes réelles, 18 soins complets uniques, 36 sauts et
 chutes dans les deux sens, 24 parcours complets avec ennemis actifs et ellipse.
 Les cas sont exécutés à 30/60/120 FPS, clavier et pointage. La présentation
 vérifie recadrages, nettoyage, pool fixe, proportions et ordre sol/trou/lèvre.
 Les comptes rendus se trouvent dans `work/inshape-i1-results.json`.
+L'interception de la lycéenne est vérifiée dans les deux orientations à
+30/60/120 FPS : dialogue arrêté, saut/recul, un seul dégât, préparation
+interrompue par le livre, maintien de pose et pause.
+
+Passe après essai humain (journal 10) : parcours principal sans chute, tous les
+PV jusqu'au boss, fin à 3/5 avec environ 154 s. Les nouvelles ruptures restent
+en pièces calmes ; le raccourci couvert conserve son avantage de maîtrise.
+Observation native supplémentaire : lycéenne en dialogue et en interception,
+proportions avec le professeur, trou de l'escalier principal, descente masquée
+par le bord, retour sur la même rive et dégât unique. Console sans erreur.
+
+![Élève de terminale : réplique et gabarit](work/inshape-i1-eleve-dialogue.png)
+![Interception : main et contact au torse](work/inshape-i1-eleve-impact.png)
+![Escalier principal : trou dégagé des accès](work/inshape-i1-sol-principal.png)
 
 Vérification native dans le navigateur : cour → service et passage couvert →
 vestiaire par pointage,

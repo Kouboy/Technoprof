@@ -244,6 +244,17 @@ export class InshapeNavigationArt {
         g.lineBetween(8 + n * 12, 153, 15 + n * 12, 173);
       this.plate(159, 105, ["PLANCHER CORRODE"]);
     }
+    if (r.id === i.escalier || r.id === i.service) {
+      // A warning fixed to the wall, above the damaged landing. Floor hole
+      // remains the shared physical prop at foot level, not painted on the wall.
+      this.plate(159, 112, ["SOL FRAGILE"]);
+      const g = this.ink;
+      g.fillStyle(0x7c623e);
+      for (const x of [126, 182]) {
+        g.fillRect(x, 157, 6, 2);
+        g.fillRect(x + 3, 161, 3, 2);
+      }
+    }
     if (r.id === i.accueil) {
       this.patch("window", 88, 59, 54, 42);
       this.plate(113, 109, ["ACCUEIL FERME"]);

@@ -10,6 +10,11 @@ import type { CarArt } from "./car-art";
 import type { Enemy } from "./world";
 import { newEnemyFrame, type TeacherState } from "./combat-poses";
 import { SECURITY } from "./gameplay";
+import {
+  CATCHUP_FRAMES,
+  prepareCatchupStudent,
+  preloadCatchupStudent,
+} from "./catchup-student-art";
 
 type ArtHost = TeacherState & {
   falling?: number;
@@ -75,6 +80,7 @@ export class NewSchoolArt {
   enemy: Phaser.GameObjects.Image;
   private door: Phaser.GameObjects.Graphics;
   constructor(private scene: Phaser.Scene) {
+    prepareCatchupStudent(scene);
     for (const key of ["bruel", "pro"]) {
       const texture = scene.textures.get(key + "-backgrounds");
       const source = texture.getSourceImage() as HTMLImageElement;
@@ -120,6 +126,7 @@ export class NewSchoolArt {
     this.hide();
   }
   static preload(scene: Phaser.Scene) {
+    preloadCatchupStudent(scene);
     scene.load.image("quiet-backgrounds", QUIET_SCHOOL_DATA);
     for (const [key, data] of Object.entries(NEW_SCHOOL_DATA))
       scene.load.image(key, data);
@@ -159,7 +166,25 @@ export class NewSchoolArt {
       s.art?.drawTeacher(s, r.boss ? 0.225 : 0.18);
     const e = s.enemies[0];
     if (e && (e.hp > 0 || (e.downTime ?? 0) > 0)) {
-      if (r.role === "student" || r.role === "guard") {
+      if (r.actor === "catchup-student") {
+        const frame =
+          e.hp <= 0 || e.stun > 0
+            ? 3
+            : e.wind > 0
+              ? 1
+              : (e.strikeTime ?? 0) > 0
+                ? 2
+                : 0;
+        const [left, top, w, h, anchor, feet] = CATCHUP_FRAMES[frame];
+        this.enemy
+          .setTexture("catchup-student", frame)
+          .setOrigin((anchor - left) / w, (feet - top) / h)
+          .setPosition(e.x, 159)
+          .setScale(0.137 * (e.facing ?? -1), 0.137)
+          .setAngle(0)
+          .setAlpha(1)
+          .setVisible(true);
+      } else if (r.role === "student" || r.role === "guard") {
         const frame =
           e.hp <= 0 || e.stun > 0
             ? 3

@@ -13,6 +13,7 @@ export type Enemy = {
   hp: number;
   boss: boolean;
   female?: boolean;
+  actor?: "catchup-student";
   cool: number;
   wind: number;
   recovery: number;

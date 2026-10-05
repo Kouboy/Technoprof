@@ -72,6 +72,7 @@ const SCENARIOS: Record<string, string> = {
   "inshape-navigation-i1-view-303": "InShape I1 / escalier principal",
   "inshape-navigation-i1-view-304": "InShape I1 / galerie T",
   "inshape-navigation-i1-view-305": "InShape I1 / jonction T",
+  "inshape-navigation-i1-view-308": "InShape I1 / élève de terminale",
   "inshape-navigation-i1-view-310": "InShape I1 / cour technique",
   "inshape-navigation-i1-view-311": "InShape I1 / atelier A",
   "inshape-navigation-i1-view-312": "InShape I1 / vestiaire",
@@ -289,7 +290,7 @@ export function installWorkshop(s: Host) {
     const a3 = select.value.startsWith("bruel-navigation-a3");
     gainLabel.hidden = a3 || h1 || i1;
     navigationNote.textContent = i1
-      ? "INSHAPE / I1 : prototype du parcours validé. Bâtiment principal, ateliers et service rejoignent l’aile T au premier étage. Passage couvert facultatif, infirmerie à la jonction, danger de sol au palier service. Décors recomposés provisoires ; 7 ou 8 rencontres selon le chemin."
+      ? "INSHAPE / I1 : bâtiment principal, ateliers et service rejoignent l’aile T au premier étage. Passage couvert facultatif, infirmerie à la jonction. Sols fragiles dans l’escalier principal et les deux passages de service ; une lycéenne attend au sas. Décors recomposés provisoires ; 7 ou 8 rencontres selon le chemin."
       : h1
         ? "HANOUNA / H1 : parcours guidé vers 42C, un détour facultatif à la jonction C. Deux rencontres puis l’Inspectrice. Infirmerie : accueil, soin complet, délai suspendu et retour automatique ; un usage par affectation. Neuf décors adaptés au parcours."
         : a3

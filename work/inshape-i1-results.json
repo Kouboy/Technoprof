@@ -148,6 +148,7 @@
   ],
   "gaps": [
     {
+      "zone": "i-escalier",
       "fps": 30,
       "mode": "keyboard",
       "dir": -1,
@@ -156,6 +157,7 @@
       "recovery": true
     },
     {
+      "zone": "i-escalier",
       "fps": 30,
       "mode": "keyboard",
       "dir": 1,
@@ -164,6 +166,43 @@
       "recovery": true
     },
     {
+      "zone": "i-service",
+      "fps": 30,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-service",
+      "fps": 30,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-palier-service",
+      "fps": 30,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-palier-service",
+      "fps": 30,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-escalier",
       "fps": 30,
       "mode": "direct",
       "dir": -1,
@@ -172,6 +211,7 @@
       "recovery": true
     },
     {
+      "zone": "i-escalier",
       "fps": 30,
       "mode": "direct",
       "dir": 1,
@@ -180,6 +220,43 @@
       "recovery": true
     },
     {
+      "zone": "i-service",
+      "fps": 30,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-service",
+      "fps": 30,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-palier-service",
+      "fps": 30,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-palier-service",
+      "fps": 30,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-escalier",
       "fps": 60,
       "mode": "keyboard",
       "dir": -1,
@@ -188,6 +265,7 @@
       "recovery": true
     },
     {
+      "zone": "i-escalier",
       "fps": 60,
       "mode": "keyboard",
       "dir": 1,
@@ -196,6 +274,43 @@
       "recovery": true
     },
     {
+      "zone": "i-service",
+      "fps": 60,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-service",
+      "fps": 60,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-palier-service",
+      "fps": 60,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-palier-service",
+      "fps": 60,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-escalier",
       "fps": 60,
       "mode": "direct",
       "dir": -1,
@@ -204,6 +319,7 @@
       "recovery": true
     },
     {
+      "zone": "i-escalier",
       "fps": 60,
       "mode": "direct",
       "dir": 1,
@@ -212,6 +328,43 @@
       "recovery": true
     },
     {
+      "zone": "i-service",
+      "fps": 60,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-service",
+      "fps": 60,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-palier-service",
+      "fps": 60,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-palier-service",
+      "fps": 60,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-escalier",
       "fps": 120,
       "mode": "keyboard",
       "dir": -1,
@@ -220,6 +373,7 @@
       "recovery": true
     },
     {
+      "zone": "i-escalier",
       "fps": 120,
       "mode": "keyboard",
       "dir": 1,
@@ -228,6 +382,43 @@
       "recovery": true
     },
     {
+      "zone": "i-service",
+      "fps": 120,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-service",
+      "fps": 120,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-palier-service",
+      "fps": 120,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-palier-service",
+      "fps": 120,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-escalier",
       "fps": 120,
       "mode": "direct",
       "dir": -1,
@@ -236,6 +427,43 @@
       "recovery": true
     },
     {
+      "zone": "i-escalier",
+      "fps": 120,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-service",
+      "fps": 120,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-service",
+      "fps": 120,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-palier-service",
+      "fps": 120,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-palier-service",
       "fps": 120,
       "mode": "direct",
       "dir": 1,

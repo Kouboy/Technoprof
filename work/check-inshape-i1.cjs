@@ -140,10 +140,15 @@ for (const z of design.zones) {
       enemy = base.audit.missionEnemies(2, r.id, spec)[0];
     assert.equal(enemy.hp, source.hp, z.id + " source hp");
     assert.equal(enemy.role, source.role, z.id + " role");
-    assert.deepEqual(
-      r.encounter,
-      base.audit.MISSIONS[2].rooms[design.encounterSources[z.id]].encounter,
-    );
+    if (r.actor === "catchup-student") {
+      assert.equal(r.id, ids.sas);
+      assert(enemy.female);
+      assert(r.encounter.pages.flat().join(" ").includes("Parcoursup"));
+    } else
+      assert.deepEqual(
+        r.encounter,
+        base.audit.MISSIONS[2].rooms[design.encounterSources[z.id]].encounter,
+      );
   }
 }
 assert.equal(Object.values(spec.rooms).filter((r) => r.role).length, 10);
@@ -168,6 +173,9 @@ assert.deepEqual(sharedEncounters, [
   "i-sas",
   "i-seuil",
 ]);
+const hazards = [ids.escalier, ids.service, ids.palierService].map(
+  (id) => spec.rooms[id],
+);
 const hazard = spec.rooms[ids.palierService];
 assert.equal(hazard.navigation.floor, 1);
 assert(!hazard.encounter && !hazard.role && !hazard.care);
@@ -177,19 +185,22 @@ assert.deepEqual(
       .filter((r) => r.gaps.length)
       .map((r) => r.navigation.id),
   ],
-  design.quietHazards,
+  hazards.map((r) => r.navigation.id),
 );
-for (const [l, r] of hazard.gaps) {
-  assert(r - l <= 34 && l >= 90 && r <= 208);
-  for (const room of Object.values(spec.rooms))
-    for (const e of room.exits)
-      if (e.target === hazard.id)
-        assert(e.spawn < l - 20 || e.spawn > r + 20, "safe service return");
-  for (const e of hazard.exits)
-    assert(
-      e.edge || e.to < l - 25 || e.from > r + 25,
-      "gap cannot cover stair access",
-    );
+for (const hazard of hazards) {
+  assert(!hazard.encounter && !hazard.role && !hazard.care);
+  for (const [l, r] of hazard.gaps) {
+    assert(r - l <= 34 && l >= 90 && r <= 208);
+    for (const room of Object.values(spec.rooms))
+      for (const e of room.exits)
+        if (e.target === hazard.id)
+          assert(e.spawn < l - 20 || e.spawn > r + 20, "safe service return");
+    for (const e of hazard.exits)
+      assert(
+        e.edge || e.to < l - 25 || e.from > r + 25,
+        "gap cannot cover stair access",
+      );
+  }
 }
 const normal = createGame();
 normal.g.loadScenario("inshape-navigation-i1");
@@ -209,7 +220,7 @@ for (const fps of [30, 60, 120])
         g.navigationCare.used = true;
         g.enterRoom(r.id, 150);
         // Palier's initial fixture stands on a safe bank rather than in the hole.
-        if (r.id === hazard.id)
+        if (r.gaps.length)
           g.enterRoom(r.id, e.target === ids.service ? 210 : 100);
         t.advance(0.4, fps);
         advanceTo(t, e.target, mode, fps);
@@ -283,63 +294,65 @@ for (const fps of [30, 60, 120])
         frozen: true,
       });
     }
-    for (const dir of [-1, 1])
-      for (const [l, r] of hazard.gaps) {
-        const t = setup("inshape-navigation-i1-service"),
-          g = t.g;
-        g.enterRoom(hazard.id, dir > 0 ? l - 12 : r + 12);
-        t.advance(0.4, fps);
-        jump(t, mode, dir);
-        for (let n = 0; n < fps * 0.9; n++) {
-          if (mode === "keyboard") hold(t, dir > 0 ? "RIGHT" : "LEFT");
-          t.step(1000 / fps);
-          assert.equal(g.falling, 0);
-        }
-        release(t);
-        assert.equal(g.hp, 5);
-        assert.equal(g.py, 159);
-        assert(dir > 0 ? g.px > r : g.px < l);
-        assert.equal(g.room, hazard.id);
-        const f = setup("inshape-navigation-i1-service"),
-          s = f.g;
-        s.enterRoom(hazard.id, dir > 0 ? l - 25 : r + 25);
-        f.advance(0.4, fps);
-        for (let n = 0; n < fps * 2 && !s.falling; n++) {
+    for (const hazard of hazards)
+      for (const dir of [-1, 1])
+        for (const [l, r] of hazard.gaps) {
+          const t = setup("inshape-navigation-i1-service"),
+            g = t.g;
+          g.enterRoom(hazard.id, dir > 0 ? l - 12 : r + 12);
+          t.advance(0.4, fps);
+          jump(t, mode, dir);
+          for (let n = 0; n < fps * 0.9; n++) {
+            if (mode === "keyboard") hold(t, dir > 0 ? "RIGHT" : "LEFT");
+            t.step(1000 / fps);
+            assert.equal(g.falling, 0);
+          }
+          release(t);
+          assert.equal(g.hp, 5);
+          assert.equal(g.py, 159);
+          assert(dir > 0 ? g.px > r : g.px < l);
+          assert.equal(g.room, hazard.id);
+          const f = setup("inshape-navigation-i1-service"),
+            s = f.g;
+          s.enterRoom(hazard.id, dir > 0 ? l - 25 : r + 25);
+          f.advance(0.4, fps);
+          for (let n = 0; n < fps * 2 && !s.falling; n++) {
+            release(f);
+            move(f, dir > 0 ? r + 30 : l - 30, mode);
+            f.step(1000 / fps);
+          }
+          assert(s.falling > 0, "walking into gap starts fall");
           release(f);
-          move(f, dir > 0 ? r + 30 : l - 30, mode);
+          s.direct.cancel();
+          const fallingY = s.py;
           f.step(1000 / fps);
+          assert(s.py > fallingY, "physical descent");
+          assert.equal(s.room, hazard.id);
+          s.setPaused(true);
+          const paused = [s.py, s.hp, s.falling, s.remaining];
+          f.advance(1, fps);
+          assert.deepEqual([s.py, s.hp, s.falling, s.remaining], paused);
+          s.setPaused(false);
+          f.advance(2, fps);
+          assert.equal(s.hp, 4, "single fall damage");
+          assert.equal(s.falling, 0);
+          assert.equal(s.py, 159);
+          assert(dir > 0 ? s.px < l : s.px > r, "same safe bank recovery");
+          assert.equal(s.room, hazard.id);
+          assert.equal(
+            s.session.events.filter((e) => e.kind === "fall").length,
+            1,
+          );
+          report.gaps.push({
+            zone: hazard.navigation.id,
+            fps,
+            mode,
+            dir,
+            jump: true,
+            fall: true,
+            recovery: true,
+          });
         }
-        assert(s.falling > 0, "walking into gap starts fall");
-        release(f);
-        s.direct.cancel();
-        const fallingY = s.py;
-        f.step(1000 / fps);
-        assert(s.py > fallingY, "physical descent");
-        assert.equal(s.room, hazard.id);
-        s.setPaused(true);
-        const paused = [s.py, s.hp, s.falling, s.remaining];
-        f.advance(1, fps);
-        assert.deepEqual([s.py, s.hp, s.falling, s.remaining], paused);
-        s.setPaused(false);
-        f.advance(2, fps);
-        assert.equal(s.hp, 4, "single fall damage");
-        assert.equal(s.falling, 0);
-        assert.equal(s.py, 159);
-        assert(dir > 0 ? s.px < l : s.px > r, "same safe bank recovery");
-        assert.equal(s.room, hazard.id);
-        assert.equal(
-          s.session.events.filter((e) => e.kind === "fall").length,
-          1,
-        );
-        report.gaps.push({
-          fps,
-          mode,
-          dir,
-          jump: true,
-          fall: true,
-          recovery: true,
-        });
-      }
     for (const routeName of Object.keys(routeCounts)) {
       const t = setup(),
         g = t.g,
@@ -453,5 +466,5 @@ fs.writeFileSync(
   JSON.stringify(report, null, 2) + "\n",
 );
 console.log(
-  `PASS I1: approved reversible graph, 10 source encounters / 7-8 per route; ${report.connections} real-input links, ${report.care.length} unique full/frozen care runs, ${report.gaps.length} two-way jump/fall runs, ${report.routes.length} complete live combat routes and ellipses.`,
+  `PASS I1: approved reversible graph, 10 encounters including terminale / 7-8 per route; ${report.connections} real-input links, ${report.care.length} unique full/frozen care runs, ${report.gaps.length} two-way jump/fall runs, ${report.routes.length} complete live combat routes and ellipses.`,
 );

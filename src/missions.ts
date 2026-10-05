@@ -27,6 +27,7 @@ export type RoomSpec = {
   blocked: ("left" | "right")[];
   gaps: number[][];
   role?: EnemyRole;
+  actor?: "catchup-student";
   boss?: boolean;
   hp?: number;
   encounter?: Encounter;
@@ -634,7 +635,11 @@ export function missionEnemies(
       hp: r.hp ?? 2,
       boss: !!r.boss,
       role: r.role,
-      female: r.role === "filmer" || (r.role === "inspector" && mission === 0),
+      actor: r.actor,
+      female:
+        r.actor === "catchup-student" ||
+        r.role === "filmer" ||
+        (r.role === "inspector" && mission === 0),
       parent: r.role === "influential" || r.role === "parent",
       facing: -1,
       cool: 0.7,

@@ -1,0 +1,15 @@
+# Élève de terminale — I1
+
+Généré avec l'outil intégré imagegen le 5 octobre 2026. Référence de style : `art/pro-enemies-057.png`.
+Source conservée : `poses.png` (1536 × 1024). Le générateur a renvoyé un fond opaque malgré la demande de transparence. Comme pour WingArt, des contours sont extraits au chargement dans `src/catchup-student-art.ts`. Les pixels originaux restent intacts. Une seconde tentative de retrait du fond n'a pas amélioré l'alpha et n'est pas utilisée.
+Quatre poses : attente, préparation, main pour retenir le professeur, recul.
+
+## Prompt exact
+
+Create a production sprite atlas for the French satirical retro game TECHNOPROF. Use the attached sheet ONLY for the hand drawn social pulp comics style: dark black ink contours, angular realistic human proportions, fatigued faces, muted cloth, strong hard shadows, precise raster edges. NEW character: an 18-year-old female French vocational high school senior, assertive and worried about missed classes and university applications. Practical urban streetwear: dark plum tracksuit jacket with cream sleeve stripes, slate straight jeans, worn off-white sneakers, ponytail with stray strands, hoop earrings, small navy backpack. No caricature, no glamour, no weapons. A thick pale mustard school binder with protruding cream paperwork is her iconic prop. Her anger is determined rather than gleeful; school neglect has consequences for her.
+TRANSPARENT BACKGROUND true. Exactly FOUR separated full-body poses, left to right, in FOUR equally wide columns of ONE horizontal row, each entirely contained within its column with ample transparent space on every side. All poses face RIGHT, lateral side view suited to a single plane beatemup. Feet all at exactly same baseline, same head height and body scale throughout. Image wide horizontal 1536x1024. Each figure approximately 660 pixels tall with baseline y=820 and top around160, plenty of surrounding transparent space. No text, labels, floor shadows, background, panels, gradients, vignette or extra characters.
+Column1: idle ready, binder clutched to torso with left hand, right open hand held low to bar the passage; legs parted.
+Column2: anticipation, torso leaning slightly back, binder still left hand, right open hand visibly withdrawn near shoulder, knees braced.
+Column3: active interception, small forward lunge with right open palm reaching firmly forward to seize/block an adult's coat, not punching, same supporting feet baseline. Binder held to ribs with left hand. Hand and sleeve readable and separated.
+Column4: stagger after being repelled, torso leaning backwards and head pulled back, knees bent, open right hand recoils, binder retained.
+Character must remain recognizable in all four poses, iconic distinct face, ponytail, jacket, binder. Not chibi, not toy proportions, no polished 3D, no airbrushed blurred digital painting. Crisp pulp comic raster rendering compatible with provided existing sprite sheet. Make all assets truly isolated on alpha transparency.

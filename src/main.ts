@@ -49,6 +49,7 @@ import {
   PARENT,
   GUARD,
   STUDENT,
+  CATCHUP_STUDENT,
   SECURITY,
   THROWER,
   FILMER,
@@ -2942,7 +2943,12 @@ class Game extends Phaser.Scene {
       e.wind -= dt;
       if (e.wind <= 0) {
         this.enemyAttack(e, "release");
-        e.strikeTime = e.role === "filmer" ? FILMER.activePose : 0.12;
+        e.strikeTime =
+          e.actor === "catchup-student"
+            ? CATCHUP_STUDENT.activePose
+            : e.role === "filmer"
+              ? FILMER.activePose
+              : 0.12;
         const dir = e.facing ?? -1;
         if (
           Math.abs(this.px - e.x) < STUDENT.reach &&
@@ -2954,7 +2960,8 @@ class Game extends Phaser.Scene {
           this.hurt(dir);
           this.px = Phaser.Math.Clamp(this.px + dir * 9, 12, 298);
           this.impactX = contact;
-          this.impactY = 128;
+          this.impactY =
+            e.actor === "catchup-student" ? CATCHUP_STUDENT.contactY : 128;
           this.impact = PLAY.impactSeconds;
           this.impactKind = "hurt";
           this.hitStop = 0.045;

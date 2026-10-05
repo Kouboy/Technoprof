@@ -100,17 +100,20 @@ export const INSHAPE_NAV: MissionSpec = {
       ],
       64,
     ),
-    [i.escalier]: zone(
-      i.escalier,
-      "escalier",
-      "ESCALIER PRINCIPAL / RDC",
-      0,
-      "rampe bleue",
-      [
-        navExit("DOWN", 60, i.couloir, 278, "BAS : COULOIR / RDC"),
-        navExit("UP", 250, i.galerie, 60, "HAUT : GALERIE T / 1ER"),
-      ],
-    ),
+    [i.escalier]: {
+      ...zone(
+        i.escalier,
+        "escalier",
+        "ESCALIER PRINCIPAL / RDC",
+        0,
+        "rampe bleue",
+        [
+          navExit("DOWN", 60, i.couloir, 278, "BAS : COULOIR / RDC"),
+          navExit("UP", 250, i.galerie, 60, "HAUT : GALERIE T / 1ER"),
+        ],
+      ),
+      gaps: [[143, 175]],
+    },
     [i.galerie]: zone(
       i.galerie,
       "galerie",
@@ -162,18 +165,29 @@ export const INSHAPE_NAV: MissionSpec = {
       ],
       76,
     ),
-    [i.sas]: zone(
-      i.sas,
-      "sas",
-      "SAS T03-T04 / 1ER",
-      1,
-      "porte coupe feu et badge",
-      [
-        navExit("LEFT", 10, i.preparation, 278, "GAUCHE : PREPARATION"),
-        navExit("RIGHT", 298, i.seuil, 45, "DROITE : T03"),
-      ],
-      79,
-    ),
+    [i.sas]: {
+      ...zone(
+        i.sas,
+        "sas",
+        "SAS T03-T04 / 1ER",
+        1,
+        "porte coupe feu et badge",
+        [
+          navExit("LEFT", 10, i.preparation, 278, "GAUCHE : PREPARATION"),
+          navExit("RIGHT", 298, i.seuil, 45, "DROITE : T03"),
+        ],
+        79,
+      ),
+      actor: "catchup-student",
+      encounter: {
+        name: "ELEVE DE TERMINALE",
+        pages: [
+          ["Monsieur, vous partez pas !", "On a perdu des mois de cours."],
+          ["Pas de remplaçant. Et moi,", "j'ai Parcoursup à préparer."],
+          ["Vous allez nous faire", "rattraper. Je vous lâche pas."],
+        ],
+      },
+    },
     [i.seuil]: zone(
       i.seuil,
       "seuil",
@@ -228,17 +242,26 @@ export const INSHAPE_NAV: MissionSpec = {
       ],
       25,
     ),
-    [i.service]: zone(
-      i.service,
-      "service",
-      "PASSAGE SERVICE / RDC",
-      0,
-      "tuyau jaune et escalier metal",
-      [
-        navExit("LEFT", 10, i.cour, 255, "GAUCHE : COUR TECHNIQUE"),
-        navExit("UP", 250, i.palierService, 60, "HAUT : PALIER SERVICE / 1ER"),
-      ],
-    ),
+    [i.service]: {
+      ...zone(
+        i.service,
+        "service",
+        "PASSAGE SERVICE / RDC",
+        0,
+        "tuyau jaune et escalier metal",
+        [
+          navExit("LEFT", 10, i.cour, 255, "GAUCHE : COUR TECHNIQUE"),
+          navExit(
+            "UP",
+            250,
+            i.palierService,
+            60,
+            "HAUT : PALIER SERVICE / 1ER",
+          ),
+        ],
+      ),
+      gaps: [[143, 175]],
+    },
     [i.palierService]: {
       ...zone(
         i.palierService,
