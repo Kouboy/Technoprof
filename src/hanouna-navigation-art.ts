@@ -48,7 +48,7 @@ export const H1_BACKGROUNDS: Record<number, [string, string | number]> = {
 };
 type Plate = [number, number, string[], boolean?];
 export const H1_SIGNS: Record<number, Plate[]> = {
-  [h.cour]: [[216, 33, ["COLLEGE C. HANOUNA", "ENTREE >"], true]],
+  [h.cour]: [[216, 33, ["COLLEGE DES ORMEAUX", "ENTREE >"], true]],
   [h.vestibule]: [
     [12, 28, ["< COUR"]],
     [276, 38, ["HALL >"], true],

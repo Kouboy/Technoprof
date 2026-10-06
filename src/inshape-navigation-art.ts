@@ -195,6 +195,7 @@ export class InshapeNavigationArt {
       g.fillRect(121, 21, 68, 2);
     }
     if (r.id === i.parvis) {
+      this.plate(98, 35, ["LYCEE PROFESSIONNEL", "DES TROIS-PONTS"], true);
       this.plate(264, 35, ["ACCUEIL >"], true);
       return;
     }

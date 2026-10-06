@@ -30,7 +30,7 @@ export const A3_ROOM_ART: Record<number, [string, number]> = {
 // Signage names neighbours and floor ranges, never adds a route to B12.
 type Plate = [number, number, string[], boolean?];
 const SIGNS: Record<number, Plate[]> = {
-  [NAV_ID.cour]: [[237, 25, ["LYCEE P. BRUEL", "ENTREE >"], true]],
+  [NAV_ID.cour]: [[205, 25, ["LYCEE AUGUSTE-BERTHELOT", "ENTREE >"], true]],
   [NAV_ID.vestibule]: [
     [13, 47, ["< COUR"]],
     [262, 47, ["HALL >"]],

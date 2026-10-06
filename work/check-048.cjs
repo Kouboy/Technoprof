@@ -57,5 +57,5 @@ for(const speed of [40,110,260]){
  console.log('PASS speed',speed,'world/s',v.toFixed(1),'near-ground pixels/250ms',newPixels.toFixed(1));
 }
 const source=['main','cadre'].map(n=>fs.readFileSync('src/'+n+'.ts','utf8')).join('\n');
-assert(!/ST-HANOUNA|SAINT-HANOUNA/.test(source));assert(source.includes('COLLEGE C. HANOUNA'));assert(source.includes('"C. HANOUNA"'));
+assert(!/COLLEGE C\. HANOUNA|ST-HANOUNA|SAINT-HANOUNA/.test(source));assert(source.includes('COLLEGE DES ORMEAUX'));assert(source.includes('"DES ORMEAUX"'));
 console.log('PASS renamed establishment on destination and facades');

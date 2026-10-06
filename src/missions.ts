@@ -104,7 +104,7 @@ const room = (
 const bruelRooms: Record<number, RoomSpec> = {
   10: room(
     10,
-    "COUR / LYCEE BRUEL",
+    "COUR / LYCEE AUGUSTE-BERTHELOT",
     0,
     [edge("RIGHT", 11, 20, "DROITE : VESTIBULE")],
     { signs: [[210, 52, 90, ["ENTREE >"]]] },
@@ -557,8 +557,8 @@ addWorkload(proRooms, 28, 60, 29, 24, "T03", 2, {
 export const MISSIONS: MissionSpec[] = [
   {
     id: "hanouna",
-    school: "Collège C. Hanouna",
-    hud: ["COLLEGE", "C. HANOUNA"],
+    school: "Collège des Ormeaux",
+    hud: ["COLLEGE", "DES ORMEAUX"],
     classroom: "42C",
     seconds: 240,
     meters: 4200,
@@ -569,8 +569,8 @@ export const MISSIONS: MissionSpec[] = [
   },
   {
     id: "bruel",
-    school: "Lycée Patrick Bruel",
-    hud: ["LYCEE", "P. BRUEL"],
+    school: "Lycée Auguste-Berthelot",
+    hud: ["LYCEE", "AUGUSTE-BERTHELOT"],
     classroom: "B12",
     seconds: 225,
     meters: 3600,
@@ -581,8 +581,8 @@ export const MISSIONS: MissionSpec[] = [
   },
   {
     id: "tibo",
-    school: "Lycée Professionnel Tibo InShape",
-    hud: ["LYCEE PRO", "TIBO INSHAPE"],
+    school: "Lycée professionnel des Trois-Ponts",
+    hud: ["LYCEE PRO", "DES TROIS-PONTS"],
     classroom: "T03",
     seconds: 210,
     meters: 3900,

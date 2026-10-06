@@ -13,6 +13,7 @@ assert(model({notified:true,phase:'arrival'}).suspended);assert(model({notified:
 assert(model({notified:true,phase:'school',encounterTime:2}).suspended);assert(model({notified:true,phase:'road',paused:true}).suspended);
 for(const text of ['04:00','--:--','00:01','01:11','02:37'])assert(clockWidth(text)<=86,text+' clock must fit');
 for(const [text,width] of [['AFFECTATION',88],['PERSONNEL',62],['RETARD IMMINENT',82],['SERVICE 3/3',58],['ETAT DU PROF',89]])assert(smallWidth(text)<=width,text+' label must fit');
+for(const text of ['DES ORMEAUX','AUGUSTE-BERTHELOT','DES TROIS-PONTS'])assert(smallWidth(text)<=69,text+' school name must fit without truncation');
 for(const [text,scale,width]of [['42C',2,37],['260 KM/H',1,88],['4,20',2,75],['0,49',2,75],['5/5',1,24]])assert(bitmapWidth(text,scale)<=width,text+' instrument value must fit');
 let draws=[],color=0;const g={fillStyle(c){color=c;},fillRect(x,y,w,h){draws.push({x,y,w,h,color});}};
 bitmap(g,0,0,'ABCDEFGHIJKLMN',0xffffff,1,20);assert(draws.every(p=>p.x+p.w<=20));

@@ -349,16 +349,16 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
     compact(
       40,
       199,
-      (s.destinationHUD ?? ["COLLEGE", "C. HANOUNA"])[0],
+      (s.destinationHUD ?? ["COLLEGE", "DES ORMEAUX"])[0],
       dim,
       65,
     );
     compact(
-      40,
+      38,
       207,
-      (s.destinationHUD ?? ["COLLEGE", "C. HANOUNA"])[1],
+      (s.destinationHUD ?? ["COLLEGE", "DES ORMEAUX"])[1],
       paper,
-      65,
+      69,
     );
     compact(40, 220, "SALLE", dim, 27);
     t(70, 214, s.classroom ?? "42C", paper, 2, 37);

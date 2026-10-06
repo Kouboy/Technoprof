@@ -405,7 +405,9 @@ export class NewSchoolArt {
     s.carArt?.side(carX);
     const g = this.door,
       label =
-        s.mission === 1 ? "LYCEE PATRICK BRUEL" : "LYCEE PRO / TIBO INSHAPE";
+        s.mission === 1
+          ? "LYCEE AUGUSTE-BERTHELOT"
+          : "LYCEE PRO / DES TROIS-PONTS";
     const w = smallWidth(label) + 10;
     g.fillStyle(0xb9aa89);
     g.fillRect(306 - w, 47, w, 13);

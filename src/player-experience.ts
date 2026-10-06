@@ -384,9 +384,9 @@ export function installPlayerExperience(s: Host) {
         const item = document.createElement("li");
         item.textContent =
           [
-            "07:00 — Collège C. Hanouna",
-            "12:00 — Lycée Patrick Bruel",
-            "18:30 — Lycée Pro Tibo InShape",
+            "07:00 — Collège des Ormeaux",
+            "12:00 — Lycée Auguste-Berthelot",
+            "18:30 — Lycée professionnel des Trois-Ponts",
           ][i] +
           " — " +
           result;

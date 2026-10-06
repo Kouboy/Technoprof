@@ -48,26 +48,31 @@ jouer directement dans la scène. L'aide en jeu détaille les gestes.
 
 ## Versions et suivi
 
-Sur cette même branche, [Hanouna H1](ATELIER-HANOUNA-H1.md) implémente le premier
+Les établissements de l'atelier portent désormais les noms **Collège des
+Ormeaux**, **Lycée Auguste-Berthelot** et **Lycée professionnel des Trois-Ponts**.
+Les identifiants de scénarios et les noms de fichiers historiques restent
+compatibles avec les liens existants. La 0.61 publiée reste inchangée.
+
+Sur cette même branche, [Ormeaux H1](ATELIER-HANOUNA-H1.md) implémente le premier
 lot de la [conception Hanouna / InShape validée](CONCEPTION-HANOUNA-INSHAPE.md) :
 huit zones jusqu'à 42C, deux rencontres ordinaires, l'Inspectrice et un détour
 facultatif par l'infirmerie à l'étage. `npm run build:atelier` produit aussi
 `Jouer-Technoprof-Atelier-Hanouna-H1.html` (environ 113 Mo). La topologie est
 validée ; les [neuf décors dédiés](RENDU-HANOUNA-H1.md) l'accompagnent désormais.
-Après validation de H1, [InShape I1](ATELIER-INSHAPE-I1.md) est jouable sur la
+Après validation de H1, [Trois-Ponts I1](ATELIER-INSHAPE-I1.md) est jouable sur la
 même branche : 17 zones, trois montées, passage couvert, service et infirmerie
 accessible depuis la galerie T01–T02. `npm run build:atelier` produit
 `Jouer-Technoprof-Atelier-InShape-I1.html` (environ 113 Mo).
 Les décors recomposés sont provisoires, pour tester le LD avant le rendu
 définitif. Vérification ciblée : `npm run test:inshape-i1`.
-[InShape I2](ATELIER-INSHAPE-I2.md) ajoute deux duos, le recul de la lycéenne
+[Trois-Ponts I2](ATELIER-INSHAPE-I2.md) ajoute deux duos, le recul de la lycéenne
 et le cycle poussée / avancée / ouverture du boss, sans changer le graphe d'I1.
 Ouvrir `Jouer-Technoprof-Atelier-InShape-I2.html` après `npm run build:atelier`.
 I1 reste sélectionnable pour comparer ; vérification ciblée : `npm run test:inshape-i2`.
 Ni la journée publiée
-ni Bruel A3 ne changent.
+ni les règles d'Auguste-Berthelot A3 ne changent.
 
-Sur la branche `atelier-navigation-bruel-a3`, [Bruel A3](ATELIER-BRUEL-A3.md)
+Sur la branche `atelier-navigation-bruel-a3`, [Auguste-Berthelot A3](ATELIER-BRUEL-A3.md)
 reprend le réseau validé, l'infirmerie comme scène de récupération et le
 Parent limité à deux coups par ouverture. Les [douze décors adaptés](RENDU-BRUEL-A3.md)
 remplacent sa composition provisoire : plancher usé au premier étage,

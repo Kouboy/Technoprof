@@ -5137,7 +5137,7 @@ class Game extends Phaser.Scene {
     this.rect(179, 47, 9, 2, 0x111e24);
     this.rect(182, 49, 2, 12, 0x111e24);
     this.rect(119, 85, 177, 15, 0xc6b99b);
-    this.txt(125, 89, "COLLEGE C. HANOUNA", 9, "#313d37");
+    this.txt(125, 89, "COLLEGE DES ORMEAUX", 9, "#313d37");
     this.rect(7, 110, 306, 30, 0x65716a);
     this.rect(7, 140, 306, 35, 0x454b4e);
     this.rect(7, 138, 306, 3, 0xb5af98);
@@ -5265,7 +5265,7 @@ class Game extends Phaser.Scene {
     this.carArt!.side(carX);
     this.g = this.foreground!;
     this.vehicleDamage(carX, 146, true);
-    this.txt(181, 62, "COLLEGE C. HANOUNA", 7, "#e3d4b3", true);
+    this.txt(181, 62, "COLLEGE DES ORMEAUX", 7, "#e3d4b3", true);
     // The gate pivots at the actual masonry opening, before the teacher arrives.
     const gate = this.arrivalGate!;
     const opening = Phaser.Math.Clamp((t - 3.65) / 0.7, 0, 1);

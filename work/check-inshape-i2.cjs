@@ -127,9 +127,10 @@ for (const fps of [30, 60, 144]) {
       room === 302 ? "student" : "guard",
       "thrower",
     ]);
-    assert.equal(
-      g.encounter().pages.length,
-      i1.rooms[room].encounter.pages.length + 1,
+    assert.deepEqual(
+      plain(g.encounter()),
+      plain(i1.rooms[room === 302 ? room : 300].encounter),
+      "one actor gives their classic introduction without explaining the duo",
     );
     const frozen = JSON.stringify([g.px, g.remaining, g.enemies]);
     g.physicalKeys.D.isDown = true;
@@ -557,4 +558,7 @@ console.log(
   "InShape I2: paired dispatch, independent deaths, spacing, pause/revisit, student retreat and security cycles PASS",
 );
 console.log(JSON.stringify(report, null, 2));
-require("node:fs").writeFileSync("work/inshape-i2-results.json", JSON.stringify(report, null, 2) + "\n");
+require("node:fs").writeFileSync(
+  "work/inshape-i2-results.json",
+  JSON.stringify(report, null, 2) + "\n",
+);

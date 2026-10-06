@@ -165,11 +165,16 @@
       display: none !important;
     }
     #workshop {
+      min-width: 0;
       max-width: min(960px, 94vw);
       margin: 12px auto;
       padding: 12px;
       border: 1px solid #758080;
       background: #141e27;
+    }
+    #workshop select {
+      max-width: 100%;
+      box-sizing: border-box;
     }
     #presentation-controls {
       max-width: min(960px, 94vw);

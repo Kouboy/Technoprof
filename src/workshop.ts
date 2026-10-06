@@ -64,63 +64,64 @@ type Host = {
   exportJournal(): void;
 };
 const SCENARIOS: Record<string, string> = {
-  "inshape-navigation-i2": "InShape I2 / pression finale",
-  "inshape-navigation-i2-road": "InShape I2 / route puis établissement",
-  "inshape-navigation-i2-view-302": "InShape I2 / duo élève et lanceur",
-  "inshape-navigation-i2-view-306": "InShape I2 / duo vigile et lanceur",
-  "inshape-navigation-i2-view-308": "InShape I2 / lycéenne mobile",
-  "inshape-navigation-i2-boss": "InShape I2 / poussée et avancée",
-  "inshape-navigation-i2-care": "InShape I2 / infirmerie",
-  "inshape-navigation-i1": "InShape I1 / découverte du lycée pro",
-  "inshape-navigation-i1-road": "InShape I1 / route puis établissement",
-  "inshape-navigation-i1-care": "InShape I1 / galerie et soins",
-  "inshape-navigation-i1-boss": "InShape I1 / Responsable sécurité",
-  "inshape-navigation-i1-service": "InShape I1 / sol du palier service",
-  "inshape-navigation-i1-view-301": "InShape I1 / accueil",
-  "inshape-navigation-i1-view-303": "InShape I1 / escalier principal",
-  "inshape-navigation-i1-view-304": "InShape I1 / galerie T",
-  "inshape-navigation-i1-view-305": "InShape I1 / jonction T",
-  "inshape-navigation-i1-view-307": "InShape I1 / préparation T",
-  "inshape-navigation-i1-view-308": "InShape I1 / élève de terminale",
-  "inshape-navigation-i1-book": "InShape I1 / lycéenne : livre",
-  "inshape-navigation-i1-kick": "InShape I1 / lycéenne : kick",
-  "inshape-navigation-i1-view-310": "InShape I1 / cour technique",
-  "inshape-navigation-i1-view-311": "InShape I1 / atelier A",
-  "inshape-navigation-i1-view-312": "InShape I1 / vestiaire",
-  "inshape-navigation-i1-view-313": "InShape I1 / passage service",
-  "inshape-navigation-i1-view-315": "InShape I1 / infirmerie",
-  "inshape-navigation-i1-view-316": "InShape I1 / vie scolaire",
-  "hanouna-navigation-h1": "Hanouna H1 / découverte du collège",
-  "hanouna-navigation-h1-road": "Hanouna H1 / route puis collège",
-  "hanouna-navigation-h1-care": "Hanouna H1 / jonction et soins",
-  "hanouna-navigation-h1-boss": "Hanouna H1 / Inspectrice",
-  "hanouna-navigation-h1-view-201": "Hanouna H1 / décor vestibule",
-  "hanouna-navigation-h1-view-202": "Hanouna H1 / décor hall",
-  "hanouna-navigation-h1-view-203": "Hanouna H1 / décor escalier",
-  "hanouna-navigation-h1-view-204": "Hanouna H1 / décor palier C",
-  "hanouna-navigation-h1-view-205": "Hanouna H1 / décor galerie C",
-  "hanouna-navigation-h1-view-206": "Hanouna H1 / décor jonction C",
-  "hanouna-navigation-h1-view-208": "Hanouna H1 / décor infirmerie",
-  "bruel-navigation-a3": "Bruel A3 / combats plus vifs",
-  "bruel-navigation-a3-road": "Bruel A3 / route puis réseau",
-  "bruel-navigation-a3-care": "Bruel A3 / jonction et soins",
-  "bruel-navigation-a3-parent": "Bruel A3 / Parent influent",
-  "bruel-navigation-a3-view-101": "Bruel A3 / décor vestibule",
-  "bruel-navigation-a3-view-102": "Bruel A3 / décor hall",
-  "bruel-navigation-a3-view-103": "Bruel A3 / décor grand escalier",
-  "bruel-navigation-a3-view-104": "Bruel A3 / décor palier principal",
-  "bruel-navigation-a3-view-106": "Bruel A3 / décor annexe",
-  "bruel-navigation-a3-view-105": "Bruel A3 / décor galerie A",
-  "bruel-navigation-a3-view-108": "Bruel A3 / décor jonction B",
-  "bruel-navigation-a3-view-109": "Bruel A3 / décor galerie B",
-  "bruel-navigation-a3-view-110": "Bruel A3 / décor palier B",
-  "bruel-navigation-a3-view-107": "Bruel A3 / décor infirmerie",
-  "bruel-navigation-a2": "Bruel A2 / découverte du réseau",
-  "bruel-navigation-a2-road": "Bruel A2 / route puis réseau",
-  "bruel-navigation-a2-care": "Bruel A2 / hall et soins",
-  "bruel-navigation": "Bruel A1 / découverte (comparaison)",
-  "bruel-navigation-road": "Bruel A1 / route puis réseau",
-  "bruel-navigation-care": "Bruel A1 / hall et soins",
+  "inshape-navigation-i2": "Trois-Ponts I2 / pression finale",
+  "inshape-navigation-i2-road": "Trois-Ponts I2 / route puis établissement",
+  "inshape-navigation-i2-view-302": "Trois-Ponts I2 / duo élève et lanceur",
+  "inshape-navigation-i2-view-306": "Trois-Ponts I2 / duo vigile et lanceur",
+  "inshape-navigation-i2-view-308": "Trois-Ponts I2 / lycéenne mobile",
+  "inshape-navigation-i2-boss": "Trois-Ponts I2 / poussée et avancée",
+  "inshape-navigation-i2-care": "Trois-Ponts I2 / infirmerie",
+  "inshape-navigation-i1": "Trois-Ponts I1 / découverte du lycée pro",
+  "inshape-navigation-i1-road": "Trois-Ponts I1 / route puis établissement",
+  "inshape-navigation-i1-care": "Trois-Ponts I1 / galerie et soins",
+  "inshape-navigation-i1-boss": "Trois-Ponts I1 / Responsable sécurité",
+  "inshape-navigation-i1-service": "Trois-Ponts I1 / sol du palier service",
+  "inshape-navigation-i1-view-301": "Trois-Ponts I1 / accueil",
+  "inshape-navigation-i1-view-303": "Trois-Ponts I1 / escalier principal",
+  "inshape-navigation-i1-view-304": "Trois-Ponts I1 / galerie T",
+  "inshape-navigation-i1-view-305": "Trois-Ponts I1 / jonction T",
+  "inshape-navigation-i1-view-307": "Trois-Ponts I1 / préparation T",
+  "inshape-navigation-i1-view-308": "Trois-Ponts I1 / élève de terminale",
+  "inshape-navigation-i1-book": "Trois-Ponts I1 / lycéenne : livre",
+  "inshape-navigation-i1-kick": "Trois-Ponts I1 / lycéenne : kick",
+  "inshape-navigation-i1-view-310": "Trois-Ponts I1 / cour technique",
+  "inshape-navigation-i1-view-311": "Trois-Ponts I1 / atelier A",
+  "inshape-navigation-i1-view-312": "Trois-Ponts I1 / vestiaire",
+  "inshape-navigation-i1-view-313": "Trois-Ponts I1 / passage service",
+  "inshape-navigation-i1-view-315": "Trois-Ponts I1 / infirmerie",
+  "inshape-navigation-i1-view-316": "Trois-Ponts I1 / vie scolaire",
+  "hanouna-navigation-h1": "Ormeaux H1 / découverte du collège",
+  "hanouna-navigation-h1-road": "Ormeaux H1 / route puis collège",
+  "hanouna-navigation-h1-care": "Ormeaux H1 / jonction et soins",
+  "hanouna-navigation-h1-boss": "Ormeaux H1 / Inspectrice",
+  "hanouna-navigation-h1-view-201": "Ormeaux H1 / décor vestibule",
+  "hanouna-navigation-h1-view-202": "Ormeaux H1 / décor hall",
+  "hanouna-navigation-h1-view-203": "Ormeaux H1 / décor escalier",
+  "hanouna-navigation-h1-view-204": "Ormeaux H1 / décor palier C",
+  "hanouna-navigation-h1-view-205": "Ormeaux H1 / décor galerie C",
+  "hanouna-navigation-h1-view-206": "Ormeaux H1 / décor jonction C",
+  "hanouna-navigation-h1-view-208": "Ormeaux H1 / décor infirmerie",
+  "bruel-navigation-a3": "Auguste-Berthelot A3 / combats plus vifs",
+  "bruel-navigation-a3-road": "Auguste-Berthelot A3 / route puis réseau",
+  "bruel-navigation-a3-care": "Auguste-Berthelot A3 / jonction et soins",
+  "bruel-navigation-a3-parent": "Auguste-Berthelot A3 / Parent influent",
+  "bruel-navigation-a3-view-101": "Auguste-Berthelot A3 / décor vestibule",
+  "bruel-navigation-a3-view-102": "Auguste-Berthelot A3 / décor hall",
+  "bruel-navigation-a3-view-103": "Auguste-Berthelot A3 / décor grand escalier",
+  "bruel-navigation-a3-view-104":
+    "Auguste-Berthelot A3 / décor palier principal",
+  "bruel-navigation-a3-view-106": "Auguste-Berthelot A3 / décor annexe",
+  "bruel-navigation-a3-view-105": "Auguste-Berthelot A3 / décor galerie A",
+  "bruel-navigation-a3-view-108": "Auguste-Berthelot A3 / décor jonction B",
+  "bruel-navigation-a3-view-109": "Auguste-Berthelot A3 / décor galerie B",
+  "bruel-navigation-a3-view-110": "Auguste-Berthelot A3 / décor palier B",
+  "bruel-navigation-a3-view-107": "Auguste-Berthelot A3 / décor infirmerie",
+  "bruel-navigation-a2": "Auguste-Berthelot A2 / découverte du réseau",
+  "bruel-navigation-a2-road": "Auguste-Berthelot A2 / route puis réseau",
+  "bruel-navigation-a2-care": "Auguste-Berthelot A2 / hall et soins",
+  "bruel-navigation": "Auguste-Berthelot A1 / découverte (comparaison)",
+  "bruel-navigation-road": "Auguste-Berthelot A1 / route puis réseau",
+  "bruel-navigation-care": "Auguste-Berthelot A1 / hall et soins",
   "hanouna-quiet": "Matin / liaison sans combat",
   "hanouna-quiet-class": "Matin / classe vide",
   "hanouna-quiet-hall": "Matin / hall",
@@ -140,11 +141,11 @@ const SCENARIOS: Record<string, string> = {
   "road-brake": "Freinage / véhicule lent",
   "road-edge": "Accotement / perte d'adhérence",
   parent: "Parent / présentation",
-  "bruel-drive": "Bruel / affectation complète",
-  "bruel-cour": "Bruel / cour et parcours",
-  "bruel-arrival": "Bruel / arrivée",
+  "bruel-drive": "Auguste-Berthelot / affectation complète",
+  "bruel-cour": "Auguste-Berthelot / cour et parcours",
+  "bruel-arrival": "Auguste-Berthelot / arrivée",
   "pro-arrival": "Lycée pro / arrivée",
-  "bruel-boss": "Bruel / parent influent",
+  "bruel-boss": "Auguste-Berthelot / parent influent",
   "pro-drive": "Lycée pro / affectation complète",
   "pro-cour": "Lycée pro / parvis et parcours",
   "pro-boss": "Lycée pro / responsable sécurité",
@@ -249,7 +250,7 @@ export function installWorkshop(s: Host) {
   const gainLabel = document.createElement("label");
   gainLabel.textContent = "Soin du prototype ";
   const gain = document.createElement("select");
-  gain.setAttribute("aria-label", "Gain du soin Bruel");
+  gain.setAttribute("aria-label", "Gain du soin Auguste-Berthelot");
   for (const value of [1, 2]) {
     const o = document.createElement("option");
     o.value = String(value);
@@ -262,7 +263,7 @@ export function installWorkshop(s: Host) {
   const hpLabel = document.createElement("label");
   hpLabel.textContent = "PV de départ (hors route) ";
   const hp = document.createElement("select");
-  hp.setAttribute("aria-label", "PV de départ Bruel");
+  hp.setAttribute("aria-label", "PV de départ Auguste-Berthelot");
   for (const value of [5, 4, 3, 2, 1]) {
     const o = document.createElement("option");
     o.value = String(value);
@@ -274,7 +275,7 @@ export function installWorkshop(s: Host) {
   careSettings.append(hpLabel);
   const navigationNote = document.createElement("p");
   navigationNote.textContent =
-    "BRUEL / A3 : l’infirmière accueille le professeur dès l’entrée. F/X ou toucher : afficher puis avancer les répliques. Soin complet, délai suspendu et sortie automatique ; une visite par affectation. Le Parent influent reprend sa garde après deux coups. A1/A2 conservent le soin partiel pour comparaison.";
+    "AUGUSTE-BERTHELOT / A3 : l’infirmière accueille le professeur dès l’entrée. F/X ou toucher : afficher puis avancer les répliques. Soin complet, délai suspendu et sortie automatique ; une visite par affectation. Le Parent influent reprend sa garde après deux coups. A1/A2 conservent le soin partiel pour comparaison.";
   careSettings.append(navigationNote);
   root.append(careSettings);
   careSettings.addEventListener("focusin", () => s.setWorkshopFocus(true));
@@ -289,10 +290,10 @@ export function installWorkshop(s: Host) {
     hp.setAttribute(
       "aria-label",
       i1
-        ? "PV de départ InShape"
+        ? "PV de départ Trois-Ponts"
         : h1
-          ? "PV de départ Hanouna"
-          : "PV de départ Bruel",
+          ? "PV de départ Ormeaux"
+          : "PV de départ Auguste-Berthelot",
     );
     careSettings.hidden = !(
       i1 ||
@@ -302,14 +303,14 @@ export function installWorkshop(s: Host) {
     const a3 = select.value.startsWith("bruel-navigation-a3");
     gainLabel.hidden = a3 || h1 || i1;
     navigationNote.textContent = i2
-      ? "INSHAPE / I2 : deux duos complémentaires, lycéenne mobile et boss poussée / avancée / ouverture. Topologie, trous, soin et délais conservés. I1 reste disponible pour comparer."
+      ? "TROIS-PONTS / I2 : deux duos complémentaires, lycéenne mobile et boss poussée / avancée / ouverture. Topologie, trous, soin et délais conservés. I1 reste disponible pour comparer."
       : i1
-        ? "INSHAPE / I1 : infirmerie depuis la galerie T01-T02. Cinq pièces calmes à deux ou trois trous. Lycéenne du sas : livres à distance, kick au contact. Décors recomposés provisoires ; 5 ou 6 rencontres selon le chemin."
+        ? "TROIS-PONTS / I1 : infirmerie depuis la galerie T01-T02. Cinq pièces calmes à deux ou trois trous. Lycéenne du sas : livres à distance, kick au contact. Décors recomposés provisoires ; 5 ou 6 rencontres selon le chemin."
         : h1
-          ? "HANOUNA / H1 : parcours guidé vers 42C, un détour facultatif à la jonction C. Deux rencontres puis l’Inspectrice. Infirmerie : accueil, soin complet, délai suspendu et retour automatique ; un usage par affectation. Neuf décors adaptés au parcours."
+          ? "ORMEAUX / H1 : parcours guidé vers 42C, un détour facultatif à la jonction C. Deux rencontres puis l’Inspectrice. Infirmerie : accueil, soin complet, délai suspendu et retour automatique ; un usage par affectation. Neuf décors adaptés au parcours."
           : a3
-            ? "BRUEL / A3 : l’infirmière accueille le professeur dès l’entrée. F/X ou toucher : afficher puis avancer les répliques. Soin complet, délai suspendu et sortie automatique ; une visite par affectation. Le Parent influent reprend sa garde après deux coups."
-            : "BRUEL / A1-A2 : approcher l’armoire, F/X ou toucher pour le soin partiel +1/+2. Délai actif pendant le soin ; un usage par affectation. Changer le soin ou les PV relance cet essai.";
+            ? "AUGUSTE-BERTHELOT / A3 : l’infirmière accueille le professeur dès l’entrée. F/X ou toucher : afficher puis avancer les répliques. Soin complet, délai suspendu et sortie automatique ; une visite par affectation. Le Parent influent reprend sa garde après deux coups."
+            : "AUGUSTE-BERTHELOT / A1-A2 : approcher l’armoire, F/X ou toucher pour le soin partiel +1/+2. Délai actif pendant le soin ; un usage par affectation. Changer le soin ou les PV relance cet essai.";
   };
   updateCareSettings();
   gain.onchange = () => {

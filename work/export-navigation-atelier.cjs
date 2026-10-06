@@ -22,7 +22,7 @@ if (!atelierUrl.searchParams.has('essai')) {
     .replace(/(<html\b[^>]*>)/, "$1" + bootstrap)
     .replace(
       /<title>[\s\S]*?<\/title\s*>/,
-      `<title>TECHNOPROF — Atelier Bruel ${revision}</title>`,
+      `<title>TECHNOPROF — Atelier Auguste-Berthelot ${revision}</title>`,
     );
   if (html === source || !html.includes(bootstrap))
     throw Error("Atelier bootstrap missing");
@@ -54,7 +54,7 @@ const h1 = source
   .replace(/(<html\b[^>]*>)/, "$1" + h1Bootstrap)
   .replace(
     /<title>[\s\S]*?<\/title\s*>/,
-    "<title>TECHNOPROF — Atelier Hanouna H1</title>",
+    "<title>TECHNOPROF — Atelier Ormeaux H1</title>",
   );
 if (!h1.includes(h1Bootstrap)) throw Error("H1 bootstrap missing");
 fs.writeFileSync(
@@ -73,7 +73,7 @@ const i1 = source
   .replace(/(<html\b[^>]*>)/, "$1" + i1Bootstrap)
   .replace(
     /<title>[\s\S]*?<\/title\s*>/,
-    "<title>TECHNOPROF — Atelier InShape I1</title>",
+    "<title>TECHNOPROF — Atelier Trois-Ponts I1</title>",
   );
 if (!i1.includes(i1Bootstrap)) throw Error("I1 bootstrap missing");
 fs.writeFileSync(
@@ -92,7 +92,7 @@ const i2 = source
   .replace(/(<html\b[^>]*>)/, "$1" + i2Bootstrap)
   .replace(
     /<title>[\s\S]*?<\/title\s*>/,
-    "<title>TECHNOPROF — Atelier InShape I2</title>",
+    "<title>TECHNOPROF — Atelier Trois-Ponts I2</title>",
   );
 if (!i2.includes(i2Bootstrap)) throw Error("I2 bootstrap missing");
 fs.writeFileSync(

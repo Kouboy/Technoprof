@@ -1,9 +1,16 @@
-# Lycée professionnel Tibo InShape — atelier I2
+# Lycée professionnel des Trois-Ponts — atelier I2
+
+Les trois noms affichés dans cette passe sont Collège des Ormeaux, Lycée
+Auguste-Berthelot et Lycée professionnel des Trois-Ponts. Affectations, CADRE,
+façades, bilan de journée et sélecteur d'atelier suivent ces noms. Les noms
+longs tiennent dans les plaques et le CADRE à la taille habituelle des pixels.
+Les noms de fichiers et identifiants des scénarios restent compatibles.
 
 I2 compare une nouvelle composition des combats à [I1](ATELIER-INSHAPE-I1.md).
 Le bâtiment garde ses 17 zones, ses accès, ses onze trous hors combat, son
 infirmerie et ses 210 secondes. Les décors portent toujours la révision I1.
-La mission publiée 0.61 et les profils I1, H1 et A3 restent les témoins inchangés.
+La mission publiée 0.61 reste intacte. Les règles des profils I1, H1 et A3
+restent les témoins ; leurs noms affichés suivent ceux des établissements.
 
 ## Jouer et comparer
 
@@ -30,7 +37,8 @@ Deux pièces déjà consacrées au combat reçoivent un duo :
 | Couloir principal, RDC | Élève à x165, 2 PV | Lanceur à x235, 2 PV |
 | Liaison T03–T06, étage | Vigile à x165, 2 PV | Lanceur à x235, 2 PV |
 
-Une seconde page d'introduction annonce le lanceur au fond de la pièce.
+Un seul personnage donne sa réplique habituelle : l'élève dans le couloir,
+l'agent de sécurité dans la liaison. Le dialogue ne décrit pas le duo.
 L'intention est de faire choisir une cible et une position, tout en gardant
 chaque attaque anticipable. Les pièces à trous restent des respirations sans
 adversaire. Les combats terminés ne recommencent pas au retour.
@@ -113,6 +121,14 @@ Captures : [duo](work/inshape-i2-duo.png),
 [avancée](work/inshape-i2-boss-avance.png),
 [ouverture](work/inshape-i2-boss-ouverture.png).
 Mesures reproductibles : [résultats I2](work/inshape-i2-results.json).
+
+Après simplification des introductions et renommage : `npm test`,
+`test:inshape-i2`, `test:inshape-i1`, `test:hanouna-h1` et `test:rendu-a3`
+réussis. Observation native des deux répliques classiques et des trois
+façades/CADRE ; sélecteur d'atelier contenu dans son panneau malgré les
+intitulés plus longs. Captures : [réplique du duo](work/trois-ponts-i2-dialogue.png),
+[Ormeaux](work/ormeaux-name.png), [Auguste-Berthelot](work/auguste-berthelot-name.png),
+[Trois-Ponts](work/trois-ponts-name.png). L'export 0.61 publié conserve son SHA-256.
 
 Les passages ordinaires conservent leur règle existante : le combat n'est pas
 un verrou obligatoire. Le joueur peut fuir si sa position le permet. La porte
