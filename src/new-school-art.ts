@@ -9,7 +9,8 @@ import { GUARD_FRAMES } from "./bridge-art";
 import type { CarArt } from "./car-art";
 import type { Enemy } from "./world";
 import { newEnemyFrame, type TeacherState } from "./combat-poses";
-import { SECURITY } from "./gameplay";
+import { SECURITY, CATCHUP_STUDENT } from "./gameplay";
+import { CATCHUP_ATTACK_FRAMES } from "./catchup-attack-art";
 import {
   CATCHUP_FRAMES,
   prepareCatchupStudent,
@@ -26,7 +27,7 @@ type ArtHost = TeacherState & {
   age: number;
   phase: string;
   openingFrom: number;
-  projectiles: { x: number; dir: number; life: number }[];
+  projectiles: { x: number; dir: number; life: number; kind?: "book" }[];
 };
 // Explicit source rectangles and foot anchors preserve the generated pose sizes.
 const FRAMES: Record<string, number[][]> = {
@@ -167,17 +168,18 @@ export class NewSchoolArt {
     const e = s.enemies[0];
     if (e && (e.hp > 0 || (e.downTime ?? 0) > 0)) {
       if (r.actor === "catchup-student") {
-        const frame =
-          e.hp <= 0 || e.stun > 0
+        const attacking =
+          e.hp > 0 && !e.stun && (e.wind > 0 || (e.strikeTime ?? 0) > 0);
+        const frame = attacking
+          ? (e.catchupAttack === "kick" ? 2 : 0) + (e.wind > 0 ? 0 : 1)
+          : e.hp <= 0 || e.stun > 0
             ? 3
-            : e.wind > 0
-              ? 1
-              : (e.strikeTime ?? 0) > 0
-                ? 2
-                : 0;
-        const [left, top, w, h, anchor, feet] = CATCHUP_FRAMES[frame];
+            : 0;
+        const [left, top, w, h, anchor, feet] = (
+          attacking ? CATCHUP_ATTACK_FRAMES : CATCHUP_FRAMES
+        )[frame];
         this.enemy
-          .setTexture("catchup-student", frame)
+          .setTexture(attacking ? "catchup-attacks" : "catchup-student", frame)
           .setOrigin((anchor - left) / w, (feet - top) / h)
           .setPosition(e.x, 159)
           .setScale(0.137 * (e.facing ?? -1), 0.137)
@@ -290,6 +292,27 @@ export class NewSchoolArt {
         );
     }
     for (const p of s.projectiles) {
+      if (p.kind === "book") {
+        const y = CATCHUP_STUDENT.bookHeight;
+        // Hard cover, cream page block and a distinct spine; no generic pellet.
+        g.fillStyle(0x080d13);
+        g.fillRect(p.x - 7, y - 5, 14, 11);
+        g.fillStyle(0xb78d48);
+        g.fillRect(p.x - 6, y - 4, 12, 9);
+        g.fillStyle(0xe3d4b3);
+        g.fillRect(p.x - 4, y - 1, 9, 4);
+        g.lineStyle(1, 0x725538);
+        g.lineBetween(p.x - 5, y - 4, p.x - 5, y + 4);
+        g.lineStyle(1, 0xb9aa89);
+        for (let n = 0; n < 2; n++)
+          g.lineBetween(
+            p.x - p.dir * 17,
+            y - 2 + n * 6,
+            p.x - p.dir * 10,
+            y - 2 + n * 6,
+          );
+        continue;
+      }
       g.fillStyle(0x080d13);
       g.fillRect(p.x - 3, 128, 6, 5);
       g.fillStyle(0xe3d4b3);

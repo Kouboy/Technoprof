@@ -102,9 +102,25 @@ export const STUDENT = {
   recovery: 0.85,
   cooldown: 1.15,
 };
-// Interception is the existing short melee attack, with an upper-body contact
-// and enough follow-through to read the open hand. No continuous grab/stun.
-export const CATCHUP_STUDENT = { activePose: 0.2, contactY: 110 };
+// I1 terminale: committed book throws at range, front kicks up close.
+// Damage stays at one PV; both preparations can be interrupted by the book.
+export const CATCHUP_STUDENT = {
+  speed: 42,
+  approach: 43,
+  kickTrigger: 63,
+  throwTrigger: 235,
+  kickWind: 0.38,
+  throwWind: 0.58,
+  kickReach: 53,
+  activePose: 0.26,
+  contactY: 120,
+  recovery: 0.44,
+  cooldown: 0.12,
+  hitRecovery: 0.18,
+  bookSpeed: 155,
+  bookHeight: 105,
+  bookLife: 2.1,
+};
 export const NEW_COMBAT = {
   influential: { ...COMBAT.arena, bodyGap: 40, bookReach: 67, contactY: 62 },
   security: {

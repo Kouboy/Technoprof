@@ -7,7 +7,11 @@ InShape I1 est désormais [jouable dans son atelier](ATELIER-INSHAPE-I1.md),
 avec fonds existants recomposés pour l'essai du parcours. Son rendu définitif
 attend la validation humaine des itinéraires.
 **Amendement I1 validé le 6 octobre 2026 :** l'infirmerie rejoint la Galerie
-T01-T02 ; Jonction T et Préparation T perdent leurs ennemis et reçoivent un trou.
+T01-T02 ; Jonction T et Préparation T perdent leurs ennemis et reçoivent
+respectivement deux et trois trous. Deux trous se trouvent aussi dans chacun
+des passages calmes suivants : escalier principal, service et palier service.
+La lycéenne du sas gagne un pattern livres à distance / coup de pied au contact
+et trois PV. Les portes, arrivées et îlots de réception restent dégagés.
 Le budget actuel est de 5 ou 6 rencontres par trajet, boss compris.
 Bruel A3 est la référence intermédiaire validée par Nicolas, avec ses combats,
 son infirmerie et ses deux ruptures de plancher. Son graphe reste intact.
@@ -118,19 +122,19 @@ flowchart LR
   subgraph RDC[Rez-de-chaussée]
     IP[Parvis / agent de sécurité] <--> IH[Accueil]
     IH <--> IC[Couloir principal / élève]
-    IC <--> IE[Escalier principal / trou]
+    IC <--> IE[Escalier principal / 2 trous]
     IH <--> IK[Cour technique]
     IK <--> IA[Atelier A / lanceur]
     IA <--> IV[Vestiaire / agent de sécurité]
     IK <-->|passage couvert| IV
-    IK <--> IS[Passage de service / trou]
+    IK <--> IS[Passage de service / 2 trous]
     IA <--> IF[Préfabriqué vie scolaire]
   end
   subgraph E1[Premier étage]
-    IG[Galerie T01-T02 / agent de sécurité] <--> IJ[Jonction T / trou]
-    IQ[Palier de service / trou] <--> IG
+    IG[Galerie T01-T02 / agent de sécurité] <--> IJ[Jonction T / 2 trous]
+    IQ[Palier de service / 2 trous] <--> IG
     IJ <--> IL[Liaison laboratoires / lanceur]
-    IL <--> ID[Préparation T / trou]
+    IL <--> ID[Préparation T / 3 trous]
     ID <--> IR[Sas T03 / lycéenne de terminale]
     IR --> IB[Seuil T03 / boss sécurité]
     IG <--> II[Infirmerie]
@@ -202,8 +206,12 @@ sans clé ni capacité supplémentaire. La route scolaire reste parfaitement via
 **Variante de service :** parvis → accueil → cour → service → palier de service
 → galerie T → jonction → même fin. Elle n'est pas le chemin le plus court en
 nombre de zones ; elle offre une autre reconnexion et moins de combats, mais
-quatre dangers de sol sur le trajet complet, dans des pièces calmes. Le danger est visible avant le saut,
+neuf dangers de sol sur le trajet complet, dans des pièces calmes. Le danger est visible avant le saut,
 éloigné des portes et des points d'arrivée. Aucun trou en zone de combat.
+Les trous font 24 pixels logiques, avec au moins 44 pixels entre deux ouvertures
+pour retomber et préparer le saut suivant. Le parcours scolaire en comprend sept,
+le passage par les ateliers et le raccourci connu cinq chacun. Aucun tableau
+supplémentaire ni agrandissement du plan n'est nécessaire.
 
 **Erreur corrigible :** cour → atelier → préfabriqué → atelier → vestiaire.
 Les combats terminés ne redémarrent pas au retour. Le soin depuis la galerie

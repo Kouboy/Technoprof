@@ -151,7 +151,7 @@ class Game extends Phaser.Scene {
   art?: SliceArt;
   schoolProps?: SchoolProps;
   newSchoolArt?: NewSchoolArt;
-  projectiles: { x: number; dir: number; life: number }[] = [];
+  projectiles: { x: number; dir: number; life: number; kind?: "book" }[] = [];
   navigationProfile = false;
   navigationRevision: "A1" | "A2" | "A3" | "H1" | "I1" = "A1";
   navigationGain: 1 | 2 = 1;
@@ -225,6 +225,7 @@ class Game extends Phaser.Scene {
         x: e.x,
         facing: e.facing,
         playerX: this.px,
+        ...(e.actor === "catchup-student" ? { attack: e.catchupAttack } : {}),
       });
   }
   roomSpec() {
@@ -1600,19 +1601,30 @@ class Game extends Phaser.Scene {
             this.cleared.add(id);
           }
         const view = Number(name.match(/-view-(\d+)$/)?.[1]);
+        const attackPreset = name.endsWith("-kick") || name.endsWith("-book");
         const start =
           this.navigationSpec()?.rooms[view]?.id ??
-          (name.endsWith("-care")
-            ? INSHAPE_ID.galerie
-            : name.endsWith("-boss")
-              ? INSHAPE_ID.seuil
-              : name.endsWith("-service")
-                ? INSHAPE_ID.palierService
-                : INSHAPE_ID.parvis);
+          (attackPreset
+            ? INSHAPE_ID.sas
+            : name.endsWith("-care")
+              ? INSHAPE_ID.galerie
+              : name.endsWith("-boss")
+                ? INSHAPE_ID.seuil
+                : name.endsWith("-service")
+                  ? INSHAPE_ID.palierService
+                  : INSHAPE_ID.parvis);
         this.enterRoom(
           start,
           name.endsWith("-boss") ? 150 : start === INSHAPE_ID.parvis ? 20 : 60,
         );
+        if (attackPreset) {
+          // Workshop-only reproduction; the normal encounter keeps its dialogue.
+          this.encounterTime = 0;
+          const e = this.enemies[0];
+          this.px = e.x - (name.endsWith("-kick") ? 45 : 120);
+          this.lastGroundX = this.px;
+          e.cool = 0;
+        }
       }
       this.session.record("scenario", this.mission, this.room, {
         name,
@@ -2665,6 +2677,8 @@ class Game extends Phaser.Scene {
           e.chargeTime = 0;
           e.strikeTime = 0;
           e.recovery = Math.max(e.recovery, this.enemyTuning().hitRecovery);
+          if (e.actor === "catchup-student")
+            e.recovery = Math.max(e.recovery, CATCHUP_STUDENT.hitRecovery);
           if (this.pressureCombat()) e.cool = 0;
           e.facing = Math.sign(this.px - e.x) || -this.face;
           e.hitDirection = this.face;
@@ -2702,6 +2716,10 @@ class Game extends Phaser.Scene {
         e.strikeTime = Math.max(0, (e.strikeTime ?? 0) - dt);
         e.stun = Math.max(0, e.stun - dt);
         if (e.stun > 0) continue;
+        if (e.actor === "catchup-student") {
+          this.updateCatchupStudent(e, dt);
+          continue;
+        }
         if (this.roomSpec()?.role === "student") {
           this.updateStudent(e, dt);
           continue;
@@ -2923,6 +2941,79 @@ class Game extends Phaser.Scene {
     this.boardMessage = "CHOC / CARROSSERIE ENDOMMAGEE";
     this.messageTime = 3;
   }
+  updateCatchupStudent(e: Enemy, dt: number) {
+    const c = CATCHUP_STUDENT;
+    if (e.recovery > 0) {
+      e.recovery = Math.max(0, e.recovery - dt);
+      return;
+    }
+    if (e.wind > 0) {
+      e.wind = Math.max(0, e.wind - dt);
+      if (e.wind === 0) {
+        const dir = e.facing ?? -1;
+        e.strikeTime = c.activePose;
+        this.enemyAttack(e, "release");
+        if (e.catchupAttack === "book") {
+          this.projectiles.push({
+            x: e.x + dir * 21,
+            dir,
+            life: c.bookLife,
+            kind: "book",
+          });
+          this.audio.enemyGesture("thrower", "release", e.x);
+          this.session.record("projectile", this.mission, this.room, {
+            x: e.x,
+            facing: dir,
+            kind: "book",
+          });
+        } else {
+          if (
+            Math.abs(this.px - e.x) < c.kickReach &&
+            (this.px - e.x) * dir > 0 &&
+            this.py > 130 &&
+            this.inv <= 0
+          ) {
+            const contact = this.px - dir * 8;
+            this.hurt(dir);
+            this.px = Phaser.Math.Clamp(this.px + dir * 10, 12, 298);
+            this.impactX = contact;
+            this.impactY = c.contactY;
+            this.impact = PLAY.impactSeconds;
+            this.impactKind = "hurt";
+            this.hitStop = PLAY.hurtStop;
+          }
+          this.audio.combat("swing", dir);
+        }
+        e.recovery = c.recovery;
+        e.cool = c.cooldown;
+      }
+      return;
+    }
+    e.cool = Math.max(0, e.cool - dt);
+    const d = this.px - e.x;
+    e.facing = Math.sign(d) || e.facing || -1;
+    // A throw commits to its original direction: crossing her does not auto-aim.
+    if (Math.abs(d) > c.throwTrigger) {
+      const oldX = e.x;
+      e.x = Phaser.Math.Clamp(e.x + Math.sign(d) * c.speed * dt, 22, 287);
+      e.walk = (e.walk ?? 0) + Math.abs(e.x - oldX);
+    } else if (Math.abs(d) > c.kickTrigger && e.cool === 0) {
+      e.catchupAttack = "book";
+      e.wind = c.throwWind;
+      this.enemyAttack(e, "windup");
+      this.audio.enemyGesture("thrower", "windup", e.x);
+    } else if (Math.abs(d) <= c.kickTrigger) {
+      if (Math.abs(d) > c.approach)
+        e.x = Phaser.Math.Clamp(e.x + Math.sign(d) * c.speed * dt, 22, 287);
+      if (e.cool === 0) {
+        e.catchupAttack = "kick";
+        e.wind = c.kickWind;
+        this.enemyAttack(e, "windup");
+        this.audio.fx("step", (e.x - 160) / 190, 0.7);
+      }
+    }
+    this.separateFighters(this.px);
+  }
   updateStudent(e: Enemy, dt: number) {
     const STUDENT = this.enemyTuning().student;
     // Body collision is resolved independently, even during speech or stun.
@@ -2942,12 +3033,7 @@ class Game extends Phaser.Scene {
       e.wind -= dt;
       if (e.wind <= 0) {
         this.enemyAttack(e, "release");
-        e.strikeTime =
-          e.actor === "catchup-student"
-            ? CATCHUP_STUDENT.activePose
-            : e.role === "filmer"
-              ? FILMER.activePose
-              : 0.12;
+        e.strikeTime = e.role === "filmer" ? FILMER.activePose : 0.12;
         const dir = e.facing ?? -1;
         if (
           Math.abs(this.px - e.x) < STUDENT.reach &&
@@ -2959,8 +3045,7 @@ class Game extends Phaser.Scene {
           this.hurt(dir);
           this.px = Phaser.Math.Clamp(this.px + dir * 9, 12, 298);
           this.impactX = contact;
-          this.impactY =
-            e.actor === "catchup-student" ? CATCHUP_STUDENT.contactY : 128;
+          this.impactY = 128;
           this.impact = PLAY.impactSeconds;
           this.impactKind = "hurt";
           this.hitStop = 0.045;
@@ -3084,7 +3169,10 @@ class Game extends Phaser.Scene {
   updateProjectiles(dt: number) {
     this.projectiles = this.projectiles.filter((p) => {
       const before = p.x;
-      p.x += p.dir * THROWER.speed * dt;
+      p.x +=
+        p.dir *
+        (p.kind === "book" ? CATCHUP_STUDENT.bookSpeed : THROWER.speed) *
+        dt;
       p.life -= dt;
       if (this.enemies.every((e) => e.hp <= 0)) return false;
       if (
@@ -3097,7 +3185,8 @@ class Game extends Phaser.Scene {
         this.impact = PLAY.impactSeconds;
         this.impactKind = "hurt";
         this.impactX = this.px;
-        this.impactY = THROWER.height;
+        this.impactY =
+          p.kind === "book" ? CATCHUP_STUDENT.bookHeight : THROWER.height;
         this.hitStop = PLAY.hurtStop;
         return false;
       }

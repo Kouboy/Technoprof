@@ -5,6 +5,7 @@ import {
   GUARD,
   PARENT,
   STUDENT,
+  CATCHUP_STUDENT,
   PLAY,
   combatProfile,
   enemyPhase,
@@ -74,6 +75,8 @@ const SCENARIOS: Record<string, string> = {
   "inshape-navigation-i1-view-305": "InShape I1 / jonction T",
   "inshape-navigation-i1-view-307": "InShape I1 / préparation T",
   "inshape-navigation-i1-view-308": "InShape I1 / élève de terminale",
+  "inshape-navigation-i1-book": "InShape I1 / lycéenne : livre",
+  "inshape-navigation-i1-kick": "InShape I1 / lycéenne : kick",
   "inshape-navigation-i1-view-310": "InShape I1 / cour technique",
   "inshape-navigation-i1-view-311": "InShape I1 / atelier A",
   "inshape-navigation-i1-view-312": "InShape I1 / vestiaire",
@@ -291,7 +294,7 @@ export function installWorkshop(s: Host) {
     const a3 = select.value.startsWith("bruel-navigation-a3");
     gainLabel.hidden = a3 || h1 || i1;
     navigationNote.textContent = i1
-      ? "INSHAPE / I1 : bâtiment principal, ateliers et service rejoignent l’aile T au premier étage. Infirmerie depuis la galerie T01-T02. Jonction T et préparation T : trous sans combat. Une lycéenne attend au sas. Décors recomposés provisoires ; 5 ou 6 rencontres selon le chemin."
+      ? "INSHAPE / I1 : infirmerie depuis la galerie T01-T02. Cinq pièces calmes à deux ou trois trous. Lycéenne du sas : livres à distance, kick au contact. Décors recomposés provisoires ; 5 ou 6 rencontres selon le chemin."
       : h1
         ? "HANOUNA / H1 : parcours guidé vers 42C, un détour facultatif à la jonction C. Deux rencontres puis l’Inspectrice. Infirmerie : accueil, soin complet, délai suspendu et retour automatique ; un usage par affectation. Neuf décors adaptés au parcours."
         : a3
@@ -467,15 +470,20 @@ export function drawWorkshop(s: Host) {
     if (e.hp <= 0) continue;
     g.lineStyle(0.8, 0x7cd7df);
     g.strokeRect(e.x - profile.bodyGap / 2, 123, profile.bodyGap, 36);
-    const reach = e.boss
-      ? e.pattern % 2 === 0
-        ? BOSS.sweepReach
-        : BOSS.stampReach
-      : e.parent
-        ? PARENT.reach
-        : s.room === 3
-          ? STUDENT.reach
-          : GUARD.reach;
+    const reach =
+      e.actor === "catchup-student"
+        ? e.catchupAttack === "book"
+          ? CATCHUP_STUDENT.throwTrigger
+          : CATCHUP_STUDENT.kickReach
+        : e.boss
+          ? e.pattern % 2 === 0
+            ? BOSS.sweepReach
+            : BOSS.stampReach
+          : e.parent
+            ? PARENT.reach
+            : s.room === 3
+              ? STUDENT.reach
+              : GUARD.reach;
     const face =
       Math.sign(e.facing ?? e.chargeDir ?? 0) || (s.px < e.x ? -1 : 1);
     g.lineStyle(1, 0xea7770);

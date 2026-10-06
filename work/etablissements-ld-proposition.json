@@ -392,7 +392,63 @@
     },
     "amendment": {
       "date": "2026-10-06",
-      "intent": "Infirmerie depuis galerie T01-T02 ; ennemis jonction T et preparation T remplaces par trous."
+      "intent": "Infirmerie depuis galerie T01-T02 ; Jonction T et Preparation T sans ennemis, deux et trois trous ; deux trous dans escalier principal, service et palier ; lyceenne avec livres, kick et 3 PV."
+    },
+    "quietHazardIntervals": {
+      "i-escalier": [
+        [
+          108,
+          132
+        ],
+        [
+          177,
+          201
+        ]
+      ],
+      "i-jonction": [
+        [
+          120,
+          144
+        ],
+        [
+          195,
+          219
+        ]
+      ],
+      "i-preparation": [
+        [
+          77,
+          101
+        ],
+        [
+          145,
+          169
+        ],
+        [
+          213,
+          237
+        ]
+      ],
+      "i-service": [
+        [
+          77,
+          101
+        ],
+        [
+          165,
+          189
+        ]
+      ],
+      "i-palier-service": [
+        [
+          108,
+          132
+        ],
+        [
+          210,
+          234
+        ]
+      ]
     }
   }
 }

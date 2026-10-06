@@ -14,6 +14,7 @@ export type Enemy = {
   boss: boolean;
   female?: boolean;
   actor?: "catchup-student";
+  catchupAttack?: "kick" | "book";
   cool: number;
   wind: number;
   recovery: number;

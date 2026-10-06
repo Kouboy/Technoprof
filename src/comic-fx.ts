@@ -3,6 +3,9 @@ import { bitmap, bitmapWidth, GLYPHS } from "./cadre";
 import { PLAY, combatProfile } from "./gameplay";
 import { VIEW } from "./presentation";
 type Fighter = {
+  actor?: "catchup-student";
+  catchupAttack?: "kick" | "book";
+  strikeTime?: number;
   x: number;
   hp: number;
   wind: number;
@@ -148,6 +151,26 @@ export function drawComicFX(g: Phaser.GameObjects.Graphics, s: State) {
           0.8,
           paper,
         );
+      }
+    }
+    if (
+      e.actor === "catchup-student" &&
+      e.catchupAttack === "kick" &&
+      (e.strikeTime ?? 0) > 0
+    ) {
+      const dir = e.facing ?? -1;
+      const y = 120 + VIEW.actorOffsetY;
+      for (let i = 0; i < 2; i++) {
+        const points = [
+          e.x + dir * 19,
+          y + 12 + i * 4,
+          e.x + dir * 34,
+          y + 6 + i * 4,
+          e.x + dir * 43,
+          y + i * 4,
+        ];
+        stroke(points, 2, ink);
+        stroke(points, 0.7, paper);
       }
     }
   }

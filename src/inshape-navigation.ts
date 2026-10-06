@@ -112,7 +112,8 @@ export const INSHAPE_NAV: MissionSpec = {
           navExit("UP", 250, i.galerie, 60, "HAUT : GALERIE T / 1ER"),
         ],
       ),
-      gaps: [[143, 175]],
+      // Two short breaks, with a full landing before the opposing stair.
+      gaps: [[108, 132], [177, 201]],
     },
     [i.galerie]: zone(
       i.galerie,
@@ -141,7 +142,8 @@ export const INSHAPE_NAV: MissionSpec = {
           navExit("RIGHT", 298, i.liaison, 20, "DROITE : LABORATOIRES T03-T06"),
         ],
       ),
-      gaps: [[143, 175]],
+      // Leave the atelier stair at 70 clear, in either traversal direction.
+      gaps: [[120, 144], [195, 219]],
     },
     [i.liaison]: zone(
       i.liaison,
@@ -167,7 +169,8 @@ export const INSHAPE_NAV: MissionSpec = {
           navExit("RIGHT", 298, i.sas, 20, "DROITE : SALLES T03-T04"),
         ],
       ),
-      gaps: [[143, 175]],
+      // No interior door: three distinct jumps with 44 px landing islands.
+      gaps: [[77, 101], [145, 169], [213, 237]],
     },
     [i.sas]: {
       ...zone(
@@ -183,6 +186,7 @@ export const INSHAPE_NAV: MissionSpec = {
         79,
       ),
       actor: "catchup-student",
+      hp: 3,
       encounter: {
         name: "ELEVE DE TERMINALE",
         pages: [
@@ -264,7 +268,7 @@ export const INSHAPE_NAV: MissionSpec = {
           ),
         ],
       ),
-      gaps: [[143, 175]],
+      gaps: [[77, 101], [165, 189]],
     },
     [i.palierService]: {
       ...zone(
@@ -278,7 +282,8 @@ export const INSHAPE_NAV: MissionSpec = {
           navExit("RIGHT", 298, i.galerie, 180, "DROITE : GALERIE T"),
         ],
       ),
-      gaps: [[143, 175]],
+      // Gallery returns at 180, on the broad bank between these breaks.
+      gaps: [[108, 132], [210, 234]],
     },
     [i.infirmerie]: {
       ...zone(

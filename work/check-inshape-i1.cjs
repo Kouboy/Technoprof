@@ -66,12 +66,13 @@ function passage(t, target, mode) {
     e = g.pointerExits().find((e) => e.target === target);
   assert(e, "missing passage " + g.room + " -> " + target);
   const dest = e.edge ? (e.key === "LEFT" ? 15 : 297) : (e.from + e.to) / 2;
+  const dir = dest > g.px ? 1 : -1;
   const crossing = g
     .floorGaps()
-    .find(([l, r]) => (g.px < l && dest > r) || (g.px > r && dest < l));
+    .filter(([l, r]) => (g.px < l && dest > r) || (g.px > r && dest < l))
+    .sort((a, b) => dir > 0 ? a[0] - b[0] : b[1] - a[1])[0];
   if (crossing) {
-    const [l, r] = crossing,
-      dir = dest > g.px ? 1 : -1;
+    const [l, r] = crossing;
     if (g.py === 159 && Math.abs(g.px - (dir > 0 ? l : r)) <= 22) {
       jump(t, mode, dir);
       return;
@@ -138,7 +139,7 @@ for (const z of design.zones) {
         design.encounterSources[z.id],
       )[0],
       enemy = base.audit.missionEnemies(2, r.id, spec)[0];
-    assert.equal(enemy.hp, source.hp, z.id + " source hp");
+    assert.equal(enemy.hp, r.actor === "catchup-student" ? 3 : source.hp, z.id + " hp");
     assert.equal(enemy.role, source.role, z.id + " role");
     if (r.actor === "catchup-student") {
       assert.equal(r.id, ids.sas);
@@ -191,8 +192,11 @@ assert.deepEqual(
 );
 for (const hazard of hazards) {
   assert(!hazard.encounter && !hazard.role && !hazard.care);
-  for (const [l, r] of hazard.gaps) {
-    assert(r - l <= 34 && l >= 90 && r <= 208);
+  assert.equal(hazard.gaps.length, hazard.id === ids.preparation ? 3 : 2);
+  for (const [index, [l, r]] of hazard.gaps.entries()) {
+    assert(r - l >= 24 && r - l <= 28 && l >= 70 && r <= 240);
+    if (index > 0)
+      assert(l - hazard.gaps[index - 1][1] >= 44, "landing island between holes");
     for (const room of Object.values(spec.rooms))
       for (const e of room.exits)
         if (e.target === hazard.id)
@@ -221,9 +225,9 @@ for (const fps of [30, 60, 120])
         }
         g.navigationCare.used = true;
         g.enterRoom(r.id, 150);
-        // Palier's initial fixture stands on a safe bank rather than in the hole.
+        // Every fixture starts on a bank, including the service return at 180.
         if (r.gaps.length)
-          g.enterRoom(r.id, e.target === ids.service ? 210 : 100);
+          g.enterRoom(r.id, e.target === ids.service ? 180 : 20);
         t.advance(0.4, fps);
         advanceTo(t, e.target, mode, fps);
         t.advance(0.4, fps);
@@ -304,7 +308,8 @@ for (const fps of [30, 60, 120])
           g.enterRoom(hazard.id, dir > 0 ? l - 12 : r + 12);
           t.advance(0.4, fps);
           jump(t, mode, dir);
-          for (let n = 0; n < fps * 0.9; n++) {
+          // A single jump and its landing; avoid running into the next hole.
+          for (let n = 0; n < fps * 0.8; n++) {
             if (mode === "keyboard") hold(t, dir > 0 ? "RIGHT" : "LEFT");
             t.step(1000 / fps);
             assert.equal(g.falling, 0);
@@ -347,6 +352,7 @@ for (const fps of [30, 60, 120])
           );
           report.gaps.push({
             zone: hazard.navigation.id,
+            interval: [l, r],
             fps,
             mode,
             dir,

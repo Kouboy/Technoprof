@@ -250,10 +250,13 @@ export class InshapeNavigationArt {
       this.plate(159, r.id === i.preparation ? 56 : 112, ["SOL FRAGILE"]);
       const g = this.ink;
       g.fillStyle(0x7c623e);
-      for (const x of [126, 182]) {
-        g.fillRect(x, 157, 6, 2);
-        g.fillRect(x + 3, 161, 3, 2);
-      }
+      // Fragments flank each actual break rather than the old central hole.
+      // The shared floor props still supply the opening and foreground lip.
+      for (const [left, right] of r.gaps)
+        for (const x of [left - 10, right + 5]) {
+          g.fillRect(x, 157, 5, 2);
+          g.fillRect(x + 2, 161, 3, 2);
+        }
     }
     if (r.id === i.accueil) {
       this.patch("window", 88, 59, 54, 42);

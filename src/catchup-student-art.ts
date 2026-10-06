@@ -1,5 +1,9 @@
 import Phaser from "phaser";
 import { CATCHUP_STUDENT_DATA } from "./catchup-student-data";
+import {
+  prepareCatchupAttacks,
+  preloadCatchupAttacks,
+} from "./catchup-attack-art";
 
 // Original imagegen pixels stay intact. Like WingArt, runtime silhouettes remove
 // the opaque backdrop returned by the generator. The arm extends past a column.
@@ -330,6 +334,7 @@ export const CATCHUP_OUTLINES = [
 ];
 
 export function prepareCatchupStudent(scene: Phaser.Scene) {
+  prepareCatchupAttacks(scene);
   const raw = scene.textures
     .get("raw-catchup-student")
     .getSourceImage() as HTMLImageElement;
@@ -351,5 +356,6 @@ export function prepareCatchupStudent(scene: Phaser.Scene) {
   scene.textures.remove("raw-catchup-student");
 }
 export function preloadCatchupStudent(scene: Phaser.Scene) {
+  preloadCatchupAttacks(scene);
   scene.load.image("raw-catchup-student", CATCHUP_STUDENT_DATA);
 }
