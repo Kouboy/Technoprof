@@ -124,23 +124,25 @@ export const INSHAPE_NAV: MissionSpec = {
         navExit("DOWN", 60, i.escalier, 250, "BAS : PRINCIPAL / RDC"),
         navExit("RIGHT", 298, i.jonction, 20, "DROITE : LIAISON T03-T06"),
         navExit("UP", 180, i.palierService, 278, "HAUT : PALIER SERVICE / 1ER"),
+        navExit("UP", 105, i.infirmerie, 60, "HAUT : INFIRMERIE"),
       ],
       67,
     ),
-    [i.jonction]: zone(
-      i.jonction,
-      "jonction",
-      "JONCTION T / 1ER",
-      1,
-      "pilier bleu et casiers orange dans descente",
-      [
-        navExit("LEFT", 10, i.galerie, 278, "GAUCHE : GALERIE T01-T02"),
-        navExit("DOWN", 70, i.vestiaire, 250, "BAS : ATELIERS / RDC"),
-        navExit("UP", 180, i.infirmerie, 60, "HAUT : INFIRMERIE"),
-        navExit("RIGHT", 298, i.liaison, 20, "DROITE : LABORATOIRES T03-T06"),
-      ],
-      73,
-    ),
+    [i.jonction]: {
+      ...zone(
+        i.jonction,
+        "jonction",
+        "JONCTION T / 1ER",
+        1,
+        "pilier bleu et casiers orange dans descente",
+        [
+          navExit("LEFT", 10, i.galerie, 278, "GAUCHE : GALERIE T01-T02"),
+          navExit("DOWN", 70, i.vestiaire, 250, "BAS : ATELIERS / RDC"),
+          navExit("RIGHT", 298, i.liaison, 20, "DROITE : LABORATOIRES T03-T06"),
+        ],
+      ),
+      gaps: [[143, 175]],
+    },
     [i.liaison]: zone(
       i.liaison,
       "liaison",
@@ -153,18 +155,20 @@ export const INSHAPE_NAV: MissionSpec = {
       ],
       70,
     ),
-    [i.preparation]: zone(
-      i.preparation,
-      "preparation",
-      "PREPARATION T / 1ER",
-      1,
-      "paillasse et placard condamne",
-      [
-        navExit("LEFT", 10, i.liaison, 278, "GAUCHE : LIAISON"),
-        navExit("RIGHT", 298, i.sas, 20, "DROITE : SALLES T03-T04"),
-      ],
-      76,
-    ),
+    [i.preparation]: {
+      ...zone(
+        i.preparation,
+        "preparation",
+        "PREPARATION T / 1ER",
+        1,
+        "paillasse et placard condamne",
+        [
+          navExit("LEFT", 10, i.liaison, 278, "GAUCHE : LIAISON"),
+          navExit("RIGHT", 298, i.sas, 20, "DROITE : SALLES T03-T04"),
+        ],
+      ),
+      gaps: [[143, 175]],
+    },
     [i.sas]: {
       ...zone(
         i.sas,
@@ -283,7 +287,7 @@ export const INSHAPE_NAV: MissionSpec = {
         "INFIRMERIE / 1ER",
         1,
         "lit et linge propre",
-        [navExit("DOWN", 60, i.jonction, 180, "BAS : JONCTION T / 1ER")],
+        [navExit("DOWN", 60, i.galerie, 105, "BAS : GALERIE T / 1ER")],
       ),
       care: { x: 180, reach: 22 },
     },

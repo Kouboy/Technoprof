@@ -166,6 +166,42 @@
       "recovery": true
     },
     {
+      "zone": "i-jonction",
+      "fps": 30,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-jonction",
+      "fps": 30,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-preparation",
+      "fps": 30,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-preparation",
+      "fps": 30,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
       "zone": "i-service",
       "fps": 30,
       "mode": "keyboard",
@@ -220,6 +256,42 @@
       "recovery": true
     },
     {
+      "zone": "i-jonction",
+      "fps": 30,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-jonction",
+      "fps": 30,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-preparation",
+      "fps": 30,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-preparation",
+      "fps": 30,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
       "zone": "i-service",
       "fps": 30,
       "mode": "direct",
@@ -274,6 +346,42 @@
       "recovery": true
     },
     {
+      "zone": "i-jonction",
+      "fps": 60,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-jonction",
+      "fps": 60,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-preparation",
+      "fps": 60,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-preparation",
+      "fps": 60,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
       "zone": "i-service",
       "fps": 60,
       "mode": "keyboard",
@@ -320,6 +428,42 @@
     },
     {
       "zone": "i-escalier",
+      "fps": 60,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-jonction",
+      "fps": 60,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-jonction",
+      "fps": 60,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-preparation",
+      "fps": 60,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-preparation",
       "fps": 60,
       "mode": "direct",
       "dir": 1,
@@ -382,6 +526,42 @@
       "recovery": true
     },
     {
+      "zone": "i-jonction",
+      "fps": 120,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-jonction",
+      "fps": 120,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-preparation",
+      "fps": 120,
+      "mode": "keyboard",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-preparation",
+      "fps": 120,
+      "mode": "keyboard",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
       "zone": "i-service",
       "fps": 120,
       "mode": "keyboard",
@@ -428,6 +608,42 @@
     },
     {
       "zone": "i-escalier",
+      "fps": 120,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-jonction",
+      "fps": 120,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-jonction",
+      "fps": 120,
+      "mode": "direct",
+      "dir": 1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-preparation",
+      "fps": 120,
+      "mode": "direct",
+      "dir": -1,
+      "jump": true,
+      "fall": true,
+      "recovery": true
+    },
+    {
+      "zone": "i-preparation",
       "fps": 120,
       "mode": "direct",
       "dir": 1,
@@ -479,8 +695,8 @@
       "mode": "keyboard",
       "hp": 4,
       "visits": 10,
-      "encounters": 8,
-      "remaining": 160.11666666662697
+      "encounters": 6,
+      "remaining": 163.01666666662928
     },
     {
       "route": "workshops",
@@ -488,8 +704,8 @@
       "mode": "keyboard",
       "hp": 3,
       "visits": 10,
-      "encounters": 8,
-      "remaining": 164.54999999996383
+      "encounters": 6,
+      "remaining": 167.49999999996618
     },
     {
       "route": "known",
@@ -497,8 +713,8 @@
       "mode": "keyboard",
       "hp": 4,
       "visits": 9,
-      "encounters": 7,
-      "remaining": 169.0666666666341
+      "encounters": 5,
+      "remaining": 172.01666666663644
     },
     {
       "route": "service",
@@ -506,8 +722,8 @@
       "mode": "keyboard",
       "hp": 4,
       "visits": 11,
-      "encounters": 7,
-      "remaining": 162.81666666662912
+      "encounters": 5,
+      "remaining": 165.71666666663143
     },
     {
       "route": "first",
@@ -515,8 +731,8 @@
       "mode": "direct",
       "hp": 4,
       "visits": 10,
-      "encounters": 8,
-      "remaining": 161.64999999996152
+      "encounters": 6,
+      "remaining": 164.6499999999639
     },
     {
       "route": "workshops",
@@ -524,8 +740,8 @@
       "mode": "direct",
       "hp": 3,
       "visits": 10,
-      "encounters": 8,
-      "remaining": 166.01666666663166
+      "encounters": 6,
+      "remaining": 169.09999999996745
     },
     {
       "route": "known",
@@ -533,8 +749,8 @@
       "mode": "direct",
       "hp": 4,
       "visits": 9,
-      "encounters": 7,
-      "remaining": 170.59999999996865
+      "encounters": 5,
+      "remaining": 173.6999999999711
     },
     {
       "route": "service",
@@ -542,8 +758,8 @@
       "mode": "direct",
       "hp": 4,
       "visits": 11,
-      "encounters": 7,
-      "remaining": 164.43333333329707
+      "encounters": 5,
+      "remaining": 167.43333333329946
     },
     {
       "route": "first",
@@ -551,8 +767,8 @@
       "mode": "keyboard",
       "hp": 4,
       "visits": 10,
-      "encounters": 8,
-      "remaining": 160.5166666666273
+      "encounters": 6,
+      "remaining": 163.36666666662956
     },
     {
       "route": "workshops",
@@ -560,8 +776,8 @@
       "mode": "keyboard",
       "hp": 3,
       "visits": 10,
-      "encounters": 8,
-      "remaining": 164.88333333329743
+      "encounters": 6,
+      "remaining": 167.76666666663306
     },
     {
       "route": "known",
@@ -569,8 +785,8 @@
       "mode": "keyboard",
       "hp": 4,
       "visits": 9,
-      "encounters": 7,
-      "remaining": 169.43333333330105
+      "encounters": 5,
+      "remaining": 172.31666666663668
     },
     {
       "route": "service",
@@ -578,8 +794,8 @@
       "mode": "keyboard",
       "hp": 4,
       "visits": 11,
-      "encounters": 7,
-      "remaining": 163.18333333329608
+      "encounters": 5,
+      "remaining": 166.03333333329834
     },
     {
       "route": "first",
@@ -587,8 +803,8 @@
       "mode": "direct",
       "hp": 4,
       "visits": 10,
-      "encounters": 8,
-      "remaining": 164.01666666663007
+      "encounters": 6,
+      "remaining": 166.8999999999657
     },
     {
       "route": "workshops",
@@ -596,8 +812,8 @@
       "mode": "direct",
       "hp": 3,
       "visits": 10,
-      "encounters": 8,
-      "remaining": 168.43333333330025
+      "encounters": 6,
+      "remaining": 171.33333333330256
     },
     {
       "route": "known",
@@ -605,8 +821,8 @@
       "mode": "direct",
       "hp": 4,
       "visits": 9,
-      "encounters": 7,
-      "remaining": 173.03333333330391
+      "encounters": 5,
+      "remaining": 175.93333333330622
     },
     {
       "route": "service",
@@ -614,8 +830,8 @@
       "mode": "direct",
       "hp": 4,
       "visits": 11,
-      "encounters": 7,
-      "remaining": 166.74999999996558
+      "encounters": 5,
+      "remaining": 169.6333333333012
     },
     {
       "route": "first",
@@ -623,8 +839,8 @@
       "mode": "keyboard",
       "hp": 4,
       "visits": 10,
-      "encounters": 8,
-      "remaining": 160.61666666671158
+      "encounters": 6,
+      "remaining": 163.48333333337564
     },
     {
       "route": "workshops",
@@ -632,8 +848,8 @@
       "mode": "keyboard",
       "hp": 3,
       "visits": 10,
-      "encounters": 8,
-      "remaining": 165.04166666670756
+      "encounters": 6,
+      "remaining": 167.90833333337162
     },
     {
       "route": "known",
@@ -641,8 +857,8 @@
       "mode": "keyboard",
       "hp": 4,
       "visits": 9,
-      "encounters": 7,
-      "remaining": 169.57500000003677
+      "encounters": 5,
+      "remaining": 172.44166666670083
     },
     {
       "route": "service",
@@ -650,8 +866,8 @@
       "mode": "keyboard",
       "hp": 4,
       "visits": 11,
-      "encounters": 7,
-      "remaining": 163.31666666670912
+      "encounters": 5,
+      "remaining": 166.18333333337318
     },
     {
       "route": "first",
@@ -659,8 +875,8 @@
       "mode": "direct",
       "hp": 4,
       "visits": 10,
-      "encounters": 8,
-      "remaining": 163.95000000004188
+      "encounters": 6,
+      "remaining": 166.79166666670596
     },
     {
       "route": "workshops",
@@ -668,8 +884,8 @@
       "mode": "direct",
       "hp": 3,
       "visits": 10,
-      "encounters": 8,
-      "remaining": 168.40833333337116
+      "encounters": 6,
+      "remaining": 171.2666666667019
     },
     {
       "route": "known",
@@ -677,8 +893,8 @@
       "mode": "direct",
       "hp": 4,
       "visits": 9,
-      "encounters": 7,
-      "remaining": 172.93333333336705
+      "encounters": 5,
+      "remaining": 175.79166666669778
     },
     {
       "route": "service",
@@ -686,8 +902,8 @@
       "mode": "direct",
       "hp": 4,
       "visits": 11,
-      "encounters": 7,
-      "remaining": 166.70000000003938
+      "encounters": 5,
+      "remaining": 169.54166666670346
     }
   ]
 }

@@ -172,7 +172,7 @@ export class InshapeNavigationArt {
         .setDisplaySize(VIEW.width, VIEW.height)
         .setVisible(true);
       this.nurse.setVisible(true);
-      this.plate(55, 34, ["JONCTION T"]);
+      this.plate(55, 34, ["GALERIE T"]);
       return;
     }
     if (outdoor)
@@ -244,10 +244,10 @@ export class InshapeNavigationArt {
         g.lineBetween(8 + n * 12, 153, 15 + n * 12, 173);
       this.plate(159, 105, ["PLANCHER CORRODE"]);
     }
-    if (r.id === i.escalier || r.id === i.service) {
+    if ([i.escalier, i.service, i.jonction, i.preparation].includes(r.id)) {
       // A warning fixed to the wall, above the damaged landing. Floor hole
       // remains the shared physical prop at foot level, not painted on the wall.
-      this.plate(159, 112, ["SOL FRAGILE"]);
+      this.plate(159, r.id === i.preparation ? 56 : 112, ["SOL FRAGILE"]);
       const g = this.ink;
       g.fillStyle(0x7c623e);
       for (const x of [126, 182]) {

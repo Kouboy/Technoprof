@@ -151,8 +151,8 @@ for (const z of design.zones) {
       );
   }
 }
-assert.equal(Object.values(spec.rooms).filter((r) => r.role).length, 10);
-const routeCounts = { first: 8, workshops: 8, known: 7, service: 7 };
+assert.equal(Object.values(spec.rooms).filter((r) => r.role).length, 8);
+const routeCounts = { first: 6, workshops: 6, known: 5, service: 5 };
 for (const [name, count] of Object.entries(routeCounts))
   assert.equal(
     design.routes[name].filter((x) => spec.rooms[slug[x]].role).length,
@@ -167,15 +167,17 @@ const sharedEncounters = design.routes.first.filter(
 );
 assert.deepEqual(sharedEncounters, [
   "i-parvis",
-  "i-jonction",
   "i-liaison",
-  "i-preparation",
   "i-sas",
   "i-seuil",
 ]);
-const hazards = [ids.escalier, ids.service, ids.palierService].map(
-  (id) => spec.rooms[id],
-);
+const hazards = [
+  ids.escalier,
+  ids.jonction,
+  ids.preparation,
+  ids.service,
+  ids.palierService,
+].map((id) => spec.rooms[id]);
 const hazard = spec.rooms[ids.palierService];
 assert.equal(hazard.navigation.floor, 1);
 assert(!hazard.encounter && !hazard.role && !hazard.care);
@@ -234,7 +236,7 @@ for (const fps of [30, 60, 120])
       const t = setup("inshape-navigation-i1-care", hp),
         g = t.g;
       t.advance(0.4, fps);
-      assert.equal(g.room, ids.jonction);
+      assert.equal(g.room, ids.galerie);
       advanceTo(t, ids.infirmerie, mode, fps);
       assert(g.recoveryScene.active && g.navigationCare.used);
       const clock = g.remaining;
@@ -264,7 +266,7 @@ for (const fps of [30, 60, 120])
         if (g.recoveryScene.state === "dialogue") action(t, mode);
         t.step(1000 / fps);
       }
-      assert.equal(g.room, ids.jonction);
+      assert.equal(g.room, ids.galerie);
       assert.equal(g.hp, 5);
       assert(!g.recoveryScene.active);
       assert.equal(
@@ -466,5 +468,5 @@ fs.writeFileSync(
   JSON.stringify(report, null, 2) + "\n",
 );
 console.log(
-  `PASS I1: approved reversible graph, 10 encounters including terminale / 7-8 per route; ${report.connections} real-input links, ${report.care.length} unique full/frozen care runs, ${report.gaps.length} two-way jump/fall runs, ${report.routes.length} complete live combat routes and ellipses.`,
+  `PASS I1: amended reversible graph, 8 encounters including terminale / 5-6 per route; ${report.connections} real-input links, ${report.care.length} unique full/frozen care runs, ${report.gaps.length} two-way jump/fall runs, ${report.routes.length} complete live combat routes and ellipses.`,
 );

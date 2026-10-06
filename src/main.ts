@@ -1595,7 +1595,6 @@ class Game extends Phaser.Scene {
             INSHAPE_ID.parvis,
             INSHAPE_ID.couloir,
             INSHAPE_ID.galerie,
-            INSHAPE_ID.jonction,
           ]) {
             this.roomEnemies.set(id, []);
             this.cleared.add(id);
@@ -1604,7 +1603,7 @@ class Game extends Phaser.Scene {
         const start =
           this.navigationSpec()?.rooms[view]?.id ??
           (name.endsWith("-care")
-            ? INSHAPE_ID.jonction
+            ? INSHAPE_ID.galerie
             : name.endsWith("-boss")
               ? INSHAPE_ID.seuil
               : name.endsWith("-service")

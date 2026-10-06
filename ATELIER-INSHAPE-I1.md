@@ -16,7 +16,7 @@ leurs graphes et leur équilibrage. La branche d'atelier est
 - Souris/touch : commandes directes existantes, marqueurs d'accès et gestes.
 
 Les scénarios `-road`, `-care`, `-boss` et `-service` permettent de reprendre
-respectivement depuis la voiture, la jonction, la Sécurité et le sol dangereux.
+respectivement depuis la voiture, la galerie, la Sécurité et le sol dangereux.
 Les vues des carrefours sont également disponibles dans l'atelier. Les PV de
 départ sont réglables ; ils ne modifient pas la mission publiée.
 
@@ -29,15 +29,16 @@ et clairement nommée. Les trois montées se reconnectent à la galerie et à la
 jonction T, avant la liaison, la préparation, le sas et T03.
 
 - Route scolaire : parvis → accueil → couloir → escalier → galerie → jonction
-  → liaison → préparation → sas → T03. Huit rencontres.
+  → liaison → préparation → sas → T03. Six rencontres.
 - Route ateliers : parvis → accueil → cour → atelier → vestiaire → jonction,
-  puis même fin. Huit rencontres.
+  puis même fin. Six rencontres.
 - Coupe connue : accueil → cour → passage couvert → vestiaire → jonction.
-  Une zone et une rencontre évitées, sept rencontres sur l'affectation.
-- Service : cour → service → palier service → galerie → jonction. Sept
-  rencontres ; deux ruptures de sol dans des pièces sans ennemi, loin des accès.
+  Une zone et une rencontre évitées, cinq rencontres sur l'affectation.
+- Service : cour → service → palier service → galerie → jonction. Cinq
+  rencontres ; quatre ruptures sur le trajet complet, toutes hors combat.
 
-Les dix emplacements et leurs PV sont conservés. L'élève du sas est désormais
+Huit emplacements de combat restent actifs ; les adversaires de Jonction T et
+Préparation T sont remplacés par des ruptures de sol. L'élève du sas est désormais
 une lycéenne de terminale : dossier jaune, veste prune, sac à dos et quatre poses
 propres. Elle réclame les mois de cours perdus faute de remplaçants et évoque
 Parcoursup avant de barrer le passage. Son interception garde les règles de
@@ -45,8 +46,8 @@ l'attaque courte de l'élève : anticipation, saut ou recul pour l'éviter, puis
 reprise punissable. La main est maintenue 0,20 s ; l'impact se situe au torse.
 Les paramètres de portée, dégâts, PV et agressivité restent les mêmes.
 
-Une rupture est ajoutée au palier de l'escalier principal, une autre au passage
-de service ; la troisième reste au palier de service. Toutes sont en pièce calme,
+Cinq zones comportent un trou : escalier principal, Jonction T, Préparation T,
+passage de service et palier de service. Toutes sont en pièce calme,
 séparées des accès et des points de retour, avec une plaque SOL FRAGILE ou
 PLANCHER CORRODE. Marcher dans le vide déclenche une chute, une perte d'un PV,
 puis un retour sur la même rive ; on peut sauter dans les deux sens.
@@ -57,7 +58,12 @@ sa garde frontale, sa poussée et son retournement. Sauter derrière elle permet
 de punir son changement d'orientation. Aucune nouvelle attaque ni ressource.
 Les combats terminés ne recommencent pas au retour.
 
-L'infirmerie se rejoint depuis la jonction : accueil, soin complet, répliques
+Depuis la modification validée du 6 octobre, l'infirmerie se rejoint depuis la
+Galerie T01-T02 et retourne dans cette même galerie. L'accès est distinct du
+palier de service et du grand escalier. La galerie conserve son vigile ; son
+combat ne recommence pas au retour du soin. Depuis le vestiaire, on peut revenir
+de Jonction T vers la galerie pour visiter l'infirmerie.
+Accueil, soin complet, répliques
 avec Action, scène et transitions hors chrono, sortie automatique, une visite
 utile par affectation. Le chrono reste celui de la mission actuelle (210 s) ;
 son réglage global avec la conduite attend les essais humains.
@@ -88,7 +94,7 @@ les machines, les vues croisées et le délabrement propre à chaque zone devron
 ## Vérification et essai humain
 
 `npm run test:inshape-i1` vérifie le graphe approuvé, les sources de rencontres,
-222 connexions par commandes réelles, 18 soins complets uniques, 36 sauts et
+222 connexions par commandes réelles, 18 soins complets uniques, 60 sauts et
 chutes dans les deux sens, 24 parcours complets avec ennemis actifs et ellipse.
 Les cas sont exécutés à 30/60/120 FPS, clavier et pointage. La présentation
 vérifie recadrages, nettoyage, pool fixe, proportions et ordre sol/trou/lèvre.
@@ -108,7 +114,18 @@ par le bord, retour sur la même rive et dégât unique. Console sans erreur.
 ![Interception : main et contact au torse](work/inshape-i1-eleve-impact.png)
 ![Escalier principal : trou dégagé des accès](work/inshape-i1-sol-principal.png)
 
-Vérification native dans le navigateur : cour → service et passage couvert →
+Amendement du 6 octobre : contrôle natif des quatre accès de la galerie,
+entrée par pointage dans l'infirmerie à 3/5 PV, dialogue par Action et retour
+automatique dans la galerie à 5/5 PV. Le délai reste à 209,60 s pendant le
+dialogue, puis reprend lors du retour. Jonction T et Préparation T sont
+observées sans ennemi, avec une rupture au centre du sol et les accès dégagés.
+Console du navigateur sans avertissement ni erreur.
+
+![Galerie : retour de soin complet et accès distincts](work/inshape-i1-galerie-soin.png)
+![Jonction T : rupture de sol et descente vers les ateliers](work/inshape-i1-jonction-trou.png)
+![Préparation T : rupture sous la paillasse](work/inshape-i1-preparation-trou.png)
+
+Vérification native initiale dans le navigateur : cour → service et passage couvert →
 vestiaire par pointage,
 lisibilité des carrefours et du trou, entrée réelle dans l'infirmerie depuis
 la jonction puis retour automatique par Action, horloge suspendue pendant la
@@ -116,7 +133,7 @@ scène. Les fonds provisoires et les proportions sont observés avec personnages
 
 ![Accueil : bâtiment principal et cour](work/inshape-i1-accueil.png)
 ![Cour : atelier, passage couvert et service](work/inshape-i1-cour.png)
-![Jonction : galerie, ateliers, soin et laboratoires](work/inshape-i1-jonction.png)
+![Jonction initiale avant déplacement du soin](work/inshape-i1-jonction.png)
 ![Palier : repère de service et danger isolé](work/inshape-i1-palier-service.png)
 ![Infirmerie : scène de récupération](work/inshape-i1-infirmerie.png)
 ![T03 : responsable de sécurité au gabarit du professeur](work/inshape-i1-securite.png)

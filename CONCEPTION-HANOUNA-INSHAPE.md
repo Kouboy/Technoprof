@@ -6,6 +6,9 @@ La topologie H1 est validée par l'essai humain ; son rendu dédié est intégr�
 InShape I1 est désormais [jouable dans son atelier](ATELIER-INSHAPE-I1.md),
 avec fonds existants recomposés pour l'essai du parcours. Son rendu définitif
 attend la validation humaine des itinéraires.
+**Amendement I1 validé le 6 octobre 2026 :** l'infirmerie rejoint la Galerie
+T01-T02 ; Jonction T et Préparation T perdent leurs ennemis et reçoivent un trou.
+Le budget actuel est de 5 ou 6 rencontres par trajet, boss compris.
 Bruel A3 est la référence intermédiaire validée par Nicolas, avec ses combats,
 son infirmerie et ses deux ruptures de plancher. Son graphe reste intact.
 La journée publiée et le HTML 0.61 restent intacts.
@@ -23,7 +26,7 @@ de guidage sont des intentions de lecture, pas des mesures calculables sur le gr
 | Choix locaux, hors simple retour | 1 | 4 : hall, palier, annexe, jonction | 6 : accueil, cour, atelier, vestiaire, galerie, jonction |
 | Étages | RDC + premier | RDC + premier | RDC + premier, avec trois escaliers distincts |
 | Valeur de la connaissance | Moins hésiter ; retrouver le soin | Annexe, raccords, soin | Couper par la cour ; reconnaître les trois arrivées vers l'aile T |
-| Rencontres sur le trajet | 3, boss compris | 6 | 7 ou 8, boss compris — budget validé ci-dessous |
+| Rencontres sur le trajet | 3, boss compris | 6 | 5 ou 6, boss compris — amendement du 6 octobre |
 
 InShape possède davantage de connexions et de variantes, mais son premier
 parcours ne traverse pas plus de tableaux que celui de Bruel. Chaque détour a
@@ -113,24 +116,24 @@ qui changerait implicitement de niveau.
 ```mermaid
 flowchart LR
   subgraph RDC[Rez-de-chaussée]
-    IP[Parvis] <--> IH[Accueil]
-    IH <--> IC[Couloir principal]
-    IC <--> IE[Escalier principal]
+    IP[Parvis / agent de sécurité] <--> IH[Accueil]
+    IH <--> IC[Couloir principal / élève]
+    IC <--> IE[Escalier principal / trou]
     IH <--> IK[Cour technique]
-    IK <--> IA[Atelier A]
-    IA <--> IV[Vestiaire / pied escalier ateliers]
+    IK <--> IA[Atelier A / lanceur]
+    IA <--> IV[Vestiaire / agent de sécurité]
     IK <-->|passage couvert| IV
-    IK <--> IS[Passage de service]
+    IK <--> IS[Passage de service / trou]
     IA <--> IF[Préfabriqué vie scolaire]
   end
   subgraph E1[Premier étage]
-    IG[Galerie T01-T02] <--> IJ[Jonction T]
-    IQ[Palier de service] <--> IG
-    IJ <--> IL[Liaison laboratoires]
-    IL <--> ID[Préparation T]
-    ID <--> IR[Sas T03]
-    IR <--> IB[Seuil T03]
-    IJ <--> II[Infirmerie]
+    IG[Galerie T01-T02 / agent de sécurité] <--> IJ[Jonction T / trou]
+    IQ[Palier de service / trou] <--> IG
+    IJ <--> IL[Liaison laboratoires / lanceur]
+    IL <--> ID[Préparation T / trou]
+    ID <--> IR[Sas T03 / lycéenne de terminale]
+    IR --> IB[Seuil T03 / boss sécurité]
+    IG <--> II[Infirmerie]
   end
   IE <-->|escalier principal| IG
   IV <-->|escalier ateliers| IJ
@@ -145,19 +148,19 @@ flowchart LR
 | i-parvis | Situer le lycée professionnel | Grille, façade de béton, enseigne ancienne | ACCUEIL | Agent, source 61 |
 | i-accueil | Choisir bâtiment ou cour | Guichet vitré fermé, panneau administratif riveté | BÂTIMENT PRINCIPAL / SALLES T ; COUR / ATELIERS | Calme après le parvis |
 | i-couloir | Route institutionnelle | Néons incomplets, portes de bureaux, dalle fissurée | SALLES T / ESCALIER ; ACCUEIL au retour | Élève, source 64 |
-| i-escalier | Monter par la route scolaire | Rampe bleue, fenêtre horizontale sur la cour | GALERIE T / 1er ; COULOIR / RDC | Calme |
-| i-galerie | Première reconnexion | Baie sur les toits des ateliers, pilier bleu, grille d'aération rouillée | T01–T02 ; LIAISON T03–T06 ; SERVICE / RDC | Agent, source 67 |
+| i-escalier | Monter par la route scolaire | Rampe bleue, fenêtre horizontale sur la cour | GALERIE T / 1er ; COULOIR / RDC | Trou, sans ennemi |
+| i-galerie | Première reconnexion et accès au soin | Baie sur les toits des ateliers, pilier bleu, grille d'aération rouillée | T01–T02 ; LIAISON T03–T06 ; SERVICE / RDC ; INFIRMERIE | Agent, source 67 |
 | i-cour | Lire trois possibilités au sol | Château d'eau industriel visible au-dessus du mur, auvent de tôle rafistolé | ATELIER A ; VESTIAIRE / ESCALIER ; SERVICE | Calme |
 | i-atelier | Traverser un vrai atelier ou choisir le préfabriqué | Machines bâchées, étau et établi hors du plan de marche | VESTIAIRE ; VIE SCOLAIRE / PRÉFABRIQUÉ | Élève majeur lanceur, source 21 |
 | i-vestiaire | Comprendre le passage couvert et la montée | Rangée de casiers orange, bottes, manteaux de travail, pied d'escalier | AILE T / 1er ; COUR TECHNIQUE ; ATELIER A | Agent, source 25 |
-| i-service | Accès peu confortable mais intelligible | Tuyau jaune de chauffage, cage d'escalier métallique visible | SERVICE / MONTÉE GALERIE T ; COUR au retour | Calme |
+| i-service | Accès peu confortable mais intelligible | Tuyau jaune de chauffage, cage d'escalier métallique visible | SERVICE / MONTÉE GALERIE T ; COUR au retour | Trou, sans ennemi |
 | i-palier-service | Retrouver le même étage par une autre arrivée | Même tuyau jaune, fenêtre haute, plancher métallique corrodé | 1er ÉTAGE / GALERIE T ; SERVICE / RDC | Calme, danger de sol existant adapté au matériau |
-| i-jonction | Deuxième reconnexion et accès au soin | Pilier bleu de la galerie, casiers orange visibles dans la descente | T03–T06 ; GALERIE T01–T02 ; ATELIERS / RDC ; INFIRMERIE | Élève, source 73 |
+| i-jonction | Deuxième reconnexion | Pilier bleu de la galerie, casiers orange visibles dans la descente | T03–T06 ; GALERIE T01–T02 ; ATELIERS / RDC | Trou, sans ennemi |
 | i-liaison | Reconnaître l'aile des laboratoires | Vitrages armés, affiches de sécurité déchirées, radiateur froid | T03–T06 ; JONCTION T au retour | Lanceur, source 70 |
-| i-preparation | Situer la préparation avant les salles | Placard de matériel condamné, paillasse inutilisée hors passage | PRÉPARATION T ; SALLES T03–T04 | Agent, source 76 |
-| i-sas | Dernière confirmation locale | Porte coupe-feu cabossée, boîtier de badge existant | T03–T04 ; LIAISON au retour | Élève, source 79 |
+| i-preparation | Situer la préparation avant les salles | Placard de matériel condamné, paillasse inutilisée hors passage | PRÉPARATION T ; SALLES T03–T04 | Trou, sans ennemi |
+| i-sas | Dernière confirmation locale | Porte coupe-feu cabossée, boîtier de badge existant | T03–T04 ; LIAISON au retour | Lycéenne de terminale, dossier de rattrapage |
 | i-seuil | Objectif et contrôle d'accès | Porte T03, pictogramme de labo et lecteur de badge | T03 | Responsable sécurité existant, source 24 |
-| i-infirmerie | Respiration accessible depuis la jonction | Lit, drap propre, infirmière, réparations du lino | INFIRMERIE ; JONCTION T au retour | Soin facultatif, mêmes règles qu'A3 |
+| i-infirmerie | Respiration accessible depuis la galerie | Lit, drap propre, infirmière, réparations du lino | INFIRMERIE ; GALERIE T au retour | Soin facultatif, mêmes règles qu'A3 |
 | i-prefab | Impasse logique, courte, permettant de se réorienter | Bardage fatigué, panneaux VIE SCOLAIRE, planning de salles local | RDC / VIE SCOLAIRE ; LABORATOIRES T / 1er ; ATELIER A pour revenir | Calme, aucun soin ni récompense ajoutés |
 
 Le préfabriqué n'est pas présenté comme un chemin vers T03 : son nom est
@@ -173,9 +176,9 @@ dessiner une carte ni dicter l'itinéraire. Une porte suffit pour revenir.
 3. **Atelier :** vestiaire ou préfabriqué clairement identifié comme vie scolaire.
 4. **Vestiaire :** monter vers T, revenir par l'atelier ou rejoindre directement
    la cour. Ce raccord révèle que traverser l'atelier n'était pas obligatoire.
-5. **Galerie T :** jonction, grand escalier ou descente de service. Le tuyau
+5. **Galerie T :** jonction, infirmerie, grand escalier ou descente de service. Le tuyau
    jaune évite de confondre cette descente avec l'escalier principal bleu.
-6. **Jonction T :** continuer vers les labos, visiter l'infirmerie, revenir par
+6. **Jonction T :** continuer vers les labos, revenir par
    les ateliers ou par la galerie. Les repères de ces deux arrivées coexistent.
 
 Grande boucle : accueil → couloir → escalier principal → galerie → jonction
@@ -199,11 +202,11 @@ sans clé ni capacité supplémentaire. La route scolaire reste parfaitement via
 **Variante de service :** parvis → accueil → cour → service → palier de service
 → galerie T → jonction → même fin. Elle n'est pas le chemin le plus court en
 nombre de zones ; elle offre une autre reconnexion et moins de combats, mais
-un danger de sol dans une pièce calme. Le danger est visible avant le saut,
+quatre dangers de sol sur le trajet complet, dans des pièces calmes. Le danger est visible avant le saut,
 éloigné des portes et des points d'arrivée. Aucun trou en zone de combat.
 
 **Erreur corrigible :** cour → atelier → préfabriqué → atelier → vestiaire.
-Les combats terminés ne redémarrent pas au retour. Le soin depuis la jonction
+Les combats terminés ne redémarrent pas au retour. Le soin depuis la galerie
 reste un aller-retour facultatif, avec scène et fondus hors chrono, usage unique.
 
 ### Signalétique et hiérarchie
@@ -219,7 +222,7 @@ en contrebas ; depuis le RDC, voir portes et pieds de façade. Les casiers orang
 le pilier bleu et le tuyau jaune sont aussi distinguables par leurs formes.
 
 Limiter à trois directions de progression dans la cour, en plus du retour
-à l'accueil. La jonction réserve quatre accès distincts, avec lecture de ses
+à l'accueil. La galerie réserve quatre accès distincts, avec lecture de ses
 plaques avant le dialogue ou après le combat, sans bulle sur les informations.
 Les proportions des portes, pieds et escaliers doivent rester raccord.
 
@@ -229,7 +232,8 @@ Le code publié utilise encore `DAY_LOAD` : **9/18/36 tableaux** et
 **3/6/12 rencontres minimales**. Cette proposition remplace les chaînes de
 tableaux par des lieux ; elle ne prétend pas satisfaire automatiquement ces quotas.
 
-Pour I1, je propose **10 emplacements de rencontres existantes**, sans nouveau
+**Budget initial, remplacé par l'amendement du 6 octobre :**
+Pour I1, je proposais **10 emplacements de rencontres existantes**, sans nouveau
 type, nouvelles attaques ni PV augmentés. Six sont communs à tous les parcours :
 parvis, jonction, liaison, préparation, sas et boss. Deux sont sur la route
 scolaire, deux sur la traversée complète des ateliers. Ainsi, le parcours
@@ -284,7 +288,7 @@ Les logs peuvent confirmer visites, raccords, PV et erreurs corrigées ; ils
 ne prouvent pas seuls la carte mentale. Le test décisif reste l'explication
 du lieu par le joueur et un second parcours plus conscient.
 
-Vérification statique de la proposition : toutes les zones sont accessibles,
+Vérification statique initiale (avant l'amendement du 6 octobre) : toutes les zones sont accessibles,
 chaque connexion entre étages nomme un escalier, tous les itinéraires listés
 suivent le graphe et les infirmeries sont facultatives avec un seul retour.
 Les sources de rencontres existent dans les missions actuelles. Le graphe

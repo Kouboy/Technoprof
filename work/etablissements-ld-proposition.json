@@ -275,7 +275,7 @@
         "i-prefab"
       ],
       [
-        "i-jonction",
+        "i-galerie",
         "i-infirmerie"
       ],
       [
@@ -345,9 +345,9 @@
         "i-seuil"
       ],
       "care": [
-        "i-jonction",
+        "i-galerie",
         "i-infirmerie",
-        "i-jonction"
+        "i-galerie"
       ],
       "wrongTurn": [
         "i-cour",
@@ -364,27 +364,35 @@
       "i-galerie": 67,
       "i-atelier": 21,
       "i-vestiaire": 25,
-      "i-jonction": 73,
       "i-liaison": 70,
-      "i-preparation": 76,
       "i-sas": 79,
       "i-seuil": 24
     },
     "quietHazards": [
+      "i-escalier",
+      "i-jonction",
+      "i-preparation",
+      "i-service",
       "i-palier-service"
     ],
     "care": "i-infirmerie",
     "combatBudgetRequiresValidation": {
       "publishedCompleteRoute": 12,
-      "proposedInstitutional": 8,
-      "proposedWorkshops": 8,
-      "proposedKnown": 7,
-      "proposedService": 7,
+      "proposedInstitutional": 6,
+      "proposedWorkshops": 6,
+      "proposedKnown": 5,
+      "proposedService": 5,
       "sourceEncountersUnused": [
         22,
+        73,
+        76,
         82,
         85
       ]
+    },
+    "amendment": {
+      "date": "2026-10-06",
+      "intent": "Infirmerie depuis galerie T01-T02 ; ennemis jonction T et preparation T remplaces par trous."
     }
   }
 }
