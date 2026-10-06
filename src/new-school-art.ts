@@ -82,6 +82,9 @@ export class NewSchoolArt {
   enemyImages: Phaser.GameObjects.Image[];
   private door: Phaser.GameObjects.Graphics;
   private combat: Phaser.GameObjects.Graphics;
+  hideClassDoor() {
+    this.door.clear();
+  }
   constructor(private scene: Phaser.Scene) {
     prepareCatchupStudent(scene);
     for (const key of ["bruel", "pro"]) {

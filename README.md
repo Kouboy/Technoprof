@@ -69,6 +69,10 @@ définitif. Vérification ciblée : `npm run test:inshape-i1`.
 et le cycle poussée / avancée / ouverture du boss. Son unique infirmerie est
 accessible par un détour depuis Préparation T, via un couloir à deux trous.
 Ouvrir `Jouer-Technoprof-Atelier-InShape-I2.html` après `npm run build:atelier`.
+Le [rendu dédié Trois-Ponts I2](RENDU-TROIS-PONTS-I2.md) couvre maintenant les
+18 pièces : ateliers, vestiaire, cour technique, annexes et branche médicale.
+Les nouveaux fonds sont intégrés aux accès validés, avec signalétique bitmap,
+repères partagés, usure et lumière du crépuscule. Le parcours reste inchangé.
 I1 reste sélectionnable pour comparer ; vérification ciblée : `npm run test:inshape-i2`.
 Ni la journée publiée
 ni les règles d'Auguste-Berthelot A3 ne changent.

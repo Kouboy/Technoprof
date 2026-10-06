@@ -20,6 +20,7 @@ import { HanounaNavigationArt } from "./hanouna-navigation-art";
 import { INSHAPE_NAV, INSHAPE_ID } from "./inshape-navigation";
 import { INSHAPE_NAV_I2 } from "./inshape-navigation-i2";
 import { InshapeNavigationArt } from "./inshape-navigation-art";
+import { TroisPontsI2Art } from "./trois-ponts-i2-art";
 import {
   INFIRMARY,
   InfirmaryRecovery,
@@ -164,6 +165,7 @@ class Game extends Phaser.Scene {
   navigationArt?: BruelNavigationArt;
   hanounaArt?: HanounaNavigationArt;
   inshapeArt?: InshapeNavigationArt;
+  troisPontsArt?: TroisPontsI2Art;
   navigationSpec() {
     return this.workshop && this.navigationProfile
       ? this.navigationRevision === "I2"
@@ -362,6 +364,7 @@ class Game extends Phaser.Scene {
     WingArt.preload(this);
     BruelNavigationArt.preload(this);
     HanounaNavigationArt.preload(this);
+    TroisPontsI2Art.preload(this);
     this.load.image("service-stair", SERVICE_DATA);
     this.load.image("technical", TECHNICAL_DATA);
     this.load.image("central-stair", CENTRAL_DATA);
@@ -596,6 +599,7 @@ class Game extends Phaser.Scene {
       .setVisible(false);
     this.hanounaArt = new HanounaNavigationArt(this);
     this.inshapeArt = new InshapeNavigationArt(this);
+    this.troisPontsArt = new TroisPontsI2Art(this);
     this.textures
       .get("arrival-college")
       .setFilter(Phaser.Textures.FilterMode.NEAREST);
@@ -4023,6 +4027,7 @@ class Game extends Phaser.Scene {
     this.navigationArt?.hide();
     this.hanounaArt?.hide();
     this.inshapeArt?.hide();
+    this.troisPontsArt?.hide();
     this.hallArt?.hide();
     this.bridgeArt?.hide();
     this.wingArt?.hide();
@@ -4173,10 +4178,18 @@ class Game extends Phaser.Scene {
         );
         if (this.phase === "opening") this.art?.door.clear();
       } else if (this.isInshapeProfile()) {
-        this.inshapeArt?.render(
-          this.roomSpec()!,
-          this.phase === "opening" ? this.age : undefined,
-        );
+        if (this.isInshapeI2()) {
+          this.troisPontsArt?.render(
+            this.roomSpec()!,
+            this.phase === "opening" ? this.age : undefined,
+            this.ambienceClock,
+          );
+          if (this.phase === "opening") this.newSchoolArt?.hideClassDoor();
+        } else
+          this.inshapeArt?.render(
+            this.roomSpec()!,
+            this.phase === "opening" ? this.age : undefined,
+          );
       } else
         this.navigationArt?.render(
           this.roomSpec()!,
@@ -4387,6 +4400,9 @@ class Game extends Phaser.Scene {
       this.navigationArt?.a3.background,
       this.hanounaArt?.background,
       this.inshapeArt?.background,
+      this.troisPontsArt?.background,
+      ...(this.troisPontsArt?.panels ?? []),
+      this.troisPontsArt?.continuation,
       ...(this.inshapeArt?.patches ?? []),
     ])
       background?.setTint(light.background);
@@ -4401,6 +4417,7 @@ class Game extends Phaser.Scene {
       this.navigationArt?.nurse,
       this.hanounaArt?.nurse,
       this.inshapeArt?.nurse,
+      this.troisPontsArt?.nurse,
     ])
       actor?.setTint(light.actor);
     this.groundContact?.clear();
