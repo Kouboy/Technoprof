@@ -81,6 +81,8 @@ const imageStub = new Proxy({}, { get: () => () => imageStub });
 const roomArt = Object.create(context.RoomArt.prototype);
 roomArt.background = imageStub;
 roomArt.door = imageStub;
+roomArt.combat = imageStub;
+roomArt.enemyImages = [];
 let teacherDraws = 0;
 const host = {
   mission: 1,

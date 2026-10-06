@@ -79,7 +79,9 @@ export function poseExclusions(i: number, width: number, height: number) {
 export class NewSchoolArt {
   background: Phaser.GameObjects.Image;
   enemy: Phaser.GameObjects.Image;
+  enemyImages: Phaser.GameObjects.Image[];
   private door: Phaser.GameObjects.Graphics;
+  private combat: Phaser.GameObjects.Graphics;
   constructor(private scene: Phaser.Scene) {
     prepareCatchupStudent(scene);
     for (const key of ["bruel", "pro"]) {
@@ -122,8 +124,15 @@ export class NewSchoolArt {
       .setOrigin(0)
       .setDisplaySize(306, 168)
       .setDepth(1);
-    this.enemy = scene.add.image(0, 0, "bruel-pose-0").setDepth(2);
+    // Fixed pool: paired workshop encounters add no display object per frame.
+    this.enemyImages = Array.from({ length: 2 }, () =>
+      scene.add.image(0, 0, "bruel-pose-0").setDepth(2),
+    );
+    this.enemy = this.enemyImages[0];
     this.door = scene.add.graphics().setDepth(1.6);
+    // Threat cues and flying books must stay in front of the recomposed walls,
+    // pipes and workbenches. Class-door masking keeps its own background layer.
+    this.combat = scene.add.graphics().setDepth(2.15);
     this.hide();
   }
   static preload(scene: Phaser.Scene) {
@@ -134,8 +143,9 @@ export class NewSchoolArt {
   }
   hide() {
     this.background.setVisible(false);
-    this.enemy.setVisible(false);
+    for (const image of this.enemyImages) image.setVisible(false);
     this.door.clear();
+    this.combat.clear();
   }
   showBackground(mission: number, frame: number) {
     const key = mission === 1 ? "bruel" : "pro";
@@ -165,20 +175,28 @@ export class NewSchoolArt {
         (s.falling ?? 0) > 0)
     )
       s.art?.drawTeacher(s, r.boss ? 0.225 : 0.18);
-    const e = s.enemies[0];
-    if (e && (e.hp > 0 || (e.downTime ?? 0) > 0)) {
-      if (r.actor === "catchup-student") {
+    for (let index = 0; index < this.enemyImages.length; index++) {
+      const image = this.enemyImages[index],
+        e = s.enemies[index];
+      image.setVisible(false);
+      if (!e || (e.hp <= 0 && (e.downTime ?? 0) <= 0)) continue;
+      const role = e.role ?? r.role,
+        actor = e.actor ?? r.actor;
+      if (actor === "catchup-student") {
         const attacking =
-          e.hp > 0 && !e.stun && (e.wind > 0 || (e.strikeTime ?? 0) > 0);
+          e.hp > 0 &&
+          !e.stun &&
+          !(e.retreatTime ?? 0) &&
+          (e.wind > 0 || (e.strikeTime ?? 0) > 0);
         const frame = attacking
           ? (e.catchupAttack === "kick" ? 2 : 0) + (e.wind > 0 ? 0 : 1)
-          : e.hp <= 0 || e.stun > 0
+          : e.hp <= 0 || e.stun > 0 || (e.retreatTime ?? 0) > 0
             ? 3
             : 0;
         const [left, top, w, h, anchor, feet] = (
           attacking ? CATCHUP_ATTACK_FRAMES : CATCHUP_FRAMES
         )[frame];
-        this.enemy
+        image
           .setTexture(attacking ? "catchup-attacks" : "catchup-student", frame)
           .setOrigin((anchor - left) / w, (feet - top) / h)
           .setPosition(e.x, 159)
@@ -186,7 +204,7 @@ export class NewSchoolArt {
           .setAngle(0)
           .setAlpha(1)
           .setVisible(true);
-      } else if (r.role === "student" || r.role === "guard") {
+      } else if (role === "student" || role === "guard") {
         const frame =
           e.hp <= 0 || e.stun > 0
             ? 3
@@ -195,12 +213,12 @@ export class NewSchoolArt {
               : (e.strikeTime ?? 0) > 0
                 ? 2
                 : 0;
-        const student = r.role === "student";
+        const student = role === "student";
         const [left, top, w, h, anchor] = (
           student ? STUDENT_FRAMES : GUARD_FRAMES
         )[frame];
         const scale = student ? 0.11 : 0.14;
-        this.enemy
+        image
           .setTexture(student ? "student-34" : "guard-33", frame)
           .setOrigin((anchor - left) / w, ((student ? 800 : 770) - top) / h)
           .setPosition(e.x, 159)
@@ -209,7 +227,7 @@ export class NewSchoolArt {
           .setAlpha(1)
           .setVisible(true);
       } else {
-        const base = r.boss ? 0 : 4;
+        const base = e.boss ? 0 : 4;
         const pose = newEnemyFrame(e, !!s.encounterTime);
         const frame = base + pose,
           [x, y, w, h, anchorX, anchorY] = FRAMES[key][frame];
@@ -217,8 +235,8 @@ export class NewSchoolArt {
           e.parent && (e.wind > 0 || (e.chargeTime ?? 0) > 0)
             ? (e.chargeDir ?? -1)
             : (e.facing ?? Math.sign(s.px - e.x)) || -1;
-        const scale = r.boss ? 0.235 : 0.18;
-        this.enemy
+        const scale = e.boss ? 0.235 : 0.18;
+        image
           .setTexture(key + "-pose-" + frame)
           .setOrigin((anchorX - x) / w, (anchorY - y) / h)
           .setPosition(e.x, 159)
@@ -227,12 +245,9 @@ export class NewSchoolArt {
           .setAlpha(1)
           .setVisible(true);
       }
-      s.art?.reactEnemy(
-        this.enemy,
-        e,
-        (e.facing ?? Math.sign(s.px - e.x)) || -1,
-      );
+      s.art?.reactEnemy(image, e, (e.facing ?? Math.sign(s.px - e.x)) || -1);
     }
+    const e = s.enemies[0];
     if (s.phase === "opening") {
       const open = Math.min(1, s.age / 0.7),
         walk = Math.max(0, Math.min(1, (s.age - 0.6) / 1.1));
@@ -260,7 +275,7 @@ export class NewSchoolArt {
         ?.setScale(0.225 * (1 - 0.13 * walk))
         .setAlpha(1 - Math.max(0, Math.min(1, (s.age - 1.7) / 0.7)));
     }
-    const g = this.door;
+    const g = this.combat;
     if (r.boss && e && !s.encounterTime && s.phase === "school") {
       g.fillStyle(0x080d13, 0.9);
       g.fillRect(108, 14, 104, 15);
@@ -268,8 +283,21 @@ export class NewSchoolArt {
       g.fillRect(110, 16, 100, 3);
       g.fillStyle(0xb9aa89);
       g.fillRect(110, 16, (100 * Math.max(0, e.hp)) / (r.hp ?? 6), 3);
+      const securityPhase = e.securityCycle?.phase;
+      const securityCue = securityPhase
+        ? {
+            approach: "GARDE",
+            "push-windup": "POUSSEE !",
+            push: "POUSSEE !",
+            "advance-windup": "AVANCEE !",
+            advance: "AVANCEE !",
+            opening: "OUVERTURE",
+            reset: "REPRISE D'APPUI",
+          }[securityPhase]
+        : undefined;
       const cue =
-        e.parentCycle?.phase === "breakaway"
+        securityCue ??
+        (e.parentCycle?.phase === "breakaway"
           ? "REPRISE D'APPUI"
           : e.wind > 0
             ? e.parent
@@ -281,14 +309,16 @@ export class NewSchoolArt {
                 ? e.turnTime
                   ? "RETOURNEMENT"
                   : "GARDE DE FACE"
-                : "";
+                : "");
       if (cue)
         smallPrint(
           g,
           160 - smallWidth(cue) / 2,
           22,
           cue,
-          e.wind > 0 ? 0xe5ae60 : 0xe3d4b3,
+          e.wind > 0 || securityPhase === "advance" || securityPhase === "push"
+            ? 0xe5ae60
+            : 0xe3d4b3,
         );
     }
     for (const p of s.projectiles) {
@@ -325,9 +355,29 @@ export class NewSchoolArt {
       // Turning uses broken strokes; it never advertises a solid frontal guard.
       const dir = e.facing ?? -1;
       const turning = (e.turnTime ?? 0) > 0;
-      const open = e.recovery > 0;
+      const open = e.securityCycle
+        ? e.securityCycle.phase === "opening"
+        : e.recovery > 0;
       const markerY = 169;
       if (!open) {
+        if (e.securityCycle) {
+          // I2 guards throughout its combo; two brackets advertise both flanks.
+          // The separate arrow indicates attack direction, never a weak back.
+          for (const side of [-1, 1]) {
+            const x = e.x + side * 26;
+            g.lineStyle(2, 0x080d13);
+            g.lineBetween(x, markerY - 5, x, markerY + 1);
+            g.lineStyle(1, 0xb9aa89);
+            g.lineBetween(x, markerY - 5, x, markerY + 1);
+            g.lineBetween(x, markerY - 5, x - side * 4, markerY - 5);
+            g.lineBetween(x, markerY + 1, x - side * 4, markerY + 1);
+          }
+          if (
+            e.securityCycle.phase === "approach" ||
+            e.securityCycle.phase === "reset"
+          )
+            return;
+        }
         g.lineStyle(2, 0x080d13);
         g.lineBetween(e.x + dir * 8, markerY, e.x + dir * 24, markerY);
         g.lineStyle(1, e.wind > 0 || turning ? 0xe5ae60 : 0xb9aa89);

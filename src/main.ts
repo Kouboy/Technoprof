@@ -18,6 +18,7 @@ import { BruelNavigationArt } from "./bruel-navigation-art";
 import { HANOUNA_NAV, HANOUNA_ID } from "./hanouna-navigation";
 import { HanounaNavigationArt } from "./hanouna-navigation-art";
 import { INSHAPE_NAV, INSHAPE_ID } from "./inshape-navigation";
+import { INSHAPE_NAV_I2 } from "./inshape-navigation-i2";
 import { InshapeNavigationArt } from "./inshape-navigation-art";
 import {
   INFIRMARY,
@@ -50,6 +51,7 @@ import {
   GUARD,
   STUDENT,
   CATCHUP_STUDENT,
+  INSHAPE_I2_COMBAT,
   SECURITY,
   THROWER,
   FILMER,
@@ -153,7 +155,7 @@ class Game extends Phaser.Scene {
   newSchoolArt?: NewSchoolArt;
   projectiles: { x: number; dir: number; life: number; kind?: "book" }[] = [];
   navigationProfile = false;
-  navigationRevision: "A1" | "A2" | "A3" | "H1" | "I1" = "A1";
+  navigationRevision: "A1" | "A2" | "A3" | "H1" | "I1" | "I2" = "A1";
   navigationGain: 1 | 2 = 1;
   navigationStartHp = 5;
   navigationCare = new NavigationCare();
@@ -164,15 +166,17 @@ class Game extends Phaser.Scene {
   inshapeArt?: InshapeNavigationArt;
   navigationSpec() {
     return this.workshop && this.navigationProfile
-      ? this.navigationRevision === "I1"
-        ? INSHAPE_NAV
-        : this.navigationRevision === "H1"
-          ? HANOUNA_NAV
-          : this.navigationRevision === "A3"
-            ? BRUEL_NAV_A3
-            : this.navigationRevision === "A2"
-              ? BRUEL_NAV_A2
-              : BRUEL_NAV
+      ? this.navigationRevision === "I2"
+        ? INSHAPE_NAV_I2
+        : this.navigationRevision === "I1"
+          ? INSHAPE_NAV
+          : this.navigationRevision === "H1"
+            ? HANOUNA_NAV
+            : this.navigationRevision === "A3"
+              ? BRUEL_NAV_A3
+              : this.navigationRevision === "A2"
+                ? BRUEL_NAV_A2
+                : BRUEL_NAV
       : undefined;
   }
   missionSpec() {
@@ -196,8 +200,11 @@ class Game extends Phaser.Scene {
     return (
       this.workshop &&
       this.navigationProfile &&
-      this.navigationRevision === "I1"
+      ["I1", "I2"].includes(this.navigationRevision)
     );
+  }
+  isInshapeI2() {
+    return this.isInshapeProfile() && this.navigationRevision === "I2";
   }
   isHanounaProfile() {
     return (
@@ -225,6 +232,7 @@ class Game extends Phaser.Scene {
         x: e.x,
         facing: e.facing,
         playerX: this.px,
+        ...(e.securityCycle ? { cycle: e.securityCycle.phase } : {}),
         ...(e.actor === "catchup-student" ? { attack: e.catchupAttack } : {}),
       });
   }
@@ -235,7 +243,10 @@ class Game extends Phaser.Scene {
     return this.roomSpec()?.encounter;
   }
   combatProfile() {
-    return combatProfile(this.room, this.roomSpec()?.role);
+    const profile = combatProfile(this.room, this.roomSpec()?.role);
+    return this.isInshapeI2() && this.roomSpec()?.role === "security"
+      ? INSHAPE_I2_COMBAT.security.combat
+      : profile;
   }
   movementBounds() {
     const blocked = this.roomSpec()?.blocked ?? [];
@@ -1286,7 +1297,20 @@ class Game extends Phaser.Scene {
       );
       if (this.pressureCombat())
         for (const e of this.roomEnemies.get(room)!) {
-          e.cool = this.enemyTuning().initialCooldown;
+          e.cool =
+            this.isInshapeI2() &&
+            this.roomSpec()?.formation &&
+            e.role === "thrower"
+              ? INSHAPE_I2_COMBAT.partnerDelay
+              : this.enemyTuning().initialCooldown;
+          if (this.isInshapeI2() && e.role === "security")
+            e.securityCycle = {
+              phase: "approach",
+              time: 0,
+              dir: -1,
+              hits: 0,
+              contact: false,
+            };
           if (e.boss && e.role === "influential") e.parentCycle = parentCycle();
         }
     }
@@ -1528,12 +1552,11 @@ class Game extends Phaser.Scene {
             ...(this.recoveryProfile()
               ? {
                   careMode: "recovery",
-                  variant:
-                    this.navigationRevision === "I1"
-                      ? "inshape-i1-recovery"
-                      : this.navigationRevision === "H1"
-                        ? "hanouna-h1-recovery"
-                        : "recovery-parent-cycle",
+                  variant: ["I1", "I2"].includes(this.navigationRevision)
+                    ? `inshape-${this.navigationRevision.toLowerCase()}-recovery`
+                    : this.navigationRevision === "H1"
+                      ? "hanouna-h1-recovery"
+                      : "recovery-parent-cycle",
                 }
               : {}),
             careUsed:
@@ -1579,10 +1602,12 @@ class Game extends Phaser.Scene {
     this.cadreReview = false;
     this.arrivalStill = false;
     this.artReview = -1;
-    if (this.workshop && name.startsWith("inshape-navigation-i1")) {
+    if (this.workshop && /^inshape-navigation-i[12]/.test(name)) {
       this.navigationProfile = true;
-      this.navigationRevision = "I1";
-      this.navigationMetrics = new NavigationMetrics("I1");
+      this.navigationRevision = name.startsWith("inshape-navigation-i2")
+        ? "I2"
+        : "I1";
+      this.navigationMetrics = new NavigationMetrics(this.navigationRevision);
       this.mission = 2;
       this.begin();
       this.returnFade = 0;
@@ -2648,14 +2673,17 @@ class Game extends Phaser.Scene {
             ((this.isHanounaProfile() &&
               e.role === "inspector" &&
               (e.strikeTime ?? 0) > 0) ||
-              (e.parentCycle
-                ? e.parentCycle.phase !== "opening" ||
-                  e.recovery <= 0 ||
-                  e.parentCycle.hits >= PARENT_CYCLE.maxHits
-                : e.recovery <= 0 &&
-                  e.stun <= 0 &&
-                  (e.role !== "security" ||
-                    (this.px - e.x) * (e.facing ?? -1) > 0)))
+              (e.securityCycle
+                ? e.securityCycle.phase !== "opening" ||
+                  e.securityCycle.hits >= INSHAPE_I2_COMBAT.security.maxHits
+                : e.parentCycle
+                  ? e.parentCycle.phase !== "opening" ||
+                    e.recovery <= 0 ||
+                    e.parentCycle.hits >= PARENT_CYCLE.maxHits
+                  : e.recovery <= 0 &&
+                    e.stun <= 0 &&
+                    (e.role !== "security" ||
+                      (this.px - e.x) * (e.facing ?? -1) > 0)))
           ) {
             this.audio.combat("block", this.face);
             this.bookBlocked = PLAY.attackRecovery;
@@ -2695,9 +2723,37 @@ class Game extends Phaser.Scene {
           this.session.record("contact", this.mission, this.room, {
             ...contact,
             hp: e.hp,
+            role: e.role ?? this.roomSpec()?.role,
+            ...(e.securityCycle
+              ? { openingHit: e.securityCycle.hits + 1 }
+              : {}),
             ...(e.parentCycle ? { openingHit: e.parentCycle.hits + 1 } : {}),
           });
           this.audio.combat(e.hp <= 0 ? "defeat" : "hit", this.face);
+          if (e.securityCycle && e.hp > 0) {
+            e.securityCycle.hits++;
+            if (e.securityCycle.hits >= INSHAPE_I2_COMBAT.security.maxHits)
+              this.setSecurityI2Phase(e, "reset");
+          }
+          if (this.isInshapeI2() && e.actor === "catchup-student" && e.hp > 0) {
+            e.retreatTime = INSHAPE_I2_COMBAT.retreatTime;
+            e.retreatDir = Math.sign(e.x - this.px) || this.face;
+            if (
+              Math.abs(
+                Phaser.Math.Clamp(e.x + e.retreatDir * 35, 22, 287) - e.x,
+              ) < 20
+            )
+              this.px = Phaser.Math.Clamp(
+                this.px - e.retreatDir * INSHAPE_I2_COMBAT.wallPush,
+                10,
+                302,
+              );
+            this.session.record("enemy-reposition", this.mission, this.room, {
+              role: e.role,
+              x: e.x,
+              direction: e.retreatDir,
+            });
+          }
           if (e.parentCycle) {
             e.parentCycle.hits++;
             if (e.hp > 0 && e.parentCycle.hits >= PARENT_CYCLE.maxHits)
@@ -2720,11 +2776,11 @@ class Game extends Phaser.Scene {
           this.updateCatchupStudent(e, dt);
           continue;
         }
-        if (this.roomSpec()?.role === "student") {
+        if ((e.role ?? this.roomSpec()?.role) === "student") {
           this.updateStudent(e, dt);
           continue;
         }
-        if (this.roomSpec()?.role === "guard") {
+        if ((e.role ?? this.roomSpec()?.role) === "guard") {
           this.updateGuard(e, dt);
           continue;
         }
@@ -2733,7 +2789,8 @@ class Game extends Phaser.Scene {
           continue;
         }
         if (e.role === "security") {
-          this.updateSecurity(e, dt);
+          if (e.securityCycle) this.updateSecurityI2(e, dt);
+          else this.updateSecurity(e, dt);
           continue;
         }
         if (e.role === "thrower") {
@@ -2941,8 +2998,131 @@ class Game extends Phaser.Scene {
     this.boardMessage = "CHOC / CARROSSERIE ENDOMMAGEE";
     this.messageTime = 3;
   }
+  setSecurityI2Phase(
+    e: Enemy,
+    phase: NonNullable<Enemy["securityCycle"]>["phase"],
+  ) {
+    const c = e.securityCycle!,
+      tuning = INSHAPE_I2_COMBAT.security;
+    c.phase = phase;
+    c.time =
+      phase === "push-windup"
+        ? tuning.pushWind
+        : phase === "push"
+          ? tuning.pushPose
+          : phase === "advance-windup"
+            ? tuning.advanceWind
+            : phase === "advance"
+              ? tuning.advanceTime
+              : phase === "opening"
+                ? tuning.opening
+                : phase === "reset"
+                  ? tuning.resetTime
+                  : 0;
+    c.contact = false;
+    e.wind = phase.endsWith("windup") ? c.time : 0;
+    e.strikeTime = phase === "push" || phase === "advance" ? c.time : 0;
+    e.chargeTime = phase === "advance" ? c.time : 0;
+    e.recovery = phase === "opening" ? c.time : 0;
+    if (phase === "push-windup" || phase === "advance-windup") {
+      c.dir = Math.sign(this.px - e.x) || e.facing || -1;
+      e.facing = c.dir;
+      e.chargeDir = c.dir;
+      this.enemyAttack(e, "windup");
+      this.audio.enemyGesture("security", "windup", e.x);
+    }
+    if (phase === "push" || phase === "advance") {
+      this.enemyAttack(e, "release");
+      this.audio.enemyGesture("security", "release", e.x);
+    }
+    if (phase === "opening") c.hits = 0;
+    this.session.record("security-cycle", this.mission, this.room, {
+      phase,
+      x: e.x,
+      direction: c.dir,
+    });
+  }
+  updateSecurityI2(e: Enemy, dt: number) {
+    const c = e.securityCycle!,
+      tuning = INSHAPE_I2_COMBAT.security;
+    if (c.phase === "approach") {
+      const d = this.px - e.x;
+      e.facing = Math.sign(d) || e.facing || -1;
+      if (Math.abs(d) > tuning.trigger - 8)
+        e.x = Phaser.Math.Clamp(
+          e.x + Math.sign(d) * tuning.approachSpeed * dt,
+          32,
+          278,
+        );
+      this.separateFighters(this.px);
+      if (Math.abs(this.px - e.x) <= tuning.trigger)
+        this.setSecurityI2Phase(e, "push-windup");
+      return;
+    }
+    const step = Math.min(dt, c.time);
+    c.time = Math.max(0, c.time - dt);
+    if (c.phase === "advance") {
+      const old = e.x;
+      e.x = Phaser.Math.Clamp(
+        e.x + c.dir * tuning.advanceSpeed * step,
+        32,
+        278,
+      );
+      e.walk = (e.walk ?? 0) + Math.abs(e.x - old);
+      e.chargeTime = c.time;
+    } else if (c.phase === "reset") {
+      e.x = Phaser.Math.Clamp(e.x - c.dir * tuning.resetSpeed * step, 32, 278);
+      this.separateFighters(this.px);
+    }
+    if ((c.phase === "push" || c.phase === "advance") && !c.contact) {
+      const reach = c.phase === "push" ? tuning.pushReach : tuning.advanceReach;
+      if (
+        Math.abs(this.px - e.x) < reach &&
+        (this.px - e.x) * c.dir > 0 &&
+        this.py > 130
+      ) {
+        c.contact = true;
+        if (this.inv <= 0) {
+          this.hurt(c.dir);
+          this.px = Phaser.Math.Clamp(this.px + c.dir * 12, 12, 298);
+          this.impactX = this.px - c.dir * 10;
+          this.impactY = 120;
+          this.impactKind = "hurt";
+          this.impact = PLAY.impactSeconds;
+        }
+      }
+    }
+    e.wind = c.phase.endsWith("windup") ? c.time : 0;
+    e.recovery = c.phase === "opening" ? c.time : 0;
+    if (c.time > 0) return;
+    const next =
+      c.phase === "push-windup"
+        ? "push"
+        : c.phase === "push"
+          ? "advance-windup"
+          : c.phase === "advance-windup"
+            ? "advance"
+            : c.phase === "advance"
+              ? "opening"
+              : "approach";
+    this.setSecurityI2Phase(e, next);
+  }
   updateCatchupStudent(e: Enemy, dt: number) {
     const c = CATCHUP_STUDENT;
+    if ((e.retreatTime ?? 0) > 0) {
+      const step = Math.min(dt, e.retreatTime!);
+      e.retreatTime = Math.max(0, e.retreatTime! - dt);
+      e.x = Phaser.Math.Clamp(
+        e.x + (e.retreatDir ?? 1) * INSHAPE_I2_COMBAT.retreatSpeed * step,
+        22,
+        287,
+      );
+      e.wind = 0;
+      e.recovery = 0;
+      e.cool = 0;
+      this.separateFighters(this.px);
+      return;
+    }
     if (e.recovery > 0) {
       e.recovery = Math.max(0, e.recovery - dt);
       return;
@@ -3148,6 +3328,7 @@ class Game extends Phaser.Scene {
           x: e.x + (e.facing ?? -1) * 18,
           dir: e.facing ?? -1,
           life: 2.8,
+          ...(this.isInshapeI2() ? { kind: "book" as const } : {}),
         });
         e.recovery = THROWER.recovery;
         e.cool = THROWER.cooldown;
@@ -3155,6 +3336,7 @@ class Game extends Phaser.Scene {
         this.session.record("projectile", this.mission, this.room, {
           x: e.x,
           facing: e.facing,
+          ...(this.isInshapeI2() ? { kind: "book" } : {}),
         });
       }
       return;
@@ -3493,6 +3675,62 @@ class Game extends Phaser.Scene {
   separateFighters(previousX: number) {
     const profile = this.combatProfile();
     const bounds = this.movementBounds();
+    if (this.isInshapeI2() && this.roomSpec()?.formation) {
+      const alive = this.enemies
+        .filter((e) => e.hp > 0)
+        .sort((a, b) => a.x - b.x);
+      if (
+        alive.length === 2 &&
+        alive[1].x - alive[0].x < INSHAPE_I2_COMBAT.allyGap
+      ) {
+        const mid = (alive[0].x + alive[1].x) / 2;
+        alive[0].x = Phaser.Math.Clamp(
+          mid - INSHAPE_I2_COMBAT.allyGap / 2,
+          22,
+          287 - INSHAPE_I2_COMBAT.allyGap,
+        );
+        alive[1].x = alive[0].x + INSHAPE_I2_COMBAT.allyGap;
+      }
+      if (this.py < profile.jumpClear) return;
+      // A cornered professor stays on his side of the encounter. Make room
+      // by stopping the approaching bodies, rather than projecting him through.
+      if (
+        alive.length &&
+        previousX <= alive[0].x &&
+        alive[0].x - profile.bodyGap < bounds.min
+      ) {
+        alive[0].x = bounds.min + profile.bodyGap;
+        if (alive[1])
+          alive[1].x = Math.max(
+            alive[1].x,
+            alive[0].x + INSHAPE_I2_COMBAT.allyGap,
+          );
+      }
+      const last = alive.at(-1);
+      if (
+        last &&
+        previousX >= last.x &&
+        last.x + profile.bodyGap > bounds.max
+      ) {
+        last.x = bounds.max - profile.bodyGap;
+        if (alive.length === 2)
+          alive[0].x = Math.min(alive[0].x, last.x - INSHAPE_I2_COMBAT.allyGap);
+      }
+      const candidates = [
+        this.px,
+        bounds.min,
+        bounds.max,
+        ...alive.flatMap((e) => [e.x - profile.bodyGap, e.x + profile.bodyGap]),
+      ].filter(
+        (x) =>
+          x >= bounds.min &&
+          x <= bounds.max &&
+          alive.every((e) => Math.abs(x - e.x) >= profile.bodyGap - 0.001),
+      );
+      candidates.sort((a, b) => Math.abs(a - this.px) - Math.abs(b - this.px));
+      if (candidates.length) this.px = candidates[0];
+      return;
+    }
     for (const e of this.enemies) {
       if (e.hp <= 0 || this.py < profile.jumpClear || (e.chargeTime ?? 0) > 0)
         continue;
@@ -3850,7 +4088,8 @@ class Game extends Phaser.Scene {
       } else {
         // An isolated final-affectation trial is not a failed three-service day.
         const i1Result =
-          this.workshop && this.navigationMetrics.revision === "I1"
+          this.workshop &&
+          ["I1", "I2"].includes(this.navigationMetrics.revision)
             ? this.navigationMetrics.end
             : undefined;
         const maintained = i1Result
@@ -3861,8 +4100,8 @@ class Game extends Phaser.Scene {
           84,
           i1Result
             ? maintained
-              ? "ATELIER I1 : COURS ASSURE"
-              : "ATELIER I1 : ECHEC"
+              ? `ATELIER ${this.navigationRevision} : COURS ASSURE`
+              : `ATELIER ${this.navigationRevision} : ECHEC`
             : maintained
               ? "MAINTIEN EN POSTE"
               : "RADIATION PRONONCEE",
@@ -3882,7 +4121,7 @@ class Game extends Phaser.Scene {
           19,
           153,
           i1Result
-            ? "ESSAI D'UNE AFFECTATION / NAVIGATION I1"
+            ? `ESSAI D'UNE AFFECTATION / NAVIGATION ${this.navigationRevision}`
             : this.won >= 2
               ? "MOYENS JUGES SUFFISANTS. RECONDUCTION."
               : "LES CONTRAINTES NE SAURAIENT EXCUSER.",
@@ -4108,7 +4347,7 @@ class Game extends Phaser.Scene {
       this.hallArt?.parent,
       this.wingArt?.student,
       this.bridgeArt?.guard,
-      this.newSchoolArt?.enemy,
+      ...(this.newSchoolArt?.enemyImages ?? []),
     ])
       if (actor?.visible) actor.setY(actor.y + VIEW.actorOffsetY);
   }
@@ -4155,7 +4394,7 @@ class Game extends Phaser.Scene {
       this.hallArt?.parent,
       this.wingArt?.student,
       this.bridgeArt?.guard,
-      this.newSchoolArt?.enemy,
+      ...(this.newSchoolArt?.enemyImages ?? []),
       this.carArt?.sprite,
       this.navigationArt?.nurse,
       this.hanounaArt?.nurse,
@@ -4212,15 +4451,19 @@ class Game extends Phaser.Scene {
               : this.room === 6
                 ? this.bridgeArt?.guard
                 : undefined;
-    if (enemySprite?.visible)
-      drawContactShadow(
-        g,
-        enemySprite.x,
-        VIEW.floor,
-        this.room === 4 ? 30 : 24,
-        gaps,
-        enemySprite.alpha,
-      );
+    for (const shadowActor of this.room >= 10 && !this.isHanounaProfile()
+      ? (this.newSchoolArt?.enemyImages ?? [])
+      : [enemySprite]) {
+      if (shadowActor?.visible)
+        drawContactShadow(
+          g,
+          shadowActor.x,
+          VIEW.floor,
+          this.room === 4 ? 30 : 24,
+          gaps,
+          shadowActor.alpha,
+        );
+    }
   }
   banner(s: string) {
     this.rect(23, 75, 274, 34, 0x101719);

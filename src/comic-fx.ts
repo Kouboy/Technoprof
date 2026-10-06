@@ -5,6 +5,8 @@ import { VIEW } from "./presentation";
 type Fighter = {
   actor?: "catchup-student";
   catchupAttack?: "kick" | "book";
+  retreatTime?: number;
+  retreatDir?: number;
   strikeTime?: number;
   x: number;
   hp: number;
@@ -136,8 +138,11 @@ export function drawComicFX(g: Phaser.GameObjects.Graphics, s: State) {
       stroke([x - 8, y + 2, x - 13, y - 3], 1.5, paper);
       stroke([x + 13, y + 2, x + 18, y - 3], 1.5, paper);
     }
-    if ((e.chargeTime ?? 0) > 0) {
-      const dir = e.chargeDir ?? e.facing ?? 1;
+    if ((e.chargeTime ?? 0) > 0 || (e.retreatTime ?? 0) > 0) {
+      const dir =
+        (e.retreatTime ?? 0) > 0
+          ? (e.retreatDir ?? 1)
+          : (e.chargeDir ?? e.facing ?? 1);
       for (let i = 0; i < 3; i++) {
         const x = e.x - dir * 22,
           y = 113 + i * 6 + VIEW.actorOffsetY;

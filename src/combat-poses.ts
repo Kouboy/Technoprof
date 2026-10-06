@@ -4,6 +4,7 @@ import type { Enemy } from "./world";
 // New four-pose actors share the same exclusive state priority as diagnostics.
 // Recovery starts at contact, but the active silhouette must remain visible.
 export function newEnemyFrame(e: Enemy, presentation = false) {
+  if (e.hp > 0 && !presentation && e.securityCycle?.phase === "reset") return 1;
   if (e.hp > 0 && e.parentCycle?.phase === "breakaway")
     return e.parentCycle.elapsed < 0.12 ? 3 : 1;
   const state = enemyPhase(e, presentation);

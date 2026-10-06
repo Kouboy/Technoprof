@@ -1,0 +1,151 @@
+{
+  "duos": [
+    {
+      "fps": 30,
+      "room": 302,
+      "independent": true,
+      "paused": true,
+      "persistent": true
+    },
+    {
+      "fps": 30,
+      "room": 306,
+      "independent": true,
+      "paused": true,
+      "persistent": true
+    },
+    {
+      "fps": 60,
+      "room": 302,
+      "independent": true,
+      "paused": true,
+      "persistent": true
+    },
+    {
+      "fps": 60,
+      "room": 306,
+      "independent": true,
+      "paused": true,
+      "persistent": true
+    },
+    {
+      "fps": 144,
+      "room": 302,
+      "independent": true,
+      "paused": true,
+      "persistent": true
+    },
+    {
+      "fps": 144,
+      "room": 306,
+      "independent": true,
+      "paused": true,
+      "persistent": true
+    }
+  ],
+  "liveDuos": [
+    {
+      "fps": 30,
+      "room": 302,
+      "hp": 4,
+      "hits": 4
+    },
+    {
+      "fps": 30,
+      "room": 306,
+      "hp": 4,
+      "hits": 4
+    },
+    {
+      "fps": 60,
+      "room": 302,
+      "hp": 4,
+      "hits": 4
+    },
+    {
+      "fps": 60,
+      "room": 306,
+      "hp": 4,
+      "hits": 4
+    },
+    {
+      "fps": 144,
+      "room": 302,
+      "hp": 4,
+      "hits": 4
+    },
+    {
+      "fps": 144,
+      "room": 306,
+      "hp": 3,
+      "hits": 4
+    }
+  ],
+  "retreat": [
+    {
+      "fps": 30,
+      "side": -1,
+      "displacement": 37.5,
+      "book": true,
+      "kick": true
+    },
+    {
+      "fps": 30,
+      "side": 1,
+      "displacement": 37.5,
+      "book": true,
+      "kick": true
+    },
+    {
+      "fps": 60,
+      "side": -1,
+      "displacement": 37.5,
+      "book": true,
+      "kick": true
+    },
+    {
+      "fps": 60,
+      "side": 1,
+      "displacement": 37.5,
+      "book": true,
+      "kick": true
+    },
+    {
+      "fps": 144,
+      "side": -1,
+      "displacement": 37.5,
+      "book": true,
+      "kick": true
+    },
+    {
+      "fps": 144,
+      "side": 1,
+      "displacement": 37.5,
+      "book": true,
+      "kick": true
+    }
+  ],
+  "boss": [
+    {
+      "fps": 30,
+      "seconds": 7.52,
+      "hp": 5,
+      "cycles": 3,
+      "maxHits": 2
+    },
+    {
+      "fps": 60,
+      "seconds": 7.45,
+      "hp": 5,
+      "cycles": 3,
+      "maxHits": 2
+    },
+    {
+      "fps": 144,
+      "seconds": 7.32,
+      "hp": 5,
+      "cycles": 3,
+      "maxHits": 2
+    }
+  ]
+}

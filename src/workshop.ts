@@ -64,6 +64,13 @@ type Host = {
   exportJournal(): void;
 };
 const SCENARIOS: Record<string, string> = {
+  "inshape-navigation-i2": "InShape I2 / pression finale",
+  "inshape-navigation-i2-road": "InShape I2 / route puis établissement",
+  "inshape-navigation-i2-view-302": "InShape I2 / duo élève et lanceur",
+  "inshape-navigation-i2-view-306": "InShape I2 / duo vigile et lanceur",
+  "inshape-navigation-i2-view-308": "InShape I2 / lycéenne mobile",
+  "inshape-navigation-i2-boss": "InShape I2 / poussée et avancée",
+  "inshape-navigation-i2-care": "InShape I2 / infirmerie",
   "inshape-navigation-i1": "InShape I1 / découverte du lycée pro",
   "inshape-navigation-i1-road": "InShape I1 / route puis établissement",
   "inshape-navigation-i1-care": "InShape I1 / galerie et soins",
@@ -277,7 +284,8 @@ export function installWorkshop(s: Host) {
   });
   const updateCareSettings = () => {
     const h1 = select.value.startsWith("hanouna-navigation-h1");
-    const i1 = select.value.startsWith("inshape-navigation-i1");
+    const i1 = /^inshape-navigation-i[12]/.test(select.value);
+    const i2 = select.value.startsWith("inshape-navigation-i2");
     hp.setAttribute(
       "aria-label",
       i1
@@ -293,13 +301,15 @@ export function installWorkshop(s: Host) {
     );
     const a3 = select.value.startsWith("bruel-navigation-a3");
     gainLabel.hidden = a3 || h1 || i1;
-    navigationNote.textContent = i1
-      ? "INSHAPE / I1 : infirmerie depuis la galerie T01-T02. Cinq pièces calmes à deux ou trois trous. Lycéenne du sas : livres à distance, kick au contact. Décors recomposés provisoires ; 5 ou 6 rencontres selon le chemin."
-      : h1
-        ? "HANOUNA / H1 : parcours guidé vers 42C, un détour facultatif à la jonction C. Deux rencontres puis l’Inspectrice. Infirmerie : accueil, soin complet, délai suspendu et retour automatique ; un usage par affectation. Neuf décors adaptés au parcours."
-        : a3
-          ? "BRUEL / A3 : l’infirmière accueille le professeur dès l’entrée. F/X ou toucher : afficher puis avancer les répliques. Soin complet, délai suspendu et sortie automatique ; une visite par affectation. Le Parent influent reprend sa garde après deux coups."
-          : "BRUEL / A1-A2 : approcher l’armoire, F/X ou toucher pour le soin partiel +1/+2. Délai actif pendant le soin ; un usage par affectation. Changer le soin ou les PV relance cet essai.";
+    navigationNote.textContent = i2
+      ? "INSHAPE / I2 : deux duos complémentaires, lycéenne mobile et boss poussée / avancée / ouverture. Topologie, trous, soin et délais conservés. I1 reste disponible pour comparer."
+      : i1
+        ? "INSHAPE / I1 : infirmerie depuis la galerie T01-T02. Cinq pièces calmes à deux ou trois trous. Lycéenne du sas : livres à distance, kick au contact. Décors recomposés provisoires ; 5 ou 6 rencontres selon le chemin."
+        : h1
+          ? "HANOUNA / H1 : parcours guidé vers 42C, un détour facultatif à la jonction C. Deux rencontres puis l’Inspectrice. Infirmerie : accueil, soin complet, délai suspendu et retour automatique ; un usage par affectation. Neuf décors adaptés au parcours."
+          : a3
+            ? "BRUEL / A3 : l’infirmière accueille le professeur dès l’entrée. F/X ou toucher : afficher puis avancer les répliques. Soin complet, délai suspendu et sortie automatique ; une visite par affectation. Le Parent influent reprend sa garde après deux coups."
+            : "BRUEL / A1-A2 : approcher l’armoire, F/X ou toucher pour le soin partiel +1/+2. Délai actif pendant le soin ; un usage par affectation. Changer le soin ou les PV relance cet essai.";
   };
   updateCareSettings();
   gain.onchange = () => {
@@ -416,7 +426,7 @@ export function drawWorkshop(s: Host) {
     s.enemies
       .map(
         (e) =>
-          `Adversaire : ${s.phase === "school" ? enemyPhase(e, s.encounterTime > 0) : "figé"} · PV ${e.hp} · prép. ${e.wind.toFixed(2)} · reprise ${e.recovery.toFixed(2)} · touché ${e.stun.toFixed(2)}${e.parentCycle ? " · cycle " + e.parentCycle.phase + " / " + e.parentCycle.hits + " coups" : ""}`,
+          `Adversaire : ${s.phase === "school" ? enemyPhase(e, s.encounterTime > 0) : "figé"} · PV ${e.hp} · prép. ${e.wind.toFixed(2)} · reprise ${e.recovery.toFixed(2)} · touché ${e.stun.toFixed(2)}${e.securityCycle ? " · cycle " + e.securityCycle.phase + " / " + e.securityCycle.hits + " coups" : ""}${e.parentCycle ? " · cycle " + e.parentCycle.phase + " / " + e.parentCycle.hits + " coups" : ""}`,
       )
       .join("\n") +
     `\nTemps simulé ${s.session.elapsed.toFixed(1)}s / ${s.collisions} chocs / ${s.session.falls} chutes / ${s.punches} coups réussis\n${seconds}` +

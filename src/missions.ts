@@ -28,6 +28,7 @@ export type RoomSpec = {
   gaps: number[][];
   role?: EnemyRole;
   actor?: "catchup-student";
+  formation?: { role: EnemyRole; x: number; hp: number }[];
   boss?: boolean;
   hp?: number;
   encounter?: Encounter;
@@ -629,24 +630,24 @@ export function missionEnemies(
   const r = roomSpec(mission, id, profile);
   if (id < 10) return makeEnemies(id, mission);
   if (!r?.role) return [];
-  return [
-    {
-      x: r.boss ? 220 : 210,
-      hp: r.hp ?? 2,
-      boss: !!r.boss,
-      role: r.role,
-      actor: r.actor,
-      female:
-        r.actor === "catchup-student" ||
-        r.role === "filmer" ||
-        (r.role === "inspector" && mission === 0),
-      parent: r.role === "influential" || r.role === "parent",
-      facing: -1,
-      cool: 0.7,
-      wind: 0,
-      recovery: 0,
-      pattern: 0,
-      stun: 0,
-    },
-  ];
+  return (
+    r.formation ?? [{ role: r.role, x: r.boss ? 220 : 210, hp: r.hp ?? 2 }]
+  ).map((member) => ({
+    x: member.x,
+    hp: member.hp,
+    boss: !!r.boss,
+    role: member.role,
+    actor: r.actor,
+    female:
+      r.actor === "catchup-student" ||
+      r.role === "filmer" ||
+      (r.role === "inspector" && mission === 0),
+    parent: r.role === "influential" || r.role === "parent",
+    facing: -1,
+    cool: 0.7,
+    wind: 0,
+    recovery: 0,
+    pattern: 0,
+    stun: 0,
+  }));
 }

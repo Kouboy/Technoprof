@@ -15,6 +15,22 @@ export type Enemy = {
   female?: boolean;
   actor?: "catchup-student";
   catchupAttack?: "kick" | "book";
+  retreatTime?: number;
+  retreatDir?: number;
+  securityCycle?: {
+    phase:
+      | "approach"
+      | "push-windup"
+      | "push"
+      | "advance-windup"
+      | "advance"
+      | "opening"
+      | "reset";
+    time: number;
+    dir: number;
+    hits: number;
+    contact: boolean;
+  };
   cool: number;
   wind: number;
   recovery: number;

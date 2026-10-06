@@ -83,3 +83,22 @@ fs.writeFileSync(
 console.log(
   "Standalone atelier InShape I1: " + Buffer.byteLength(i1) + " bytes",
 );
+
+const i2Bootstrap = i1Bootstrap.replace(
+  "inshape-navigation-i1",
+  "inshape-navigation-i2",
+);
+const i2 = source
+  .replace(/(<html\b[^>]*>)/, "$1" + i2Bootstrap)
+  .replace(
+    /<title>[\s\S]*?<\/title\s*>/,
+    "<title>TECHNOPROF — Atelier InShape I2</title>",
+  );
+if (!i2.includes(i2Bootstrap)) throw Error("I2 bootstrap missing");
+fs.writeFileSync(
+  path.join(root, "Jouer-Technoprof-Atelier-InShape-I2.html"),
+  i2,
+);
+console.log(
+  "Standalone atelier InShape I2: " + Buffer.byteLength(i2) + " bytes",
+);

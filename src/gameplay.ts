@@ -233,6 +233,30 @@ export const HANOUNA_ENEMY = {
 export function enemyTuning(pressure = false, firstSchool = false) {
   return firstSchool ? HANOUNA_ENEMY : pressure ? PRESSURE_ENEMY : NORMAL_ENEMY;
 }
+// I2 workshop only: readable pressure, unchanged HP and global deadline.
+export const INSHAPE_I2_COMBAT = {
+  allyGap: 76,
+  partnerDelay: 0.6,
+  retreatTime: 0.3,
+  retreatSpeed: 125,
+  wallPush: 18,
+  security: {
+    combat: { ...NEW_COMBAT.security, bodyGap: 36 },
+    approachSpeed: 36,
+    trigger: 70,
+    pushWind: 0.45,
+    pushPose: 0.26,
+    pushReach: 49,
+    advanceWind: 0.32,
+    advanceTime: 0.42,
+    advanceSpeed: 115,
+    advanceReach: 36,
+    opening: 1.05,
+    resetTime: 0.25,
+    resetSpeed: 65,
+    maxHits: 2,
+  },
+};
 export function combatProfile(room: number, role?: string) {
   if (role === "inspector") return COMBAT.arena;
   if (role === "influential") return NEW_COMBAT.influential;
@@ -262,6 +286,8 @@ export function enemyPhase(e: Enemy, presentation = false): EnemyPhase {
   if (e.hp <= 0) return "defeated";
   if (e.stun > 0) return "hurt";
   if (presentation) return "presentation";
+  if ((e.retreatTime ?? 0) > 0 || e.securityCycle?.phase === "reset")
+    return "recovery";
   if (e.parentCycle?.phase === "breakaway") return "recovery";
   if (e.wind > 0) return "windup";
   if ((e.chargeTime ?? 0) > 0 || (e.strikeTime ?? 0) > 0) return "strike";

@@ -3,11 +3,14 @@ const {createGame}=require('./test-harness.cjs');
 const strip=s=>s.replace(/^import[\s\S]*?from\s+['"][^'"]+['"];?\r?\n/gm,'').replace(/export /g,'');
 const scope={roomSpec:()=>scope.room,smallPrint:(...a)=>scope.labels.push(a[3]),smallWidth:s=>s.length*4};
 vm.createContext(scope);
-const source=['gameplay','combat-poses','new-school-art'].map(n=>strip(fs.readFileSync('src/'+n+'.ts','utf8'))).join('\n');
+const frameSource=['wing-art','bridge-art'].map(n=>strip(fs.readFileSync('src/'+n+'.ts','utf8').split('export const '+(n==='wing-art'?'STUDENT_OUTLINES':'GUARD_OUTLINES'))[0])).join('\n');
+const source=frameSource+'\n'+['gameplay','combat-poses','new-school-art'].map(n=>strip(fs.readFileSync('src/'+n+'.ts','utf8'))).join('\n');
 vm.runInContext(require('node:module').stripTypeScriptTypes(source,{mode:'transform'})+';this.api={NewSchoolArt,newEnemyFrame,enemyPhase,SECURITY,THROWER,FILMER,poseExclusions};',scope);
 function sprite(){const s={};for(const k of ['setDepth','setTexture','setOrigin','setPosition','setScale','setAngle','setAlpha','setVisible','setDisplaySize','setFlipX'])s[k]=(...a)=>{s[k+'Args']=a;return s;};return s;}
 const art=Object.create(scope.api.NewSchoolArt.prototype);art.background=sprite();art.enemy=sprite();
+art.enemyImages=[art.enemy,sprite()];
 art.door=new Proxy({}, {get:()=>()=>{}});
+art.combat=new Proxy({}, {get:()=>()=>{}});
 function render(g){scope.room=g.roomSpec();scope.labels=[];art.render({...g,art:{drawTeacher(){},reactEnemy(){}}});return art.enemy.setTextureArgs[0];}
 function ready(mission,id){const h=createGame();h.g.mission=mission;h.g.begin();h.g.school();h.g.schoolFade=0;h.g.enterRoom(id,80);for(let i=0;h.g.encounterTime&&i<12;i++)h.press('X');assert.equal(h.g.encounterTime,0);return h;}
 for(const [mission,id,role] of [[1,11,'filmer'],[1,14,'influential'],[2,21,'thrower'],[2,24,'security']]){
@@ -65,3 +68,16 @@ for(const i of [3,7]){
  assert(excluded(30,130));assert(!excluded(100,130));assert(!excluded(200,490));
 }
 console.log('PASS 058 atlas recovery masks exclude neighbouring hands, preserve body and foot anchors');
+for(const id of [302,306]){
+ const t=createGame();t.g.workshop=true;t.g.loadScenario('inshape-navigation-i2-view-'+id);
+ render(t.g);
+ assert.equal(art.enemy.setTextureArgs[0],id===302?'student-34':'guard-33');
+ assert.equal(art.enemyImages[1].setTextureArgs[0],'pro-pose-4');
+ assert.notDeepEqual(art.enemy.setPositionArgs,art.enemyImages[1].setPositionArgs);
+ t.g.enemies[0].hp=0;t.g.enemies[0].downTime=.7;render(t.g);
+ assert.equal(art.enemy.setVisibleArgs[0],true);assert.equal(art.enemyImages[1].setVisibleArgs[0],true);
+ t.g.enemies[0].downTime=0;render(t.g);
+ assert.equal(art.enemy.setVisibleArgs[0],false);assert.equal(art.enemyImages[1].setVisibleArgs[0],true);
+ art.hide();assert(art.enemyImages.every(s=>s.setVisibleArgs[0]===false));
+}
+console.log('PASS I2 actual render: distinct student/guard and thrower textures, positions and independent defeat/cleanup');
