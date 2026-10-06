@@ -66,7 +66,8 @@ accessible depuis la galerie T01–T02. `npm run build:atelier` produit
 Les décors recomposés sont provisoires, pour tester le LD avant le rendu
 définitif. Vérification ciblée : `npm run test:inshape-i1`.
 [Trois-Ponts I2](ATELIER-INSHAPE-I2.md) ajoute deux duos, le recul de la lycéenne
-et le cycle poussée / avancée / ouverture du boss, sans changer le graphe d'I1.
+et le cycle poussée / avancée / ouverture du boss. Son unique infirmerie est
+accessible par un détour depuis Préparation T, via un couloir à deux trous.
 Ouvrir `Jouer-Technoprof-Atelier-InShape-I2.html` après `npm run build:atelier`.
 I1 reste sélectionnable pour comparer ; vérification ciblée : `npm run test:inshape-i2`.
 Ni la journée publiée

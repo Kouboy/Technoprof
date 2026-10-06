@@ -165,6 +165,7 @@ export class InshapeNavigationArt {
   }
   render(r: RoomSpec, openingAge?: number) {
     this.hide();
+    const careCorridor = r.navigation?.id === "i2-couloir-soins";
     const outdoor = r.id === i.parvis || r.id === i.cour;
     if (r.id === i.infirmerie) {
       this.background
@@ -172,7 +173,9 @@ export class InshapeNavigationArt {
         .setDisplaySize(VIEW.width, VIEW.height)
         .setVisible(true);
       this.nurse.setVisible(true);
-      this.plate(55, 34, ["GALERIE T"]);
+      const returnLabel =
+        r.exits?.[0]?.label.replace(/^BAS : /, "").split(" / ")[0] ?? "SORTIE";
+      this.plate(55, 34, [returnLabel]);
       return;
     }
     if (outdoor)
@@ -235,6 +238,11 @@ export class InshapeNavigationArt {
       this.lockers(r.id === i.vestiaire ? 130 : 92);
     if ([i.service, i.palierService, i.galerie].includes(r.id))
       this.pipe(r.id === i.galerie ? 204 : 112);
+    if (careCorridor) {
+      this.pipe(149);
+      this.patch("window", 166, 51, 67, 43);
+      this.plate(179, 112, ["SOL FRAGILE"]);
+    }
     if (r.id === i.palierService) {
       // Below the void (1.4) and front lip (2.1), so the hole stays visible.
       const g = this.ground;
@@ -245,10 +253,21 @@ export class InshapeNavigationArt {
         g.lineBetween(8 + n * 12, 153, 15 + n * 12, 173);
       this.plate(159, 105, ["PLANCHER CORRODE"]);
     }
-    if ([i.escalier, i.service, i.jonction, i.preparation].includes(r.id)) {
+    if (
+      [i.escalier, i.service, i.jonction, i.preparation].includes(r.id) ||
+      careCorridor
+    ) {
       // A warning fixed to the wall, above the damaged landing. Floor hole
       // remains the shared physical prop at foot level, not painted on the wall.
-      this.plate(159, r.id === i.preparation ? 56 : 112, ["SOL FRAGILE"]);
+      if (!careCorridor) {
+        const warningX =
+          r.id === i.preparation && r.exits?.some((e) => e.key === "UP")
+            ? 112
+            : 159;
+        this.plate(warningX, r.id === i.preparation ? 56 : 112, [
+          "SOL FRAGILE",
+        ]);
+      }
       const g = this.ink;
       g.fillStyle(0x7c623e);
       // Fragments flank each actual break rather than the old central hole.

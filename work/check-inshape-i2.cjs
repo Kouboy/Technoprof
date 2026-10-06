@@ -87,7 +87,7 @@ const i1 = baseline.api.INSHAPE_NAV,
   i2 = baseline.api.INSHAPE_NAV_I2;
 assert.equal(i2.id, "inshape-navigation-atelier-i2");
 assert.equal(i2.seconds, i1.seconds);
-assert.equal(Object.keys(i2.rooms).length, 17);
+assert.equal(Object.keys(i2.rooms).length, 18);
 for (const [id, room] of Object.entries(i1.rooms)) {
   const next = i2.rooms[id];
   assert.notEqual(next, room, "I2 room must not mutate I1");
@@ -99,12 +99,14 @@ for (const [id, room] of Object.entries(i1.rooms)) {
     "hp",
     "actor",
     "boss",
-  ])
+  ]) {
+    if (key === "exits" && [304, 307, 315].includes(Number(id))) continue;
     assert.equal(
       JSON.stringify(next[key]),
       JSON.stringify(room[key]),
       id + "/" + key,
     );
+  }
   assert.equal(next.role, room.role);
 }
 assert.equal(

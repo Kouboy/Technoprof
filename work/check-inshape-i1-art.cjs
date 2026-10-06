@@ -5,7 +5,11 @@ const { stripTypeScriptTypes } = require("node:module");
 const { createGame } = require("./test-harness.cjs");
 const t = createGame();
 t.g.workshop = true;
-t.g.loadScenario("inshape-navigation-i1");
+t.g.loadScenario(
+  process.argv.includes("--i2")
+    ? "inshape-navigation-i2"
+    : "inshape-navigation-i1",
+);
 const spec = t.g.navigationSpec(),
   before = JSON.stringify(spec),
   images = [],

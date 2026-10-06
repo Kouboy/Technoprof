@@ -70,7 +70,11 @@ const SCENARIOS: Record<string, string> = {
   "inshape-navigation-i2-view-306": "Trois-Ponts I2 / duo vigile et lanceur",
   "inshape-navigation-i2-view-308": "Trois-Ponts I2 / lycéenne mobile",
   "inshape-navigation-i2-boss": "Trois-Ponts I2 / poussée et avancée",
-  "inshape-navigation-i2-care": "Trois-Ponts I2 / infirmerie",
+  "inshape-navigation-i2-care":
+    "Trois-Ponts I2 / détour de soin depuis Préparation T",
+  "inshape-navigation-i2-view-307":
+    "Trois-Ponts I2 / Préparation T et accès aux soins",
+  "inshape-navigation-i2-view-317": "Trois-Ponts I2 / couloir de soins à trous",
   "inshape-navigation-i1": "Trois-Ponts I1 / découverte du lycée pro",
   "inshape-navigation-i1-road": "Trois-Ponts I1 / route puis établissement",
   "inshape-navigation-i1-care": "Trois-Ponts I1 / galerie et soins",
@@ -303,7 +307,7 @@ export function installWorkshop(s: Host) {
     const a3 = select.value.startsWith("bruel-navigation-a3");
     gainLabel.hidden = a3 || h1 || i1;
     navigationNote.textContent = i2
-      ? "TROIS-PONTS / I2 : deux duos complémentaires, lycéenne mobile et boss poussée / avancée / ouverture. Topologie, trous, soin et délais conservés. I1 reste disponible pour comparer."
+      ? "TROIS-PONTS / I2 : deux duos complémentaires, lycéenne mobile et boss poussée / avancée / ouverture. Détour facultatif depuis Préparation T : couloir à deux trous, puis unique infirmerie. Soin complet, délai suspendu pendant la scène. I1 reste disponible pour comparer."
       : i1
         ? "TROIS-PONTS / I1 : infirmerie depuis la galerie T01-T02. Cinq pièces calmes à deux ou trois trous. Lycéenne du sas : livres à distance, kick au contact. Décors recomposés provisoires ; 5 ou 6 rencontres selon le chemin."
         : h1

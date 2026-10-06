@@ -1632,7 +1632,9 @@ class Game extends Phaser.Scene {
           (attackPreset
             ? INSHAPE_ID.sas
             : name.endsWith("-care")
-              ? INSHAPE_ID.galerie
+              ? this.isInshapeI2()
+                ? INSHAPE_ID.preparation
+                : INSHAPE_ID.galerie
               : name.endsWith("-boss")
                 ? INSHAPE_ID.seuil
                 : name.endsWith("-service")

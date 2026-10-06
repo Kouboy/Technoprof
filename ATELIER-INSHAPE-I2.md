@@ -7,8 +7,10 @@ longs tiennent dans les plaques et le CADRE à la taille habituelle des pixels.
 Les noms de fichiers et identifiants des scénarios restent compatibles.
 
 I2 compare une nouvelle composition des combats à [I1](ATELIER-INSHAPE-I1.md).
-Le bâtiment garde ses 17 zones, ses accès, ses onze trous hors combat, son
-infirmerie et ses 210 secondes. Les décors portent toujours la révision I1.
+Le bâtiment compte désormais 18 zones et treize trous hors combat. L'unique
+infirmerie est déplacée après Préparation T, au bout d'un couloir facultatif
+à deux trous. Le délai reste de 210 secondes et les combats restent identiques.
+Les décors portent toujours la révision I1.
 La mission publiée 0.61 reste intacte. Les règles des profils I1, H1 et A3
 restent les témoins ; leurs noms affichés suivent ceux des établissements.
 
@@ -54,7 +56,37 @@ I2 conserve huit emplacements de rencontre et compte dix adversaires au total :
 
 La coupe connue évite toujours le couloir principal ; la liaison reste commune
 à toutes les routes. Cette différence donne un enjeu perceptible à la maîtrise
-du bâtiment sans changer son graphe.
+du bâtiment. La nouvelle branche de soin ne crée pas de raccourci vers T03.
+
+## Nouveau détour de soin
+
+```mermaid
+flowchart LR
+  L["Liaison T03–T06 · duo"] <--> P["Préparation T · 3 trous"]
+  P <--> S["Sas T03–T04 · lycéenne"]
+  S --> B["Seuil T03 · responsable sécurité"]
+  P <--> C["Couloir de soins · 2 trous, sans ennemi"]
+  C <--> I["Infirmerie · soin complet, usage unique"]
+```
+
+La galerie T01–T02 n'a plus d'accès à l'infirmerie. La porte de Préparation T
+se trouve sur la portion de sol intacte entre les deuxième et troisième trous.
+La scène de soin suspend le chrono puis ramène automatiquement dans le nouveau
+couloir, côté infirmerie. Le retour à Préparation T demande de franchir à
+nouveau les deux trous. Le trajet direct vers le sas reste ouvert sans soin.
+I1 conserve sa topologie précédente comme témoin de comparaison.
+
+Vérification du détour : 18 allers-retours au clavier et en commandes directes,
+à 30/60/144 images/s et avec 1/3/5 PV initiaux. Traversée sans dégât, soin
+complet unique, pause pendant la scène, délai inchangé jusqu'à la sortie,
+retour dans le couloir puis Préparation T et poursuite vers le sas. Six chutes
+volontaires vérifient pause, dégât unique et récupération sur sol intact.
+Les tests de combat I2 et de non-régression I1 passent. Les nouveaux panneaux
+et les deux trous ont été observés dans l'atelier ; le panneau de sol fragile
+est déplacé pour rester visible à côté de la nouvelle porte.
+
+Captures : [bifurcation](work/trois-ponts-i2-care-branch.png) et
+[couloir de soins](work/trois-ponts-i2-care-corridor.png).
 
 ## Lycéenne et Sécurité
 
