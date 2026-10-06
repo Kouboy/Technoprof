@@ -48,6 +48,12 @@ jouer directement dans la scène. L'aide en jeu détaille les gestes.
 
 ## Versions et suivi
 
+**Essai complet des derniers ateliers :** `npm run build:atelier` génère
+`Jouer-Technoprof-Journee-Atelier.html`. Cette [journée complète](JOURNEE-ATELIER.md)
+enchaîne les trois trajets, Ormeaux H1, Auguste-Berthelot A3 et Trois-Ponts I2,
+avec un bilan unique et un journal réunissant les trois affectations.
+En développement, ouvrir `?essai=journee` ; `npm run test:journee` vérifie l'enchaînement.
+
 Les établissements de l'atelier portent désormais les noms **Collège des
 Ormeaux**, **Lycée Auguste-Berthelot** et **Lycée professionnel des Trois-Ponts**.
 Les identifiants de scénarios et les noms de fichiers historiques restent

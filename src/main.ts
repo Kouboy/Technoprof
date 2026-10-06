@@ -156,6 +156,8 @@ class Game extends Phaser.Scene {
   newSchoolArt?: NewSchoolArt;
   projectiles: { x: number; dir: number; life: number; kind?: "book" }[] = [];
   navigationProfile = false;
+  validatedDay = false;
+  validatedDayRuns: Record<string, unknown> = {};
   navigationRevision: "A1" | "A2" | "A3" | "H1" | "I1" | "I2" = "A1";
   navigationGain: 1 | 2 = 1;
   navigationStartHp = 5;
@@ -167,7 +169,7 @@ class Game extends Phaser.Scene {
   inshapeArt?: InshapeNavigationArt;
   troisPontsArt?: TroisPontsI2Art;
   navigationSpec() {
-    return this.workshop && this.navigationProfile
+    return (this.workshop || this.validatedDay) && this.navigationProfile
       ? this.navigationRevision === "I2"
         ? INSHAPE_NAV_I2
         : this.navigationRevision === "I1"
@@ -200,7 +202,7 @@ class Game extends Phaser.Scene {
   }
   isInshapeProfile() {
     return (
-      this.workshop &&
+      (this.workshop || this.validatedDay) &&
       this.navigationProfile &&
       ["I1", "I2"].includes(this.navigationRevision)
     );
@@ -210,7 +212,7 @@ class Game extends Phaser.Scene {
   }
   isHanounaProfile() {
     return (
-      this.workshop &&
+      (this.workshop || this.validatedDay) &&
       this.navigationProfile &&
       this.navigationRevision === "H1"
     );
@@ -878,7 +880,8 @@ class Game extends Phaser.Scene {
       installWorkshop(this);
     }
     if (preview === "presentation") installPresentation(this);
-    if (!preview || preview === "accueil") {
+    if (!preview || preview === "accueil" || preview === "journee") {
+      this.validatedDay = preview === "journee";
       if (window.matchMedia("(any-pointer: coarse)").matches)
         this.pointerMode = true;
       this.phase = "title";
@@ -902,7 +905,12 @@ class Game extends Phaser.Scene {
         }
       }
     } else document.getElementById("loading")?.setAttribute("hidden", "");
-    if (!preview || preview === "accueil" || preview === "labo")
+    if (
+      !preview ||
+      preview === "accueil" ||
+      preview === "labo" ||
+      preview === "journee"
+    )
       this.direct = installDirectInput(this);
     this.draw();
     this.runtime.mark("ready");
@@ -1173,6 +1181,7 @@ class Game extends Phaser.Scene {
   startDay() {
     this.navigationProfile = false;
     this.navigationMetrics = new NavigationMetrics();
+    this.validatedDayRuns = {};
     this.audio.unlock();
     this.audio.radio("", false);
     this.cadreReview = false;
@@ -1193,6 +1202,21 @@ class Game extends Phaser.Scene {
     this.begin();
   }
   begin() {
+    if (this.validatedDay && this.mission < 3) {
+      this.navigationProfile = true;
+      this.navigationRevision = (["H1", "A3", "I2"] as const)[this.mission];
+      this.navigationMetrics = new NavigationMetrics(this.navigationRevision);
+      this.session.record(
+        "day-affectation",
+        this.mission,
+        this.missionSpec().start,
+        {
+          profile: this.missionSpec().id,
+          school: this.missionSpec().school,
+          seconds: this.missionSpec().seconds,
+        },
+      );
+    }
     this.navigationCare.reset(this.navigationGain);
     this.recoveryScene.reset();
     this.projectiles = [];
@@ -1442,13 +1466,16 @@ class Game extends Phaser.Scene {
       hp: this.hp,
       vehicle: this.vehicle,
     });
-    if (this.navigationProfile)
+    if (this.navigationProfile) {
       this.navigationMetrics.end = {
         outcome: ok ? "success" : "failure",
         hp: this.hp,
         remaining: this.remaining,
         careUsed: this.navigationCare.used,
       };
+      if (this.validatedDay)
+        this.validatedDayRuns[this.mission + 1] = this.navigationSummary();
+    }
     this.persistJournal();
   }
   next() {
@@ -1457,6 +1484,7 @@ class Game extends Phaser.Scene {
     if (this.mission === 3) {
       this.phase = "report";
       this.age = 0;
+      if (this.validatedDay) this.persistJournal();
     } else this.begin();
   }
   handleKeyDown(event: Pick<KeyboardEvent, "key" | "repeat">) {
@@ -1547,29 +1575,43 @@ class Game extends Phaser.Scene {
       this.results,
       this.runtime.snapshot(),
     );
+    if (this.validatedDay)
+      return {
+        ...snapshot,
+        mode: "journee-atelier",
+        navigationByMission: {
+          ...this.validatedDayRuns,
+          ...(this.navigationProfile
+            ? { [this.mission + 1]: this.navigationSummary() }
+            : {}),
+        },
+      };
     return this.navigationProfile || this.navigationMetrics.visits.length
       ? {
           ...snapshot,
-          navigation: {
-            ...this.navigationMetrics.snapshot(),
-            gain: this.navigationGain,
-            ...(this.recoveryProfile()
-              ? {
-                  careMode: "recovery",
-                  variant: ["I1", "I2"].includes(this.navigationRevision)
-                    ? `inshape-${this.navigationRevision.toLowerCase()}-recovery`
-                    : this.navigationRevision === "H1"
-                      ? "hanouna-h1-recovery"
-                      : "recovery-parent-cycle",
-                }
-              : {}),
-            careUsed:
-              this.navigationMetrics.end?.careUsed ?? this.navigationCare.used,
-            remaining: this.navigationMetrics.end?.remaining ?? this.remaining,
-            hp: this.navigationMetrics.end?.hp ?? this.hp,
-          },
+          navigation: this.navigationSummary(),
         }
       : snapshot;
+  }
+  navigationSummary() {
+    return {
+      ...this.navigationMetrics.snapshot(),
+      gain: this.navigationGain,
+      ...(this.recoveryProfile()
+        ? {
+            careMode: "recovery",
+            variant: ["I1", "I2"].includes(this.navigationRevision)
+              ? `inshape-${this.navigationRevision.toLowerCase()}-recovery`
+              : this.navigationRevision === "H1"
+                ? "hanouna-h1-recovery"
+                : "recovery-parent-cycle",
+          }
+        : {}),
+      careUsed:
+        this.navigationMetrics.end?.careUsed ?? this.navigationCare.used,
+      remaining: this.navigationMetrics.end?.remaining ?? this.remaining,
+      hp: this.navigationMetrics.end?.hp ?? this.hp,
+    };
   }
   exportJournal() {
     const url = URL.createObjectURL(
@@ -1586,6 +1628,8 @@ class Game extends Phaser.Scene {
   loadScenario(name: string) {
     this.recoveryScene.reset();
     this.navigationProfile = false;
+    this.validatedDay = false;
+    this.validatedDayRuns = {};
     this.navigationMetrics = new NavigationMetrics();
     this.controls?.reset();
     this.workshopScenario = name;
@@ -1606,6 +1650,16 @@ class Game extends Phaser.Scene {
     this.cadreReview = false;
     this.arrivalStill = false;
     this.artReview = -1;
+    if (this.workshop && name === "journee-validee") {
+      this.validatedDay = true;
+      this.startDay();
+      this.session.record("scenario", this.mission, this.room, {
+        name,
+        seed: this.seed,
+      });
+      this.draw();
+      return;
+    }
     if (this.workshop && /^inshape-navigation-i[12]/.test(name)) {
       this.navigationProfile = true;
       this.navigationRevision = name.startsWith("inshape-navigation-i2")
@@ -4096,6 +4150,7 @@ class Game extends Phaser.Scene {
         // An isolated final-affectation trial is not a failed three-service day.
         const i1Result =
           this.workshop &&
+          !this.validatedDay &&
           ["I1", "I2"].includes(this.navigationMetrics.revision)
             ? this.navigationMetrics.end
             : undefined;

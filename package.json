@@ -15,7 +15,8 @@
     "test:holes-a3": "node work/check-floor-gaps-a3.cjs",
     "test:hanouna-h1": "node work/check-hanouna-h1.cjs && node work/check-hanouna-h1-art.cjs && node work/check-inspector-h1.cjs",
     "test:inshape-i1": "node work/check-inshape-i1.cjs && node work/check-inshape-i1-art.cjs && node work/check-catchup-i1.cjs",
-    "test:inshape-i2": "node work/check-inshape-i2.cjs && node work/check-inshape-i2-care.cjs && node work/check-trois-ponts-i2-art.cjs"
+    "test:inshape-i2": "node work/check-inshape-i2.cjs && node work/check-inshape-i2-care.cjs && node work/check-trois-ponts-i2-art.cjs",
+    "test:journee": "node work/check-validated-day.cjs"
   },
   "dependencies": {
     "phaser": "4.2.1"

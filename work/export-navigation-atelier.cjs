@@ -5,6 +5,23 @@ const source = fs.readFileSync(
   path.join(root, "Jouer-Technoprof.html"),
   "utf8",
 );
+const dayBootstrap = `<script>
+const dayUrl = new URL(location.href);
+if (!dayUrl.searchParams.has('essai')) {
+  dayUrl.searchParams.set('essai', 'journee');
+  location.replace(dayUrl.href);
+}
+</script>`;
+fs.writeFileSync(
+  path.join(root, "Jouer-Technoprof-Journee-Atelier.html"),
+  source
+    .replace(/(<html\b[^>]*>)/, "$1" + dayBootstrap)
+    .replace(
+      /<title>[\s\S]*?<\/title\s*>/,
+      "<title>TECHNOPROF — Journée complète des établissements validés</title>",
+    ),
+);
+console.log("Standalone day: H1 / A3 / I2, three roads and one final report");
 for (const revision of ["A1", "A2", "A3"]) {
   const scenario =
     revision === "A1"

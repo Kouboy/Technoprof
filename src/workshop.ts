@@ -64,6 +64,8 @@ type Host = {
   exportJournal(): void;
 };
 const SCENARIOS: Record<string, string> = {
+  "journee-validee":
+    "Journée complète / trois trajets et établissements validés",
   "inshape-navigation-i2": "Trois-Ponts I2 / pression finale",
   "inshape-navigation-i2-road": "Trois-Ponts I2 / route puis établissement",
   "inshape-navigation-i2-view-302": "Trois-Ponts I2 / duo élève et lanceur",
@@ -317,15 +319,18 @@ export function installWorkshop(s: Host) {
     );
     const a3 = select.value.startsWith("bruel-navigation-a3");
     gainLabel.hidden = a3 || h1 || i1;
-    navigationNote.textContent = i2
-      ? "TROIS-PONTS / I2 : deux duos complémentaires, lycéenne mobile et boss poussée / avancée / ouverture. Détour facultatif depuis Préparation T : couloir à deux trous, puis unique infirmerie. Soin complet, délai suspendu pendant la scène. I1 reste disponible pour comparer."
-      : i1
-        ? "TROIS-PONTS / I1 : infirmerie depuis la galerie T01-T02. Cinq pièces calmes à deux ou trois trous. Lycéenne du sas : livres à distance, kick au contact. Décors recomposés provisoires ; 5 ou 6 rencontres selon le chemin."
-        : h1
-          ? "ORMEAUX / H1 : parcours guidé vers 42C, un détour facultatif à la jonction C. Deux rencontres puis l’Inspectrice. Infirmerie : accueil, soin complet, délai suspendu et retour automatique ; un usage par affectation. Neuf décors adaptés au parcours."
-          : a3
-            ? "AUGUSTE-BERTHELOT / A3 : l’infirmière accueille le professeur dès l’entrée. F/X ou toucher : afficher puis avancer les répliques. Soin complet, délai suspendu et sortie automatique ; une visite par affectation. Le Parent influent reprend sa garde après deux coups."
-            : "AUGUSTE-BERTHELOT / A1-A2 : approcher l’armoire, F/X ou toucher pour le soin partiel +1/+2. Délai actif pendant le soin ; un usage par affectation. Changer le soin ou les PV relance cet essai.";
+    navigationNote.textContent =
+      select.value === "journee-validee"
+        ? "JOURNÉE COMPLÈTE : trois trajets, Ormeaux H1 le matin, Auguste-Berthelot A3 à midi et Trois-Ponts I2 au crépuscule. Délai commun route / établissement ; bilan unique. Export du journal avec les trois affectations."
+        : i2
+          ? "TROIS-PONTS / I2 : deux duos complémentaires, lycéenne mobile et boss poussée / avancée / ouverture. Détour facultatif depuis Préparation T : couloir à deux trous, puis unique infirmerie. Soin complet, délai suspendu pendant la scène. I1 reste disponible pour comparer."
+          : i1
+            ? "TROIS-PONTS / I1 : infirmerie depuis la galerie T01-T02. Cinq pièces calmes à deux ou trois trous. Lycéenne du sas : livres à distance, kick au contact. Décors recomposés provisoires ; 5 ou 6 rencontres selon le chemin."
+            : h1
+              ? "ORMEAUX / H1 : parcours guidé vers 42C, un détour facultatif à la jonction C. Deux rencontres puis l’Inspectrice. Infirmerie : accueil, soin complet, délai suspendu et retour automatique ; un usage par affectation. Neuf décors adaptés au parcours."
+              : a3
+                ? "AUGUSTE-BERTHELOT / A3 : l’infirmière accueille le professeur dès l’entrée. F/X ou toucher : afficher puis avancer les répliques. Soin complet, délai suspendu et sortie automatique ; une visite par affectation. Le Parent influent reprend sa garde après deux coups."
+                : "AUGUSTE-BERTHELOT / A1-A2 : approcher l’armoire, F/X ou toucher pour le soin partiel +1/+2. Délai actif pendant le soin ; un usage par affectation. Changer le soin ou les PV relance cet essai.";
   };
   updateCareSettings();
   gain.onchange = () => {

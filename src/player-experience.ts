@@ -67,6 +67,7 @@ export function contextualHelp(s: PlayerContext) {
   return "";
 }
 type Host = PlayerContext & {
+  validatedDay?: boolean;
   won: number;
   results: string[];
   reducedShake: boolean;
@@ -366,6 +367,10 @@ export function installPlayerExperience(s: Host) {
       );
     } else if (mode === "title") {
       paragraph("PHYSIQUE APPLIQUÉE");
+      if (s.validatedDay)
+        paragraph(
+          "Journée d’essai complète : Ormeaux, Auguste-Berthelot et Trois-Ponts. Parcours et décors issus des derniers ateliers.",
+        );
       paragraph(
         "Trois affectations. Deux cours à assurer pour garder votre poste.",
       );
