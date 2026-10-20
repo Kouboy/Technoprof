@@ -267,15 +267,28 @@ export class NewSchoolArt {
         Math.max(2, doorway.width * (1 - open)),
         doorway.height,
       );
+      const edge = doorway.x + Math.max(2, doorway.width * (1 - open));
+      this.door.fillStyle(0x9b977d);
+      this.door.fillRect(edge - 1, doorway.y, 1, doorway.height);
+      this.door.fillStyle(0xc3c1a4);
+      this.door.fillRect(
+        Math.max(doorway.x + 1, edge - 7),
+        doorway.y + doorway.height * 0.65,
+        Math.max(1, 5 * (1 - open)),
+        2,
+      );
       const actor = s.art?.pose(
         "prof",
-        [1, 2, 3, 2][Math.floor(s.age * 8) % 4],
+        walk > 0 && walk < 1 ? [1, 2, 3, 2][Math.floor(s.age * 8) % 4] : 0,
         s.openingFrom + (281 - s.openingFrom) * walk,
         159 - 20 * walk,
-        1,
+        s.openingFrom > 281 ? -1 : 1,
       );
       actor
-        ?.setScale(0.225 * (1 - 0.13 * walk))
+        ?.setScale(
+          0.225 * (1 - 0.13 * walk) * (s.openingFrom > 281 ? -1 : 1),
+          0.225 * (1 - 0.13 * walk),
+        )
         .setAlpha(1 - Math.max(0, Math.min(1, (s.age - 1.7) / 0.7)));
     }
     const g = this.combat;

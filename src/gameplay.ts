@@ -26,6 +26,9 @@ export const PLAY = {
   roomFadeIn: 0.18,
   openingSeconds: 3.4,
   failContinueSeconds: 2,
+  failCoastSeconds: 1.25,
+  failCardAt: 0.85,
+  failSlumpSeconds: 0.65,
   maxStepMs: 20,
   maxFrameMs: 1000,
 };

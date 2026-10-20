@@ -11,6 +11,11 @@ for(const role of ['prof','inspecteur'])for(let i=0;i<8;i++){
 }
 const enemy={x:220,hp:6,boss:true,wind:0,recovery:0,stun:0,pattern:1};
 const state={px:80,py:159,face:1,attack:.4,walkClock:0,ambienceClock:0,inv:0,phase:'school',age:0,keys:{LEFT:{isDown:false},RIGHT:{isDown:false}},enemies:[enemy]};
+const tired={...state,attack:0,phase:'fail',failureReason:'exhausted',age:.8};
+art.drawTeacher(tired);assert.equal(art.teacher.setTextureArgs[1],0,'failure keeps both feet planted instead of reusing the raised-knee attack pose');
+assert(art.teacher.scaleY<.225*.9,'exhaustion visibly lowers the silhouette');
+assert.equal(art.teacher.setPositionArgs[1],159,'feet stay anchored during slump');
+assert.equal(art.teacher.setAlphaArgs[0],1,'failure never uses invulnerability blinking');
 art.render(state);assert.equal(art.teacher.setTextureArgs[1],4);
 state.attack=.25;art.render(state);assert.equal(art.teacher.setTextureArgs[1],5);
 state.attack=.1;art.render(state);assert.equal(art.teacher.setTextureArgs[1],6);

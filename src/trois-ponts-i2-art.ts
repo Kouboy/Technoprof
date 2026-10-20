@@ -219,6 +219,16 @@ export class TroisPontsI2Art {
       g.fillRect(d.x, d.y, d.width, d.height);
       g.fillStyle(0x3d4a4a);
       g.fillRect(d.x, d.y, Math.max(2, d.width * (1 - open)), d.height);
+      const edge = d.x + Math.max(2, d.width * (1 - open));
+      g.fillStyle(0x8f9b8e);
+      g.fillRect(edge - 1, d.y, 1, d.height);
+      g.fillStyle(0xc3c1a4);
+      g.fillRect(
+        Math.max(d.x + 1, edge - 7),
+        d.y + d.height * 0.65,
+        Math.max(1, 5 * (1 - open)),
+        2,
+      );
     }
     // Tiny leak and ripples sit behind the walking lane; never a gameplay hazard.
     if (r.id === 313 || r.id === 317) {

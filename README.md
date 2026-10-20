@@ -54,6 +54,9 @@ enchaîne les trois trajets, Ormeaux H1, Auguste-Berthelot A3 et Trois-Ponts I2,
 avec un bilan unique et un journal réunissant les trois affectations.
 En développement, ouvrir `?essai=journee` ; `npm run test:journee` vérifie l'enchaînement.
 
+La [passe sur les séquences](SEQUENCES-ATELIER.md) distingue les échecs sur route
+et à pied, accompagne l'entrée en classe de sonneries et adoucit l'infirmerie.
+
 Les établissements de l'atelier portent désormais les noms **Collège des
 Ormeaux**, **Lycée Auguste-Berthelot** et **Lycée professionnel des Trois-Ponts**.
 Les identifiants de scénarios et les noms de fichiers historiques restent

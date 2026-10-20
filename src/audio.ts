@@ -24,6 +24,48 @@ const CLASSROOM: ["chair" | "paper" | "chalk", number, number][] = [
   ["paper", 1.45, 0.35],
   ["chalk", 2.15, -0.15],
 ];
+export type SceneSoundContext = {
+  age?: number;
+  care?: boolean;
+  road?: boolean;
+  reason?: string | null;
+};
+type SceneCue = [Material, number, number, string?];
+export const OPENING_CUES: SceneCue[] = [
+  ["handle", 0, 0.8],
+  ["door", 0.12, 0.7],
+  ["step", 0.7, 0.55],
+  ["step", 1.02, 0.48],
+  ["step", 1.34, 0.35],
+];
+export function sceneCues(
+  phase: string,
+  context: SceneSoundContext,
+): SceneCue[] {
+  if (phase === "opening") return OPENING_CUES;
+  if (phase === "course") return [["bell-start", 0, 0.75, "classroom"]];
+  if (phase === "later") return [["bell-end", 0, 0.75, "classroom"]];
+  if (phase !== "fail") return [];
+  return [
+    ...(context.road
+      ? context.reason === "breakdown"
+        ? [
+            ["stall", 0, 1],
+            ["rattle", 0.4, 0.5],
+          ]
+        : [
+            ["skid", 0, 0.45],
+            ["rattle", 0.45, 0.3],
+          ]
+      : context.reason === "exhausted"
+        ? [
+            ["cloth", 0, 0.9],
+            ["body", 0.4, 0.24],
+          ]
+        : [["paper", 0, 0.35]]),
+    ["relay", 0.86, 0.65],
+  ] as SceneCue[];
+}
 // Existing materials, tuned per gesture: no extra sample downloads or timers.
 export const ENEMY_GESTURES = {
   influential: {
@@ -72,6 +114,9 @@ export class AudioKit {
   ambientDelay = 6.5;
   room = -1;
   classroomAge = 0;
+  sequenceAge = 0;
+  sequencePlayed = new Set<number>();
+  careRoom = false;
   gear = -1;
   shiftUntil = 0;
   duckUntil = 0;
@@ -248,6 +293,7 @@ export class AudioKit {
       );
     if (
       this.roomSend &&
+      !this.careRoom &&
       (this.previous === "course" ||
         this.previous === "opening" ||
         (this.previous === "school" && this.room !== 0))
@@ -283,7 +329,7 @@ export class AudioKit {
         this.context.currentTime + seconds,
       );
   }
-  talk(room: number, female = false, side = 0) {
+  talk(room: number, female = false, side = 0, gentle = false) {
     const rate =
       room === 3
         ? 1.4
@@ -297,10 +343,10 @@ export class AudioKit {
     this.play(
       "talk",
       side * 0.3,
-      1,
+      gentle ? 0.42 : 1,
       0,
       "dialogue",
-      rate + ((this.serial++ % 5) - 2) * 0.025,
+      (gentle ? 1 : rate) + ((this.serial++ % 5) - 2) * 0.025,
     );
   }
   tone(
@@ -401,6 +447,7 @@ export class AudioKit {
     dt: number,
     room = 0,
     dialogue = false,
+    context: SceneSoundContext = {},
   ) {
     if (!this.context || !this.master) return;
     const c = this.context,
@@ -423,6 +470,12 @@ export class AudioKit {
       return;
     }
     const entered = phase !== this.previous;
+    const care = phase === "school" && !!context.care;
+    if (care !== this.careRoom) {
+      this.stopGroup("ambient");
+      this.pulse = 0;
+      this.careRoom = care;
+    }
     if (entered) {
       this.stopGroup();
       this.previous = phase;
@@ -430,6 +483,8 @@ export class AudioKit {
       this.seconds = -1;
       this.room = room;
       this.classroomAge = 0;
+      this.sequenceAge = 0;
+      this.sequencePlayed.clear();
       if (phase === "course") this.classroom();
       if (phase === "receive") {
         this.play("relay", 0, 1);
@@ -439,13 +494,18 @@ export class AudioKit {
         );
         this.attention(3);
       }
-      if (phase === "opening") this.fx("door", 0.25);
-      if (phase === "fail")
-        [330, 220, 147].forEach((f, i) =>
-          this.tone(f, 0.16, 0.045, f, i * 0.19),
-        );
       if (phase === "arrival") this.fx("gravel", 0.5, 0.8);
     } else if (wasPaused && phase === "course") this.classroom();
+    if (!entered) this.sequenceAge += dt;
+    const age = context.age ?? this.sequenceAge;
+    sceneCues(phase, context).forEach(([kind, at, weight, group], index) => {
+      const offset = Math.max(0, age - at);
+      if (age >= at && (!this.sequencePlayed.has(index) || wasPaused)) {
+        this.sequencePlayed.add(index);
+        if (offset < FOLEY[kind][0])
+          this.play(kind, 0.2, weight, 0, group ?? "fx", 1, offset);
+      }
+    });
     if (phase === "course") this.classroomAge += dt;
     const school = phase === "school";
     if (this.room !== room) {
@@ -455,30 +515,47 @@ export class AudioKit {
     }
     const outdoor = room === 0;
     this.loops.room?.gain.gain.setTargetAtTime(
-      school ? (outdoor ? 0.016 : AUDIO.ambient) * (dialogue ? 0.55 : 1) : 0,
+      school
+        ? care
+          ? 0.009
+          : (outdoor ? 0.016 : AUDIO.ambient) * (dialogue ? 0.55 : 1)
+        : 0,
       c.currentTime,
       0.16,
     );
     this.loops.hum?.gain.gain.setTargetAtTime(
-      school && !outdoor ? 0.018 : 0,
+      school && !outdoor && !care ? 0.018 : 0,
       c.currentTime,
       0.16,
+    );
+    this.loops.room?.filter.frequency.setTargetAtTime(
+      care ? 220 : 550,
+      c.currentTime,
+      0.3,
+    );
+    this.loops.room?.source.playbackRate.setTargetAtTime(
+      care ? 0.78 : 1,
+      c.currentTime,
+      0.3,
     );
     this.pulse += dt;
     if (
       school &&
-      !dialogue &&
+      (!dialogue || care) &&
       this.pulse > this.ambientDelay + (room % 3) * 0.5
     ) {
       this.pulse = 0;
       this.ambientDelay = 5.5 + ((this.serial++ * 17) % 23) / 4;
-      if ([3, 5, 8].includes(room))
+      if (care)
+        this.play(this.serial % 2 ? "cloth" : "paper", 0.2, 0.16, 0, "ambient");
+      else if ([3, 5, 8].includes(room))
         this.play("drip", room % 2 ? 0.45 : -0.5, 1, 0, "ambient");
       else if (!outdoor) this.play("relay", -0.45, 0.45, 0, "ambient");
     }
     const seconds = Math.ceil(remaining);
     if (
       ["road", "school"].includes(phase) &&
+      !care &&
       !dialogue &&
       remaining > 0 &&
       remaining < 30 &&

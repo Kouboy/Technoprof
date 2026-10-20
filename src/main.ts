@@ -426,6 +426,7 @@ class Game extends Phaser.Scene {
   impactY = 132;
   impactKind = "hit";
   openingFrom = 280;
+  failureStartSpeed = 0;
   attackHit = false;
   schoolFade = 0;
   roomTransition: {
@@ -1421,6 +1422,8 @@ class Game extends Phaser.Scene {
     )
       return;
     this.brokenRoad = ["free", "receive", "road"].includes(this.phase);
+    this.failureStartSpeed = this.speed;
+    this.steerVelocity = 0;
     this.failureReason = ok
       ? null
       : (reason ??
@@ -1498,6 +1501,14 @@ class Game extends Phaser.Scene {
     )
       this.freshKey = true;
   }
+  sceneSoundContext() {
+    return {
+      age: this.age,
+      care: !!this.roomSpec()?.care,
+      road: this.brokenRoad,
+      reason: this.failureReason,
+    };
+  }
   setPaused(value: boolean, reason = "", preserveControls = false) {
     if (!preserveControls && value !== this.paused) {
       this.controls?.reset();
@@ -1522,6 +1533,7 @@ class Game extends Phaser.Scene {
         this.schoolFade > 0 ||
         !!this.roomTransition ||
         this.recoveryScene.active,
+      this.sceneSoundContext(),
     );
     this.audio.motor(
       this.speed,
@@ -1650,6 +1662,42 @@ class Game extends Phaser.Scene {
     this.cadreReview = false;
     this.arrivalStill = false;
     this.artReview = -1;
+    if (this.workshop && name.startsWith("sequence-")) {
+      // Explicit frozen visual fixtures, never used by the normal day.
+      const fixtures: Record<string, string> = {
+        "sequence-class-h1": "hanouna-navigation-h1-boss",
+        "sequence-class-a3": "bruel-navigation-a3-parent",
+        "sequence-class-i2": "inshape-navigation-i2-boss",
+        "sequence-fail-road": "breakdown",
+        "sequence-fail-foot": "exhausted",
+        "sequence-fail-pose": "exhausted",
+      };
+      const preset = fixtures[name];
+      if (preset) {
+        this.loadScenario(preset);
+        this.workshopScenario = name;
+        const course = name.startsWith("sequence-class-");
+        if (course) {
+          for (const e of this.enemies) e.hp = 0;
+          this.cleared.add(this.room);
+          this.px = 270;
+        } else if (name === "sequence-fail-road") this.vehicle = 0;
+        else this.hp = 0;
+        this.finish(
+          course,
+          course
+            ? undefined
+            : name === "sequence-fail-road"
+              ? "breakdown"
+              : "exhausted",
+        );
+        this.age = course ? 1.05 : name === "sequence-fail-pose" ? 0.65 : 2.1;
+        if (this.brokenRoad) this.speed = 0;
+        this.setPaused(true);
+        this.draw();
+        return;
+      }
+    }
     if (this.workshop && name === "journee-validee") {
       this.validatedDay = true;
       this.startDay();
@@ -2173,6 +2221,7 @@ class Game extends Phaser.Scene {
         this.schoolFade > 0 ||
         !!this.roomTransition ||
         this.recoveryScene.active,
+      this.sceneSoundContext(),
     );
     this.audio.motor(
       this.speed,
@@ -2258,6 +2307,13 @@ class Game extends Phaser.Scene {
     } else if (this.phase === "later") {
       if (this.age > 2.2) this.next();
     } else if (this.phase === "fail") {
+      if (this.brokenRoad) {
+        this.speed =
+          this.failureStartSpeed *
+          Math.max(0, 1 - this.age / PLAY.failCoastSeconds);
+        // Presentation only: no collision, distance-to-destination or clock update.
+        this.travel += this.visualSpeed() * dt;
+      }
       if (this.age >= PLAY.failContinueSeconds && enterPressed) this.next();
     } else if (this.phase === "tow") {
       if (this.age > 3) {
@@ -3654,7 +3710,7 @@ class Game extends Phaser.Scene {
       !this.dialogueSoundWait &&
       dialogueLetters(0, scene.dialogue, before, INFIRMARY.encounter)
     ) {
-      this.audio.talk(2, true, (INFIRMARY.nurseX - 160) / 190);
+      this.audio.talk(2, true, (INFIRMARY.nurseX - 160) / 190, true);
       this.dialogueSoundWait = DIALOGUE.soundInterval;
     }
     if (result) {
@@ -4292,21 +4348,7 @@ class Game extends Phaser.Scene {
       this.fadeViewport(Math.min(1, this.age / 1.1));
     if (this.phase === "free" && this.returnFade > 0)
       this.fadeViewport(this.returnFade / 1.2);
-    if (this.phase === "fail") {
-      this.banner(
-        this.vehicle <= 0 ? "PANNE / MISSION PERDUE" : "CARENCE CONSTATEE",
-      );
-      this.txt(
-        55,
-        117,
-        FAILURE_LABELS[this.failureReason ?? "late"],
-        10,
-        "#e3d4b3",
-        true,
-      );
-      if (this.age >= PLAY.failContinueSeconds)
-        this.txt(53, 137, "ENTREE : AFFECTATION SUIVANTE", 8, "#e3d4b3", true);
-    }
+    if (this.phase === "fail") this.drawFailure();
     if (this.phase === "school") {
       if (
         !this.falling &&
@@ -4542,6 +4584,48 @@ class Game extends Phaser.Scene {
   banner(s: string) {
     this.rect(23, 75, 274, 34, 0x101719);
     this.txt(32, 85, s, 15, "#e6be65");
+  }
+  drawFailure() {
+    const exhausted = this.failureReason === "exhausted";
+    const fade = Math.min(0.56, this.age * 0.45);
+    this.g.fillStyle(0x080d13, fade);
+    this.g.fillRect(7, 7, 306, 168);
+    if (this.age < PLAY.failCardAt) return;
+    // A stamped administrative notice leaves the CADRE and its cause visible.
+    this.rect(23, 40, 274, 105, 0x080d13);
+    this.rect(25, 42, 270, 101, 0x223137);
+    this.rect(29, 46, 262, 93, 0x131d23);
+    this.rect(29, 46, 3, 93, 0xa77a50);
+    this.txt(41, 53, "RESEAU RECTORAL / CONSTAT", 7, "#8f9b94", true);
+    this.txt(41, 70, "AFFECTATION NON ASSUREE", 10, "#e5ae60", true);
+    this.txt(
+      41,
+      90,
+      FAILURE_LABELS[this.failureReason ?? "late"],
+      9,
+      "#e3d4b3",
+      true,
+    );
+    const detail =
+      this.failureReason === "breakdown"
+        ? "AUCUN VEHICULE DE REMPLACEMENT."
+        : exhausted
+          ? "VOTRE ABSENCE SERA COMPTABILISEE."
+          : "LE RETARD FIGURERA AU RAPPORT.";
+    this.txt(41, 108, detail, 6, "#a3aaa0", true);
+    if (this.age >= PLAY.failContinueSeconds) {
+      const next =
+        this.mission === 2 ? "VOIR LE BILAN" : "AFFECTATION SUIVANTE";
+      this.rect(39, 122, 242, 13, 0x2d3c3e);
+      this.txt(
+        44,
+        125,
+        `${this.pointerMode ? "TOUCHER" : "ENTREE"} : ${next}`,
+        7,
+        "#e3d4b3",
+        true,
+      );
+    }
   }
   titleBackdrop() {
     this.rect(7, 7, 306, 168, 0x273b40);
@@ -5174,7 +5258,10 @@ class Game extends Phaser.Scene {
         );
       }
     }
-    if (this.keys.DOWN.isDown) {
+    if (
+      this.keys.DOWN.isDown ||
+      (this.phase === "fail" && this.brokenRoad && this.speed > 0)
+    ) {
       for (const [kind, fallback] of [
         ["leftLamp", x - 14.5],
         ["rightLamp", x + 14.5],

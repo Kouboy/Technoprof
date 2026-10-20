@@ -25,6 +25,11 @@ export const FOLEY = {
   land: [0.27, 0.25],
   crumble: [0.35, 0.24],
   door: [0.85, 0.3],
+  handle: [0.18, 0.16],
+  stall: [0.9, 0.26],
+  cloth: [0.65, 0.12],
+  "bell-start": [1.15, 0.19],
+  "bell-end": [1.35, 0.19],
   chair: [0.85, 0.22],
   paper: [0.5, 0.18],
   talk: [0.043, 0.095],
@@ -99,6 +104,41 @@ export function makeMaterial(kind: Material, sampleRate: number, seed = 5301) {
     let v = 0,
       env = Math.min(1, t / 0.0015) * Math.min(1, (duration - t) / 0.009);
     switch (kind) {
+      case "handle":
+        v =
+          (tone(930, t) * 0.25 + tone(1730, t) * 0.12 + high * 0.3) *
+            decay(t, 0.016) +
+          (low + band * 0.5) * burst(t, 0.065, 0.075);
+        break;
+      case "stall":
+        phase += (tau * (62 * Math.max(0.18, 1 - t / 0.75))) / sampleRate;
+        v =
+          (Math.sin(phase) * 0.45 + low * 1.8 + band * 0.12) *
+          (0.25 + 0.75 * Math.abs(tone(9 - t * 5, t))) *
+          decay(t, 0.26);
+        break;
+      case "cloth":
+        v =
+          (low * 1.8 + band * 0.22) *
+          (burst(t, 0.02, 0.35) + 0.5 * burst(t, 0.28, 0.3));
+        break;
+      case "bell-start":
+      case "bell-end": {
+        // Small electromechanical school bell: inharmonic metal, with a softer tail.
+        const strikes = kind === "bell-start" ? [0, 0.32] : [0, 0.22, 0.48];
+        for (const start of strikes) {
+          const u = t - start;
+          if (u >= 0)
+            v +=
+              (tone(690, u) * 0.32 +
+                tone(1051, u) * 0.22 +
+                tone(1577, u) * 0.12 +
+                tone(2139, u) * 0.05) *
+              decay(u, 0.19) *
+              Math.min(1, u / 0.002);
+        }
+        break;
+      }
       case "talk":
         // A soft voiced grain, with breath and two formants; no sharp UI beep.
         v =

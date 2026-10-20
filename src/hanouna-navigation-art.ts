@@ -165,6 +165,8 @@ export class HanounaNavigationArt {
       g.fillRect(d.x, d.y, Math.max(3, d.width * (1 - open)), d.height);
       g.fillStyle(0xc3c1a4);
       g.fillRect(d.x + Math.max(1, d.width * (1 - open) - 5), 111, 3, 1);
+      g.fillStyle(0x8a9b83);
+      g.fillRect(d.x + Math.max(3, d.width * (1 - open)) - 1, d.y, 1, d.height);
     }
     for (const [x, y, lines, primary] of H1_SIGNS[r.id])
       this.plate(x, y, lines, primary);

@@ -121,7 +121,7 @@ export class SliceArt {
   drawTeacher(state: TeacherState, scale = 0.225) {
     const p = teacherPose(state);
     return this.pose("prof", p.frame, p.x, p.y, state.face)
-      .setScale(scale * state.face, scale)
+      .setScale(scale * state.face, scale * p.scaleY)
       .setAngle(p.angle)
       .setAlpha(p.alpha);
   }
@@ -139,6 +139,7 @@ export class SliceArt {
     inv: number;
     phase: string;
     age: number;
+    failureReason?: string | null;
     openingFrom?: number;
     encounterTime?: number;
     playerRecovery?: number;
@@ -192,6 +193,16 @@ export class SliceArt {
       this.door.fillRect(258, 25, 49, 112);
       this.door.fillStyle(0x66523a);
       this.door.fillRect(258, 25, Math.max(3, 49 * (1 - open)), 112);
+      const edge = 258 + Math.max(3, 49 * (1 - open));
+      this.door.fillStyle(0xa18d68);
+      this.door.fillRect(edge - 2, 26, 1, 110);
+      this.door.fillStyle(0xc0bba1);
+      this.door.fillRect(
+        Math.max(259, edge - 8),
+        91,
+        Math.max(1, 5 * (1 - open)),
+        2,
+      );
       const walk = Math.max(0, Math.min(1, (t - 0.6) / 1.1));
       const direction = (state.openingFrom ?? state.px) > 281 ? -1 : 1;
       const actor = this.pose(

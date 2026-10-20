@@ -64,6 +64,12 @@ type Host = {
   exportJournal(): void;
 };
 const SCENARIOS: Record<string, string> = {
+  "sequence-class-h1": "Séquences / porte Ormeaux (vue figée)",
+  "sequence-class-a3": "Séquences / porte Berthelot (vue figée)",
+  "sequence-class-i2": "Séquences / porte Trois-Ponts (vue figée)",
+  "sequence-fail-road": "Séquences / constat de panne (vue figée)",
+  "sequence-fail-foot": "Séquences / constat d’épuisement (vue figée)",
+  "sequence-fail-pose": "Séquences / pose d’épuisement (vue figée)",
   "journee-validee":
     "Journée complète / trois trajets et établissements validés",
   "inshape-navigation-i2": "Trois-Ponts I2 / pression finale",

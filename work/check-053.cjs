@@ -58,7 +58,7 @@ assert(Math.abs(kit.master.gain.value-.28)<1e-8);assert(Math.abs(kit.ambience.ga
 assert.equal([...kit.voices].filter(v=>v.group==='cue').length,0,'timer beeps during suspended dialogue');
 kit.scene('school',false,19,.02,3,false);assert.equal([...kit.voices].filter(v=>v.group==='cue').length,1);
 kit.scene('school',false,19,.02,3,false);assert.equal([...kit.voices].filter(v=>v.group==='cue').length,1);
-kit.scene('course',false,120,0);assert.equal(kit.voices.size,5);
+kit.scene('course',false,120,0);assert.equal(kit.voices.size,6,'five classroom sounds plus the start bell');
 assert([...kit.voices].every(v=>v.nodes[1].connections.includes(kit.ambience)&&!v.nodes[1].connections.includes(kit.master)),'class sounds bypass ambience volume');
 kit.scene('course',false,120,1.3);c.advance(1.3);const age=kit.classroomAge;
 kit.scene('course',true,120,0);assert.equal(kit.voices.size,0);assert.equal(kit.master.gain.value,0);

@@ -22,6 +22,8 @@ export type TeacherState = {
   walkClock: number;
   inv: number;
   phase: string;
+  age?: number;
+  failureReason?: string | null;
   encounterTime?: number;
   schoolFade?: number;
   roomTransition?: unknown;
@@ -35,6 +37,23 @@ export type TeacherState = {
 
 // Presentation reads simulation timers; drawing never advances an animation.
 export function teacherPose(s: TeacherState) {
+  if (s.phase === "fail") {
+    const tired = s.failureReason === "exhausted";
+    const progress =
+      1 - (1 - Math.min(1, (s.age ?? 0) / PLAY.failSlumpSeconds)) ** 3;
+    return {
+      frame: 0,
+      x: s.px - (tired ? s.face * 3 * progress : 0),
+      y: s.py,
+      angle:
+        -s.face *
+        (tired
+          ? 9 * Math.sin(Math.PI * progress) + 4 * progress
+          : 3 * progress),
+      alpha: 1,
+      scaleY: tired ? 1 - 0.12 * progress : 1,
+    };
+  }
   const hurt = Math.min(1, (s.playerRecovery ?? 0) / PLAY.playerRecovery);
   const blocked = Math.min(1, (s.bookBlocked ?? 0) / PLAY.attackRecovery);
   const sceneWalk =
@@ -70,6 +89,7 @@ export function teacherPose(s: TeacherState) {
                     : 0;
   const direction = s.playerHitDirection ?? -s.face;
   return {
+    scaleY: 1,
     frame,
     x: s.px + direction * 2 * hurt - s.face * 2 * blocked,
     y: s.py,
