@@ -139,7 +139,12 @@ const scope = {
   BRUEL_A3_DATA: data,
 };
 const view = fs.readFileSync("src/presentation.ts", "utf8");
-const source = ["small-lettering", "bruel-a3-art", "bruel-navigation-art"]
+const source = [
+  "small-lettering",
+  "school-signage",
+  "bruel-a3-art",
+  "bruel-navigation-art",
+]
   .map((n) => strip(fs.readFileSync("src/" + n + ".ts", "utf8")))
   .join("\n");
 vm.createContext(scope);
@@ -148,11 +153,13 @@ vm.runInContext(
     strip(view.slice(0, view.indexOf("export const DAYLIGHT"))) +
       "\n" +
       source +
-      "\nglobalThis.Renderer=BruelNavigationArt;globalThis.rooms=A3_ROOM_ART;",
+      "\nglobalThis.Renderer=BruelNavigationArt;globalThis.rooms=A3_ROOM_ART;globalThis.signs=A3_SIGNS;",
     { mode: "transform" },
   ),
   scope,
 );
+for (const [id, signs] of Object.entries(scope.signs))
+  require("./assert-wall-signs.cjs")(scope, signs, id);
 scope.Renderer.preload(scene);
 const renderer = new scope.Renderer(scene),
   initialImageCount = images.length;
@@ -177,6 +184,12 @@ assert.equal(Object.keys(scope.rooms).length, Object.keys(layout.rooms).length);
 const before = JSON.stringify(layout);
 for (let visit = 0; visit < 3; visit++)
   for (const room of Object.values(layout.rooms)) {
+    require("./assert-wall-signs.cjs")(
+      scope,
+      scope.signs[room.id],
+      room.id,
+      room.exits,
+    );
     renderer.hide();
     renderer.render(
       room,

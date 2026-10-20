@@ -56,6 +56,9 @@ En développement, ouvrir `?essai=journee` ; `npm run test:journee` vérifie l'e
 
 La [passe sur les séquences](SEQUENCES-ATELIER.md) distingue les échecs sur route
 et à pied, accompagne l'entrée en classe de sonneries et adoucit l'infirmerie.
+La [signalétique des établissements](SIGNALETIQUE-ATELIER.md) utilise maintenant
+des supports et des placements propres à chaque lieu, avec des zones réservées
+aux indications de touche. Vérification ciblée : `npm run test:signaletique`.
 
 Les établissements de l'atelier portent désormais les noms **Collège des
 Ormeaux**, **Lycée Auguste-Berthelot** et **Lycée professionnel des Trois-Ponts**.

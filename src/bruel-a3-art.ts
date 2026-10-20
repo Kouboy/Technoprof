@@ -1,7 +1,11 @@
 import Phaser from "phaser";
 import { BRUEL_A3_DATA } from "./bruel-a3-data";
 import { NAV_ID } from "./bruel-navigation";
-import { smallPrint, smallWidth } from "./small-lettering";
+import {
+  drawSchoolSign,
+  type SchoolSign,
+  type SchoolSignKind,
+} from "./school-signage";
 import { VIEW } from "./presentation";
 
 // Explicit crops follow the actual generated dividers. Lower rows have less
@@ -28,61 +32,60 @@ export const A3_ROOM_ART: Record<number, [string, number]> = {
 };
 
 // Signage names neighbours and floor ranges, never adds a route to B12.
-type Plate = [number, number, string[], boolean?];
-const SIGNS: Record<number, Plate[]> = {
-  [NAV_ID.cour]: [[205, 25, ["LYCEE AUGUSTE-BERTHELOT", "ENTREE >"], true]],
+export const A3_SIGNS: Record<number, SchoolSign[]> = {
+  [NAV_ID.cour]: [[207, 18, ["LYCEE AUGUSTE-BERTHELOT", "ENTREE >"], true]],
   [NAV_ID.vestibule]: [
-    [13, 47, ["< COUR"]],
-    [262, 47, ["HALL >"]],
-    [126, 25, ["B12 / AILE B", "1ER ETAGE"]],
+    [32, 52, ["< COUR"]],
+    [260, 52, ["HALL >"]],
+    [174, 65, ["B12 / AILE B", "1ER ETAGE"], false, "paper"],
   ],
   [NAV_ID.hall]: [
-    [33, 24, ["GRAND ESCALIER", "AILE B / 1ER"], true],
+    [133, 22, ["< GRAND ESCALIER", "AILE B / 1ER"], true],
     [257, 35, ["ANNEXE", "1ER ETAGE"]],
-    [13, 112, ["< VESTIBULE"]],
+    [13, 39, ["< VESTIBULE"]],
   ],
   [NAV_ID.principal]: [
-    [30, 39, ["HALL / RDC"]],
-    [206, 39, ["PALIER / 1ER"], true],
+    [39, 27, ["HALL / RDC"]],
+    [236, 41, ["PALIER / 1ER"], true],
   ],
   [NAV_ID.palier]: [
-    [30, 44, ["RDC / ESCALIER"]],
-    [203, 18, ["ANNEXE", "PASSAGE INTERIEUR"]],
-    [251, 51, ["GALERIE A >"]],
-    [132, 127, ["1ER ETAGE"]],
+    [26, 42, ["RDC / ESCALIER"]],
+    [209, 24, ["ANNEXE", "PASSAGE INTERIEUR"]],
+    [252, 60, ["GALERIE A >"]],
+    [126, 118, ["1ER ETAGE"], false, "room"],
   ],
   [NAV_ID.annexe]: [
-    [32, 44, ["HALL / RDC"]],
-    [13, 112, ["< PALIER PRINCIPAL"]],
-    [254, 43, ["JONCTION >"]],
-    [126, 25, ["ANNEXE / 1ER"]],
+    [33, 39, ["HALL / RDC"]],
+    [13, 99, ["< PALIER PRINCIPAL"]],
+    [254, 39, ["JONCTION >"]],
+    [223, 70, ["ANNEXE / 1ER"], false, "paper"],
   ],
   [NAV_ID.galerieA]: [
-    [13, 47, ["< PALIER"]],
-    [254, 47, ["JONCTION >"]],
-    [136, 116, ["A01-A04"]],
+    [13, 48, ["< PALIER"]],
+    [254, 48, ["JONCTION >"]],
+    [136, 96, ["A01-A04"], false, "paper"],
   ],
   [NAV_ID.jonction]: [
-    [13, 43, ["< GALERIE A"]],
-    [62, 39, ["ANNEXE / 1ER"]],
-    [145, 39, ["INFIRMERIE"]],
-    [250, 39, ["GALERIE B >", "B08-B14"]],
+    [13, 57, ["< GALERIE A"]],
+    [60, 26, ["ANNEXE / 1ER"]],
+    [139, 26, ["INFIRMERIE"]],
+    [250, 45, ["GALERIE B >", "B08-B14"]],
   ],
   [NAV_ID.galerieB]: [
     [13, 47, ["< JONCTION"]],
     [256, 47, ["PALIER B >"]],
-    [119, 77, ["B08-B10"]],
+    [119, 69, ["B08-B10"], false, "paper"],
   ],
   [NAV_ID.palierB]: [
     [13, 47, ["< GALERIE B"]],
     [259, 47, ["B11-B14 >"]],
-    [126, 29, ["EMPLOIS DU TEMPS"]],
+    [126, 55, ["EMPLOIS DU TEMPS"], false, "paper"],
   ],
   [NAV_ID.infirmerie]: [
-    [26, 32, ["JONCTION / 1ER"]],
-    [163, 31, ["PREMIERS SOINS"]],
+    [28, 21, ["JONCTION / 1ER"]],
+    [107, 59, ["PREMIERS SOINS"], false, "paper"],
   ],
-  [NAV_ID.seuil]: [[274, 12, ["B12"], true]],
+  [NAV_ID.seuil]: [[269, 23, ["B12"], true, "room"]],
 };
 
 export class BruelA3Art {
@@ -115,27 +118,14 @@ export class BruelA3Art {
     this.ambient.clear();
     this.ink.clear();
   }
-  plate(x: number, y: number, lines: string[], primary = false) {
-    const g = this.ink,
-      w = Math.max(20, ...lines.map((s) => smallWidth(s) + 8)),
-      h = lines.length * 8 + 5;
-    // Raised enamel, small fixings and chipped corners; lettering stays at
-    // integer logical pixels rather than being baked into generated backgrounds.
-    g.fillStyle(0x080d13, 0.8);
-    g.fillRect(x - 1, y, w + 2, h + 2);
-    g.fillStyle(primary ? 0xc7bc99 : 0xaaa991);
-    g.fillRect(x, y, w, h);
-    g.fillStyle(0x6a746b);
-    g.fillRect(x, y + h - 1, w, 1);
-    g.fillStyle(0xe0d4b5);
-    g.fillRect(x + 1, y, w - 2, 1);
-    g.fillStyle(0x3e4945);
-    g.fillRect(x + 1, y + 2, 1, 1);
-    g.fillRect(x + w - 2, y + h - 3, 1, 1);
-    g.fillRect(x, y + h - 2, 2, 1);
-    lines.forEach((line, i) =>
-      smallPrint(g, x + 4, y + 3 + i * 8, line, 0x21302f),
-    );
+  plate(
+    x: number,
+    y: number,
+    lines: string[],
+    primary = false,
+    kind?: SchoolSignKind,
+  ) {
+    drawSchoolSign(this.ink, "berthelot", x, y, lines, primary, kind);
   }
   render(room: number, clock: number) {
     const view = A3_ROOM_ART[room];
@@ -144,7 +134,7 @@ export class BruelA3Art {
       .setTexture("bruel-a3-" + view[0], view[1])
       .setDisplaySize(VIEW.width, VIEW.height)
       .setVisible(true);
-    for (const sign of SIGNS[room] ?? []) this.plate(...sign);
+    for (const sign of A3_SIGNS[room] ?? []) this.plate(...sign);
     if (room === NAV_ID.jonction) {
       // Tiny leak behind the walking lane; never a gameplay hazard or a RNG call.
       const t = (clock % 1.8) / 1.8;

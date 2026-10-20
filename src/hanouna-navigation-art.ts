@@ -1,7 +1,11 @@
 import Phaser from "phaser";
 import type { RoomSpec } from "./missions";
 import { HANOUNA_ID as h } from "./hanouna-navigation";
-import { smallPrint, smallWidth } from "./small-lettering";
+import {
+  drawSchoolSign,
+  type SchoolSign,
+  type SchoolSignKind,
+} from "./school-signage";
 import { INFIRMARY } from "./bruel-recovery";
 import { VIEW } from "./presentation";
 import { HANOUNA_H1_DATA } from "./hanouna-h1-data";
@@ -46,41 +50,40 @@ export const H1_BACKGROUNDS: Record<number, [string, string | number]> = {
   [h.seuil]: ["hanouna-h1-etage", 3],
   [h.infirmerie]: ["hanouna-h1-infirmerie", 0],
 };
-type Plate = [number, number, string[], boolean?];
-export const H1_SIGNS: Record<number, Plate[]> = {
-  [h.cour]: [[216, 33, ["COLLEGE DES ORMEAUX", "ENTREE >"], true]],
+export const H1_SIGNS: Record<number, SchoolSign[]> = {
+  [h.cour]: [[213, 35, ["COLLEGE DES ORMEAUX", "ENTREE >"], true]],
   [h.vestibule]: [
-    [12, 28, ["< COUR"]],
-    [276, 38, ["HALL >"], true],
+    [44, 49, ["< COUR"]],
+    [269, 41, ["HALL >"], true],
   ],
   [h.hall]: [
-    [194, 33, ["AILE C / 1ER ETAGE", "C30-C45 / ESCALIER"], true],
-    [12, 32, ["< VESTIBULE"]],
+    [204, 29, ["AILE C / 1ER ETAGE", "C30-C45 / ESCALIER"], true],
+    [12, 39, ["< VESTIBULE"]],
   ],
   [h.escalier]: [
-    [36, 43, ["HALL / RDC"]],
-    [211, 28, ["PALIER C / 1ER"], true],
+    [37, 36, ["HALL / RDC"]],
+    [225, 42, ["PALIER C / 1ER"], true],
   ],
   [h.palier]: [
-    [43, 30, ["ESCALIER / RDC"]],
-    [232, 16, ["C30-C45 >"], true],
-    [226, 119, ["1ER ETAGE"]],
+    [37, 32, ["ESCALIER / RDC"]],
+    [232, 112, ["C30-C45 >"], true],
+    [182, 82, ["1ER ETAGE"], false, "room"],
   ],
   [h.galerie]: [
-    [12, 27, ["< PALIER C"]],
-    [146, 42, ["C30"]],
-    [246, 42, ["C31"]],
-    [234, 18, ["C42-C45 >"], true],
+    [39, 38, ["< PALIER C"]],
+    [157, 40, ["C30"], false, "room"],
+    [238, 40, ["C31"], false, "room"],
+    [265, 75, ["C42-C45 >"], true],
   ],
   [h.jonction]: [
-    [12, 27, ["< C30-C41"]],
-    [192, 38, ["INFIRMERIE"]],
-    [245, 27, ["C42-C45 >"], true],
+    [38, 43, ["< C30-C41"]],
+    [175, 35, ["INFIRMERIE"]],
+    [266, 76, ["C42-C45 >"], true],
   ],
-  [h.seuil]: [[264, 34, ["42C"], true]],
+  [h.seuil]: [[253, 34, ["42C"], true, "room"]],
   [h.infirmerie]: [
-    [42, 46, ["JONCTION C / 1ER"]],
-    [163, 31, ["PREMIERS SOINS"]],
+    [28, 34, ["JONCTION C / 1ER"]],
+    [166, 41, ["PREMIERS SOINS"], false, "paper"],
   ],
 };
 export class HanounaNavigationArt {
@@ -128,22 +131,14 @@ export class HanounaNavigationArt {
           actor.scaleY * H1_ARENA_SCALE,
         );
   }
-  plate(x: number, y: number, lines: string[], primary = false) {
-    const w = Math.max(20, ...lines.map((s) => smallWidth(s) + 8)),
-      height = lines.length * 8 + 5,
-      g = this.ink;
-    g.fillStyle(0x080d13);
-    g.fillRect(x - 1, y - 1, w + 2, height + 2);
-    g.fillStyle(primary ? 0xc7bc99 : 0xaaa991);
-    g.fillRect(x, y, w, height);
-    g.fillStyle(0x53625c);
-    g.fillRect(x, y + height - 1, w, 1);
-    g.fillStyle(0x343b3c);
-    g.fillRect(x + 1, y + 2, 1, 1);
-    g.fillRect(x + w - 2, y + height - 3, 1, 1);
-    lines.forEach((line, i) =>
-      smallPrint(g, x + 4, y + 3 + i * 8, line, 0x21302f),
-    );
+  plate(
+    x: number,
+    y: number,
+    lines: string[],
+    primary = false,
+    kind?: SchoolSignKind,
+  ) {
+    drawSchoolSign(this.ink, "ormeaux", x, y, lines, primary, kind);
   }
   render(r: RoomSpec, openingAge?: number, clock = 0) {
     this.ink.clear();
@@ -168,8 +163,7 @@ export class HanounaNavigationArt {
       g.fillStyle(0x8a9b83);
       g.fillRect(d.x + Math.max(3, d.width * (1 - open)) - 1, d.y, 1, d.height);
     }
-    for (const [x, y, lines, primary] of H1_SIGNS[r.id])
-      this.plate(x, y, lines, primary);
+    for (const sign of H1_SIGNS[r.id]) this.plate(...sign);
   }
   drawLeak(room: number, clock: number) {
     const leak = H1_LEAKS[room];

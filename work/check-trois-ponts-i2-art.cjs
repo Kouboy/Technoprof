@@ -65,11 +65,12 @@ vm.runInContext(
     [
       "src/trois-ponts-i2-data.ts",
       "src/small-lettering.ts",
+      "src/school-signage.ts",
       "src/trois-ponts-i2-art.ts",
     ]
       .map((f) => strip(fs.readFileSync(f, "utf8")))
       .join("\n") +
-      "\nglobalThis.Renderer=TroisPontsI2Art;globalThis.mapping=TP_ROOM_ART;globalThis.payload=TROIS_PONTS_I2_DATA;",
+      "\nglobalThis.Renderer=TroisPontsI2Art;globalThis.mapping=TP_ROOM_ART;globalThis.signs=troisPontsSigns;globalThis.anchors=TP_SIGN_ANCHORS;globalThis.payload=TROIS_PONTS_I2_DATA;",
     { mode: "transform" },
   ),
   scope,
@@ -112,6 +113,12 @@ assert(
 assert.equal(Object.keys(scope.mapping).length, 18);
 for (let p = 0; p < 4; p++)
   for (const r of Object.values(spec.rooms)) {
+    for (const e of r.exits ?? [])
+      assert(
+        scope.anchors[r.id][e.target],
+        "every exit has an authored anchor",
+      );
+    require("./assert-wall-signs.cjs")(scope, scope.signs(r), r.id, r.exits);
     art.render(r, r.boss ? 0.7 : undefined, p * 0.21);
     assert(art.background.visible || art.panels.some((p) => p.visible));
     const panels = art.panels.filter((p) => p.visible);

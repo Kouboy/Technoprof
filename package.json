@@ -12,6 +12,7 @@
     "test:navigation": "node work/check-bruel-navigation-design.cjs && node work/check-bruel-navigation-design.cjs bruel-navigation-a2-design.json - && node work/check-bruel-navigation-design.cjs bruel-navigation-a3-design.json bruel-navigation-a3-measures.json && node work/check-navigation-atelier.cjs && node work/check-navigation-atelier.cjs --a2 && node work/check-navigation-atelier.cjs --a3 && node work/check-pressure-a3.cjs && node work/check-parent-cycle-a3.cjs && node work/check-floor-gaps-a3.cjs && node work/check-hanouna-h1.cjs && node work/check-inshape-i1.cjs",
     "format": "prettier --write src index.html",
     "test:rendu-a3": "node work/check-bruel-a3-art.cjs",
+    "test:signaletique": "node work/check-school-signage.cjs && node work/check-hanouna-h1-art.cjs && node work/check-bruel-a3-art.cjs && node work/check-trois-ponts-i2-art.cjs",
     "test:holes-a3": "node work/check-floor-gaps-a3.cjs",
     "test:hanouna-h1": "node work/check-hanouna-h1.cjs && node work/check-hanouna-h1-art.cjs && node work/check-inspector-h1.cjs",
     "test:inshape-i1": "node work/check-inshape-i1.cjs && node work/check-inshape-i1-art.cjs && node work/check-catchup-i1.cjs",

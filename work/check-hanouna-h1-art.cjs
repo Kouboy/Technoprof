@@ -125,6 +125,8 @@ vm.runInContext(
   stripTypeScriptTypes(
     strip(fs.readFileSync("src/small-lettering.ts", "utf8")) +
       "\n" +
+      strip(fs.readFileSync("src/school-signage.ts", "utf8")) +
+      "\n" +
       strip(fs.readFileSync("src/hanouna-navigation-art.ts", "utf8")) +
       "\nglobalThis.Renderer=HanounaNavigationArt;globalThis.backgrounds=H1_BACKGROUNDS;globalThis.signs=H1_SIGNS;",
     { mode: "transform" },
@@ -186,13 +188,7 @@ for (let pass = 0; pass < 3; pass++)
     assert.equal(art.background.width, 306);
     assert.equal(art.background.height, 168);
     assert.equal(art.nurse.visible, room.id === scope.h.infirmerie);
-    // H1 labels are physical plates; keep them inside the wall and above actors' floor.
-    for (const [x, y, lines] of scope.signs[room.id]) {
-      const width = Math.max(20, ...lines.map((s) => scope.smallWidth(s) + 8));
-      assert(
-        x >= 8 && y >= 8 && x + width <= 313 && y + lines.length * 8 + 5 < 144,
-      );
-    }
+    require("./assert-wall-signs.cjs")(scope, scope.signs[room.id], room.id, room.exits);
   }
 assert.equal(images.length, count, "no image allocation on return visits");
 assert.equal(

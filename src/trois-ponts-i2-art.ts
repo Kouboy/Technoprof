@@ -3,7 +3,7 @@ import type { RoomSpec } from "./missions";
 import { TROIS_PONTS_I2_DATA, TP_CROPS } from "./trois-ponts-i2-data";
 import { VIEW } from "./presentation";
 import { INFIRMARY } from "./bruel-recovery";
-import { smallPrint, smallWidth } from "./small-lettering";
+import { drawSchoolSign, type SchoolSign } from "./school-signage";
 
 // One distinct background per room. I1 remains the original layout study.
 export const TP_ROOM_ART: Record<number, [string, number]> = {
@@ -27,6 +27,66 @@ export const TP_ROOM_ART: Record<number, [string, number]> = {
   317: ["tp-i2-annexes", 2],
 };
 export const TP_CLASS_DOOR = { x: 245, y: 49, width: 40, height: 92 };
+
+// Authored against the final (door-aligned) wall, not the screen's top margin.
+// Keys are exit targets: changing a label cannot detach it from its doorway.
+export const TP_SIGN_ANCHORS: Record<
+  number,
+  Record<number, [number, number]>
+> = {
+  300: { 301: [245, 57] },
+  301: { 300: [12, 25], 302: [228, 25], 310: [153, 23] },
+  302: { 301: [12, 57], 303: [218, 57] },
+  303: { 302: [29, 13], 304: [214, 13] },
+  304: { 303: [25, 17], 305: [233, 34], 314: [151, 33] },
+  305: { 304: [12, 17], 312: [42, 36], 306: [191, 23] },
+  306: { 305: [12, 26], 307: [239, 26] },
+  307: { 306: [12, 27], 308: [241, 17], 317: [167, 36] },
+  308: { 307: [12, 29], 309: [286, 29] },
+  309: {},
+  310: { 301: [12, 86], 311: [43, 36], 312: [127, 36], 313: [235, 36] },
+  311: { 310: [12, 28], 312: [258, 28], 316: [145, 33] },
+  312: { 311: [12, 17], 310: [45, 36], 305: [231, 36] },
+  313: { 310: [12, 32], 314: [212, 30] },
+  314: { 313: [32, 28], 304: [256, 48] },
+  315: { 317: [28, 34] },
+  316: { 311: [35, 29] },
+  317: { 307: [12, 25], 315: [239, 35] },
+};
+export const TP_EXTRA_SIGNS: Record<number, SchoolSign[]> = {
+  300: [[46, 34, ["LYCEE PROFESSIONNEL", "DES TROIS-PONTS"], true]],
+  303: [[118, 87, ["SOL FRAGILE"], false, "warning"]],
+  305: [[136, 113, ["SOL FRAGILE"], false, "warning"]],
+  307: [[107, 111, ["SOL FRAGILE"], false, "warning"]],
+  309: [[253, 26, ["T03"], true, "room"]],
+  313: [[123, 109, ["SOL FRAGILE"], false, "warning"]],
+  314: [[115, 108, ["SOL FRAGILE"], false, "warning"]],
+  315: [[166, 41, ["PREMIERS SOINS"], false, "paper"]],
+  316: [[119, 57, ["VIE SCOLAIRE"], false, "paper"]],
+  317: [[133, 109, ["SOL FRAGILE"], false, "warning"]],
+};
+export function troisPontsSigns(r: RoomSpec): SchoolSign[] {
+  return [
+    ...(r.exits ?? []).map((e): SchoolSign => {
+      const anchor = TP_SIGN_ANCHORS[r.id][e.target];
+      const lines = e.label
+        .replace(/^(GAUCHE|DROITE|HAUT|BAS) : /, "")
+        .split(" / ")
+        .slice(0, 2);
+      if (e.edge) {
+        if (e.key === "LEFT") lines[0] = "< " + lines[0];
+        else lines[0] += " >";
+      }
+      return [
+        anchor[0],
+        anchor[1],
+        lines,
+        e.target === 302 || e.target === 303,
+      ];
+    }),
+    ...(TP_EXTRA_SIGNS[r.id] ?? []),
+  ];
+}
 
 // Align drawn thresholds with the validated input regions. Door bands retain
 // their width; only the quiet wall between them expands or contracts.
@@ -141,22 +201,6 @@ export class TroisPontsI2Art {
     this.ink.clear();
     this.ambient.clear();
   }
-  plate(cx: number, y: number, lines: string[], primary = false) {
-    const w = Math.max(24, ...lines.map((s) => smallWidth(s) + 10)),
-      h = lines.length * 8 + 6;
-    const x = Math.max(9, Math.min(310 - w, Math.round(cx - w / 2))),
-      g = this.ink;
-    g.fillStyle(0x080d13);
-    g.fillRect(x - 1, y - 1, w + 2, h + 2);
-    g.fillStyle(primary ? 0xcec1a3 : 0xa6aa99);
-    g.fillRect(x, y, w, h);
-    g.fillStyle(0x526064);
-    g.fillRect(x, y + h - 1, w, 1);
-    g.fillStyle(0x343c3c);
-    g.fillRect(x + 2, y + 2, 1, 1);
-    g.fillRect(x + w - 3, y + 2, 1, 1);
-    lines.forEach((s, n) => smallPrint(g, x + 5, y + 4 + n * 8, s, 0x21302e));
-  }
   render(r: RoomSpec, openingAge?: number, clock = 0) {
     this.hide();
     const view = TP_ROOM_ART[r.id];
@@ -177,40 +221,8 @@ export class TroisPontsI2Art {
     }
     this.nurse.setVisible(!!r.care);
     this.continuation.setVisible(r.id === 305);
-    if (r.id === 300)
-      this.plate(98, 35, ["LYCEE PROFESSIONNEL", "DES TROIS-PONTS"], true);
-    if (r.care) {
-      this.plate(55, 34, ["COULOIR DE SOINS"]);
-      return;
-    }
-    const signs = (r.exits ?? []).map((e) => {
-      const lines = e.label
-        .replace(/^(GAUCHE|DROITE|HAUT|BAS) : /, "")
-        .split(" / ")
-        .slice(0, 2);
-      const cx = e.edge ? (e.key === "LEFT" ? 24 : 291) : e.hint![0];
-      const w = Math.max(24, ...lines.map((s) => smallWidth(s) + 10));
-      return {
-        e,
-        lines,
-        cx,
-        x: Math.max(9, Math.min(310 - w, Math.round(cx - w / 2))),
-        w,
-      };
-    });
-    for (const { e, lines, cx, x, w } of signs) {
-      let y = e.edge ? 12 : 18;
-      if (!e.edge)
-        for (const edge of signs.filter((s) => s.e.edge))
-          if (x < edge.x + edge.w + 2 && x + w + 2 > edge.x)
-            y = Math.max(y, 12 + edge.lines.length * 8 + 9);
-      // Stair labels stay above their actual opening; controls retain their markers.
-      this.plate(cx, y, lines, e.target === 302 || e.target === 303);
-    }
-    if (r.gaps.length)
-      this.plate(r.id === 307 ? 111 : 158, 112, ["SOL FRAGILE"]);
-    if (r.id === 309) this.plate(280, 22, ["T03"], true);
-    if (r.id === 316) this.plate(193, 30, ["VIE SCOLAIRE"]);
+    for (const [x, y, lines, primary, kind] of troisPontsSigns(r))
+      drawSchoolSign(this.ink, "trois-ponts", x, y, lines, primary, kind);
     if (r.id === 309 && openingAge !== undefined) {
       const d = TP_CLASS_DOOR,
         open = Math.min(1, openingAge / 0.7),
