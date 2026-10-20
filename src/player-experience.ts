@@ -1,6 +1,6 @@
 import type { AudioKit } from "./audio";
 import { ENCOUNTERS, type Encounter, type DialogueState } from "./dialogue";
-export const RADIO_NAME = "Radio Educ France";
+export const RADIO_NAME = "Radio Educ' France";
 export const RADIO_BULLETINS = [
   "La rentrée est prête : les postes vacants seront occupés par le mot priorité.",
   "Le ministère annonce plus d’autonomie. Chaque établissement pourra désormais choisir ce qu’il ne répare pas.",
