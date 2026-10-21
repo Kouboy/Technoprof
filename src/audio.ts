@@ -29,6 +29,7 @@ export type SceneSoundContext = {
   care?: boolean;
   road?: boolean;
   reason?: string | null;
+  distance?: number;
 };
 type SceneCue = [Material, number, number, string?];
 export const OPENING_CUES: SceneCue[] = [
@@ -117,6 +118,8 @@ export class AudioKit {
   sequenceAge = 0;
   sequencePlayed = new Set<number>();
   careRoom = false;
+  approachPulse = 0;
+  approachInterval = 0;
   gear = -1;
   shiftUntil = 0;
   duckUntil = 0;
@@ -507,6 +510,33 @@ export class AudioKit {
       }
     });
     if (phase === "course") this.classroomAge += dt;
+    const distance = context.distance ?? Infinity;
+    const interval =
+      ["receive", "road"].includes(phase) &&
+      distance > 0 &&
+      distance < AUDIO.gpsNearMeters
+        ? distance < AUDIO.gpsCloseMeters
+          ? AUDIO.gpsCloseSeconds
+          : AUDIO.gpsNearSeconds
+        : 0;
+    if (!interval) {
+      this.approachPulse = 0;
+      this.approachInterval = 0;
+    } else {
+      const changed = interval !== this.approachInterval;
+      this.approachInterval = interval;
+      this.approachPulse = changed ? 0 : this.approachPulse + dt;
+      if (changed || this.approachPulse + 1e-8 >= interval) {
+        this.approachPulse = 0;
+        // Quiet GPS identity; phase changes and pause cancel pending note tails.
+        // Muted intervals are consumed, never queued for playback on unmute.
+        if (!this.muted) {
+          this.tone(660, 0.075, AUDIO.gpsGain, 660);
+          this.tone(880, 0.13, AUDIO.gpsGain * 0.85, 880, 0.105);
+          this.attention(0.28);
+        }
+      }
+    }
     const school = phase === "school";
     if (this.room !== room) {
       this.stopGroup("ambient");

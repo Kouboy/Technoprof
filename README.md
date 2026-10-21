@@ -59,6 +59,9 @@ et à pied, accompagne l'entrée en classe de sonneries et adoucit l'infirmerie.
 La [signalétique des établissements](SIGNALETIQUE-ATELIER.md) utilise maintenant
 des supports et des placements propres à chaque lieu, avec des zones réservées
 aux indications de touche. Vérification ciblée : `npm run test:signaletique`.
+La [passe d’ambiance routière](CONDUITE-AMBIANCE-ATELIER.md) ajoute des publicités
+rares et des traces de vie sur les façades, un repère GPS d’approche et l’arrêt
+du moteur au stationnement. Vérification : `npm run test:ambiance-route`.
 
 Les établissements de l'atelier portent désormais les noms **Collège des
 Ormeaux**, **Lycée Auguste-Berthelot** et **Lycée professionnel des Trois-Ponts**.

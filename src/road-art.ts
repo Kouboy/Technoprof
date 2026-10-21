@@ -3,6 +3,7 @@ import { SKY_DATA } from "./sky-data";
 import Phaser from "phaser";
 import { ROAD_DATA } from "./road-data";
 import { VERGE_DATA } from "./verge-data";
+import { smallPrint } from "./small-lettering";
 export const ROAD_FRAMES = {
   traffic: [
     [28, 450, 473, 362],
@@ -34,6 +35,12 @@ export const ROAD_VIEWS: Record<string, number> = {
   "road-bridge": 340,
   "road-steel": 1070,
   "road-under": 408,
+  "road-publicite": 317,
+  "road-publicite-ecole": 5957,
+  "road-publicite-gauche": 8717,
+  "road-publicite-facade": 2168,
+  "road-affiches": 947,
+  "road-graffiti": 578,
 };
 export function vergeZone(z: number) {
   return Math.floor(Math.max(0, z) / VERGE.zoneLength) % 4;
@@ -49,6 +56,168 @@ export type Scenery = {
   z?: number;
   id?: number;
 };
+// Tiny local atlas: surface details, not replacement buildings. Wordmarks remain
+// upright on both sides of the road; only their mounting position is reflected.
+export const ROAD_PATCH_FRAMES: Record<
+  string,
+  [number, number, number, number]
+> = {
+  ad0: [0, 0, 96, 48],
+  ad1: [100, 0, 96, 48],
+  poster0: [0, 52, 32, 34],
+  poster1: [36, 52, 32, 34],
+  graffiti0: [0, 90, 72, 22],
+  graffiti1: [76, 90, 72, 22],
+};
+const ROAD_PATCH_SLOTS: Record<
+  string,
+  Record<string, [number, number, number, number]>
+> = {
+  // Centre, bottom, maximum width/height in the source frame. Keep doors,
+  // windows, drainpipes and the building's outer silhouette intact.
+  "district/0": {
+    poster: [0.44, 0.89, 0.11, 0.23],
+    graffiti: [0.39, 0.97, 0.17, 0.08],
+  },
+  "district/3": {
+    ad: [0.46, 0.92, 0.65, 0.84],
+    poster: [0.28, 0.9, 0.16, 0.53],
+    graffiti: [0.58, 0.91, 0.47, 0.4],
+  },
+  "verge/0": {
+    poster: [0.57, 0.65, 0.11, 0.18],
+    graffiti: [0.81, 0.94, 0.17, 0.1],
+  },
+  "verge/1": {
+    poster: [0.22, 0.86, 0.16, 0.23],
+    graffiti: [0.8, 0.94, 0.2, 0.12],
+  },
+  "verge/2": {
+    ad: [0.63, 0.81, 0.4, 0.4],
+    poster: [0.12, 0.72, 0.13, 0.21],
+    graffiti: [0.64, 0.84, 0.4, 0.14],
+  },
+};
+export function roadDecoration(
+  id: number | undefined,
+  key: string,
+  frame: number,
+) {
+  const slots = ROAD_PATCH_SLOTS[`${key}/${frame}`];
+  if (id === undefined || !slots) return undefined;
+  let h =
+    Math.imul(id + 17, 0x45d9f3b) ^
+    Math.imul(frame + (key === "verge" ? 13 : 1), 0x27d4eb2d);
+  h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
+  h = (h ^ (h >>> 16)) >>> 0;
+  const bucket = h % 100,
+    variant = (h >>> 12) % 2;
+  if (slots.ad && bucket < 9) return "ad" + variant;
+  if (bucket >= 12 && bucket < 28) return "poster" + variant;
+  if (bucket >= 31 && bucket < 43) return "graffiti" + variant;
+  return undefined;
+}
+export function roadPatchPlacement(
+  key: string,
+  frame: number,
+  tag: string,
+  width: number,
+  flip: boolean,
+) {
+  const kind = tag.replace(/[01]$/, ""),
+    slot = ROAD_PATCH_SLOTS[`${key}/${frame}`][kind];
+  const source = ROAD_FRAMES[key as "district" | "verge"][frame];
+  const patch = ROAD_PATCH_FRAMES[tag],
+    height = (width * source[3]) / source[2];
+  const scale = Math.min(
+    (width * slot[2]) / patch[2],
+    (height * slot[3]) / patch[3],
+  );
+  return {
+    dx: (slot[0] - 0.5) * width * (flip ? -1 : 1),
+    bottom: (slot[1] - roadSpriteOrigin(key, frame)) * height,
+    width: patch[2] * scale,
+    height: patch[3] * scale,
+  };
+}
+export function roadSpriteOrigin(key: string, frame: number) {
+  const source = ROAD_FRAMES[key as keyof typeof ROAD_FRAMES][frame];
+  return key === "traffic"
+    ? (806 - source[1]) / source[3]
+    : key === "verge"
+      ? ([488, 485, 490, 985, 993, 977][frame] - source[1]) / source[3]
+      : 1;
+}
+export function paintRoadPatch(
+  g: Parameters<typeof smallPrint>[0],
+  tag: string,
+) {
+  const r = (x: number, y: number, w: number, h: number, c: number) => {
+    g.fillStyle(c);
+    g.fillRect(x, y, w, h);
+  };
+  const text = (x: number, y: number, s: string, c: number, scale = 1) =>
+    smallPrint(
+      {
+        fillStyle: (v) => g.fillStyle(v),
+        fillRect: (a, b, w, h) =>
+          g.fillRect(x + a * scale, y + b * scale, w * scale, h * scale),
+      },
+      0,
+      0,
+      s,
+      c,
+    );
+  if (tag.startsWith("ad")) {
+    r(1, 2, 95, 46, 0x272e2c);
+    r(0, 0, 95, 46, 0x747264);
+    r(2, 2, 91, 42, 0xb4aa8b);
+    r(2, 2, 91, 2, 0xd1c09c);
+    r(2, 41, 91, 3, 0x8a826c);
+    if (tag === "ad0") {
+      text(8, 3, "L'ECOLE DE", 0x303f3a, 2);
+      text(20, 13, "DEMAIN", 0x303f3a, 2);
+      text(12, 24, "LIVRAISON", 0x6d493f, 2);
+      text(16, 34, "REPORTEE", 0x6d493f, 2);
+    } else {
+      text(8, 6, "EXCELLENCE", 0x4e4a39, 2);
+      text(18, 23, "A CREDIT", 0x795347, 2);
+      r(12, 38, 70, 1, 0x807660);
+      r(19, 40, 58, 1, 0x9c9277);
+    }
+    for (const x of [3, 90]) {
+      r(x, 3, 2, 2, 0x444c44);
+      r(x, 41, 2, 2, 0x444c44);
+    }
+    r(0, 32, 2, 6, 0x6f624e);
+    r(86, 44, 6, 2, 0x5a594b);
+  } else if (tag.startsWith("poster")) {
+    r(1, 3, 22, 28, 0x6e7060);
+    r(0, 2, 21, 27, 0xa79f84);
+    r(10, 7, 22, 27, 0xbfb294);
+    r(11, 8, 20, 1, 0xd0c4a1);
+    r(9, 6, 6, 2, 0x938c70);
+    r(25, 6, 5, 2, 0xc1b38d);
+    if (tag === "poster0") {
+      text(12, 11, "UN", 0x4b584d);
+      text(12, 18, "PROF", 0x4b584d);
+    } else {
+      r(1, 7, 30, 25, 0xbfb294);
+      text(3, 11, "BUDGET", 0x4b584d);
+      text(3, 18, "GELE", 0x4b584d);
+    }
+    r(13, 26, 15, 1, 0x8b896e);
+    r(13, 29, 10, 1, 0x8b896e);
+    r(26, 32, 6, 2, 0x6e7060);
+  } else {
+    const c = tag === "graffiti0" ? 0x38483e : 0x443b32;
+    text(2, 2, tag === "graffiti0" ? "DES PROFS" : "TOUT VA BIEN", c);
+    text(4, 10, tag === "graffiti0" ? "PAS DES PROMESSES" : "SUR LE PAPIER", c);
+    r(4, 17, 52, 1, c);
+    r(7, 18, 40, 1, c);
+    r(56, 18, 1, 3, c);
+  }
+}
 export function districtAnchors(travel: number, district = "mixed") {
   const result: Scenery[] = [];
   const add = (z: number, lane: number, kind: number, variant = 0, id = 0) => {
@@ -137,6 +306,28 @@ export class RoadArt {
       );
       texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
     }
+    const marks = document.createElement("canvas");
+    marks.width = 196;
+    marks.height = 112;
+    const ctx = marks.getContext("2d")!;
+    const ink = {
+      fillStyle(c: number) {
+        ctx.fillStyle = "#" + c.toString(16).padStart(6, "0");
+      },
+      fillRect(x: number, y: number, w: number, h: number) {
+        ctx.fillRect(x, y, w, h);
+      },
+    };
+    for (const [tag, [x, y, w, h]] of Object.entries(ROAD_PATCH_FRAMES)) {
+      ctx.save();
+      ctx.translate(x, y);
+      paintRoadPatch(ink, tag);
+      ctx.restore();
+    }
+    const marksTexture = scene.textures.addCanvas("road-patches", marks)!;
+    for (const [tag, [x, y, w, h]] of Object.entries(ROAD_PATCH_FRAMES))
+      marksTexture.add(tag, 0, x, y, w, h);
+    marksTexture.setFilter(Phaser.Textures.FilterMode.NEAREST);
   }
   static preload(scene: Phaser.Scene) {
     scene.load.image("sky", SKY_DATA);
@@ -190,6 +381,7 @@ export class RoadArt {
     y: number,
     width: number,
     flip = false,
+    id?: number,
   ) {
     const s =
       this.images[this.index] ??
@@ -199,22 +391,32 @@ export class RoadArt {
     this.index++;
     const [, , w, h] = ROAD_FRAMES[key][frame];
     s.setTexture(key, frame)
-      // Reused images can change atlas dimensions between district and traffic.
-      // Re-anchor after changing the frame, at the tires rather than transparent padding.
-      .setOrigin(
-        0.5,
-        key === "traffic"
-          ? (806 - ROAD_FRAMES.traffic[frame][1]) / h
-          : key === "verge"
-            ? ([488, 485, 490, 985, 993, 977][frame] -
-                ROAD_FRAMES.verge[frame][1]) /
-              h
-            : 1,
-      )
+      .setOrigin(0.5, roadSpriteOrigin(key, frame))
       .setPosition(x, y)
       .setDisplaySize(width, (width * h) / w)
       .setFlipX(flip)
       .setDepth(this.depth + 0.0001)
       .setVisible(true);
+    const tag = roadDecoration(id, key, frame);
+    if (tag) {
+      const p = roadPatchPlacement(key, frame, tag, width, flip);
+      const patch =
+        this.images[this.index] ??
+        (this.images[this.index] = this.scene.add.image(
+          0,
+          0,
+          "road-patches",
+          tag,
+        ));
+      this.index++;
+      patch
+        .setTexture("road-patches", tag)
+        .setOrigin(0.5, 1)
+        .setPosition(x + p.dx, y + p.bottom)
+        .setDisplaySize(p.width, p.height)
+        .setFlipX(false)
+        .setDepth(this.depth + 0.0002)
+        .setVisible(true);
+    }
   }
 }

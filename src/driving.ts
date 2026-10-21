@@ -16,6 +16,7 @@ export const DRIVE = {
   steerReturn: 0.18,
   acceleration: 38,
   braking: 95,
+  parkingSeconds: 1.8,
 };
 // One queue capacity across the day: density comes from spacing, not a longer tail.
 export const TRAFFIC = {
@@ -84,8 +85,8 @@ export function trafficCue(index: number, mission: number, random: number) {
     x: mission <= 0 ? cue.x : DENSE_LANES[index % DENSE_LANES.length],
     speed: mission <= 0 ? cue.speed : TRAFFIC.convoySpeed,
     gap:
-      DRIVE.motionScale *
-      (cue.gap * TRAFFIC.baseSpacing +
-        (index === 0 ? 0 : random * 35)) / density,
+      (DRIVE.motionScale *
+        (cue.gap * TRAFFIC.baseSpacing + (index === 0 ? 0 : random * 35))) /
+      density,
   };
 }

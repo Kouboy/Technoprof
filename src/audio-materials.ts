@@ -11,6 +11,11 @@ export const AUDIO = {
   wind: 0.085,
   rolling: 0.045,
   gears: [0, 32, 72, 125, 185, 280],
+  gpsNearMeters: 1000,
+  gpsCloseMeters: 500,
+  gpsNearSeconds: 4,
+  gpsCloseSeconds: 2,
+  gpsGain: 0.038,
 };
 export const FOLEY = {
   swing: [0.22, 0.11],

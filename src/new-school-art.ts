@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { DRIVE } from "./driving";
 import { QUIET_SCHOOL_DATA } from "./quiet-school-data";
 import { NEW_SCHOOL_DATA } from "./new-school-data";
 import { roomSpec, type RoomSpec } from "./missions";
@@ -416,7 +417,7 @@ export class NewSchoolArt {
     this.door.setDepth(3.14);
     this.showBackground(s.mission, 0);
     const t = s.phase === "arrivalFade" ? 5.8 : s.age,
-      p = Math.min(1, t / 1.8),
+      p = Math.min(1, t / DRIVE.parkingSeconds),
       carX = 40 + 71 * (1 - (1 - p) ** 3);
     s.carArt?.side(carX);
     const g = this.door,

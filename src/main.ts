@@ -1507,7 +1507,15 @@ class Game extends Phaser.Scene {
       care: !!this.roomSpec()?.care,
       road: this.brokenRoad,
       reason: this.failureReason,
+      distance: this.missionSpec().meters - this.road,
     };
+  }
+  motorRunning() {
+    return (
+      !this.paused &&
+      (["free", "receive", "road"].includes(this.phase) ||
+        (this.phase === "arrival" && this.age < DRIVE.parkingSeconds))
+    );
   }
   setPaused(value: boolean, reason = "", preserveControls = false) {
     if (!preserveControls && value !== this.paused) {
@@ -1535,11 +1543,7 @@ class Game extends Phaser.Scene {
         this.recoveryScene.active,
       this.sceneSoundContext(),
     );
-    this.audio.motor(
-      this.speed,
-      !value && ["free", "receive", "road", "arrival"].includes(this.phase),
-      this.keys.UP.isDown,
-    );
+    this.audio.motor(this.speed, this.motorRunning(), this.keys.UP.isDown);
     this.syncPlayerUI?.();
   }
   pauseForFocusLoss() {
@@ -2223,12 +2227,7 @@ class Game extends Phaser.Scene {
         this.recoveryScene.active,
       this.sceneSoundContext(),
     );
-    this.audio.motor(
-      this.speed,
-      !this.paused &&
-        ["free", "receive", "road", "arrival"].includes(this.phase),
-      this.keys.UP.isDown,
-    );
+    this.audio.motor(this.speed, this.motorRunning(), this.keys.UP.isDown);
     if (this.paused) {
       this.draw();
       return;
@@ -2321,7 +2320,8 @@ class Game extends Phaser.Scene {
         this.begin();
       }
     } else if (this.phase === "arrival") {
-      this.speed = this.parkSpeed * (1 - Math.min(1, this.age / 1.8));
+      this.speed =
+        this.parkSpeed * (1 - Math.min(1, this.age / DRIVE.parkingSeconds));
       if (this.age > 5.8) {
         this.phase = "arrivalFade";
         this.age = 0;
@@ -2500,9 +2500,6 @@ class Game extends Phaser.Scene {
           this.arrivalAlert = true;
           this.boardMessage = "ARRIVEE IMMINENTE / PREPAREZ-VOUS";
           this.messageTime = 5;
-          this.audio.tone(523, 0.16, 0.065, 523);
-          this.audio.tone(784, 0.25, 0.065, 784, 0.2);
-          this.audio.attention(0.65);
         }
         if (this.phase === "receive" && this.age > 3) {
           this.phase = "road";
@@ -4948,7 +4945,7 @@ class Game extends Phaser.Scene {
         const frame = t.variant ?? 0,
           width = [160, 195, 150, 90, 115, 42][frame] * p.scale;
         if (p.x + width / 2 < 7 || p.x - width / 2 > 313) return;
-        this.roadArt.draw("verge", frame, p.x, p.y, width, t.lane > 0);
+        this.roadArt.draw("verge", frame, p.x, p.y, width, t.lane > 0, t.id);
         return;
       }
       if (this.roadArt && t.kind !== 6) {
@@ -4956,7 +4953,7 @@ class Game extends Phaser.Scene {
           t.kind === 1 ? 0 : t.kind === 2 ? 1 : t.kind === 4 ? 2 : 3;
         const width = [150, 64, 29, 115][frame] * p.scale;
         if (p.x + width / 2 < 7 || p.x - width / 2 > 313) return;
-        this.roadArt.draw("district", frame, p.x, p.y, width, t.lane > 0);
+        this.roadArt.draw("district", frame, p.x, p.y, width, t.lane > 0, t.id);
         return;
       }
       if (t.kind !== 6 && (p.x < 10 || p.x > 304)) return;
@@ -5320,7 +5317,7 @@ class Game extends Phaser.Scene {
       this.rect(255, 101, 5, 36, 0x293e39);
     }
     // The vehicle decelerates into a fixed parking place in this side-on shot.
-    const p = Math.min(1, t / 1.8),
+    const p = Math.min(1, t / DRIVE.parkingSeconds),
       carX = 40 + 71 * (1 - (1 - p) ** 3);
     if (this.carArt && this.foreground) {
       this.carArt.side(carX);
@@ -5413,7 +5410,7 @@ class Game extends Phaser.Scene {
       this.g = this.foreground!;
       const t = this.phase === "arrivalFade" ? 5.8 : this.age;
       this.vehicleDamage(
-        40 + 71 * (1 - (1 - Math.min(1, t / 1.8)) ** 3),
+        40 + 71 * (1 - (1 - Math.min(1, t / DRIVE.parkingSeconds)) ** 3),
         146,
         true,
       );
@@ -5421,7 +5418,7 @@ class Game extends Phaser.Scene {
     }
     const t = this.phase === "arrivalFade" ? 5.8 : this.age;
     this.arrivalBackdrop!.setVisible(true);
-    const p = Math.min(1, t / 1.8),
+    const p = Math.min(1, t / DRIVE.parkingSeconds),
       carX = 40 + 71 * (1 - (1 - p) ** 3);
     this.carArt!.side(carX);
     this.g = this.foreground!;
