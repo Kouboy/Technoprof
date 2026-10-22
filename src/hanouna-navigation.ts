@@ -55,6 +55,7 @@ function hRoom(
 export const HANOUNA_NAV: MissionSpec = {
   ...MISSIONS[0],
   id: "hanouna-navigation-atelier-h1",
+  seconds: 180,
   start: h.cour,
   arena: h.seuil,
   rooms: {

@@ -32,7 +32,7 @@ for(const side of [-1,1])for(const lane of [.98,1.15]){
 }
 console.log('PASS two actual input trajectories, three missions, edge-exploit regression',JSON.stringify(results));
 {
- const {g,step,advance}=createGame();g.loadScenario('road');g.speed=220;g.obstacles=[{z:2,x:0,type:0}];step();assert.equal(g.collisions,1);assert.equal(g.vehicle,78);advance(.2);assert.equal(g.collisions,1);assert(g.speed>80);g.obstacles=[];g.keys.UP.isDown=true;advance(8);assert(g.speed>180);
+ const {g,step,advance}=createGame();g.loadScenario('road');g.speed=220;g.obstacles=[{z:2,x:0,type:0}];step();assert.equal(g.collisions,1);assert.equal(g.vehicle,82);advance(.2);assert.equal(g.collisions,1);assert(g.speed>80);g.obstacles=[];g.keys.UP.isDown=true;advance(8);assert(g.speed>180);
  g.car=1.15;g.keys.RIGHT.isDown=true;advance(15);assert(g.speed<70);g.keys.RIGHT.isDown=false;
  g.car=0;g.obstacles=[{z:g.travel+100,x:.62,type:0}];let passed=0;g.audio.pass=()=>passed++;g.speed=220;advance(4);assert.equal(passed,1);
  g.obstacles=[{z:g.travel-45,x:0,type:0}];step();assert(g.obstacles[0].z-g.travel>900);

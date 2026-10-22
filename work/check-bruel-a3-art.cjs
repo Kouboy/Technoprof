@@ -240,7 +240,7 @@ for (const profile of ["bruel-navigation", "bruel-navigation-a2"]) {
 for (const id of Object.keys(layout.rooms)) {
   fixture.g.loadScenario("bruel-navigation-a3-view-" + id);
   assert.equal(fixture.g.room, Number(id));
-  assert.equal(fixture.g.remaining, 225);
+  assert.equal(fixture.g.remaining, 195);
   assert.equal(fixture.g.hp, 5);
 }
 console.log(

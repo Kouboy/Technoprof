@@ -6,6 +6,7 @@ import {
   passState,
   type Material,
 } from "./audio-materials";
+import { DRIVE } from "./driving";
 type Voice = {
   source: AudioBufferSourceNode | OscillatorNode;
   nodes: AudioNode[];
@@ -44,6 +45,8 @@ export function sceneCues(
   context: SceneSoundContext,
 ): SceneCue[] {
   if (phase === "opening") return OPENING_CUES;
+  if (phase === "arrival")
+    return [["car-door", DRIVE.teacherExitSeconds, 0.95]];
   if (phase === "course") return [["bell-start", 0, 0.75, "classroom"]];
   if (phase === "later") return [["bell-end", 0, 0.75, "classroom"]];
   if (phase !== "fail") return [];
@@ -503,7 +506,10 @@ export class AudioKit {
     const age = context.age ?? this.sequenceAge;
     sceneCues(phase, context).forEach(([kind, at, weight, group], index) => {
       const offset = Math.max(0, age - at);
-      if (age >= at && (!this.sequencePlayed.has(index) || wasPaused)) {
+      if (
+        age >= at &&
+        (!this.sequencePlayed.has(index) || (wasPaused && kind !== "car-door"))
+      ) {
         this.sequencePlayed.add(index);
         if (offset < FOLEY[kind][0])
           this.play(kind, 0.2, weight, 0, group ?? "fx", 1, offset);

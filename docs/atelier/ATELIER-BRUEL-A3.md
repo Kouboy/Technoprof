@@ -1,5 +1,7 @@
 # Bruel — atelier A3 : récupération et alternance du boss
 
+Réglage après essai humain du 22 octobre : délai actuel **3:15**, partagé entre route et établissement.
+
 > Livraison locale depuis le nettoyage du 22 octobre : les lanceurs d’atelier
 > sont désormais des raccourcis légers. Garder `Jouer-Technoprof.html` à côté.
 > `Jouer-Technoprof-Journee-Atelier.html` reste la livraison autonome complète.

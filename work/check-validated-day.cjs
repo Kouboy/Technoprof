@@ -8,7 +8,7 @@ const schools = [
   "Lycée Auguste-Berthelot",
   "Lycée professionnel des Trois-Ponts",
 ];
-const seconds = [240, 225, 210];
+const seconds = [180, 195, 210];
 const results = [];
 for (const fps of [30, 60, 120]) {
   const { g, report: r } = runDay({ fps, mode: "direct" });
@@ -105,9 +105,9 @@ g.startDay();
 g.workshop = false;
 assert.equal(g.phase, "free");
 assert(!g.notified);
-assert.equal(g.remaining, 240);
+assert.equal(g.remaining, 180);
 t.advance(5, 30);
-assert.equal(g.remaining, 240, "cruising is uncharged");
+assert.equal(g.remaining, 180, "cruising is uncharged");
 g.setPaused(true);
 const paused = JSON.stringify([
   g.phase,
@@ -129,7 +129,7 @@ t.advance(2.2, 30);
 t.press("ENTER");
 assert.equal(g.phase, "free");
 assert.equal(g.navigationRevision, "A3");
-assert.equal(g.remaining, 225);
+assert.equal(g.remaining, 195);
 assert(!g.navigationCare.used && !g.recoveryScene.active);
 assert.equal(Object.keys(g.validatedDayRuns).length, 1);
 assert.equal(g.journalSnapshot().navigationByMission[1].end.outcome, "failure");

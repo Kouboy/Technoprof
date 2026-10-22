@@ -34,7 +34,7 @@ import {
   installPlayerExperience,
   resultLine,
   RADIO_BULLETINS,
-  RADIO_NAME,
+  RADIO_SPOKEN_NAME,
 } from "./player-experience";
 import {
   VIEW,
@@ -394,7 +394,7 @@ class Game extends Phaser.Scene {
   skidClock = 0;
   rattleClock = 0;
   tireMarks: { x: number; y: number; life: number }[] = [];
-  radioLines = RADIO_BULLETINS.map((text) => RADIO_NAME + ". " + text);
+  radioLines = RADIO_BULLETINS.map((text) => RADIO_SPOKEN_NAME + ". " + text);
   falling = 0;
   fallReturn = 25;
   lastGroundX = 25;
@@ -2070,7 +2070,7 @@ class Game extends Phaser.Scene {
         ];
       }
       if (name === "breakdown") {
-        this.vehicle = 22;
+        this.vehicle = DRIVE.carDamage;
         this.obstacles = [{ z: 12, x: 0, type: 0 }];
       }
     }
@@ -3123,7 +3123,10 @@ class Game extends Phaser.Scene {
       type,
       speed: this.speed,
     });
-    this.vehicle = Math.max(0, this.vehicle - (type === 1 ? 30 : 22));
+    this.vehicle = Math.max(
+      0,
+      this.vehicle - (type === 1 ? DRIVE.truckDamage : DRIVE.carDamage),
+    );
     this.speed *= 0.48;
     this.trafficHit = 1.4;
     this.crashPush =
@@ -5464,8 +5467,8 @@ class Game extends Phaser.Scene {
       this.rect(carX + 4, 133, 16, 7, 0x354d55);
     }
     // Exit with the book, walk to the opening, then recede into the courtyard.
-    if (t > 2.25) {
-      const walk = Math.min(1, (t - 2.25) / 2.35),
+    if (t > DRIVE.teacherExitSeconds) {
+      const walk = Math.min(1, (t - DRIVE.teacherExitSeconds) / 2.35),
         x = carX + 13 + (239 - carX - 13) * walk,
         depth = Math.max(0, Math.min(1, (t - 4.6) / 1.2));
       const y = 145 - depth * 27;
@@ -5512,8 +5515,12 @@ class Game extends Phaser.Scene {
       gate.lineStyle(0.45, 0x79837a);
       gate.lineBetween(hinge, 94, end, 94 + opening * 3);
     }
-    if (t > 2.25) {
-      const walk = Phaser.Math.Clamp((t - 2.25) / 2.35, 0, 1);
+    if (t > DRIVE.teacherExitSeconds) {
+      const walk = Phaser.Math.Clamp(
+        (t - DRIVE.teacherExitSeconds) / 2.35,
+        0,
+        1,
+      );
       const recede = Phaser.Math.Clamp((t - 4.6) / 1.2, 0, 1);
       const x = 129 + (220 - 129) * walk;
       const approach = Phaser.Math.Clamp((walk - 0.38) / 0.62, 0, 1);
@@ -5523,7 +5530,7 @@ class Game extends Phaser.Scene {
       teacher
         .setDepth(3.15)
         .setScale(0.105 * (1 - 0.2 * recede))
-        .setAlpha(Math.min(1, (t - 2.25) / 0.22));
+        .setAlpha(Math.min(1, (t - DRIVE.teacherExitSeconds) / 0.22));
     }
   }
   drawHall() {

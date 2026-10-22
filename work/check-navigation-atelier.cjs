@@ -405,7 +405,7 @@ for (const fps of [30, 60, 120])
         );
         assert.equal(g.room, t.api.NAV_ID.cour);
         assert.equal(g.remaining, arrivalClock, "cinema is free");
-        roadSpent = 225 - g.remaining;
+        roadSpent = g.missionSpec().seconds - g.remaining;
         assert(roadSpent > 45 && roadSpent < 85);
         assert(g.notified);
         assert(g.navigationProfile);

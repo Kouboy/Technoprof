@@ -14,8 +14,8 @@ avec les trois trajets et les dernières versions des établissements :
 
 | Affectation | Période | Établissement | Parcours | Destination | Délai |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Matin | Collège des Ormeaux | H1 | 42C | 4:00 |
-| 2 | Midi | Lycée Auguste-Berthelot | A3 | B12 | 3:45 |
+| 1 | Matin | Collège des Ormeaux | H1 | 42C | 3:00 |
+| 2 | Midi | Lycée Auguste-Berthelot | A3 | B12 | 3:15 |
 | 3 | Crépuscule | Lycée professionnel des Trois-Ponts | I2 | T03 | 3:30 |
 
 Les réglages actuels sont conservés pour évaluer l'équilibre réel : circulation

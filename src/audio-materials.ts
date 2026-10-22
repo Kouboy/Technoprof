@@ -30,6 +30,7 @@ export const FOLEY = {
   land: [0.27, 0.25],
   crumble: [0.35, 0.24],
   door: [0.85, 0.3],
+  "car-door": [0.32, 0.4],
   handle: [0.18, 0.16],
   stall: [0.9, 0.26],
   cloth: [0.65, 0.12],
@@ -305,6 +306,14 @@ export function makeMaterial(kind: Material, sampleRate: number, seed = 5301) {
             burst(t, 0.27, 0.23) +
             burst(t, 0.58, 0.18) +
             burst(t, 0.8, 0.19));
+        break;
+      case "car-door":
+        // Body-panel thud, latch click and a short, hollow metal resonance.
+        v =
+          (tone(82, t) * 0.85 + low * 1.8) * decay(t, 0.045) +
+          (band * 0.7 + high * 0.35) * decay(t, 0.009) +
+          (high * 0.8 + band) * burst(t, 0.025, 0.018) +
+          (tone(173, t) * 0.22 + tone(307, t) * 0.08) * decay(t, 0.065);
         break;
       case "door":
         v =

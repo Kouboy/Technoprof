@@ -439,8 +439,8 @@ export class NewSchoolArt {
     g.fillStyle(0xb9aa89);
     g.fillRect(306 - w, 47, w, 13);
     smallPrint(g, 311 - w, 51, label, 0x24333b);
-    if (t > 2.25) {
-      const walk = Math.min(1, (t - 2.25) / 2.35),
+    if (t > DRIVE.teacherExitSeconds) {
+      const walk = Math.min(1, (t - DRIVE.teacherExitSeconds) / 2.35),
         recede = Math.max(0, Math.min(1, (t - 4.6) / 1.2));
       s.art
         ?.pose(

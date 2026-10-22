@@ -4,6 +4,7 @@ Les documents sont conservés et leurs liens internes ont été ajustés après
 classement. Les décisions de gameplay historiques restent consultables.
 
 - [Journée d’atelier](atelier/JOURNEE-ATELIER.md) : livraison complète actuelle.
+- [Textes à réécrire](ecriture/TEXTES-A-REECRIRE.md) : document éditable des radios et répliques de la journée.
 - [Ormeaux H1](atelier/ATELIER-HANOUNA-H1.md), [Berthelot A3](atelier/ATELIER-BRUEL-A3.md), [Trois-Ponts I2](atelier/ATELIER-INSHAPE-I2.md).
 - [Ambiance routière](atelier/CONDUITE-AMBIANCE-ATELIER.md), [signalétique](atelier/SIGNALETIQUE-ATELIER.md), [séquences](atelier/SEQUENCES-ATELIER.md).
 - `atelier/` : intentions, topologies et comptes rendus des ateliers.

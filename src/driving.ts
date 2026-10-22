@@ -17,6 +17,9 @@ export const DRIVE = {
   acceleration: 38,
   braking: 95,
   parkingSeconds: 1.8,
+  teacherExitSeconds: 2.25,
+  carDamage: 18,
+  truckDamage: 25,
 };
 // One queue capacity across the day: density comes from spacing, not a longer tail.
 export const TRAFFIC = {

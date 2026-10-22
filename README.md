@@ -44,6 +44,7 @@ npm run test:rapide
 | `npm run test:rapide` | Règles principales, conduite, lumières, audio de route et voiture |
 | `npm run test:journee` | Trois trajets + H1/A3/I2, commandes, soins, transitions et bilan à 30/60/120 fps simulés |
 | `npm run test:assets` | Catalogue de compilation, images retenues intactes et préchargement des acteurs partagés |
+| `npm run test:retouches` | Nouveaux délais/dégâts, radio et claquement de portière |
 | `npm run test:signaletique` | Panneaux et rendu des trois établissements |
 | `npm run test:sequences` | Entrée en classe, échecs et feedbacks sonores |
 | `npm run test:hanouna-h1` | Premier établissement et Inspectrice |

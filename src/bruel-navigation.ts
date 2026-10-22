@@ -317,6 +317,7 @@ BRUEL_NAV_A2.rooms[n.palierB] = a2Room(n.palierB, {
 export const BRUEL_NAV_A3: MissionSpec = {
   ...BRUEL_NAV_A2,
   id: "bruel-navigation-atelier-a3",
+  seconds: 195,
   rooms: Object.fromEntries(
     Object.entries(BRUEL_NAV_A2.rooms).map(([id, r]) => [
       id,
