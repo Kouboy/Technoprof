@@ -13,7 +13,7 @@
     "format": "prettier --write src index.html",
     "test:rendu-a3": "node work/check-bruel-a3-art.cjs",
     "test:signaletique": "node work/check-school-signage.cjs && node work/check-hanouna-h1-art.cjs && node work/check-bruel-a3-art.cjs && node work/check-trois-ponts-i2-art.cjs",
-    "test:ambiance-route": "node work/check-road-life-art.cjs && node work/check-road-life-audio.cjs && node work/check-road.cjs && node work/check-052.cjs",
+    "test:ambiance-route": "node work/check-dusk-road.cjs && node work/check-road-life-art.cjs && node work/check-road-life-audio.cjs && node work/check-road.cjs && node work/check-052.cjs",
     "test:holes-a3": "node work/check-floor-gaps-a3.cjs",
     "test:hanouna-h1": "node work/check-hanouna-h1.cjs && node work/check-hanouna-h1-art.cjs && node work/check-inspector-h1.cjs",
     "test:inshape-i1": "node work/check-inshape-i1.cjs && node work/check-inshape-i1-art.cjs && node work/check-catchup-i1.cjs",

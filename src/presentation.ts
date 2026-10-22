@@ -318,6 +318,7 @@ export const REFERENCE_SCENES: Record<string, string> = {
   "road-steel": "Pont / maçonnerie et acier",
   "road-under": "Pont / passage sous le tablier",
   "road-publicite": "Route / publicité Excellence",
+  "road-lights": "Route / éclairage des véhicules",
   "road-publicite-ecole": "Route / publicité École de demain",
   "road-publicite-gauche": "Route / publicité côté gauche",
   "road-publicite-facade": "Route / publicité sur façade d’atelier",

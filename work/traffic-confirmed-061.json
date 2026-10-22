@@ -4,73 +4,73 @@
     {
       "seed": 1,
       "mission": 1,
-      "confirmed": 24,
+      "confirmed": 26,
       "peakVisible": 4,
-      "remaining": 178.61666666661782,
+      "remaining": 167.73333333327582,
       "hits": 0
     },
     {
       "seed": 1,
       "mission": 2,
-      "confirmed": 39,
+      "confirmed": 44,
       "peakVisible": 5,
-      "remaining": 170.89999999995695,
+      "remaining": 169.5333333332892,
       "hits": 0
     },
     {
       "seed": 1,
       "mission": 3,
-      "confirmed": 74,
+      "confirmed": 79,
       "peakVisible": 7,
-      "remaining": 144.3166666666144,
+      "remaining": 147.58333333328366,
       "hits": 0
     },
     {
       "seed": 4301,
       "mission": 1,
-      "confirmed": 23,
+      "confirmed": 26,
       "peakVisible": 4,
-      "remaining": 178.11666666661742,
+      "remaining": 174.7333333332814,
       "hits": 0
     },
     {
       "seed": 4301,
       "mission": 2,
-      "confirmed": 39,
+      "confirmed": 44,
       "peakVisible": 5,
-      "remaining": 171.29999999995727,
+      "remaining": 170.46666666662327,
       "hits": 0
     },
     {
       "seed": 4301,
       "mission": 3,
-      "confirmed": 73,
+      "confirmed": 78,
       "peakVisible": 7,
-      "remaining": 143.9833333332808,
+      "remaining": 147.03333333328322,
       "hits": 0
     },
     {
       "seed": 8317,
       "mission": 1,
-      "confirmed": 22,
+      "confirmed": 26,
       "peakVisible": 4,
-      "remaining": 176.16666666661587,
+      "remaining": 170.4166666666113,
       "hits": 0
     },
     {
       "seed": 8317,
       "mission": 2,
-      "confirmed": 39,
+      "confirmed": 43,
       "peakVisible": 5,
-      "remaining": 171.08333333329043,
+      "remaining": 168.91666666662204,
       "hits": 0
     },
     {
       "seed": 8317,
       "mission": 3,
-      "confirmed": 75,
+      "confirmed": 78,
       "peakVisible": 7,
-      "remaining": 145.3833333332819,
+      "remaining": 147.18333333328334,
       "hits": 0
     }
   ]

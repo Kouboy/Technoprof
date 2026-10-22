@@ -107,6 +107,7 @@ function image() {
     "setPosition",
     "setDisplaySize",
     "setFlipX",
+    "setTint",
     "setDepth",
     "setVisible",
   ])
@@ -140,6 +141,16 @@ art.draw("verge", 2, 240, 150, 100, false, id);
 assert.equal(images.length, 2, "fixed sprite pool");
 assert.equal(images[0].setFlipXArgs[0], false);
 assert.equal(images[1].setFlipXArgs[0], false);
+art.mission = 2;
+art.index = 0;
+art.draw("verge", 2, 240, 150, 100, false, id);
+assert.notEqual(images[0].setTintArgs[0], 0xffffff);
+assert.equal(images[0].setTintArgs[0], images[1].setTintArgs[0]);
+art.mission = 1;
+art.index = 0;
+art.draw("verge", 2, 240, 150, 100, false, id);
+assert.equal(images[0].setTintArgs[0], 0xffffff, "daylight restored on pooled base");
+assert.equal(images[1].setTintArgs[0], 0xffffff, "daylight restored on pooled patch");
 console.log(
   `PASS road life art: ${ads} rare ads / ${buildings} wall surfaces, ${patches} total stable details, bounded textures, readable-side flips and pooled depth`,
 );

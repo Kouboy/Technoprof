@@ -26,6 +26,81 @@ export const ROAD_FRAMES = {
   ],
 };
 export const VERGE = { zoneLength: 720, visible: 720, bridgeBehind: 48 };
+// Atlas-space bulb centres, shared by both sides and all perspective scales.
+const ROAD_BULBS = {
+  traffic: [
+    [
+      [110, 622],
+      [407, 622],
+    ],
+    [
+      [620, 615],
+      [912, 615],
+    ],
+    [
+      [1100, 669],
+      [1425, 669],
+    ],
+  ],
+  district: [[], [], [[436, 580]], []],
+};
+export const ROAD_LIGHT = {
+  trailStart: 110,
+  trailMax: 4,
+  duskTint: 0xabb0c8,
+  beamColor: 0xf2dfb2,
+  beamAlpha: 0.045,
+  beamReach: 95,
+  tail: 0xff573d,
+  street: 0xffdfa0,
+  haloAlpha: [0, 0.34, 0.13, 0.05],
+};
+export function roadLightTrail(speed: number) {
+  return Math.max(
+    0,
+    Math.min(ROAD_LIGHT.trailMax, (speed - ROAD_LIGHT.trailStart) / 45),
+  );
+}
+export function roadLightPlacement(
+  key: "traffic" | "district",
+  frame: number,
+  width: number,
+  flip = false,
+) {
+  const [sx, sy, w, h] = ROAD_FRAMES[key][frame];
+  return ROAD_BULBS[key][frame].map(([bx, by]) => ({
+    dx: ((bx - sx) / w - 0.5) * width * (flip ? -1 : 1),
+    dy: (((by - sy) / h - roadSpriteOrigin(key, frame)) * width * h) / w,
+    radius: Math.max(0.35, width * (key === "traffic" ? 0.055 : 0.16)),
+  }));
+}
+export function drawRoadLamp(
+  g: Phaser.GameObjects.Graphics,
+  x: number,
+  y: number,
+  radius: number,
+  color: number,
+  trail = 0,
+  drift = 0,
+) {
+  // A tiny stepped halo keeps pixel silhouettes sharp; only light leaves a trail.
+  for (let shell = 3; shell >= 1; shell--) {
+    g.fillStyle(color, ROAD_LIGHT.haloAlpha[shell]);
+    g.fillEllipse(x, y, radius * shell * 2, radius * shell * 1.2);
+  }
+  if (trail > 0)
+    for (let i = 3; i >= 1; i--) {
+      g.fillStyle(color, 0.13 / i);
+      g.fillRect(
+        x - radius * 0.35 - (drift * i) / 3,
+        y - (trail * i) / 3,
+        Math.max(0.6, radius * 0.7),
+        Math.max(0.6, trail / 3),
+      );
+    }
+  g.fillStyle(color, 0.9);
+  g.fillRect(x - radius * 0.45, y - 0.4, Math.max(0.7, radius * 0.9), 0.8);
+}
 export const ROAD_VIEWS: Record<string, number> = {
   road: 140,
   "road-housing": 240,
@@ -35,6 +110,7 @@ export const ROAD_VIEWS: Record<string, number> = {
   "road-bridge": 340,
   "road-steel": 1070,
   "road-under": 408,
+  "road-lights": 140,
   "road-publicite": 317,
   "road-publicite-ecole": 5957,
   "road-publicite-gauche": 8717,
@@ -262,8 +338,12 @@ export class RoadArt {
   skyline: Phaser.GameObjects.Image;
   horizonLight?: Phaser.GameObjects.Graphics;
   layers: Phaser.GameObjects.Graphics[] = [];
+  lightLayers: Phaser.GameObjects.Graphics[] = [];
+  lightIndex = 0;
+  lightMask?: Phaser.Display.Masks.GeometryMask;
   index = 0;
   depth = 3.01;
+  mission = 0;
   constructor(private scene: Phaser.Scene) {
     const sky = scene.textures.get("sky");
     const sourceSky = sky.getSourceImage() as HTMLImageElement;
@@ -284,6 +364,12 @@ export class RoadArt {
 
       .setVisible(false);
     this.horizonLight = scene.add.graphics().setDepth(3.0015);
+    this.lightMask = scene.add
+      .graphics()
+      .fillStyle(0xffffff)
+      .fillRect(7, 7, 306, 168)
+      .setVisible(false)
+      .createGeometryMask();
     for (const key of ["traffic", "district", "verge"] as const) {
       const source = scene.textures
         .get("raw-" + key)
@@ -336,6 +422,7 @@ export class RoadArt {
     scene.load.image("raw-verge", VERGE_DATA);
   }
   sky(horizon: number, bend: number, clock: number, mission = 0) {
+    this.mission = mission;
     const glow = this.horizonLight;
     glow?.clear();
     if (glow) {
@@ -367,6 +454,57 @@ export class RoadArt {
     this.index = 0;
     this.images.forEach((s) => s.setVisible(false));
     this.layers.forEach((g) => g.clear());
+    this.lightIndex = 0;
+    this.lightLayers?.forEach((g) => g.clear());
+  }
+  lights(
+    key: "traffic" | "district",
+    frame: number,
+    x: number,
+    y: number,
+    width: number,
+    flip: boolean,
+    mission: number,
+    speed: number,
+  ) {
+    if (mission !== 2) return;
+    const bulbs = roadLightPlacement(key, frame, width, flip);
+    if (!bulbs.length) return;
+    const g =
+      this.lightLayers[this.lightIndex] ??
+      (this.lightLayers[this.lightIndex] = this.scene.add.graphics());
+    this.lightIndex++;
+    g.setDepth(this.depth + 0.0003);
+    if (this.lightMask) g.setMask(this.lightMask);
+    for (const bulb of bulbs) {
+      const bx = x + bulb.dx,
+        by = y + bulb.dy;
+      if (key === "district") {
+        // Pool of light below the actual bulb, directed towards the carriageway.
+        const reach = width * 0.24 * (flip ? -1 : 1);
+        g.fillStyle(ROAD_LIGHT.street, 0.035);
+        g.fillTriangle(
+          bx,
+          by,
+          bx + reach - width * 0.4,
+          y,
+          bx + reach + width * 0.4,
+          y,
+        );
+        g.fillStyle(ROAD_LIGHT.street, 0.1);
+        g.fillEllipse(bx + reach, y - 0.5, width, width * 0.16);
+      }
+      const trail = roadLightTrail(speed) * Math.min(1, width / 29);
+      drawRoadLamp(
+        g,
+        bx,
+        by,
+        bulb.radius,
+        key === "traffic" ? ROAD_LIGHT.tail : ROAD_LIGHT.street,
+        trail,
+        ((bx - 160) * trail) / 130,
+      );
+    }
   }
   layer(order: number) {
     this.depth = 3.01 + order * 0.001;
@@ -395,6 +533,7 @@ export class RoadArt {
       .setPosition(x, y)
       .setDisplaySize(width, (width * h) / w)
       .setFlipX(flip)
+      .setTint(this.mission === 2 ? ROAD_LIGHT.duskTint : 0xffffff)
       .setDepth(this.depth + 0.0001)
       .setVisible(true);
     const tag = roadDecoration(id, key, frame);
@@ -415,6 +554,7 @@ export class RoadArt {
         .setPosition(x + p.dx, y + p.bottom)
         .setDisplaySize(p.width, p.height)
         .setFlipX(false)
+        .setTint(this.mission === 2 ? ROAD_LIGHT.duskTint : 0xffffff)
         .setDepth(this.depth + 0.0002)
         .setVisible(true);
     }

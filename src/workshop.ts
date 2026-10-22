@@ -161,6 +161,7 @@ const SCENARIOS: Record<string, string> = {
   road: "Route / trafic reproductible",
   "road-slow": "Conduite / 40 km/h",
   "road-fast": "Conduite / 260 km/h",
+  "road-dusk-fast": "Conduite / crépuscule à 260 km/h",
   "road-brake": "Freinage / véhicule lent",
   "road-edge": "Accotement / perte d'adhérence",
   parent: "Parent / présentation",

@@ -6,11 +6,16 @@ exports.driveInput=(g)=>{
  for(const target of [-.94,0,.94])for(const brake of [false,true]){
   let x=g.car,v=g.steerVelocity,speed=g.speed,travel=0,cost=0;
   for(let i=1;i<=30;i++){
-   const dt=.08,t=i*dt,anticipate=x+v*.24;
+   const dt=.05,t=i*dt,anticipate=x+v*.24;
    const steer=anticipate<target-.04?1:anticipate>target+.04?-1:0;
    speed=Math.max(0,Math.min(g.notified?260:110,speed+(brake?-95:38*(1-speed/340))*dt));
    v+=(steer*(.12+Math.min(1,speed/260)*1.8)-v)*(1-Math.exp(-dt/(steer?.24:.18)));
-   x=Math.max(-1.15,Math.min(1.15,x+v*dt));travel+=speed*2.4/3.6*dt;
+    const curve=Math.sin((g.travel+travel)/220)*.14*(speed/260)**1.4;
+    x=Math.max(-1.15,Math.min(1.15,x+(v-curve)*dt));
+    const shoulder=Math.max(0,Math.min(1,(Math.abs(x)*105+21-125)/15));
+    speed=Math.max(0,speed-shoulder*(18+speed*.5)*dt);
+    const rush=Math.max(0,(speed-110)/150);
+    travel+=speed*2.4/3.6*(1+.65*rush**1.3)*dt;
    cost+=Math.max(0,Math.abs(x)-.97)*100;
    for(const o of cars){
     const z=o.z-g.travel+(o.speed??[78,60,68][o.type])*2.4/3.6*t-travel;

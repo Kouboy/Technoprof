@@ -93,6 +93,8 @@ import {
   vergeZone,
   type Scenery,
   ROAD_VIEWS,
+  drawRoadLamp,
+  ROAD_LIGHT,
 } from "./road-art";
 import { drawRoadBridge, roadsideProjection } from "./road-structures";
 import { CarArt } from "./car-art";
@@ -1949,6 +1951,7 @@ class Game extends Phaser.Scene {
       this.session.record("scenario", this.mission, this.room, { name });
       return;
     }
+    if (name === "road-dusk-fast") this.mission = 2;
     this.begin();
     this.notified = true;
     this.returnFade = 0;
@@ -2048,7 +2051,7 @@ class Game extends Phaser.Scene {
       this.phase = "road";
       this.speed = 110;
       if (name === "road-slow") this.speed = 40;
-      if (name === "road-fast") this.speed = 260;
+      if (name === "road-fast" || name === "road-dusk-fast") this.speed = 260;
       if (name === "road-edge") {
         this.speed = 180;
         this.car = 1.1;
@@ -2094,9 +2097,24 @@ class Game extends Phaser.Scene {
       this.speed = 148;
       this.car = 0;
       this.obstacles = [
-        { z: roadView + 80, x: -0.65, type: 0, speed: 74 },
-        { z: roadView + 150, x: 0.65, type: 2, speed: 82 },
-        { z: roadView + 290, x: -0.65, type: 1, speed: 62 },
+        {
+          z: roadView + (scene === "road-lights" ? 22 : 80),
+          x: -0.65,
+          type: 0,
+          speed: 74,
+        },
+        {
+          z: roadView + (scene === "road-lights" ? 60 : 150),
+          x: 0.65,
+          type: 2,
+          speed: 82,
+        },
+        {
+          z: roadView + (scene === "road-lights" ? 110 : 290),
+          x: -0.65,
+          type: 1,
+          speed: 62,
+        },
       ];
     } else if (scene === "arrival") {
       this.age = 2.6;
@@ -4915,6 +4933,23 @@ class Game extends Phaser.Scene {
         this.rect(c - scale, y, Math.max(1, 2 * scale), 1, 0xd1ccad);
     }
 
+    if (this.mission === 2) {
+      // Front beams lie on the ground behind traffic, never on top of a vehicle.
+      const source = project(0, this.car),
+        end = project(ROAD_LIGHT.beamReach, this.car * 0.45);
+      for (const side of [-1, 1])
+        for (let shell = 3; shell >= 1; shell--) {
+          this.g.fillStyle(ROAD_LIGHT.beamColor, ROAD_LIGHT.beamAlpha);
+          this.g.fillTriangle(
+            source.x + side * 12,
+            149,
+            end.x + side * 7 - 5 * shell,
+            end.y,
+            end.x + side * 7 + 5 * shell,
+            end.y,
+          );
+        }
+    }
     drawRoadWear(this.g, this.travel, project);
     const scenery = [];
     // Immutable world anchors: types depend on the object, never on camera position.
@@ -4954,6 +4989,16 @@ class Game extends Phaser.Scene {
         const width = [150, 64, 29, 115][frame] * p.scale;
         if (p.x + width / 2 < 7 || p.x - width / 2 > 313) return;
         this.roadArt.draw("district", frame, p.x, p.y, width, t.lane > 0, t.id);
+        this.roadArt.lights(
+          "district",
+          frame,
+          p.x,
+          p.y,
+          width,
+          t.lane > 0,
+          this.mission,
+          this.speed,
+        );
         return;
       }
       if (t.kind !== 6 && (p.x < 10 || p.x > 304)) return;
@@ -5128,6 +5173,16 @@ class Game extends Phaser.Scene {
           p.y,
           trafficWidth(o.type) * p.scale,
         );
+        this.roadArt.lights(
+          "traffic",
+          o.type === 1 ? 2 : o.type === 2 ? 1 : 0,
+          p.x,
+          p.y,
+          w,
+          false,
+          this.mission,
+          Math.max(0, this.speed - trafficSpeed(o)),
+        );
         return;
       }
       if (o.type === 1) this.rect(p.x - w / 2, p.y - h, w, h, 0xada884);
@@ -5256,6 +5311,7 @@ class Game extends Phaser.Scene {
       }
     }
     if (
+      this.mission === 2 ||
       this.keys.DOWN.isDown ||
       (this.phase === "fail" && this.brokenRoad && this.speed > 0)
     ) {
@@ -5264,7 +5320,15 @@ class Game extends Phaser.Scene {
         ["rightLamp", x + 14.5],
       ] as const) {
         const lamp = this.carArt?.anchor(kind) ?? { x: fallback, y: 156 };
-        this.rect(lamp.x - 2, lamp.y - 1, 4, 2, 0xff7352);
+        if (this.mission === 2)
+          drawRoadLamp(
+            this.g,
+            lamp.x,
+            lamp.y,
+            this.keys.DOWN.isDown ? 2.3 : 1.65,
+            ROAD_LIGHT.tail,
+          );
+        else this.rect(lamp.x - 2, lamp.y - 1, 4, 2, 0xff7352);
       }
     }
     const exhaust = (this.ambienceClock * 4) % 1;

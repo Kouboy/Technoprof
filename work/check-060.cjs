@@ -31,7 +31,7 @@ for(const path of ['detour','shortcut'])for(const mode of ['keyboard','direct'])
  const rooms=[1,2,3].map(m=>r.journal.events.filter(e=>e.mission===m&&e.kind==='room').length);
  assert.deepEqual(rooms,path==='detour'?[10,18,36]:[9,18,37]);
  const passing=[1,2,3].map(m=>r.journal.events.filter(e=>e.mission===m&&['pass','near-pass'].includes(e.kind)).length);
- assert(passing[0]>=22&&passing[0]<=27);assert(passing[1]>=37);assert(passing[2]>=70);assert(passing[2]>=passing[1]*1.7);
+ assert(passing[0]>=22&&passing[0]<=30);assert(passing[1]>=37);assert(passing[2]>=70);assert(passing[2]>=passing[1]*1.6);
  const wins=r.journal.events.filter(e=>e.kind==='success').map(e=>e.data);
  assert(wins[0].remaining>wins[1].remaining+25);assert(wins[1].remaining>wins[2].remaining+50);assert(wins[2].remaining>5);
  reports.push({path,mode,rooms,encounters,passing,wins,hits:r.collisions});
