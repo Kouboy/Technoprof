@@ -86,15 +86,21 @@ export class NewSchoolArt {
   hideClassDoor() {
     this.door.clear();
   }
-  constructor(private scene: Phaser.Scene) {
+  constructor(
+    private scene: Phaser.Scene,
+    private legacyBackgrounds = true,
+  ) {
     prepareCatchupStudent(scene);
     for (const key of ["bruel", "pro"]) {
-      const texture = scene.textures.get(key + "-backgrounds");
-      const source = texture.getSourceImage() as HTMLImageElement;
-      BACKGROUND_FRAMES[key].forEach(([x, y, w, h], i) =>
-        texture.add(i, 0, x, y, w, h),
-      );
-      texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      // Both entrance frames are still used by the parking cinematics.
+      {
+        const texture = scene.textures.get(key + "-backgrounds");
+        const source = texture.getSourceImage() as HTMLImageElement;
+        BACKGROUND_FRAMES[key].forEach(([x, y, w, h], i) =>
+          texture.add(i, 0, x, y, w, h),
+        );
+        texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      }
       const raw = scene.textures
         .get(key + "-enemies")
         .getSourceImage() as HTMLImageElement;
@@ -115,16 +121,18 @@ export class NewSchoolArt {
         t.setFilter(Phaser.Textures.FilterMode.NEAREST);
       });
     }
-    const quiet = scene.textures.get("quiet-backgrounds");
-    [
-      [0, 0, 833, 469],
-      [840, 0, 832, 469],
-      [0, 475, 833, 443],
-      [840, 475, 832, 443],
-    ].forEach(([x, y, w, h], i) => quiet.add(i, 0, x, y, w, h));
-    quiet.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    if (legacyBackgrounds) {
+      const quiet = scene.textures.get("quiet-backgrounds");
+      [
+        [0, 0, 833, 469],
+        [840, 0, 832, 469],
+        [0, 475, 833, 443],
+        [840, 475, 832, 443],
+      ].forEach(([x, y, w, h], i) => quiet.add(i, 0, x, y, w, h));
+      quiet.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    }
     this.background = scene.add
-      .image(7, 7, "bruel-backgrounds", 0)
+      .image(7, 7, legacyBackgrounds ? "bruel-backgrounds" : "__WHITE", 0)
       .setOrigin(0)
       .setDisplaySize(306, 168)
       .setDepth(1);
@@ -139,9 +147,10 @@ export class NewSchoolArt {
     this.combat = scene.add.graphics().setDepth(2.15);
     this.hide();
   }
-  static preload(scene: Phaser.Scene) {
+  static preload(scene: Phaser.Scene, legacyBackgrounds = true) {
     preloadCatchupStudent(scene);
-    scene.load.image("quiet-backgrounds", QUIET_SCHOOL_DATA);
+    if (legacyBackgrounds)
+      scene.load.image("quiet-backgrounds", QUIET_SCHOOL_DATA);
     for (const [key, data] of Object.entries(NEW_SCHOOL_DATA))
       scene.load.image(key, data);
   }
@@ -164,7 +173,8 @@ export class NewSchoolArt {
       key = s.mission === 1 ? "bruel" : "pro";
     this.background.setDepth(1);
     this.door.setDepth(1.6);
-    if (r.quietFrame !== undefined)
+    if (!this.legacyBackgrounds) this.background.setVisible(false);
+    else if (r.quietFrame !== undefined)
       this.background
         .setTexture("quiet-backgrounds", r.quietFrame)
         .setDisplaySize(306, 168)

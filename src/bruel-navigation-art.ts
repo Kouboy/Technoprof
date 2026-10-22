@@ -17,13 +17,18 @@ export class BruelNavigationArt {
     scene.load.image("infirmary-nurse", INFIRMARY_DATA);
     BruelA3Art.preload(scene);
   }
-  constructor(private scene: Phaser.Scene) {
+  constructor(
+    private scene: Phaser.Scene,
+    legacyBackgrounds = true,
+  ) {
     this.a3 = new BruelA3Art(scene);
-    const t = scene.textures.get("bruel-backgrounds");
-    t.add("nav-stair", 0, 402, 474, 420, 444);
-    t.add("nav-door", 0, 890, 40, 150, 405);
-    // Include the distinctive broken bench and tree trunk seen at the entrance.
-    t.add("nav-court-view", 0, 0, 104, 485, 307);
+    if (legacyBackgrounds) {
+      const t = scene.textures.get("bruel-backgrounds");
+      t.add("nav-stair", 0, 402, 474, 420, 444);
+      t.add("nav-door", 0, 890, 40, 150, 405);
+      // Include the distinctive broken bench and tree trunk seen at the entrance.
+      t.add("nav-court-view", 0, 0, 104, 485, 307);
+    }
     this.ink = scene.add.graphics().setDepth(1.88);
     scene.textures
       .get("infirmary-nurse")
@@ -34,7 +39,7 @@ export class BruelNavigationArt {
       .setDisplaySize(77, 77)
       .setDepth(2)
       .setVisible(false);
-    for (let i = 0; i < 3; i++)
+    for (let i = 0; i < (legacyBackgrounds ? 3 : 0); i++)
       this.patches.push(
         scene.add
           .image(0, 0, "bruel-backgrounds", "nav-door")

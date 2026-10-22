@@ -1,0 +1,13 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const root = path.resolve(__dirname, '..');
+let html = fs.readFileSync(path.join(root, 'dist-day/index.html'), 'utf8');
+const tag = html.match(/<script[^>]+src="([^"]+)"[^>]*><\/script>/);
+if (!tag) throw Error('Day compiled script missing');
+const script = path.join(root, 'dist-day', tag[1].replace(/^\//, ''));
+const code = fs.readFileSync(script, 'utf8');
+html = html.replace(tag[0], () => '<script type="module">\n' + code.replace(/<\/script/gi, '<\\/script') + '\n</script>');
+html = html.replace(/<title>[\s\S]*?<\/title\s*>/, '<title>TECHNOPROF — Journée complète des établissements validés</title>');
+html = html.replace('href="/"', 'href="Jouer-Technoprof-Journee-Atelier.html"');
+fs.writeFileSync(path.join(root, 'Jouer-Technoprof-Journee-Atelier.html'), html);
+console.log('Standalone reduced day written: ' + Buffer.byteLength(html) + ' bytes');

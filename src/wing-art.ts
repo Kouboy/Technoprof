@@ -439,16 +439,18 @@ export const STUDENT_OUTLINES = [
 export class WingArt {
   background: Phaser.GameObjects.Image;
   student: Phaser.GameObjects.Image;
-  constructor(scene: Phaser.Scene) {
-    const bg = scene.textures.get("wing-34"),
-      source = bg.getSourceImage() as HTMLImageElement;
-    bg.add("floor", 0, 0, 0, source.width, Math.round(source.height * 0.75));
-    bg.setFilter(Phaser.Textures.FilterMode.NEAREST);
-    this.background = scene.add
-      .image(7, 7, "wing-34", "floor")
-      .setOrigin(0)
-      .setDisplaySize(306, 168)
-      .setDepth(1);
+  constructor(scene: Phaser.Scene, legacyBackgrounds = true) {
+    if (legacyBackgrounds) {
+      const bg = scene.textures.get("wing-34"),
+        source = bg.getSourceImage() as HTMLImageElement;
+      bg.add("floor", 0, 0, 0, source.width, Math.round(source.height * 0.75));
+      bg.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      this.background = scene.add
+        .image(7, 7, "wing-34", "floor")
+        .setOrigin(0)
+        .setDisplaySize(306, 168)
+        .setDepth(1);
+    } else this.background = scene.add.image(7, 7, "__WHITE").setVisible(false);
     const raw = scene.textures
       .get("raw-student-34")
       .getSourceImage() as HTMLImageElement;
@@ -470,8 +472,8 @@ export class WingArt {
     this.student = scene.add.image(0, 0, "student-34", 0).setDepth(2);
     this.hide();
   }
-  static preload(scene: Phaser.Scene) {
-    scene.load.image("wing-34", WING_DATA.wing);
+  static preload(scene: Phaser.Scene, legacyBackgrounds = true) {
+    if (legacyBackgrounds) scene.load.image("wing-34", WING_DATA.wing);
     scene.load.image("raw-student-34", WING_DATA.student);
   }
   hide() {

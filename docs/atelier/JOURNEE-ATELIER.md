@@ -3,6 +3,10 @@
 Ouvrir **Jouer-Technoprof-Journee-Atelier.html**, généré par
 `npm run build:atelier`, puis choisir **Prendre le service**. Le fichier contient
 les images et le programme : il fonctionne hors connexion après chargement.
+Le profil dédié retire les anciens arrière-plans inutilisés : environ 100 Mo,
+avec les mêmes images pour les lieux et personnages actuels. Pour régénérer
+uniquement la journée : `npm run build:journee`. Le fichier atelier complet
+`Jouer-Technoprof.html` conserve les anciens essais et leurs options d'URL.
 En développement : `http://127.0.0.1:4175/?essai=journee` (adapter le port Vite).
 
 Cette partie utilise l'accueil, les commandes, les pauses et le bilan ordinaires,

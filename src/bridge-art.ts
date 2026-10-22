@@ -272,16 +272,18 @@ export const GUARD_OUTLINES = [
 export class BridgeArt {
   background: Phaser.GameObjects.Image;
   guard: Phaser.GameObjects.Image;
-  constructor(scene: Phaser.Scene) {
-    const bg = scene.textures.get("bridge-33"),
-      source = bg.getSourceImage() as HTMLImageElement;
-    bg.add("floor", 0, 0, 0, source.width, Math.round(source.height * 0.75));
-    bg.setFilter(Phaser.Textures.FilterMode.NEAREST);
-    this.background = scene.add
-      .image(7, 7, "bridge-33", "floor")
-      .setOrigin(0)
-      .setDisplaySize(306, 168)
-      .setDepth(1);
+  constructor(scene: Phaser.Scene, legacyBackgrounds = true) {
+    if (legacyBackgrounds) {
+      const bg = scene.textures.get("bridge-33"),
+        source = bg.getSourceImage() as HTMLImageElement;
+      bg.add("floor", 0, 0, 0, source.width, Math.round(source.height * 0.75));
+      bg.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      this.background = scene.add
+        .image(7, 7, "bridge-33", "floor")
+        .setOrigin(0)
+        .setDisplaySize(306, 168)
+        .setDepth(1);
+    } else this.background = scene.add.image(7, 7, "__WHITE").setVisible(false);
     const raw = scene.textures
       .get("raw-guard-33")
       .getSourceImage() as HTMLImageElement;
@@ -303,8 +305,8 @@ export class BridgeArt {
     this.guard = scene.add.image(0, 0, "guard-33", 0).setDepth(2);
     this.hide();
   }
-  static preload(scene: Phaser.Scene) {
-    scene.load.image("bridge-33", BRIDGE_DATA.bridge);
+  static preload(scene: Phaser.Scene, legacyBackgrounds = true) {
+    if (legacyBackgrounds) scene.load.image("bridge-33", BRIDGE_DATA.bridge);
     scene.load.image("raw-guard-33", BRIDGE_DATA.guard);
   }
   hide() {

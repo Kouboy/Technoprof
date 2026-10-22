@@ -9,16 +9,18 @@ export const PARENT_FRAMES = [
 export class HallArt {
   background: Phaser.GameObjects.Image;
   parent: Phaser.GameObjects.Image;
-  constructor(scene: Phaser.Scene) {
-    const bg = scene.textures.get("hall");
-    const img = bg.getSourceImage() as HTMLImageElement;
-    bg.add("floor", 0, 0, 0, img.width, Math.round(img.height * 0.75));
-    bg.setFilter(Phaser.Textures.FilterMode.NEAREST);
-    this.background = scene.add
-      .image(7, 7, "hall", "floor")
-      .setOrigin(0)
-      .setDisplaySize(306, 168)
-      .setDepth(1);
+  constructor(scene: Phaser.Scene, legacyBackgrounds = true) {
+    if (legacyBackgrounds) {
+      const bg = scene.textures.get("hall");
+      const img = bg.getSourceImage() as HTMLImageElement;
+      bg.add("floor", 0, 0, 0, img.width, Math.round(img.height * 0.75));
+      bg.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      this.background = scene.add
+        .image(7, 7, "hall", "floor")
+        .setOrigin(0)
+        .setDisplaySize(306, 168)
+        .setDepth(1);
+    } else this.background = scene.add.image(7, 7, "__WHITE").setVisible(false);
     const source = scene.textures
       .get("raw-parent")
       .getSourceImage() as HTMLImageElement;
@@ -40,8 +42,8 @@ export class HallArt {
     this.parent = scene.add.image(0, 0, "parent", 0).setDepth(2);
     this.hide();
   }
-  static preload(scene: Phaser.Scene) {
-    scene.load.image("hall", HALL_DATA.hall);
+  static preload(scene: Phaser.Scene, legacyBackgrounds = true) {
+    if (legacyBackgrounds) scene.load.image("hall", HALL_DATA.hall);
     scene.load.image("raw-parent", HALL_DATA.parent);
   }
   hide() {

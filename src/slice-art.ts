@@ -36,7 +36,10 @@ export class SliceArt {
   teacher: Phaser.GameObjects.Image;
   inspector: Phaser.GameObjects.Image;
   inspectorFemale = false;
-  constructor(private scene: Phaser.Scene) {
+  constructor(
+    private scene: Phaser.Scene,
+    legacyBackgrounds = true,
+  ) {
     for (const role of ["prof", "inspecteur", "inspectrice"] as const) {
       const source = scene.textures
         .get(`raw-${role}`)
@@ -70,7 +73,7 @@ export class SliceArt {
       texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
     }
     this.backdrop = scene.add
-      .image(7, 7, "corridor")
+      .image(7, 7, legacyBackgrounds ? "corridor" : "__WHITE")
       .setOrigin(0)
       .setDisplaySize(306, 168)
       .setDepth(1);
@@ -79,8 +82,8 @@ export class SliceArt {
     this.inspector = scene.add.image(0, 0, "inspecteur", 0).setDepth(2);
     this.hide();
   }
-  static preload(scene: Phaser.Scene) {
-    scene.load.image("corridor", ART_DATA.corridor);
+  static preload(scene: Phaser.Scene, legacyBackgrounds = true) {
+    if (legacyBackgrounds) scene.load.image("corridor", ART_DATA.corridor);
     scene.load.image("raw-prof", ART_DATA.prof);
     scene.load.image("raw-inspecteur", ART_DATA.inspecteur);
     scene.load.image("raw-inspectrice", INSPECTRICE_DATA);

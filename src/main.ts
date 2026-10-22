@@ -121,6 +121,7 @@ import {
   type Enemy,
 } from "./world";
 import { AudioKit } from "./audio";
+import { DAY_ONLY } from "./asset-profile";
 class Game extends Phaser.Scene {
   failureReason: FailureReason | null = null;
   playerRecovery = 0;
@@ -360,20 +361,22 @@ class Game extends Phaser.Scene {
   preload() {
     this.runtime.mark("preload");
     this.audio.prepare();
-    SliceArt.preload(this);
-    NewSchoolArt.preload(this);
+    SliceArt.preload(this, !DAY_ONLY);
+    NewSchoolArt.preload(this, !DAY_ONLY);
     SchoolProps.preload(this);
-    HallArt.preload(this);
-    BridgeArt.preload(this);
-    WingArt.preload(this);
+    HallArt.preload(this, !DAY_ONLY);
+    BridgeArt.preload(this, !DAY_ONLY);
+    WingArt.preload(this, !DAY_ONLY);
     BruelNavigationArt.preload(this);
     HanounaNavigationArt.preload(this);
     TroisPontsI2Art.preload(this);
-    this.load.image("service-stair", SERVICE_DATA);
-    this.load.image("technical", TECHNICAL_DATA);
-    this.load.image("central-stair", CENTRAL_DATA);
-    this.load.image("annex-stair", STAIR_DATA);
-    this.load.image("courtyard", COURT_DATA);
+    if (!DAY_ONLY) {
+      this.load.image("service-stair", SERVICE_DATA);
+      this.load.image("technical", TECHNICAL_DATA);
+      this.load.image("central-stair", CENTRAL_DATA);
+      this.load.image("annex-stair", STAIR_DATA);
+      this.load.image("courtyard", COURT_DATA);
+    }
     this.load.image("arrival-college", ARRIVAL_DATA);
     CarArt.preload(this);
     RoadArt.preload(this);
@@ -509,99 +512,101 @@ class Game extends Phaser.Scene {
     }
     this.cameras.main.setZoom(2).setScroll(-160, -120);
     this.g = this.add.graphics().setDepth(3);
-    this.art = new SliceArt(this);
+    this.art = new SliceArt(this, !DAY_ONLY);
     this.schoolProps = new SchoolProps(this);
-    this.newSchoolArt = new NewSchoolArt(this);
-    this.navigationArt = new BruelNavigationArt(this);
-    this.hallArt = new HallArt(this);
-    this.bridgeArt = new BridgeArt(this);
-    this.wingArt = new WingArt(this);
-    const service = this.textures.get("service-stair");
-    const serviceImage = service.getSourceImage() as HTMLImageElement;
-    service.add(
-      "playable",
-      0,
-      Math.round((serviceImage.width * 100) / 1672),
-      Math.round((serviceImage.height * 120) / 941),
-      Math.round((serviceImage.width * 1440) / 1672),
-      Math.round((serviceImage.height * 627) / 941),
-    );
-    service.setFilter(Phaser.Textures.FilterMode.NEAREST);
-    this.serviceBackdrop = this.add
-      .image(7, 7, "service-stair", "playable")
-      .setOrigin(0)
-      .setDisplaySize(306, 168)
-      .setDepth(1)
-      .setVisible(false);
-    const technical = this.textures.get("technical");
-    const technicalImage = technical.getSourceImage() as HTMLImageElement;
-    technical.add(
-      "playable",
-      0,
-      0,
-      0,
-      technicalImage.width,
-      Math.round(technicalImage.height * 0.75),
-    );
-    technical.setFilter(Phaser.Textures.FilterMode.NEAREST);
-    this.technicalBackdrop = this.add
-      .image(7, 7, "technical", "playable")
-      .setOrigin(0)
-      .setDisplaySize(306, 168)
-      .setDepth(1)
-      .setVisible(false);
-    const central = this.textures.get("central-stair");
-    const centralImage = central.getSourceImage() as HTMLImageElement;
-    central.add(
-      "playable",
-      0,
-      0,
-      0,
-      centralImage.width,
-      Math.round(centralImage.height * 0.75),
-    );
-    central.setFilter(Phaser.Textures.FilterMode.NEAREST);
-    this.centralBackdrop = this.add
-      .image(7, 7, "central-stair", "playable")
-      .setOrigin(0)
-      .setDisplaySize(306, 168)
-      .setDepth(1)
-      .setVisible(false);
-    const stair = this.textures.get("annex-stair");
-    const stairImage = stair.getSourceImage() as HTMLImageElement;
-    stair.add(
-      "playable",
-      0,
-      Math.round((stairImage.width * 50) / 1672),
-      Math.round((stairImage.height * 120) / 941),
-      Math.round((stairImage.width * 1382) / 1672),
-      Math.round((stairImage.height * 627) / 941),
-    );
-    stair.setFilter(Phaser.Textures.FilterMode.NEAREST);
-    this.stairBackdrop = this.add
-      .image(7, 7, "annex-stair", "playable")
-      .setOrigin(0)
-      .setDisplaySize(306, 168)
-      .setDepth(1)
-      .setVisible(false);
-    const courtyard = this.textures.get("courtyard");
-    const courtSource = courtyard.getSourceImage() as HTMLImageElement;
-    // Frame the background so its actual doorway threshold meets y=159.
-    courtyard.add(
-      "playable",
-      0,
-      0,
-      0,
-      courtSource.width,
-      Math.round(courtSource.height * 0.802),
-    );
-    courtyard.setFilter(Phaser.Textures.FilterMode.NEAREST);
-    this.courtBackdrop = this.add
-      .image(7, 7, "courtyard", "playable")
-      .setOrigin(0)
-      .setDisplaySize(306, 168)
-      .setDepth(1)
-      .setVisible(false);
+    this.newSchoolArt = new NewSchoolArt(this, !DAY_ONLY);
+    this.navigationArt = new BruelNavigationArt(this, !DAY_ONLY);
+    this.hallArt = new HallArt(this, !DAY_ONLY);
+    this.bridgeArt = new BridgeArt(this, !DAY_ONLY);
+    this.wingArt = new WingArt(this, !DAY_ONLY);
+    if (!DAY_ONLY) {
+      const service = this.textures.get("service-stair");
+      const serviceImage = service.getSourceImage() as HTMLImageElement;
+      service.add(
+        "playable",
+        0,
+        Math.round((serviceImage.width * 100) / 1672),
+        Math.round((serviceImage.height * 120) / 941),
+        Math.round((serviceImage.width * 1440) / 1672),
+        Math.round((serviceImage.height * 627) / 941),
+      );
+      service.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      this.serviceBackdrop = this.add
+        .image(7, 7, "service-stair", "playable")
+        .setOrigin(0)
+        .setDisplaySize(306, 168)
+        .setDepth(1)
+        .setVisible(false);
+      const technical = this.textures.get("technical");
+      const technicalImage = technical.getSourceImage() as HTMLImageElement;
+      technical.add(
+        "playable",
+        0,
+        0,
+        0,
+        technicalImage.width,
+        Math.round(technicalImage.height * 0.75),
+      );
+      technical.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      this.technicalBackdrop = this.add
+        .image(7, 7, "technical", "playable")
+        .setOrigin(0)
+        .setDisplaySize(306, 168)
+        .setDepth(1)
+        .setVisible(false);
+      const central = this.textures.get("central-stair");
+      const centralImage = central.getSourceImage() as HTMLImageElement;
+      central.add(
+        "playable",
+        0,
+        0,
+        0,
+        centralImage.width,
+        Math.round(centralImage.height * 0.75),
+      );
+      central.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      this.centralBackdrop = this.add
+        .image(7, 7, "central-stair", "playable")
+        .setOrigin(0)
+        .setDisplaySize(306, 168)
+        .setDepth(1)
+        .setVisible(false);
+      const stair = this.textures.get("annex-stair");
+      const stairImage = stair.getSourceImage() as HTMLImageElement;
+      stair.add(
+        "playable",
+        0,
+        Math.round((stairImage.width * 50) / 1672),
+        Math.round((stairImage.height * 120) / 941),
+        Math.round((stairImage.width * 1382) / 1672),
+        Math.round((stairImage.height * 627) / 941),
+      );
+      stair.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      this.stairBackdrop = this.add
+        .image(7, 7, "annex-stair", "playable")
+        .setOrigin(0)
+        .setDisplaySize(306, 168)
+        .setDepth(1)
+        .setVisible(false);
+      const courtyard = this.textures.get("courtyard");
+      const courtSource = courtyard.getSourceImage() as HTMLImageElement;
+      // Frame the background so its actual doorway threshold meets y=159.
+      courtyard.add(
+        "playable",
+        0,
+        0,
+        0,
+        courtSource.width,
+        Math.round(courtSource.height * 0.802),
+      );
+      courtyard.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      this.courtBackdrop = this.add
+        .image(7, 7, "courtyard", "playable")
+        .setOrigin(0)
+        .setDisplaySize(306, 168)
+        .setDepth(1)
+        .setVisible(false);
+    }
     this.hanounaArt = new HanounaNavigationArt(this);
     this.inshapeArt = new InshapeNavigationArt(this);
     this.troisPontsArt = new TroisPontsI2Art(this);
@@ -641,31 +646,32 @@ class Game extends Phaser.Scene {
       this.game.events.off(Phaser.Core.Events.HIDDEN, focusLost);
       this.input.keyboard?.off("keydown", this.handleKeyDown, this);
     });
-    const preview =
-      new URLSearchParams(location.search).get("essai") ||
-      (location.pathname.endsWith("Jouer-Retouches.html")
-        ? "retouches"
-        : location.pathname.endsWith("Jouer-AileC.html")
-          ? "ailec"
-          : location.pathname.endsWith("Jouer-Passerelle.html")
-            ? "passerelle"
-            : location.pathname.endsWith("Jouer-Service.html")
-              ? "service"
-              : location.pathname.endsWith("Jouer-Technique.html")
-                ? "raccourci"
-                : location.pathname.endsWith("Jouer-Central.html")
-                  ? "central"
-                  : location.pathname.endsWith("Jouer-Escaliers.html")
-                    ? "escaliers"
-                    : location.pathname.endsWith("Jouer-Hall.html")
-                      ? "parent"
-                      : location.pathname.endsWith("Jouer-Cour.html")
-                        ? "cour"
-                        : location.pathname.endsWith("Jouer-Arrivee.html")
-                          ? "arrivee"
-                          : location.pathname.endsWith("Jouer-Salle42C.html")
-                            ? "atelier"
-                            : null);
+    const preview = DAY_ONLY
+      ? "journee"
+      : new URLSearchParams(location.search).get("essai") ||
+        (location.pathname.endsWith("Jouer-Retouches.html")
+          ? "retouches"
+          : location.pathname.endsWith("Jouer-AileC.html")
+            ? "ailec"
+            : location.pathname.endsWith("Jouer-Passerelle.html")
+              ? "passerelle"
+              : location.pathname.endsWith("Jouer-Service.html")
+                ? "service"
+                : location.pathname.endsWith("Jouer-Technique.html")
+                  ? "raccourci"
+                  : location.pathname.endsWith("Jouer-Central.html")
+                    ? "central"
+                    : location.pathname.endsWith("Jouer-Escaliers.html")
+                      ? "escaliers"
+                      : location.pathname.endsWith("Jouer-Hall.html")
+                        ? "parent"
+                        : location.pathname.endsWith("Jouer-Cour.html")
+                          ? "cour"
+                          : location.pathname.endsWith("Jouer-Arrivee.html")
+                            ? "arrivee"
+                            : location.pathname.endsWith("Jouer-Salle42C.html")
+                              ? "atelier"
+                              : null);
     if (preview) {
       this.begin();
       this.notified = true;

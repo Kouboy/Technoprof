@@ -7,6 +7,8 @@ Trois trajets et trois etablissements : Ormeaux H1, Auguste-Berthelot A3,
 lycee professionnel des Trois-Ponts I2. Le fichier de journee est autonome
 et peut etre copie seul. Les autres ateliers sont de petits raccourcis :
 garder Jouer-Technoprof.html a cote pour les utiliser.
+La journee allegee (~100 Mo) contient les memes images utiles ; le fichier
+d'atelier complet (~135 Mo) conserve aussi les anciens essais.
 
 Commandes : fleches ou ZQSD ; Espace = saut ; F/X = frappe ou dialogue.
 Souris et toucher directement dans la scene. L'aide en jeu explique les gestes.
@@ -16,3 +18,4 @@ La 0.61 publiee reste a la racine, inchangee.
 Documentation et tests : README.md et docs/README.md.
 
 Pour regenerer le jouable : npm run build:atelier.
+Pour regenerer uniquement la journee : npm run build:journee.

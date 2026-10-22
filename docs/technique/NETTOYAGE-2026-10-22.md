@@ -59,6 +59,9 @@ humains signalés restent à retester ; un coût évitable a été supprimé.
 
 ## Allègement restant à réaliser
 
+Suite réalisée dans le lot suivant : voir [Assets de la journée](ASSETS-JOURNEE-2026-10-22.md).
+Les observations ci-dessous décrivent le point de départ de cette extraction.
+
 Les sources pesaient 133 947 492 octets avant cette passe, essentiellement des
 images intégrées. Les copies HTML et les fichiers de work ne sont pas tous
 embarqués : leur suppression ne suffit pas à réduire le programme.

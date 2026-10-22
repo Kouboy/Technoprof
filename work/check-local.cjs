@@ -4,6 +4,7 @@ const main = fs.readFileSync('Jouer-Technoprof.html', 'utf8');
 const day = fs.readFileSync('Jouer-Technoprof-Journee-Atelier.html', 'utf8');
 assert(!/<script\b[^>]*\ssrc=/i.test(main), 'standalone must not depend on an external script');
 assert(!/<script\b[^>]*\ssrc=/i.test(day), 'complete day stays autonomous');
+assert(Buffer.byteLength(day) < Buffer.byteLength(main) * 0.85, 'day must omit actual historical image payload');
 const ateliers = {
  'Jouer-Technoprof-Atelier-Bruel.html':'bruel-navigation',
  'Jouer-Technoprof-Atelier-Bruel-A2.html':'bruel-navigation-a2',

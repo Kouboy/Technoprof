@@ -19,6 +19,10 @@ npm run build:atelier
 
 Le build produit deux fichiers autonomes : `Jouer-Technoprof.html` (moteur commun
 et anciens essais) et `Jouer-Technoprof-Journee-Atelier.html` (journée actuelle).
+La journée utilise un profil de compilation dédié : environ 100 Mo contre
+135 Mo pour l'atelier complet, avec les mêmes images utiles et sans les anciens
+arrière-plans. `npm run build:journee` régénère uniquement ce fichier ;
+`npx vite --mode day` permet de vérifier ce profil en développement.
 Les dix-neuf autres lanceurs sont de petits raccourcis ; conserver
 `Jouer-Technoprof.html` à côté pour les utiliser. Les exports sont ignorés par Git.
 
@@ -39,6 +43,7 @@ npm run test:rapide
 | --- | --- |
 | `npm run test:rapide` | Règles principales, conduite, lumières, audio de route et voiture |
 | `npm run test:journee` | Trois trajets + H1/A3/I2, commandes, soins, transitions et bilan à 30/60/120 fps simulés |
+| `npm run test:assets` | Catalogue de compilation, images retenues intactes et préchargement des acteurs partagés |
 | `npm run test:signaletique` | Panneaux et rendu des trois établissements |
 | `npm run test:sequences` | Entrée en classe, échecs et feedbacks sonores |
 | `npm run test:hanouna-h1` | Premier établissement et Inspectrice |
@@ -61,10 +66,10 @@ les répliques. La souris et le toucher utilisent directement la scène.
 - `tools/` : outils maintenus de rangement et de profilage.
 - [work/](work/README.md) : tests, pilotes et anciens outils de fabrication.
 - [archives/](archives/README.md) : anciennes livraisons locales, avec manifestes.
-- `dist/` : build web généré ; `node_modules/` : dépendances locales.
+- `dist/` : build web complet généré ; `dist-day/` : build journée ; `node_modules/` : dépendances locales.
 
 Le [bilan de nettoyage et de profilage](docs/technique/NETTOYAGE-2026-10-22.md)
-distingue les gains vérifiés de l’allègement du chargement restant à réaliser.
+distingue les premiers gains du [chargement allégé de la journée](docs/technique/ASSETS-JOURNEE-2026-10-22.md).
 L’[historique Git](HISTORIQUE.md) décrit les sauvegardes importées.
 
 GitHub Pages publie `dist/` uniquement après un envoi sur `main`, via

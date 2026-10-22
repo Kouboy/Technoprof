@@ -1,0 +1,707 @@
+{
+  "browser": "chromium",
+  "builds": {
+    "full": {
+      "textures": [
+        {
+          "key": "__NORMAL",
+          "width": 0,
+          "height": 0
+        },
+        {
+          "key": "__DEFAULT",
+          "width": 32,
+          "height": 32
+        },
+        {
+          "key": "__MISSING",
+          "width": 32,
+          "height": 32
+        },
+        {
+          "key": "__WHITE",
+          "width": 4,
+          "height": 4
+        },
+        {
+          "key": "corridor",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "quiet-backgrounds",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "bruel-backgrounds",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "pro-backgrounds",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "wood-floor-hole",
+          "width": 1852,
+          "height": 849
+        },
+        {
+          "key": "hall",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "bridge-33",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "wing-34",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "infirmary-nurse",
+          "width": 1254,
+          "height": 1254
+        },
+        {
+          "key": "bruel-a3-entree",
+          "width": 1690,
+          "height": 931
+        },
+        {
+          "key": "bruel-a3-reseau",
+          "width": 1689,
+          "height": 931
+        },
+        {
+          "key": "bruel-a3-aile-b",
+          "width": 1690,
+          "height": 931
+        },
+        {
+          "key": "hanouna-h1-entree",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "hanouna-h1-etage",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "hanouna-h1-infirmerie",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "tp-i2-entree",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "tp-i2-aile-t",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "tp-i2-ateliers",
+          "width": 1671,
+          "height": 941
+        },
+        {
+          "key": "tp-i2-annexes",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "tp-i2-cour",
+          "width": 1691,
+          "height": 930
+        },
+        {
+          "key": "service-stair",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "technical",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "central-stair",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "annex-stair",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "courtyard",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "arrival-college",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "sky",
+          "width": 2172,
+          "height": 724
+        },
+        {
+          "key": "prof",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "inspecteur",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "inspectrice",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "school-props-36",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "warnings-37",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "catchup-attacks",
+          "width": 435,
+          "height": 2460
+        },
+        {
+          "key": "catchup-student",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "bruel-pose-0",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "bruel-pose-1",
+          "width": 456,
+          "height": 512
+        },
+        {
+          "key": "bruel-pose-2",
+          "width": 460,
+          "height": 512
+        },
+        {
+          "key": "bruel-pose-3",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "bruel-pose-4",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "bruel-pose-5",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "bruel-pose-6",
+          "width": 432,
+          "height": 512
+        },
+        {
+          "key": "bruel-pose-7",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-0",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-1",
+          "width": 432,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-2",
+          "width": 432,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-3",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-4",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-5",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-6",
+          "width": 432,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-7",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "parent",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "guard-33",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "student-34",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "service",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "service-right",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "traffic",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "district",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "verge",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "road-patches",
+          "width": 196,
+          "height": 112
+        },
+        {
+          "key": "road-lights",
+          "width": 96,
+          "height": 116
+        }
+      ],
+      "rgbaBytes": 275682064,
+      "startup": {
+        "startupMillisecondsSinceNavigation": {
+          "preload": 4129.4,
+          "create": 13357,
+          "ready": 18270.8
+        },
+        "texturePreparationMs": 4913.8,
+        "releasedSourceTextures": {
+          "count": 15,
+          "rgbaBytes": 94371840
+        },
+        "frameIntervalsMs": {
+          "samples": 4,
+          "p50": 34,
+          "p95": 650,
+          "p99": 650,
+          "max": 649.9,
+          "interruptionsOver1s": 0
+        },
+        "jsHeapBytes": {
+          "used": 410000000,
+          "allocated": 435000000
+        }
+      },
+      "errors": []
+    },
+    "day": {
+      "textures": [
+        {
+          "key": "__NORMAL",
+          "width": 0,
+          "height": 0
+        },
+        {
+          "key": "__DEFAULT",
+          "width": 32,
+          "height": 32
+        },
+        {
+          "key": "__MISSING",
+          "width": 32,
+          "height": 32
+        },
+        {
+          "key": "__WHITE",
+          "width": 4,
+          "height": 4
+        },
+        {
+          "key": "bruel-backgrounds",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "pro-backgrounds",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "wood-floor-hole",
+          "width": 1852,
+          "height": 849
+        },
+        {
+          "key": "infirmary-nurse",
+          "width": 1254,
+          "height": 1254
+        },
+        {
+          "key": "bruel-a3-entree",
+          "width": 1690,
+          "height": 931
+        },
+        {
+          "key": "bruel-a3-reseau",
+          "width": 1689,
+          "height": 931
+        },
+        {
+          "key": "bruel-a3-aile-b",
+          "width": 1690,
+          "height": 931
+        },
+        {
+          "key": "hanouna-h1-entree",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "hanouna-h1-etage",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "hanouna-h1-infirmerie",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "tp-i2-entree",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "tp-i2-aile-t",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "tp-i2-ateliers",
+          "width": 1671,
+          "height": 941
+        },
+        {
+          "key": "tp-i2-annexes",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "tp-i2-cour",
+          "width": 1691,
+          "height": 930
+        },
+        {
+          "key": "arrival-college",
+          "width": 1672,
+          "height": 941
+        },
+        {
+          "key": "sky",
+          "width": 2172,
+          "height": 724
+        },
+        {
+          "key": "prof",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "inspecteur",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "inspectrice",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "school-props-36",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "warnings-37",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "catchup-attacks",
+          "width": 435,
+          "height": 2460
+        },
+        {
+          "key": "catchup-student",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "bruel-pose-0",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "bruel-pose-1",
+          "width": 456,
+          "height": 512
+        },
+        {
+          "key": "bruel-pose-2",
+          "width": 460,
+          "height": 512
+        },
+        {
+          "key": "bruel-pose-3",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "bruel-pose-4",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "bruel-pose-5",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "bruel-pose-6",
+          "width": 432,
+          "height": 512
+        },
+        {
+          "key": "bruel-pose-7",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-0",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-1",
+          "width": 432,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-2",
+          "width": 432,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-3",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-4",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-5",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-6",
+          "width": 432,
+          "height": 512
+        },
+        {
+          "key": "pro-pose-7",
+          "width": 384,
+          "height": 512
+        },
+        {
+          "key": "parent",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "guard-33",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "student-34",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "service",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "service-right",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "traffic",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "district",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "verge",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "key": "road-patches",
+          "width": 196,
+          "height": 112
+        },
+        {
+          "key": "road-lights",
+          "width": 96,
+          "height": 116
+        }
+      ],
+      "rgbaBytes": 212747984,
+      "startup": {
+        "startupMillisecondsSinceNavigation": {
+          "preload": 3497.9,
+          "create": 10432.8,
+          "ready": 15520.3
+        },
+        "texturePreparationMs": 5087.5,
+        "releasedSourceTextures": {
+          "count": 15,
+          "rgbaBytes": 94371840
+        },
+        "frameIntervalsMs": {
+          "samples": 4,
+          "p50": 34,
+          "p95": 567,
+          "p99": 567,
+          "max": 566.6,
+          "interruptionsOver1s": 0
+        },
+        "jsHeapBytes": {
+          "used": 342000000,
+          "allocated": 342000000
+        }
+      },
+      "errors": []
+    }
+  },
+  "identicalViews": [
+    "room-200",
+    "room-201",
+    "room-202",
+    "room-203",
+    "room-204",
+    "room-205",
+    "room-206",
+    "room-207",
+    "room-208",
+    "class-0",
+    "road-0",
+    "arrival-0",
+    "room-100",
+    "room-101",
+    "room-102",
+    "room-103",
+    "room-104",
+    "room-105",
+    "room-106",
+    "room-107",
+    "room-108",
+    "room-109",
+    "room-110",
+    "room-111",
+    "class-1",
+    "road-1",
+    "arrival-1",
+    "room-300",
+    "room-301",
+    "room-302",
+    "room-303",
+    "room-304",
+    "room-305",
+    "room-306",
+    "room-307",
+    "room-308",
+    "room-309",
+    "room-310",
+    "room-311",
+    "room-312",
+    "room-313",
+    "room-314",
+    "room-315",
+    "room-316",
+    "room-317",
+    "class-2",
+    "road-2",
+    "arrival-2"
+  ],
+  "mismatches": [],
+  "offlineFileLaunch": true
+}
