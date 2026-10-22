@@ -13,4 +13,10 @@ art.layer(0);const far=currentDepth;art.layer(20);const bridge=currentDepth;art.
 assert(far<bridge&&bridge<near&&near<3.1);art.hide();assert.equal(art.index,0);
 console.log('PASS road atlas bounds, world anchors across segment boundaries, mixed-layer depths below player');
 
+// One viewport mask on the shared world; children retain their exact depth order.
+const parented=[];let sorted=false;
+art.world={add(child){parented.push(child);},sort(key){assert.equal(key,'depth');sorted=true;},setVisible(){}};
+art.layer(51);assert.equal(parented.length,1,'new road layers join the masked world');
+art.finishFrame();assert(sorted,'pooled children must be re-sorted every frame');
+
 const skyCalls=[];const skySprite={setTint(){return this;},setPosition(x,y){skyCalls.push([x,y]);return this;},setDisplaySize(w,h){assert(w>=306&&h>0);return this;},setVisible(){return this;}};art.clouds=skySprite;art.skyline=skySprite;art.sky(67,54,20);assert.equal(skyCalls.length,2);assert(Math.abs(skyCalls[0][0])<20&&Math.abs(skyCalls[1][0])<20);art.hide();console.log('PASS sky parallax coverage and cleanup');

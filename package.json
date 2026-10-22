@@ -19,6 +19,7 @@
     "test:inshape-i1": "node work/check-inshape-i1.cjs && node work/check-inshape-i1-art.cjs && node work/check-catchup-i1.cjs",
     "test:inshape-i2": "node work/check-inshape-i2.cjs && node work/check-inshape-i2-care.cjs && node work/check-trois-ponts-i2-art.cjs",
     "test:journee": "node work/check-validated-day.cjs",
+    "test:rapide": "node work/check.cjs && npm run test:ambiance-route && node work/check-car.cjs",
     "test:sequences": "node work/check-sequence-feedback.cjs && node work/check-art.cjs && node work/check-053.cjs"
   },
   "dependencies": {

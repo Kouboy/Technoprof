@@ -1,0 +1,117 @@
+{
+  "method": "Headless isolated browsers; same native game renderer, real inputs, no state skips. Browser/GPU configuration can differ from personal browsers. CPU is RAF callback time, not total GPU time.",
+  "results": [
+    {
+      "name": "chromium",
+      "version": "151.0.7922.34",
+      "scenario": "road-fast",
+      "readyMs": 19021,
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "cpu": {
+        "count": 173,
+        "mean": 5.650289017599442,
+        "p50": 5.5999999940395355,
+        "p95": 7.5,
+        "max": 9.200000002980232
+      },
+      "interval": {
+        "count": 172,
+        "mean": 23.439534883686278,
+        "p50": 21.600000008940697,
+        "p95": 36.80000001192093,
+        "max": 69.20000000298023
+      },
+      "glPerFrame": {
+        "bufferSubData": 14,
+        "drawElements": 9
+      },
+      "stateBefore": "PAUSE — road / pièce 0 / joueur LIBRE / délai 239.87s\n\nTemps simulé 0.1s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.1s\nDernier événement : long-frame-pause (4600 ms)\nINTERRUPTION LONGUE — reprendre avec P",
+      "stateAfter": "PAUSE — road / pièce 0 / joueur LIBRE / délai 239.87s\n\nTemps simulé 0.1s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.1s\nDernier événement : long-frame-pause (4600 ms)\nINTERRUPTION LONGUE — reprendre avec P",
+      "errors": []
+    },
+    {
+      "name": "chromium",
+      "version": "151.0.7922.34",
+      "scenario": "road-dusk-fast",
+      "readyMs": 24768,
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "cpu": {
+        "count": 178,
+        "mean": 6.657303370200516,
+        "p50": 6.200000002980232,
+        "p95": 7.899999991059303,
+        "max": 72.20000000298023
+      },
+      "interval": {
+        "count": 177,
+        "mean": 22.805649717564638,
+        "p50": 21.200000002980232,
+        "p95": 37.400000005960464,
+        "max": 88.5
+      },
+      "glPerFrame": {
+        "bufferSubData": 50,
+        "drawElements": 33
+      },
+      "stateBefore": "PAUSE — road / pièce 20 / joueur LIBRE / délai 209.87s\n\nTemps simulé 0.1s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.1s\nDernier événement : long-frame-pause (7500 ms)\nINTERRUPTION LONGUE — reprendre avec P",
+      "stateAfter": "PAUSE — road / pièce 20 / joueur LIBRE / délai 209.87s\n\nTemps simulé 0.1s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.1s\nDernier événement : long-frame-pause (7500 ms)\nINTERRUPTION LONGUE — reprendre avec P",
+      "errors": []
+    },
+    {
+      "name": "firefox",
+      "version": "153.0",
+      "scenario": "road-fast",
+      "readyMs": 10790,
+      "renderer": "ANGLE (Intel, Intel(R) HD Graphics Direct3D11 vs_5_0 ps_5_0), or similar",
+      "cpu": {
+        "count": 477,
+        "mean": 3.4150943396226414,
+        "p50": 3,
+        "p95": 5,
+        "max": 6
+      },
+      "interval": {
+        "count": 476,
+        "mean": 8.457983193277311,
+        "p50": 8,
+        "p95": 10,
+        "max": 25
+      },
+      "glPerFrame": {
+        "bufferSubData": 14,
+        "drawElements": 9
+      },
+      "stateBefore": "PAUSE — road / pièce 0 / joueur LIBRE / délai 240.00s\n\nTemps simulé 0.0s / 0 chocs / 0 chutes / 0 coups réussis\n\nDernier événement : long-frame-pause (2433 ms)\nINTERRUPTION LONGUE — reprendre avec P",
+      "stateAfter": "PAUSE — road / pièce 0 / joueur LIBRE / délai 240.00s\n\nTemps simulé 0.0s / 0 chocs / 0 chutes / 0 coups réussis\n\nDernier événement : long-frame-pause (2433 ms)\nINTERRUPTION LONGUE — reprendre avec P",
+      "errors": []
+    },
+    {
+      "name": "firefox",
+      "version": "153.0",
+      "scenario": "road-dusk-fast",
+      "readyMs": 11248,
+      "renderer": "ANGLE (Intel, Intel(R) HD Graphics Direct3D11 vs_5_0 ps_5_0), or similar",
+      "cpu": {
+        "count": 482,
+        "mean": 3.5062240663900415,
+        "p50": 3,
+        "p95": 5,
+        "max": 6
+      },
+      "interval": {
+        "count": 481,
+        "mean": 8.355509355509355,
+        "p50": 8,
+        "p95": 10,
+        "max": 14
+      },
+      "glPerFrame": {
+        "bufferSubData": 47,
+        "drawElements": 31
+      },
+      "stateBefore": "PAUSE — road / pièce 20 / joueur LIBRE / délai 210.00s\n\nTemps simulé 0.0s / 0 chocs / 0 chutes / 0 coups réussis\n\nDernier événement : long-frame-pause (2617 ms)\nINTERRUPTION LONGUE — reprendre avec P",
+      "stateAfter": "PAUSE — road / pièce 20 / joueur LIBRE / délai 210.00s\n\nTemps simulé 0.0s / 0 chocs / 0 chutes / 0 coups réussis\n\nDernier événement : long-frame-pause (2617 ms)\nINTERRUPTION LONGUE — reprendre avec P",
+      "errors": []
+    }
+  ]
+}

@@ -5,6 +5,7 @@ work/checkpoints/
 # Livraisons générées : télécharger depuis les releases ou lancer npm run build.
 /Jouer-*.html
 /Technoprof-*.zip
+/archives/versions/
 
 # Sauvegardes importées dans l'historique, fichiers temporaires et traces locales.
 work/backup-*/

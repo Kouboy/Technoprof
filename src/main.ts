@@ -5278,6 +5278,7 @@ class Game extends Phaser.Scene {
         if (this.roadArt) this.g = this.roadArt.layer(index);
         layer.render();
       });
+    this.roadArt?.finishFrame();
     this.g = ground;
 
     for (const m of this.tireMarks) {

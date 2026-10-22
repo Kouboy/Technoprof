@@ -22,100 +22,32 @@ fs.writeFileSync(
     ),
 );
 console.log("Standalone day: H1 / A3 / I2, three roads and one final report");
-for (const revision of ["A1", "A2", "A3"]) {
-  const scenario =
-    revision === "A1"
-      ? "bruel-navigation"
-      : "bruel-navigation-" + revision.toLowerCase();
-  const bootstrap = `<script>
-const atelierUrl = new URL(location.href);
-if (!atelierUrl.searchParams.has('essai')) {
-  atelierUrl.searchParams.set('essai', 'labo');
-  atelierUrl.searchParams.set('scenario', '${scenario}');
-  location.replace(atelierUrl.href);
-}
-</script>`;
-  const html = source
-    .replace(/(<html\b[^>]*>)/, "$1" + bootstrap)
-    .replace(
-      /<title>[\s\S]*?<\/title\s*>/,
-      `<title>TECHNOPROF — Atelier Auguste-Berthelot ${revision}</title>`,
-    );
-  if (html === source || !html.includes(bootstrap))
-    throw Error("Atelier bootstrap missing");
-  const destination = path.join(
-    root,
-    revision !== "A1"
-      ? `Jouer-Technoprof-Atelier-Bruel-${revision}.html`
-      : "Jouer-Technoprof-Atelier-Bruel.html",
-  );
-  fs.writeFileSync(destination, html);
-  console.log(
-    "Standalone atelier: " +
-      destination +
-      " (" +
-      Buffer.byteLength(html) +
-      " bytes)",
-  );
-}
 
-const h1Bootstrap = `<script>
-const atelierUrl = new URL(location.href);
-if (!atelierUrl.searchParams.has('essai')) {
-  atelierUrl.searchParams.set('essai', 'labo');
-  atelierUrl.searchParams.set('scenario', 'hanouna-navigation-h1');
-  location.replace(atelierUrl.href);
+const presets = {
+  "Jouer-Technoprof-Atelier-Bruel.html": "bruel-navigation",
+  "Jouer-Technoprof-Atelier-Bruel-A2.html": "bruel-navigation-a2",
+  "Jouer-Technoprof-Atelier-Bruel-A3.html": "bruel-navigation-a3",
+  "Jouer-Technoprof-Atelier-Hanouna-H1.html": "hanouna-navigation-h1",
+  "Jouer-Technoprof-Atelier-InShape-I1.html": "inshape-navigation-i1",
+  "Jouer-Technoprof-Atelier-InShape-I2.html": "inshape-navigation-i2",
+};
+for (const [name, scenario] of Object.entries(presets)) {
+  // Keep the full-day delivery independent, and share the workshop engine.
+  const html = `<!doctype html><html lang="fr"><meta charset="utf-8">
+<title>TECHNOPROF — Atelier</title>
+<style>body{background:#141e27;color:#e3d4b3;font:18px monospace;padding:3rem}a{color:#e5ae60}</style>
+<p><a href="Jouer-Technoprof.html?essai=labo&scenario=${scenario}">Ouvrir l’atelier TECHNOPROF</a></p>
+<p>Gardez ce raccourci dans le même dossier que Jouer-Technoprof.html.</p>
+<script>
+const query = new URLSearchParams(location.search);
+if (!query.has('essai')) {
+  query.set('essai', 'labo');
+  if (!query.has('scenario')) query.set('scenario', '${scenario}');
 }
-</script>`;
-const h1 = source
-  .replace(/(<html\b[^>]*>)/, "$1" + h1Bootstrap)
-  .replace(
-    /<title>[\s\S]*?<\/title\s*>/,
-    "<title>TECHNOPROF — Atelier Ormeaux H1</title>",
-  );
-if (!h1.includes(h1Bootstrap)) throw Error("H1 bootstrap missing");
-fs.writeFileSync(
-  path.join(root, "Jouer-Technoprof-Atelier-Hanouna-H1.html"),
-  h1,
-);
+location.replace('Jouer-Technoprof.html?' + query.toString() + location.hash);
+</script></html>`;
+  fs.writeFileSync(path.join(root, name), html);
+}
 console.log(
-  "Standalone atelier Hanouna H1: " + Buffer.byteLength(h1) + " bytes",
-);
-
-const i1Bootstrap = h1Bootstrap.replace(
-  "hanouna-navigation-h1",
-  "inshape-navigation-i1",
-);
-const i1 = source
-  .replace(/(<html\b[^>]*>)/, "$1" + i1Bootstrap)
-  .replace(
-    /<title>[\s\S]*?<\/title\s*>/,
-    "<title>TECHNOPROF — Atelier Trois-Ponts I1</title>",
-  );
-if (!i1.includes(i1Bootstrap)) throw Error("I1 bootstrap missing");
-fs.writeFileSync(
-  path.join(root, "Jouer-Technoprof-Atelier-InShape-I1.html"),
-  i1,
-);
-console.log(
-  "Standalone atelier InShape I1: " + Buffer.byteLength(i1) + " bytes",
-);
-
-const i2Bootstrap = i1Bootstrap.replace(
-  "inshape-navigation-i1",
-  "inshape-navigation-i2",
-);
-const i2 = source
-  .replace(/(<html\b[^>]*>)/, "$1" + i2Bootstrap)
-  .replace(
-    /<title>[\s\S]*?<\/title\s*>/,
-    "<title>TECHNOPROF — Atelier Trois-Ponts I2</title>",
-  );
-if (!i2.includes(i2Bootstrap)) throw Error("I2 bootstrap missing");
-fs.writeFileSync(
-  path.join(root, "Jouer-Technoprof-Atelier-InShape-I2.html"),
-  i2,
-);
-console.log(
-  "Standalone atelier InShape I2: " + Buffer.byteLength(i2) + " bytes",
+  "6 lightweight workshop shortcuts written (shared Jouer-Technoprof.html)",
 );

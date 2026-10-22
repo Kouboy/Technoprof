@@ -338,9 +338,10 @@ export class RoadArt {
   skyline: Phaser.GameObjects.Image;
   horizonLight?: Phaser.GameObjects.Graphics;
   layers: Phaser.GameObjects.Graphics[] = [];
-  lightLayers: Phaser.GameObjects.Graphics[] = [];
+  lightImages: Phaser.GameObjects.Image[] = [];
   lightIndex = 0;
-  lightMask?: Phaser.Display.Masks.GeometryMask;
+  viewportMask?: Phaser.Display.Masks.GeometryMask;
+  world?: Phaser.GameObjects.Container;
   index = 0;
   depth = 3.01;
   mission = 0;
@@ -364,12 +365,18 @@ export class RoadArt {
 
       .setVisible(false);
     this.horizonLight = scene.add.graphics().setDepth(3.0015);
-    this.lightMask = scene.add
+    this.viewportMask = scene.add
       .graphics()
       .fillStyle(0xffffff)
       .fillRect(7, 7, 306, 168)
       .setVisible(false)
       .createGeometryMask();
+    // Shared clipping avoids a stencil switch for every individual halo.
+    // The player car and the CADRE remain outside this depth band.
+    this.world = scene.add
+      .container(0, 0)
+      .setDepth(3.01)
+      .setMask(this.viewportMask);
     for (const key of ["traffic", "district", "verge"] as const) {
       const source = scene.textures
         .get("raw-" + key)
@@ -414,6 +421,40 @@ export class RoadArt {
     for (const [tag, [x, y, w, h]] of Object.entries(ROAD_PATCH_FRAMES))
       marksTexture.add(tag, 0, x, y, w, h);
     marksTexture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    // The three halo rings and street pool are immutable. Rasterise once instead
+    // of tessellating separate masked Graphics for every lamp on every frame.
+    const lights = document.createElement("canvas");
+    lights.width = 96;
+    lights.height = 116;
+    const lc = lights.getContext("2d")!;
+    for (let shell = 3; shell >= 1; shell--) {
+      lc.fillStyle = `rgba(255,255,255,${ROAD_LIGHT.haloAlpha[shell]})`;
+      lc.beginPath();
+      lc.ellipse(16, 10, shell * 5, shell * 3, 0, 0, Math.PI * 2);
+      lc.fill();
+    }
+    lc.fillStyle = "white";
+    lc.fillRect(34, 0, 1, 1);
+    lc.save();
+    lc.translate(64, 108);
+    const bulb = roadLightPlacement("district", 2, 29)[0];
+    lc.fillStyle = "rgba(255,255,255,0.035)";
+    lc.beginPath();
+    lc.moveTo(bulb.dx, bulb.dy);
+    lc.lineTo(bulb.dx + 29 * 0.24 - 29 * 0.4, 0);
+    lc.lineTo(bulb.dx + 29 * 0.24 + 29 * 0.4, 0);
+    lc.closePath();
+    lc.fill();
+    lc.fillStyle = "rgba(255,255,255,0.1)";
+    lc.beginPath();
+    lc.ellipse(bulb.dx + 29 * 0.24, -0.5, 29 / 2, 29 * 0.08, 0, 0, Math.PI * 2);
+    lc.fill();
+    lc.restore();
+    const lighting = scene.textures.addCanvas("road-lights", lights)!;
+    lighting.add("halo", 0, 0, 0, 32, 20);
+    lighting.add("pixel", 0, 34, 0, 1, 1);
+    lighting.add("pool", 0, 32, 20, 64, 96);
+    lighting.setFilter(Phaser.Textures.FilterMode.NEAREST);
   }
   static preload(scene: Phaser.Scene) {
     scene.load.image("sky", SKY_DATA);
@@ -448,6 +489,7 @@ export class RoadArt {
       .setVisible(true);
   }
   hide() {
+    this.world?.setVisible(false);
     this.horizonLight?.clear();
     this.clouds?.setVisible(false);
     this.skyline?.setVisible(false);
@@ -455,7 +497,7 @@ export class RoadArt {
     this.images.forEach((s) => s.setVisible(false));
     this.layers.forEach((g) => g.clear());
     this.lightIndex = 0;
-    this.lightLayers?.forEach((g) => g.clear());
+    this.lightImages?.forEach((s) => s.setVisible(false));
   }
   lights(
     key: "traffic" | "district",
@@ -467,50 +509,102 @@ export class RoadArt {
     mission: number,
     speed: number,
   ) {
-    if (mission !== 2) return;
+    if (mission !== 2 || (key === "district" && frame !== 2)) return;
     const bulbs = roadLightPlacement(key, frame, width, flip);
     if (!bulbs.length) return;
-    const g =
-      this.lightLayers[this.lightIndex] ??
-      (this.lightLayers[this.lightIndex] = this.scene.add.graphics());
-    this.lightIndex++;
-    g.setDepth(this.depth + 0.0003);
-    if (this.lightMask) g.setMask(this.lightMask);
+    if (key === "district")
+      this.lightImage(
+        "pool",
+        x,
+        y,
+        (64 * width) / 29,
+        (96 * width) / 29,
+        ROAD_LIGHT.street,
+        1,
+        flip,
+        0.5,
+        88 / 96,
+      );
     for (const bulb of bulbs) {
       const bx = x + bulb.dx,
-        by = y + bulb.dy;
-      if (key === "district") {
-        // Pool of light below the actual bulb, directed towards the carriageway.
-        const reach = width * 0.24 * (flip ? -1 : 1);
-        g.fillStyle(ROAD_LIGHT.street, 0.035);
-        g.fillTriangle(
-          bx,
-          by,
-          bx + reach - width * 0.4,
-          y,
-          bx + reach + width * 0.4,
-          y,
-        );
-        g.fillStyle(ROAD_LIGHT.street, 0.1);
-        g.fillEllipse(bx + reach, y - 0.5, width, width * 0.16);
-      }
+        by = y + bulb.dy,
+        color = key === "traffic" ? ROAD_LIGHT.tail : ROAD_LIGHT.street,
+        r = bulb.radius;
+      this.lightImage("halo", bx, by, r * 6.4, r * 4, color);
       const trail = roadLightTrail(speed) * Math.min(1, width / 29);
-      drawRoadLamp(
-        g,
-        bx,
-        by,
-        bulb.radius,
-        key === "traffic" ? ROAD_LIGHT.tail : ROAD_LIGHT.street,
-        trail,
-        ((bx - 160) * trail) / 130,
+      const drift = ((bx - 160) * trail) / 130;
+      if (trail > 0)
+        for (let i = 3; i >= 1; i--)
+          this.lightImage(
+            "pixel",
+            bx - r * 0.35 - (drift * i) / 3,
+            by - (trail * i) / 3,
+            Math.max(0.6, r * 0.7),
+            Math.max(0.6, trail / 3),
+            color,
+            0.13 / i,
+            false,
+            0,
+            0,
+          );
+      this.lightImage(
+        "pixel",
+        bx - r * 0.45,
+        by - 0.4,
+        Math.max(0.7, r * 0.9),
+        0.8,
+        color,
+        0.9,
+        false,
+        0,
+        0,
       );
     }
   }
+  private lightImage(
+    frame: string,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    color: number,
+    alpha = 1,
+    flip = false,
+    ox = 0.5,
+    oy = 0.5,
+  ) {
+    const s =
+      this.lightImages[this.lightIndex] ??
+      (this.lightImages[this.lightIndex] = this.newImage("road-lights", frame));
+    this.lightIndex++;
+    s.setTexture("road-lights", frame)
+      .setPosition(x, y)
+      .setDisplaySize(w, h)
+      .setOrigin(ox, oy)
+      .setFlipX(flip)
+      .setTint(color)
+      .setAlpha(alpha)
+      .setDepth(this.depth + 0.0003)
+      .setVisible(true);
+  }
   layer(order: number) {
     this.depth = 3.01 + order * 0.001;
-    const g =
-      this.layers[order] ?? (this.layers[order] = this.scene.add.graphics());
+    const g = this.layers[order] ?? (this.layers[order] = this.newGraphics());
     return g.setDepth(this.depth);
+  }
+  private newGraphics() {
+    const g = this.scene.add.graphics();
+    this.world?.add(g);
+    return g;
+  }
+  private newImage(key: string, frame: number | string) {
+    const image = this.scene.add.image(0, 0, key, frame);
+    this.world?.add(image);
+    return image;
+  }
+  finishFrame() {
+    this.world?.sort("depth");
+    this.world?.setVisible(true);
   }
   draw(
     key: "traffic" | "district" | "verge",
@@ -523,9 +617,7 @@ export class RoadArt {
   ) {
     const s =
       this.images[this.index] ??
-      (this.images[this.index] = this.scene.add
-        .image(0, 0, key, frame)
-        .setOrigin(0.5, 1));
+      (this.images[this.index] = this.newImage(key, frame).setOrigin(0.5, 1));
     this.index++;
     const [, , w, h] = ROAD_FRAMES[key][frame];
     s.setTexture(key, frame)
@@ -541,12 +633,7 @@ export class RoadArt {
       const p = roadPatchPlacement(key, frame, tag, width, flip);
       const patch =
         this.images[this.index] ??
-        (this.images[this.index] = this.scene.add.image(
-          0,
-          0,
-          "road-patches",
-          tag,
-        ));
+        (this.images[this.index] = this.newImage("road-patches", tag));
       this.index++;
       patch
         .setTexture("road-patches", tag)

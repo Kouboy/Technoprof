@@ -1,5 +1,10 @@
 # Historique importé de TECHNOPROF
 
+Classement local du 22 octobre 2026 : les livraisons HTML 0.40–0.60 sont dans
+`archives/versions/`, avec manifestes SHA256. La 0.61 reste à la racine. Les notes
+de gameplay et les anciens audits sont dans `docs/historique/` ; les documents
+d'atelier sont dans `docs/atelier/`. Ce rangement ne réécrit pas les jalons Git.
+
 Le dépôt Git a été créé le 3 octobre 2026 à partir du projet local. Les commits
 antérieurs à l'import n'existaient pas : les jalons `snapshot-0.40` à
 `snapshot-0.59` sont des imports des sauvegardes réellement conservées. Leurs

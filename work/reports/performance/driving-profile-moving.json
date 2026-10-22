@@ -1,0 +1,63 @@
+{
+  "method": "Headless isolated browsers; same native game renderer, real inputs, no state skips. Browser/GPU configuration can differ from personal browsers. CPU is RAF callback time, not total GPU time.",
+  "results": [
+    {
+      "name": "firefox",
+      "version": "153.0",
+      "scenario": "road-fast",
+      "readyMs": 9921,
+      "renderer": "ANGLE (Intel, Intel(R) HD Graphics Direct3D11 vs_5_0 ps_5_0), or similar",
+      "motionObserved": true,
+      "cpu": {
+        "count": 471,
+        "mean": 2.9554140127388533,
+        "p50": 3,
+        "p95": 4,
+        "max": 22
+      },
+      "interval": {
+        "count": 470,
+        "mean": 8.540425531914893,
+        "p50": 8,
+        "p95": 10,
+        "max": 36
+      },
+      "glPerFrame": {
+        "bufferSubData": 14,
+        "drawElements": 9
+      },
+      "stateBefore": "road / pièce 0 / joueur LIBRE / délai 239.37s\n\nTemps simulé 0.6s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.6s\nDernier événement : phase",
+      "stateAfter": "road / pièce 0 / joueur LIBRE / délai 235.36s\n\nTemps simulé 4.6s / 1 chocs / 0 chutes / 0 coups réussis\nroad 4.6s\nDernier événement : crash",
+      "errors": []
+    },
+    {
+      "name": "firefox",
+      "version": "153.0",
+      "scenario": "road-dusk-fast",
+      "readyMs": 9214,
+      "renderer": "ANGLE (Intel, Intel(R) HD Graphics Direct3D11 vs_5_0 ps_5_0), or similar",
+      "motionObserved": true,
+      "cpu": {
+        "count": 470,
+        "mean": 3.251063829787234,
+        "p50": 3,
+        "p95": 4,
+        "max": 26
+      },
+      "interval": {
+        "count": 469,
+        "mean": 8.552238805970148,
+        "p50": 8,
+        "p95": 10,
+        "max": 26
+      },
+      "glPerFrame": {
+        "bufferSubData": 14.012765957446808,
+        "drawElements": 9.008510638297873
+      },
+      "stateBefore": "road / pièce 20 / joueur LIBRE / délai 209.44s\n\nTemps simulé 0.6s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.6s\nDernier événement : pass",
+      "stateAfter": "road / pièce 20 / joueur LIBRE / délai 205.43s\n\nTemps simulé 4.6s / 2 chocs / 0 chutes / 0 coups réussis\nroad 4.6s\nDernier événement : crash",
+      "errors": []
+    }
+  ]
+}

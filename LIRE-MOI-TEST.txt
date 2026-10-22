@@ -1,8 +1,8 @@
 TECHNOPROF — Physique appliquée
-Version de test 0.61
+Journée d’atelier H1 / A3 / I2
 
 1. Extraire l'archive dans un dossier.
-2. Ouvrir Jouer-Technoprof.html dans votre navigateur habituel.
+2. Ouvrir Jouer-Technoprof-Journee-Atelier.html dans votre navigateur habituel.
    Sur Windows, Jouer.cmd ouvre également le jeu.
 3. Choisir « Prendre le service ».
 

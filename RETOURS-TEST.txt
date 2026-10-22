@@ -1,6 +1,6 @@
-ESSAI 0.61 : comparer les trois densites de circulation. Les ouvertures entre groupes sont-elles lisibles ? Notez les chocs qui paraissent inevitables et exportez le journal apres la journee.
+ESSAI ATELIER : noter surtout les ralentissements en conduite (trajet, moment, navigateur) et exporter le journal après la journée.
 
-TECHNOPROF 0.61 — APRÈS LA PARTIE
+TECHNOPROF — APRÈS LA JOURNÉE D’ATELIER
 
 Quelques notes suffisent, même si vous n'avez pas terminé.
 

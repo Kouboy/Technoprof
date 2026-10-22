@@ -73,17 +73,37 @@ assert.equal(
 );
 // Lights belong to the same world-depth band as their sprite, not a global overlay.
 const graphics = [];
+const sprites = [];
 const art = Object.create(a.RoadArt.prototype);
 Object.assign(art, {
   layers: [],
   images: [],
   index: 0,
-  lightLayers: [],
+  lightImages: [],
   lightIndex: 0,
   depth: 3.01,
-  lightMask: {},
   scene: {
     add: {
+      image() {
+        const s = {};
+        for (const method of [
+          "setTexture",
+          "setPosition",
+          "setDisplaySize",
+          "setOrigin",
+          "setFlipX",
+          "setTint",
+          "setAlpha",
+          "setDepth",
+          "setVisible",
+        ])
+          s[method] = (...args) => {
+            s[method + "Args"] = args;
+            return s;
+          };
+        sprites.push(s);
+        return s;
+      },
       graphics() {
         const g = { depth: 0, cleared: 0 };
         for (const k of [
@@ -105,27 +125,30 @@ Object.assign(art, {
 art.lights("traffic", 0, 120, 100, 30, false, 1, 260);
 assert.equal(graphics.length, 0, "no lights or allocations at midday");
 art.lights("traffic", 0, 120, 100, 30, false, 2, 260);
-const far = graphics[0].depth;
+assert.equal(graphics.length, 0, "halos must not rebuild graphics geometry");
+const far = sprites[0].setDepthArgs[0];
 art.layer(10);
 const bridge = art.depth;
 art.lights("district", 2, 230, 150, 29, true, 2, 260);
 assert(
-  far < bridge && graphics.at(-1).depth > bridge && graphics.at(-1).depth < 3.1,
+  far < bridge &&
+    sprites.at(-1).setDepthArgs[0] > bridge &&
+    sprites.at(-1).setDepthArgs[0] < 3.1,
 );
-const count = graphics.length;
+const count = sprites.length;
 art.hide();
 assert.equal(art.lightIndex, 0);
 assert(
-  graphics.every((g) => g.cleared === 1),
-  "pause/repaint/scene change clears light graphics",
+  sprites.every((s) => s.setVisibleArgs[0] === false),
+  "pause/repaint/scene change hides pooled lights",
 );
 art.lights("traffic", 0, 120, 100, 30, false, 2, 260);
 art.layer(10);
 art.lights("district", 2, 230, 150, 29, true, 2, 260);
 assert.equal(
-  graphics.length,
+  sprites.length,
   count,
-  "graphics pool stabilises after first frame",
+  "light sprite pool stabilises after first frame",
 );
 console.log(
   "PASS dusk lights: source anchors, mirrored lamp heads, bounded speed trails, +12% early streams and unchanged final traffic",
