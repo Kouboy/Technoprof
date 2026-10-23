@@ -1,0 +1,72 @@
+{
+  "version": "interpretation-1",
+  "sourceFile": "test_song.wav",
+  "sourceSha256": "5d144c76d843aa49377297ddd9f812a1a1b7d5389177cc13aea19a61beaa6c67",
+  "sourceSeconds": 181.7338775510204,
+  "bpm": 80,
+  "seconds": 60.0,
+  "wav": "Technoprof-Titre-Interpretation.wav",
+  "module": "Technoprof-Titre-Interpretation.mod",
+  "sampleBits": 8,
+  "trackerChannels": 4,
+  "samples": 26,
+  "sections": [
+    {
+      "id": "A0",
+      "bar": 0,
+      "bars": 2,
+      "source": 0,
+      "role": "Menace initiale, entrée abrégée",
+      "startSeconds": 0.0,
+      "durationSeconds": 6.0
+    },
+    {
+      "id": "B1",
+      "bar": 2,
+      "bars": 4,
+      "source": 24,
+      "role": "Installation de la pulsation",
+      "startSeconds": 6.0,
+      "durationSeconds": 12.0
+    },
+    {
+      "id": "C2",
+      "bar": 6,
+      "bars": 4,
+      "source": 48,
+      "role": "Première exposition du thème",
+      "startSeconds": 18.0,
+      "durationSeconds": 12.0
+    },
+    {
+      "id": "D3",
+      "bar": 10,
+      "bars": 2,
+      "source": 96,
+      "role": "Respiration, basse et percussion allégées",
+      "startSeconds": 30.0,
+      "durationSeconds": 6.0
+    },
+    {
+      "id": "C4",
+      "bar": 12,
+      "bars": 4,
+      "source": 144,
+      "role": "Retour du thème, batterie plus présente",
+      "startSeconds": 36.0,
+      "durationSeconds": 12.0
+    },
+    {
+      "id": "E5",
+      "bar": 16,
+      "bars": 4,
+      "source": 168,
+      "role": "Retombée et raccord vers A ; phrase de six secondes reprise",
+      "startSeconds": 48.0,
+      "durationSeconds": 12.0
+    }
+  ],
+  "wavSha256": "4fcc874462977b546c61f32f9102d4651b0406cbeab9aa9071339aca8846d3fd",
+  "peakDbFS": -5.745921149034235,
+  "rmsDbFS": -19.00000003345604
+}

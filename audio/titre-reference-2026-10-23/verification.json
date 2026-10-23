@@ -1,0 +1,23 @@
+{
+  "seconds": 60,
+  "bpm": 80,
+  "sections": [
+    "A0",
+    "B1",
+    "C2",
+    "D3",
+    "C4",
+    "E5"
+  ],
+  "sourceShortenedFromSeconds": 181.7338775510204,
+  "samples8Bit": 26,
+  "usedSamples": 26,
+  "trackerChannels": 4,
+  "peakDbFS": -5.745921149034235,
+  "rmsDbFS": -19.00000003345604,
+  "clipping": false,
+  "silentLoopSeam": false,
+  "loopBoundarySampleDelta": 0,
+  "independentModuleDecode": "ffmpeg/libopenmpt",
+  "artisticListening": "not assessed"
+}

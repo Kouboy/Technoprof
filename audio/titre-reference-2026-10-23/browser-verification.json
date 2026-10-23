@@ -1,0 +1,22 @@
+[
+  {
+    "browser": "chromium",
+    "offline": true,
+    "nativePlay": true,
+    "duration": 60,
+    "actualLoopWrap": true,
+    "toggleAndStop": true,
+    "mobileWidths": true,
+    "errors": []
+  },
+  {
+    "browser": "firefox",
+    "offline": true,
+    "nativePlay": true,
+    "duration": 60,
+    "actualLoopWrap": true,
+    "toggleAndStop": true,
+    "mobileWidths": true,
+    "errors": []
+  }
+]
