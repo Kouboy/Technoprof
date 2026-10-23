@@ -1,0 +1,22 @@
+[
+  {
+    "browser": "chromium",
+    "offline": true,
+    "played": 5,
+    "oneAtATime": true,
+    "actualLoopWrap": true,
+    "stopAndLoopToggle": true,
+    "mobileWidths": true,
+    "errors": []
+  },
+  {
+    "browser": "firefox",
+    "offline": true,
+    "played": 5,
+    "oneAtATime": true,
+    "actualLoopWrap": true,
+    "stopAndLoopToggle": true,
+    "mobileWidths": true,
+    "errors": []
+  }
+]

@@ -1,0 +1,79 @@
+{
+  "version": "maquettes-1",
+  "sampleRate": 22050,
+  "sourceSampleRate": 8287.136915887852,
+  "sourceBits": 8,
+  "channels": 4,
+  "tracks": [
+    {
+      "id": "titre",
+      "label": "Titre — Physique appliquée",
+      "description": "48 secondes : entrée lourde, motif de menace puis montée plus franche. Batterie, basse, cuivres synthétiques et cordes échantillonnés.",
+      "bpm": 120,
+      "bars": 24,
+      "duration": 48.0,
+      "file": "01-titre.wav",
+      "module": "01-titre.mod",
+      "peakDbFS": -5.19,
+      "rmsDbFS": -19.0,
+      "loopJump": 0.0,
+      "sha256": "d67e13c0ec0ff19a880e7c636133a17557913cf5d54f22947d507d5500119dd9"
+    },
+    {
+      "id": "radio",
+      "label": "Autoradio — Service continu",
+      "description": "Pop-rock instrumental : accords de guitare saturée, petite réponse en guitare claire, basse et batterie sèche. Filtre de poste et léger souffle.",
+      "bpm": 112,
+      "bars": 16,
+      "duration": 34.2857,
+      "file": "02-autoradio.wav",
+      "module": "02-autoradio.mod",
+      "peakDbFS": -6.36,
+      "rmsDbFS": -19.0,
+      "loopJump": 0.0,
+      "sha256": "11d07a23d3ee65d01c12a6bb5070409c047307c2e035cbd4a7fca36d50a2dc33"
+    },
+    {
+      "id": "ormeaux",
+      "label": "Ormeaux — Première sonnerie",
+      "description": "Pulsation retenue, cordes ternes et petits impacts de verre. Motif espacé pour laisser de la place au jeu.",
+      "bpm": 104,
+      "bars": 16,
+      "duration": 36.9231,
+      "file": "03-ormeaux.wav",
+      "module": "03-ormeaux.mod",
+      "peakDbFS": -6.06,
+      "rmsDbFS": -19.0,
+      "loopJump": 0.0,
+      "sha256": "064f7e5cc80f386c298c230b9a745017b953f86213df0b407c2afab5f064d7ab"
+    },
+    {
+      "id": "berthelot",
+      "label": "Berthelot — Quatre couches de beige",
+      "description": "Cordes échantillonnées, motif pincé et rythme plus nerveux. Une solennité usée plutôt qu’un grand thème héroïque.",
+      "bpm": 116,
+      "bars": 16,
+      "duration": 33.1034,
+      "file": "04-berthelot.wav",
+      "module": "04-berthelot.mod",
+      "peakDbFS": -8.18,
+      "rmsDbFS": -19.0,
+      "loopJump": 0.0,
+      "sha256": "5c94f9dc2dc50252d2a911c55215351939ae1bc8bd263fa37738c215f96b3583"
+    },
+    {
+      "id": "trois-ponts",
+      "label": "Trois-Ponts — Dernier service",
+      "description": "Basse plus insistante, ponctuations métalliques, guitares sourdes et batterie plus serrée. La même famille de motifs sous davantage de pression.",
+      "bpm": 128,
+      "bars": 16,
+      "duration": 30.0,
+      "file": "05-trois-ponts.wav",
+      "module": "05-trois-ponts.mod",
+      "peakDbFS": -6.84,
+      "rmsDbFS": -19.0,
+      "loopJump": 0.0,
+      "sha256": "41fd485ff4bcd477073de89be9f36a3b56d390b573663bb9538767a58cbc6469"
+    }
+  ]
+}

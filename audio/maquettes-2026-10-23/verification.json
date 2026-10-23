@@ -1,0 +1,47 @@
+[
+  {
+    "id": "titre",
+    "seconds": 48.0,
+    "samplesUsed": 11,
+    "peakDbFS": -5.19,
+    "rmsDbFS": -19.0,
+    "loopBoundarySampleDelta": 0,
+    "moduleDecode": "ffmpeg/libopenmpt"
+  },
+  {
+    "id": "radio",
+    "seconds": 34.286,
+    "samplesUsed": 6,
+    "peakDbFS": -6.36,
+    "rmsDbFS": -19.0,
+    "loopBoundarySampleDelta": 0,
+    "moduleDecode": "ffmpeg/libopenmpt"
+  },
+  {
+    "id": "ormeaux",
+    "seconds": 36.923,
+    "samplesUsed": 8,
+    "peakDbFS": -6.06,
+    "rmsDbFS": -19.0,
+    "loopBoundarySampleDelta": 0,
+    "moduleDecode": "ffmpeg/libopenmpt"
+  },
+  {
+    "id": "berthelot",
+    "seconds": 33.103,
+    "samplesUsed": 8,
+    "peakDbFS": -8.18,
+    "rmsDbFS": -19.0,
+    "loopBoundarySampleDelta": 0,
+    "moduleDecode": "ffmpeg/libopenmpt"
+  },
+  {
+    "id": "trois-ponts",
+    "seconds": 30.0,
+    "samplesUsed": 7,
+    "peakDbFS": -6.84,
+    "rmsDbFS": -19.0,
+    "loopBoundarySampleDelta": 0,
+    "moduleDecode": "ffmpeg/libopenmpt"
+  }
+]
