@@ -156,8 +156,8 @@ const bruelRooms: Record<number, RoomSpec> = {
       encounter: {
         name: "ELEVE",
         pages: [
-          ["Les remplaçants ?", "On ne les garde jamais."],
-          ["Alors votre cours,", "on verra si on le suit."],
+          ["Tiens, encore un bouche-trou."],
+          ["Faites sauter cette retenue", "ou vous passez pas !"],
         ],
       },
       signs: [[176, 51, 100, ["SALLE B12 >"]]],
@@ -173,7 +173,7 @@ const bruelRooms: Record<number, RoomSpec> = {
       name: "PARENT INFLUENT",
       pages: [
         ["Je finance les voyages.", "La direction me reçoit."],
-        ["La note de mon fils baisse ?", "Votre contrat suivra."],
+        ["La moyenne de mon fils baisse ?", "Votre tête tombera."],
         ["Vous voulez passer ?", "Essayez donc."],
       ],
     },
@@ -217,8 +217,8 @@ const proRooms: Record<number, RoomSpec> = {
       encounter: {
         name: "ELEVE MAJEUR",
         pages: [
-          ["Encore un remplacement ?", "L’atelier attend depuis lundi."],
-          ["Votre cours tombe mal.", "La colère, elle, ne manque pas."],
+          ["Encore un remplacement ?", "On attend depuis un mois."],
+          ["Vous tombez mal,", "j'ai plus envie de bosser."],
         ],
       },
       labels: [[58, 43, "ETAGE"]],
@@ -266,9 +266,9 @@ const proRooms: Record<number, RoomSpec> = {
     encounter: {
       name: "RESPONSABLE SECURITE",
       pages: [
-        ["Votre badge est provisoire.", "L’accès au labo ne l’est pas."],
+        ["Votre badge est périmé."],
         ["Ordre de la direction :", "aucune exception."],
-        ["De face, je ne cède pas.", "Essayez de me contourner."],
+        ["Et pas la peine de fouiner", "dans mon dos."],
       ],
     },
     labels: [[281, 43, "T03"]],
@@ -395,7 +395,10 @@ const addWorkload = (
   arena: number,
   classroom: string,
   classFrame: number,
-  threats: Record<number, { role: EnemyRole; name: string; lines: string[] }>,
+  threats: Record<
+    number,
+    { role: EnemyRole; name: string; lines: string[]; followup?: string[][] }
+  >,
 ) => {
   rooms[from].exits = rooms[from].exits!.map((e) =>
     e.target === arena
@@ -475,7 +478,10 @@ const addWorkload = (
           ? {
               role: threat.role,
               hp: 2,
-              encounter: { name: threat.name, pages: [threat.lines] },
+              encounter: {
+                name: threat.name,
+                pages: [threat.lines, ...(threat.followup ?? [])],
+              },
             }
           : {}),
       },
@@ -486,7 +492,8 @@ addWorkload(bruelRooms, 18, 40, 10, 14, "B12", 1, {
   1: {
     role: "student",
     name: "ELEVE",
-    lines: ["Une salle libre ?", "Cherchez l’autre aile."],
+    lines: ["Un prof ? Ici ?", "Vous vous croyez où !"],
+    followup: [["On pige rien au programme,", "dégagez !"]],
   },
   4: {
     role: "filmer",
@@ -510,17 +517,20 @@ addWorkload(proRooms, 28, 60, 29, 24, "T03", 2, {
   1: {
     role: "guard",
     name: "AGENT DE SECURITE",
-    lines: ["On manque de personnel.", "Alors je bloque les accès."],
+    lines: ["Je vous connais pas, demi-tour !"],
   },
   4: {
     role: "student",
     name: "ELEVE",
-    lines: ["Trois profs en deux semaines.", "Vous resterez combien ?"],
+    lines: [
+      "Trois profs en deux semaines.",
+      "Vous tiendrez combien de temps ?",
+    ],
   },
   7: {
     role: "guard",
     name: "AGENT DE SECURITE",
-    lines: ["Aile fermée depuis lundi.", "Le cours ? Plus loin."],
+    lines: ["Aile fermée depuis lundi.", "J'ai des ordres."],
   },
   10: {
     role: "thrower",

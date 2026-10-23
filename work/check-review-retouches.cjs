@@ -29,13 +29,13 @@ for (const text of g.radioLines) {
   const audio = new AudioKit(); audio.context = { currentTime: 0 };
   audio.radio(text, true); audio.radio(text, true);
   assert.equal(utterances.at(-1).text, text);
-  assert(text.startsWith('Radio Éduc France. '), 'explicit spoken radio name, distinct from caption typography');
+  assert(text.startsWith('Radio Éduca-France. '), 'approved spoken radio name, distinct from caption typography');
   assert(!/idiotie/i.test(text));
   utterances.at(-1).onend(); assert(audio.radioDone);
   audio.radio(text, true); assert(!audio.radioPlaying, 'completed bulletin is not repeated');
 }
 assert.equal(utterances.length, 3);
-assert(g.radioLines[2].includes('corrigent des copies et préparent les cours de demain'));
+assert(g.radioLines[2].includes('corrigent les copies des examens en retard'));
 for (const fps of [30,60,120]) {
   const a = new AudioKit(), events = [];
   a.context = { currentTime: 0 };

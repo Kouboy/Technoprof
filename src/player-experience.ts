@@ -1,13 +1,13 @@
 import type { AudioKit } from "./audio";
 import { mountTitleArt } from "./title-screen";
 import { ENCOUNTERS, type Encounter, type DialogueState } from "./dialogue";
-export const RADIO_NAME = "Radio Educ' France";
-// Written apostrophe/abbreviation can be mispronounced by local TTS voices.
-export const RADIO_SPOKEN_NAME = "Radio Éduc France";
+export const RADIO_NAME = "Radio Educa France";
+// Explicit pronunciation supplied with the approved dialogue rewrite.
+export const RADIO_SPOKEN_NAME = "Radio Éduca-France";
 export const RADIO_BULLETINS = [
   "La rentrée est prête : les postes vacants seront occupés par le mot priorité.",
   "Le ministère annonce plus d’autonomie. Chaque établissement pourra désormais choisir ce qu’il ne répare pas.",
-  "Ce soir, un débat demande si les professeurs travaillent assez. Aucun enseignant n'a pu venir : ils corrigent des copies et préparent les cours de demain.",
+  "Ce soir, débat sur les conditions de travail des professeurs. Aucun enseignant n'a pu venir : ils corrigent les copies des examens en retard.",
 ];
 
 export const DAY_BRIEFS = [

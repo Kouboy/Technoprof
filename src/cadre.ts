@@ -364,7 +364,7 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
     t(70, 214, s.classroom ?? "42C", paper, 2, 37);
   } else if (s.phase === "free") {
     compact(14, 199, "RADIO", dim, 90);
-    t(14, 209, "EDUC FRANCE", paper, 1, 91);
+    t(14, 209, "EDUCA FRANCE", paper, 1, 91);
     r(14, 221, 83, 1, 0x38494c);
     for (let i = 0; i < 16; i++) {
       const h =

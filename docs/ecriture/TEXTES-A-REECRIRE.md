@@ -8,7 +8,7 @@ Ce document est une proposition de réécriture à me renvoyer ; le modifier ne 
 
 ## Radio
 
-Nom affiché : **Radio Educ' France**. Nom transmis à la voix : **Radio Éduc France**.
+Nom affiché : **Radio Educa France**. Nom transmis à la voix : **Radio Éduca-France**.
 
 ### RADIO-1 — matin / Ormeaux
 
@@ -24,7 +24,7 @@ Notes :
 
 ### RADIO-3 — crépuscule / Trois-Ponts
 
-> Ce soir, un débat demande si les professeurs travaillent assez. Aucun enseignant n'a pu venir : ils corrigent des copies et préparent les cours de demain.
+> Ce soir, débat sur les conditions de travail des professeurs. Aucun enseignant n'a pu venir : ils corrigent les copies des examens en retard.
 
 Notes :
 
@@ -86,7 +86,11 @@ Lieux :
 
 **Page 1**
 
-> Une salle libre ? Cherchez l’autre aile.
+> Un prof ? Ici ? Vous vous croyez où !
+
+**Page 2**
+
+> On pige rien au programme, dégagez !
 
 Notes :
 
@@ -114,11 +118,11 @@ Lieux :
 
 **Page 1**
 
-> Les remplaçants ? On ne les garde jamais.
+> Tiens, encore un bouche-trou.
 
 **Page 2**
 
-> Alors votre cours, on verra si on le suit.
+> Faites sauter cette retenue ou vous passez pas !
 
 Notes :
 
@@ -158,7 +162,7 @@ Lieux :
 
 **Page 2**
 
-> La note de mon fils baisse ? Votre contrat suivra.
+> La moyenne de mon fils baisse ? Votre tête tombera.
 
 **Page 3**
 
@@ -175,7 +179,7 @@ Lieux :
 
 **Page 1**
 
-> On manque de personnel. Alors je bloque les accès.
+> Je vous connais pas, demi-tour !
 
 Notes :
 
@@ -187,7 +191,7 @@ Lieux :
 
 **Page 1**
 
-> Trois profs en deux semaines. Vous resterez combien ?
+> Trois profs en deux semaines. Vous tiendrez combien de temps ?
 
 Notes :
 
@@ -199,7 +203,7 @@ Lieux :
 
 **Page 1**
 
-> Aile fermée depuis lundi. Le cours ? Plus loin.
+> Aile fermée depuis lundi. J'ai des ordres.
 
 Notes :
 
@@ -231,7 +235,7 @@ Lieux :
 
 **Page 1**
 
-> Votre badge est provisoire. L’accès au labo ne l’est pas.
+> Votre badge est périmé.
 
 **Page 2**
 
@@ -239,7 +243,7 @@ Lieux :
 
 **Page 3**
 
-> De face, je ne cède pas. Essayez de me contourner.
+> Et pas la peine de fouiner dans mon dos.
 
 Notes :
 
@@ -251,11 +255,11 @@ Lieux :
 
 **Page 1**
 
-> Encore un remplacement ? L’atelier attend depuis lundi.
+> Encore un remplacement ? On attend depuis un mois.
 
 **Page 2**
 
-> Votre cours tombe mal. La colère, elle, ne manque pas.
+> Vous tombez mal, j'ai plus envie de bosser.
 
 Notes :
 
