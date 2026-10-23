@@ -39,6 +39,10 @@ export type Traffic = {
   speed?: number;
   sounded?: boolean;
   hit?: boolean;
+  passed?: boolean;
+  // Closest clearance while traversing the collision zone. Negative means
+  // overlap, including contacts temporarily protected by the damage cooldown.
+  passMargin?: number;
 };
 export const TRAFFIC_WIDTHS = [52, 68, 46];
 export function trafficWidth(type: number) {

@@ -57,15 +57,16 @@ export function contextualHelp(s: PlayerContext) {
   if (s.phase !== "school" || s.encounterTime > 0 || s.roomTransition)
     return "";
   const elapsed = s.session.elapsed - s.roomEnteredAt;
-  if (s.room === 0 && elapsed < 10)
+  // Legacy workshop rooms and the delivered Ormeaux H1 topology.
+  if ([0, 200].includes(s.room) && elapsed < 10)
     return s.pointerMode
       ? "Touchez le sol pour marcher, une porte pour la rejoindre. Glissez vers le haut pour sauter, en diagonale pour sauter dans cette direction."
       : "Q D/← → marcher. Suivez les plaques ; les accès indiquent leur touche à proximité.";
-  if (s.room === 1 && elapsed < 20)
+  if ([1, 201].includes(s.room) && elapsed < 20)
     return s.pointerMode
       ? "Touchez l’adversaire pour aller le frapper. Touchez le sol pour vous placer ; glissez vers le haut pour sauter."
       : "F/X : se défendre avec le livre. ESPACE : sauter les trous ou une charge. Vous pouvez aussi éviter l’adversaire.";
-  if (s.room === 4 && elapsed < 22)
+  if ([4, 207].includes(s.room) && elapsed < 22)
     return "L’inspection bloque le livre. Évitez son attaque, puis frappez pendant son ouverture.";
   return "";
 }

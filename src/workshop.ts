@@ -12,6 +12,11 @@ import {
 } from "./gameplay";
 import type { Enemy } from "./world";
 import type { SessionLog } from "./session-log";
+import {
+  GAMEFEEL_STATIONS,
+  type GamefeelVariant,
+  type GamefeelStation,
+} from "./gamefeel";
 
 type Host = {
   phase: string;
@@ -50,6 +55,9 @@ type Host = {
   workshopScenario: string;
   queuedAttack: boolean;
   comicWords: boolean;
+  gamefeelLab: boolean;
+  gamefeelVariant: GamefeelVariant;
+  gamefeelStation: GamefeelStation;
   navigationGain: 1 | 2;
   navigationStartHp: number;
   recoveryScene?: { active: boolean; state: string };
@@ -64,6 +72,12 @@ type Host = {
   exportJournal(): void;
 };
 const SCENARIOS: Record<string, string> = {
+  "gamefeel-reference-encounter": "Gamefeel A / rencontre",
+  "gamefeel-tolerant-encounter": "Gamefeel B / rencontre",
+  "gamefeel-reference-parent": "Gamefeel A / Parent influent",
+  "gamefeel-tolerant-parent": "Gamefeel B / Parent influent",
+  "gamefeel-reference-gaps": "Gamefeel A / deux trous",
+  "gamefeel-tolerant-gaps": "Gamefeel B / deux trous",
   "sequence-class-h1": "Séquences / porte Ormeaux (vue figée)",
   "sequence-class-a3": "Séquences / porte Berthelot (vue figée)",
   "sequence-class-i2": "Séquences / porte Trois-Ponts (vue figée)",
@@ -268,7 +282,64 @@ export function installWorkshop(s: Host) {
     s.seed = Number(seed.value) >>> 0 || 4301;
     seed.value = String(s.seed);
     s.loadScenario(select.value);
+    updateComparison();
   };
+  const comparison = document.createElement("div");
+  comparison.className = "workshop-controls";
+  const variantLabel = document.createElement("label");
+  variantLabel.textContent = "Variante ";
+  const variant = document.createElement("select");
+  variant.setAttribute("aria-label", "Variante de tolérance");
+  for (const [value, label] of [
+    ["reference", "A · Référence"],
+    ["tolerant", "B · Tolérance"],
+  ]) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = label;
+    variant.append(option);
+  }
+  variantLabel.append(variant);
+  const stationLabel = document.createElement("label");
+  stationLabel.textContent = "Situation ";
+  const station = document.createElement("select");
+  station.setAttribute("aria-label", "Situation gamefeel");
+  for (const [value, spec] of Object.entries(GAMEFEEL_STATIONS)) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = spec.label;
+    station.append(option);
+  }
+  stationLabel.append(station);
+  const comparisonNote = document.createElement("p");
+  comparisonNote.textContent =
+    "Comparez A puis B dans la même situation, au clavier puis à la souris ou au toucher. Rejouer recommence cette situation ; changer de variante la relance aussi. A : frappe 100 ms, saut immédiat. B : frappe 160 ms, saut anticipé de 90 ms avant réception. PV, ennemis et délais identiques. Le journal conserve la variante et les décisions d’input ; exportez-le avant de relancer. La journée normale reste en A.";
+  comparison.append(variantLabel, stationLabel, comparisonNote);
+  comparison.addEventListener("focusin", () => s.setWorkshopFocus(true));
+  comparison.addEventListener("focusout", (event) => {
+    if (!comparison.contains(event.relatedTarget as Node | null))
+      s.setWorkshopFocus(false);
+  });
+  const updateComparison = () => {
+    comparison.hidden = !s.gamefeelLab;
+    variant.value = s.gamefeelVariant;
+    station.value = s.gamefeelStation;
+  };
+  const chooseComparison = () => {
+    select.value = `gamefeel-${variant.value}-${station.value}`;
+    reset();
+    updateCareSettings();
+  };
+  variant.onchange = () => {
+    chooseComparison();
+    variant.blur();
+  };
+  station.onchange = () => {
+    chooseComparison();
+    station.blur();
+  };
+  updateComparison();
+  root.append(comparison);
   const careSettings = document.createElement("div");
   careSettings.className = "workshop-controls";
   const gainLabel = document.createElement("label");
@@ -459,6 +530,22 @@ export function drawWorkshop(s: Host) {
       .join("\n") +
     `\nTemps simulé ${s.session.elapsed.toFixed(1)}s / ${s.collisions} chocs / ${s.session.falls} chutes / ${s.punches} coups réussis\n${seconds}` +
     `\nDernier événement : ${lastEvent?.kind ?? "—"}${stall}` +
+    (s.gamefeelLab
+      ? `\nCOMPARAISON ${s.gamefeelVariant === "reference" ? "A" : "B"} / ${GAMEFEEL_STATIONS[s.gamefeelStation].label}\n` +
+        s.session.events
+          .filter((e) => e.kind === "control")
+          .slice(-6)
+          .map((e) => {
+            const data = e.data as {
+              action: string;
+              outcome: string;
+              reason: string;
+              source: string;
+            };
+            return `${e.at.toFixed(2)}s · ${data.source} · ${data.action} → ${data.outcome}${data.reason ? " / " + data.reason : ""}`;
+          })
+          .join("\n")
+      : "") +
     (s.paused && s.pauseReason ? `\n${s.pauseReason} — reprendre avec P` : "");
   if (status && text !== lastStatus) {
     status.textContent = text;

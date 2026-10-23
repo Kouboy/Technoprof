@@ -34,6 +34,7 @@ type Host = {
   controls?: ActionInput;
   pointerMode: boolean;
   workshop?: boolean;
+  traceControl?(action: string, outcome: string, reason?: string): void;
   pointerExits(): Exit[];
   movementBounds?(): { min: number; max: number };
   careResource?(): { x: number; reach: number } | undefined;
@@ -137,6 +138,7 @@ export class DirectInput {
         };
       }
       this.pulse("SPACE");
+      this.host.traceControl?.("jump", "gesture", "swipe");
       this.marker(this.host.px, 150, "jump");
     }
   }
@@ -191,6 +193,7 @@ export class DirectInput {
     );
     if (enemy) {
       this.intent = { kind: "attack", enemy };
+      s.traceControl?.("attack", "intent", "approach-and-strike");
       this.marker(enemy.x - s.cam, 120, "attack");
       return;
     }

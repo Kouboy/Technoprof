@@ -122,12 +122,44 @@ import {
 import { AudioKit } from "./audio";
 import { DAY_ONLY } from "./asset-profile";
 import { FailureArt, failureNotice } from "./interface-presentation";
+import {
+  GAMEFEEL,
+  GAMEFEEL_STATIONS,
+  gamefeelScenario,
+  type GamefeelVariant,
+  type GamefeelStation,
+} from "./gamefeel";
 class Game extends Phaser.Scene {
   failureReason: FailureReason | null = null;
   playerRecovery = 0;
   playerHitDirection = -1;
   bookBlocked = 0;
   attackBuffer = 0;
+  jumpBuffer = 0;
+  gamefeelLab = false;
+  gamefeelVariant: GamefeelVariant = "reference";
+  gamefeelStation: GamefeelStation = "encounter";
+  gamefeelTuning() {
+    return GAMEFEEL[
+      this.workshop && this.gamefeelLab ? this.gamefeelVariant : "reference"
+    ];
+  }
+  traceControl(action: string, outcome: string, reason = "") {
+    if (!this.workshop || !this.gamefeelLab) return;
+    this.session.record("control", this.mission, this.room, {
+      action,
+      outcome,
+      reason,
+      source: this.pointerMode ? "pointer" : "keyboard",
+      attack: +this.attack.toFixed(3),
+      y: +this.py.toFixed(2),
+    });
+  }
+  cancelBufferedActions(reason: string) {
+    if (this.jumpBuffer > 0) this.traceControl("jump", "cancelled", reason);
+    if (this.attackBuffer > 0) this.traceControl("attack", "cancelled", reason);
+    this.jumpBuffer = this.attackBuffer = 0;
+  }
   reducedShake = false;
   comicWords = true;
   groundContact?: Phaser.GameObjects.Graphics;
@@ -1181,6 +1213,7 @@ class Game extends Phaser.Scene {
   }
   setPlayerMenu(open: boolean) {
     this.playerMenu = open;
+    this.cancelBufferedActions("menu");
     this.controls?.reset();
     this.direct?.cancel();
     const keyboard = this.input?.keyboard;
@@ -1191,6 +1224,8 @@ class Game extends Phaser.Scene {
     else keyboard.enableGlobalCapture();
   }
   startDay() {
+    this.gamefeelLab = false;
+    this.gamefeelVariant = "reference";
     this.navigationProfile = false;
     this.navigationMetrics = new NavigationMetrics();
     this.validatedDayRuns = {};
@@ -1214,6 +1249,7 @@ class Game extends Phaser.Scene {
     this.begin();
   }
   begin() {
+    this.cancelBufferedActions("mission");
     if (this.validatedDay && this.mission < 3) {
       this.navigationProfile = true;
       this.navigationRevision = (["H1", "A3", "I2"] as const)[this.mission];
@@ -1300,6 +1336,7 @@ class Game extends Phaser.Scene {
     this.enterRoom(this.missionSpec().start, 25);
   }
   enterRoom(room: number, x: number) {
+    this.cancelBufferedActions("room");
     this.navigationCare.cancel();
     this.recoveryScene.reset();
     this.roomTransition = null;
@@ -1391,6 +1428,7 @@ class Game extends Phaser.Scene {
 
   changeRoom(target: number, spawn: number) {
     if (this.roomTransition) return;
+    this.cancelBufferedActions("transition");
     if (this.navigationProfile) {
       const from = this.roomSpec()!.navigation!.id;
       const to = roomSpec(this.mission, target, this.navigationSpec())
@@ -1420,6 +1458,7 @@ class Game extends Phaser.Scene {
   }
 
   finish(ok: boolean, reason?: FailureReason) {
+    this.cancelBufferedActions("finish");
     if (
       [
         "fail",
@@ -1530,6 +1569,7 @@ class Game extends Phaser.Scene {
   }
   setPaused(value: boolean, reason = "", preserveControls = false) {
     if (!preserveControls && value !== this.paused) {
+      this.cancelBufferedActions("pause");
       this.controls?.reset();
       this.direct?.cancel();
     }
@@ -1595,13 +1635,25 @@ class Game extends Phaser.Scene {
       this.navigationMetrics.tick(category, dt);
   }
   journalSnapshot() {
-    const snapshot = this.session.snapshot(
-      this.seed,
-      this.collisions,
-      this.punches,
-      this.results,
-      this.runtime.snapshot(),
-    );
+    const snapshot = {
+      ...this.session.snapshot(
+        this.seed,
+        this.collisions,
+        this.punches,
+        this.results,
+        this.runtime.snapshot(),
+      ),
+      ...(this.workshop && this.gamefeelLab
+        ? {
+            gamefeel: {
+              variant: this.gamefeelVariant,
+              station: this.gamefeelStation,
+              tuning: this.gamefeelTuning(),
+              scenario: this.workshopScenario,
+            },
+          }
+        : {}),
+    };
     if (this.validatedDay)
       return {
         ...snapshot,
@@ -1653,19 +1705,29 @@ class Game extends Phaser.Scene {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   loadScenario(name: string) {
+    this.cancelBufferedActions("scenario");
+    const comparison = this.workshop ? gamefeelScenario(name) : null;
+    this.gamefeelLab = !!comparison;
+    this.gamefeelVariant = comparison?.variant ?? "reference";
+    this.gamefeelStation = comparison?.station ?? "encounter";
+    const requestedScenario = name;
+    if (comparison) name = GAMEFEEL_STATIONS[comparison.station].scenario;
     this.recoveryScene.reset();
     this.navigationProfile = false;
     this.validatedDay = false;
     this.validatedDayRuns = {};
     this.navigationMetrics = new NavigationMetrics();
     this.controls?.reset();
-    this.workshopScenario = name;
+    this.workshopScenario = comparison
+      ? `gamefeel-${comparison.variant}-${comparison.station}`
+      : requestedScenario;
     this.input?.keyboard?.resetKeys();
     this.paused = false;
     this.pauseReason = "";
     this.queuedAttack = false;
     this.workshopStep = false;
     this.session = new SessionLog();
+    this.runtime.resetFrames();
     this.lastLoggedPhase = "";
     this.vehicle = 100;
     this.mission = 0;
@@ -2208,9 +2270,53 @@ class Game extends Phaser.Scene {
     this.direct?.tick(dt);
     const just = (k: string) => Phaser.Input.Keyboard.JustDown(this.keys[k]);
     // Consume one-shot controls even when an imposed transition rejects them.
-    const jumpPressed = just("SPACE");
-    const attackPressed = just("X") || this.queuedAttack;
+    let jumpPressed = just("SPACE");
+    let attackPressed = just("X") || this.queuedAttack;
     this.queuedAttack = false;
+    const gate =
+      this.phase !== "school"
+        ? this.phase
+        : this.paused
+          ? "pause"
+          : this.playerMenu
+            ? "menu"
+            : this.roomTransition || this.schoolFade > 0
+              ? "transition"
+              : this.recoveryScene.active || this.navigationCare.active
+                ? "care"
+                : this.encounterTime > 0 || this.bossIntro > 0
+                  ? "dialogue"
+                  : this.falling > 0
+                    ? "fall"
+                    : this.playerRecovery > 0
+                      ? "hurt"
+                      : this.enemies.some(
+                            (e) =>
+                              e.hp > 0 && e.parentCycle?.phase === "breakaway",
+                          )
+                        ? "reprise"
+                        : "";
+    if (jumpPressed) this.traceControl("jump", "request", gate);
+    if (attackPressed) this.traceControl("attack", "request", gate);
+    if (gate) {
+      this.cancelBufferedActions(gate);
+      if (jumpPressed) this.traceControl("jump", "rejected", gate);
+      if (attackPressed)
+        this.traceControl(
+          "attack",
+          gate === "dialogue" || gate === "care" ? "interaction" : "rejected",
+          gate,
+        );
+    } else if (
+      jumpPressed &&
+      this.py < PLAY.floor &&
+      this.gamefeelTuning().jumpBuffer > 0
+    ) {
+      // Preserve a fresh landing request through voluntary hit stop. No grace
+      // after walking off an edge: tryFall always wins over the queued jump.
+      this.jumpBuffer = this.gamefeelTuning().jumpBuffer;
+      this.traceControl("jump", "buffered", "landing");
+    }
     const enterPressed = just("ENTER");
     const upPressed = just("UP"),
       downPressed = just("DOWN");
@@ -2234,8 +2340,17 @@ class Game extends Phaser.Scene {
       this.parkSpeed = 100;
       this.age = 0;
     }
-    if (just("P") && !["title", "report"].includes(this.phase))
+    if (just("P") && !["title", "report"].includes(this.phase)) {
+      const wasPaused = this.paused;
       this.setPaused(!this.paused);
+      // Commands sampled with pause/resume belong to that transition, never
+      // to the newly resumed scene. In particular a rejected jump stays rejected.
+      if (!wasPaused) {
+        if (jumpPressed) this.traceControl("jump", "rejected", "pause");
+        if (attackPressed) this.traceControl("attack", "rejected", "pause");
+      }
+      jumpPressed = attackPressed = false;
+    }
     this.ambienceClock += this.paused ? 0 : dt;
     this.audio.radio(
       this.radioLines[Math.min(this.mission, 2)],
@@ -2301,6 +2416,10 @@ class Game extends Phaser.Scene {
       p.vy += 100 * dt;
     }
     if (this.hitStop > 0) {
+      if (jumpPressed && !gate && !this.jumpBuffer)
+        this.traceControl("jump", "rejected", "hit-stop");
+      if (attackPressed && !gate)
+        this.traceControl("attack", "rejected", "hit-stop");
       this.hitStop = Math.max(0, this.hitStop - dt);
       this.draw();
       return;
@@ -2453,17 +2572,18 @@ class Game extends Phaser.Scene {
             const close = lateral < width + DRIVE.closeMargin;
             this.audio.pass(o.x - this.car, close, o.type === 1, closing);
             o.sounded = true;
-            this.session.record(
-              close ? "near-pass" : "pass",
-              this.mission,
-              this.room,
-              { side: Math.sign(o.x - this.car), closing },
-            );
-            if (close) {
-              this.boardMessage = "RETROVISEUR : ENCORE PRESENT";
-              this.messageTime = 1.2;
-            }
+            this.session.record("pass-approach", this.mission, this.room, {
+              side: Math.sign(o.x - this.car),
+              closing,
+            });
           }
+        }
+        if (
+          Math.min(previous, distance) < DRIVE.contactDepth &&
+          Math.max(previous, distance) > -DRIVE.contactDepth
+        ) {
+          const margin = Math.abs(o.x - this.car) - contactWidth(o.type);
+          o.passMargin = Math.min(o.passMargin ?? Infinity, margin);
         }
         if (
           this.trafficHit === 0 &&
@@ -2474,6 +2594,30 @@ class Game extends Phaser.Scene {
         ) {
           o.hit = true;
           this.crash(o.x, o.type);
+        }
+        if (
+          !o.passed &&
+          previous >= -DRIVE.contactDepth &&
+          distance < -DRIVE.contactDepth
+        ) {
+          o.passed = true;
+          if (!o.hit && o.passMargin !== undefined && o.passMargin >= 0) {
+            const close = o.passMargin < DRIVE.closeMargin;
+            this.session.record(
+              close ? "near-pass" : "pass",
+              this.mission,
+              this.room,
+              {
+                side: Math.sign(o.x - this.car),
+                closing,
+                clearance: o.passMargin,
+              },
+            );
+            if (close) {
+              this.boardMessage = "RETROVISEUR : ENCORE PRESENT";
+              this.messageTime = 1.2;
+            }
+          }
         }
         if (distance < -40) {
           const cue = trafficCue(
@@ -2493,6 +2637,8 @@ class Game extends Phaser.Scene {
           o.speed = cue.speed;
           o.sounded = false;
           o.hit = false;
+          o.passed = false;
+          o.passMargin = undefined;
         }
       }
 
@@ -2668,6 +2814,7 @@ class Game extends Phaser.Scene {
         !this.attack &&
         !this.interactLock
       ) {
+        this.cancelBufferedActions("care");
         this.direct?.cancel();
         if (this.navigationCare.start(this.hp)) {
           this.session.record("care-start", this.mission, this.room, {
@@ -2714,6 +2861,10 @@ class Game extends Phaser.Scene {
       this.attack = Math.max(0, this.attack - dt);
       this.bookBlocked = Math.max(0, this.bookBlocked - dt);
       this.attackBuffer = Math.max(0, this.attackBuffer - dt);
+      const previousJumpBuffer = this.jumpBuffer;
+      this.jumpBuffer = Math.max(0, this.jumpBuffer - dt);
+      if (previousJumpBuffer > 0 && !this.jumpBuffer)
+        this.traceControl("jump", "expired", "landing-window");
       const recovering = this.playerRecovery > 0;
       this.playerRecovery = Math.max(0, this.playerRecovery - dt);
       const dir =
@@ -2752,8 +2903,12 @@ class Game extends Phaser.Scene {
         }
       }
       if (jumpPressed && this.py === PLAY.floor && !recovering) {
+        this.jumpBuffer = 0;
         this.vy = -PLAY.jump;
         this.audio.fx("jump", (this.px - 160) / 190);
+        this.traceControl("jump", "accepted", "ground");
+      } else if (jumpPressed && !this.jumpBuffer && !recovering) {
+        this.traceControl("jump", "rejected", "airborne");
       }
       const bounds = this.movementBounds();
       this.px = Phaser.Math.Clamp(this.px, bounds.min, bounds.max);
@@ -2770,15 +2925,25 @@ class Game extends Phaser.Scene {
         this.vy = 0;
       }
       if (this.tryFall()) return;
-      // Only a fresh press in the last 100 ms of a swing can request the next one.
+      if (this.jumpBuffer > 0 && this.py === PLAY.floor && !recovering) {
+        this.jumpBuffer = 0;
+        this.vy = -PLAY.jump;
+        this.audio.fx("jump", (this.px - 160) / 190);
+        this.traceControl("jump", "accepted", "buffered-landing");
+      }
+      // Only a fresh press near the end of a swing can request the next one.
       // Early mashing, a held key, hurt and transitions never queue an attack.
       if (
         attackPressed &&
         this.attack > 0 &&
-        this.attack <= PLAY.attackBuffer &&
+        this.attack <= this.gamefeelTuning().attackBuffer &&
         !recovering
-      )
-        this.attackBuffer = PLAY.attackBuffer;
+      ) {
+        this.attackBuffer = this.gamefeelTuning().attackBuffer;
+        this.traceControl("attack", "buffered", "swing-recovery");
+      } else if (attackPressed && this.attack > 0 && !recovering) {
+        this.traceControl("attack", "rejected", "early-swing");
+      }
       if (
         (attackPressed || this.attackBuffer > 0) &&
         this.attack === 0 &&
@@ -2787,6 +2952,7 @@ class Game extends Phaser.Scene {
         this.attackBuffer = 0;
         this.attack = PLAY.attackDuration;
         this.attackHit = false;
+        this.traceControl("attack", "accepted");
         this.session.record("attack", this.mission, this.room, {
           x: this.px,
           facing: this.face,
@@ -3073,6 +3239,7 @@ class Game extends Phaser.Scene {
       ([left, right]) => this.px > left && this.px < right,
     );
     if (!gap) return false;
+    this.cancelBufferedActions("fall");
     this.falling = 0.001;
     this.fallReturn = recoveryBank(gap[0], gap[1], this.lastGroundX);
     this.vy = 45;
@@ -3644,6 +3811,7 @@ class Game extends Phaser.Scene {
     this.session.record("boss-opening", this.mission, this.room, { hp: e.hp });
   }
   beginParentBreakaway(e: Enemy) {
+    this.cancelBufferedActions("reprise");
     const c = e.parentCycle!,
       dir = Math.sign(e.x - this.px) || this.face;
     c.phase = "breakaway";
@@ -3695,6 +3863,7 @@ class Game extends Phaser.Scene {
     }
   }
   updateRecoveryScene(dt: number, action: boolean) {
+    this.cancelBufferedActions("care");
     const scene = this.recoveryScene;
     if (this.hp <= 0) {
       this.finish(false, "exhausted");
@@ -3900,6 +4069,7 @@ class Game extends Phaser.Scene {
   }
   hurt(direction = -this.face) {
     if (this.inv > 0) return;
+    this.cancelBufferedActions("hurt");
     this.hp--;
     this.inv = PLAY.invulnerability;
     this.attack = 0;
@@ -4631,10 +4801,23 @@ class Game extends Phaser.Scene {
     panel.fillStyle(0x854538);
     panel.fillRect(14, 16, 3, 16);
     const title = "AFFECTATION NON ASSUREE";
-    bitmap(panel, Math.round(160 - bitmapWidth(title, 2) / 2), 17, title, 0xd97561, 2);
+    bitmap(
+      panel,
+      Math.round(160 - bitmapWidth(title, 2) / 2),
+      17,
+      title,
+      0xd97561,
+      2,
+    );
     bitmap(panel, 183, 43, notice.cause, 0xe3d4b3, 1, 118);
     const detail = notice.detail.join(" ");
-    bitmap(panel, Math.round(160 - bitmapWidth(detail) / 2), 141, detail, 0xb9aa89);
+    bitmap(
+      panel,
+      Math.round(160 - bitmapWidth(detail) / 2),
+      141,
+      detail,
+      0xb9aa89,
+    );
     if (this.age >= PLAY.failContinueSeconds) {
       panel.fillStyle(0x080d13, 0.95);
       panel.fillRect(14, 153, 292, 16);
