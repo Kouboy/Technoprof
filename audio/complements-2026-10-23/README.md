@@ -4,7 +4,7 @@ Ouvrir **Ecouter-Complements-Technoprof.html**. Les sept WAV doivent rester à c
 
 ## Intention de cette passe
 
-Nicolas demande un thème pour chaque boss, une infirmerie, une bossa nova électro pour le trajet 2, un jazz fusion pour le trajet 3 et un Game Over. La texture reste celle des samples de tracker Amiga, instrumentale. Les directions ci-dessous sont des propositions de composition à auditionner ; elles ne sont pas encore validées musicalement ni intégrées au jeu.
+Nicolas demande un thème pour chaque boss, une infirmerie, une bossa nova électro pour le trajet 2, un jazz fusion pour le trajet 3 et un Game Over. La texture reste celle des samples de tracker Amiga, instrumentale. Les sept compositions ont été validées à l’écoute puis intégrées à la journée musicale locale pour tester leur enchaînement.
 
 | Usage | Proposition | Tempo | Durée approximative |
 |---|---|---:|---:|
@@ -34,11 +34,19 @@ node work/check-music-expansion-browser.cjs
 
 Python + NumPy et ffmpeg sont nécessaires aux deux premières commandes. Le contrôle navigateur utilise le runtime Playwright local déjà employé dans le projet.
 
-## Intégration à prévoir après écoute
+## Règles d’intégration
 
-- Un thème de boss prendrait le relais de l’établissement au début de la confrontation, en laissant les répliques au premier plan, puis s’arrêterait à la victoire, à la sortie ou à l’échec.
-- L’infirmerie remplacerait le thème scolaire pendant le soin et laisserait intactes les règles de pause et de soin unique.
-- Les deux nouveaux autoradios garderaient le contrat actuel : bulletin et affectation seuls, morceau pendant le trajet actif, coupure à l’arrivée ou à l’échec.
-- Le Game Over demanderait une lecture unique : une piste terminée ne devrait pas être relancée par la synchronisation de chaque frame. Le lecteur HTML de cette audition respecte déjà ce comportement.
+- Un thème de boss prend le relais de l’établissement au début de la confrontation, en laissant les répliques au premier plan, puis s’arrête à la victoire, à la sortie ou à l’échec.
+- L’infirmerie remplace le thème scolaire pendant le soin et laisse intactes les règles de pause et de soin unique.
+- Les deux nouveaux autoradios gardent le contrat actuel : bulletin et affectation seuls, morceau pendant le trajet actif, coupure à l’arrivée ou à l’échec.
+- Le Game Over se joue une seule fois ; une piste terminée n’est pas relancée par la synchronisation de chaque frame.
 
-Ces changements d’états ne sont pas implémentés dans cette passe de composition. La journée musicale actuelle, le titre approuvé, le premier autoradio et les trois thèmes d’établissement restent conservés.
+## Intégration à la journée musicale
+
+Les sept morceaux sont désormais branchés dans **Jouer-Technoprof-Journee-Musique.html**, avec le titre approuvé, le premier autoradio et les trois explorations déjà présents. Garder les trois dossiers audio/complements-2026-10-23, audio/maquettes-2026-10-23 et audio/titre-reference-2026-10-23 avec Jouer-Technoprof-Journee-Atelier.html et son raccourci musical.
+
+L’autoradio change selon la mission, après bulletin et DATA. Le thème de boss commence à l’introduction, atténué sous les répliques, puis cesse dès son K.O. L’arène reste silencieuse jusqu’à l’ouverture de classe. L’infirmerie remplace l’exploration puis restitue sa position de lecture à la sortie. Le Game Over démarre 0,45 s après l’échec, se joue une seule fois et ne se relance ni chaque frame, ni après pause/mute/reprise audio. Le joueur peut poursuivre avant la fin du morceau : aucune attente nouvelle n’est imposée.
+
+Le réglage Musique et la coupure générale restent actifs. Pause, perte de focus et menus de jeu suspendent les pistes. Chaque mission ou scénario recommencé efface les positions de reprise. Les fichiers WAV sont inchangés, chargés à la demande dans un seul lecteur. Le lancement habituel sans `?musique=essai` et la 0.61 publiée conservent leur comportement.
+
+`npm run test:musique` couvre les règles et un parcours réel des trois profils avec soin, reprise, boss, K.O. et échec. `work/check-music-browser.cjs` contrôle la lecture native hors ligne de tous les morceaux et une entrée/sortie d’infirmerie au clavier dans Chromium et Firefox. Les résultats de cette passe sont consignés dans flow-browser-verification.json.

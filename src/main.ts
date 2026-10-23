@@ -176,10 +176,19 @@ class Game extends Phaser.Scene {
         this.musicFocusLost ||
         (this.playerMenu && this.phase !== "title"),
       muted: this.audio.muted,
-      care:
-        this.phase === "school" &&
-        (this.recoveryScene.active || !!this.roomSpec()?.care),
-      dialogue: this.encounterTime > 0 || this.bossIntro > 0,
+      schoolContext:
+        this.recoveryScene.active || !!this.roomSpec()?.care
+          ? "care"
+          : this.arena
+            ? this.enemies.some((e) => e.boss && e.hp > 0)
+              ? "boss"
+              : "cleared"
+            : "exploration",
+      age: this.age,
+      dialogue:
+        this.encounterTime > 0 ||
+        this.bossIntro > 0 ||
+        this.recoveryScene.state === "dialogue",
       volume: this.audio.musicVolume,
     });
   }

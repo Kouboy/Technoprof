@@ -1,0 +1,42 @@
+[
+  {
+    "browser": "chromium",
+    "offline": true,
+    "normalHasNoMusic": true,
+    "trialFourSliders": true,
+    "titleForegroundGain": true,
+    "titleMenuPlayback": true,
+    "titleMuteResume": true,
+    "titleStopsBeforeBulletin": true,
+    "radioAfterBulletin": true,
+    "volume": true,
+    "pauseResume": true,
+    "muteResume": true,
+    "twelveActualFilesPlayed": true,
+    "careActualEntryDialogueExit": true,
+    "schoolOffsetRestored": true,
+    "arrivalAndClassSilent": true,
+    "gameOverEndsOnce": true,
+    "errors": []
+  },
+  {
+    "browser": "firefox",
+    "offline": true,
+    "normalHasNoMusic": true,
+    "trialFourSliders": true,
+    "titleForegroundGain": true,
+    "titleMenuPlayback": true,
+    "titleMuteResume": true,
+    "titleStopsBeforeBulletin": true,
+    "radioAfterBulletin": true,
+    "volume": true,
+    "pauseResume": true,
+    "muteResume": true,
+    "twelveActualFilesPlayed": true,
+    "careActualEntryDialogueExit": true,
+    "schoolOffsetRestored": true,
+    "arrivalAndClassSilent": true,
+    "gameOverEndsOnce": true,
+    "errors": []
+  }
+]
