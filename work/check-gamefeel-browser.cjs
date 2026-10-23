@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
 const {pathToFileURL}=require('node:url');
 const {chromium,firefox}=require('C:/Users/don_n/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.js');
 const offline=process.argv.includes('--offline');
-const base=offline?pathToFileURL(require('node:path').resolve('Jouer-Technoprof-Atelier-Gamefeel.html')).href:'http://127.0.0.1:4173/?essai=labo&scenario=gamefeel-reference-encounter';
+const base=offline?pathToFileURL(require('node:path').resolve('Jouer-Technoprof-Atelier-Gamefeel.html')).href:'http://127.0.0.1:4173/?essai=labo&scenario=gamefeel-tolerant-encounter';
 fs.mkdirSync('work/checkpoints',{recursive:true});
 (async()=>{
  const results=[];
@@ -18,7 +18,7 @@ fs.mkdirSync('work/checkpoints',{recursive:true});
    const variant=page.getByLabel('Variante de tolérance',{exact:true});
    const station=page.getByLabel('Situation gamefeel',{exact:true});
    const status=page.getByLabel('État de la simulation',{exact:true});
-   await variant.waitFor();assert.equal(await variant.inputValue(),'reference');
+   await variant.waitFor();assert.equal(await variant.inputValue(),'tolerant');
    assert.match(await status.textContent(),/pièce 201/);
    await variant.selectOption('tolerant');
    await page.waitForFunction(()=>document.querySelector('[aria-label="État de la simulation"]').textContent.includes('COMPARAISON B'));

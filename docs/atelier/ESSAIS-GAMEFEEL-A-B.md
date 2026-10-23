@@ -1,5 +1,7 @@
 # Essais de gamefeel — lots 0 et 1
 
+**B validée par Nicolas après essai : adoptée comme réglage normal.** A reste disponible dans cet atelier pour comparaison ; aucun export n’est nécessaire pour cette décision.
+
 Ouvrir `C:/Users/don_n/Documents/Codex/Technoprof/Jouer-Technoprof-Atelier-Gamefeel.html`.
 Le raccourci et `Jouer-Technoprof.html` doivent rester dans le même dossier. Aucune connexion ni serveur requis.
 
@@ -10,7 +12,7 @@ Le raccourci et `Jouer-Technoprof.html` doivent rester dans le même dossier. Au
 3. Essayer le couloir à deux trous, avec quelques sauts demandés légèrement avant la réception. Un saut très en avance expire ; tomber dans un trou reste une chute.
 4. Essayer aussi au clic et par glissés tactiles si possible. Une pression maintenue ne répète pas les frappes/sauts.
 
-La situation et la variante se choisissent dans les deux listes dédiées. **Rejouer** recommence la situation courante. Exporter le journal **avant** de changer de situation ou de variante : chaque essai a son journal et ses mesures de frames propres.
+La situation et la variante se choisissent dans les deux listes dédiées. **Rejouer** recommence la situation courante. Si un journal est utile pour une prochaine analyse, l’exporter avant de changer de situation ou de variante : chaque essai a son journal et ses mesures de frames propres.
 
 | Variante | Frappe suivante anticipée | Saut avant réception |
 | --- | --- | --- |
@@ -23,7 +25,7 @@ Le panneau de diagnostic affiche les six dernières décisions de commandes. Le 
 
 ## Journée normale
 
-`C:/Users/don_n/Documents/Codex/Technoprof/Jouer-Technoprof-Journee-Atelier.html` conserve les tolérances A, les PV, délais, patterns et densités validés. Cette passe corrige les aides H1 et la confirmation des dépassements : le son accompagne l’approche ; le journal et le message de frôlement attendent le dégagement sans contact. Le fichier publié 0.61 est préservé.
+`C:/Users/don_n/Documents/Codex/Technoprof/Jouer-Technoprof-Journee-Atelier.html` utilise les tolérances B : frappe anticipée de 160 ms, saut anticipé de 90 ms avant réception. PV, délais, patterns et densités restent identiques. Cette passe corrige les aides H1 et la confirmation des dépassements : le son accompagne l’approche ; le journal et le message de frôlement attendent le dégagement sans contact. Le fichier publié 0.61 est préservé.
 
 ## Retours utiles
 

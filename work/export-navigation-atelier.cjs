@@ -6,7 +6,7 @@ if (!fs.existsSync(path.join(root, "Jouer-Technoprof-Journee-Atelier.html")))
 console.log("Standalone day: H1 / A3 / I2, three roads and one final report");
 
 const presets = {
-  "Jouer-Technoprof-Atelier-Gamefeel.html": "gamefeel-reference-encounter",
+  "Jouer-Technoprof-Atelier-Gamefeel.html": "gamefeel-tolerant-encounter",
   "Jouer-Technoprof-Atelier-Bruel.html": "bruel-navigation",
   "Jouer-Technoprof-Atelier-Bruel-A2.html": "bruel-navigation-a2",
   "Jouer-Technoprof-Atelier-Bruel-A3.html": "bruel-navigation-a3",

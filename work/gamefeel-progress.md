@@ -29,3 +29,11 @@ Build final : npm run build:atelier, sortie 0. Avertissements connus uniquement 
 Navigateur : check-gamefeel-browser.cjs sur serveur puis --offline ; Chromium et Firefox, listes A/B, trois stations, véritable clavier, export JSON identifié, rejeu propre, sortie vers journée normale, zéro pageerror. Contrôle hors ligne supplémentaire du titre/journée/menu/pause et tailles mobiles via check-interface-browser.cjs, les deux navigateurs verts. Captures et journaux dans work/checkpoints (non suivis). Tests de tailles mobiles et de glissés simulés, pas un essai humain sur téléphone.
 
 SHA256 0.61 conservé : 05713E027D7DCB4B5CD8AAA6E2E74B53D1EA45526215E33CC8FE4E905B94DD65. Aucun changement de main/Pages ni publication. Aucun mineur de la revue restant à différer ; préférence humaine A/B en attente des essais.
+
+## Validation humaine et adoption de B
+
+Nicolas : « Pas besoin d’exporter, partons sur B. C’est beaucoup mieux. » B devient le défaut de la journée et de tous les modes ordinaires, y compris après redémarrage, sortie d’atelier et changement de scénario. A reste explicite dans l’atelier ; son raccourci ouvre désormais B. Aucune modification de valeur : 160/90 ms validés. PV, patterns, délais et circulation inchangés. Les mentions « journée en A » ci-dessus décrivent la livraison de comparaison antérieure.
+
+TDD : attentes de défaut B et comportements réels hors atelier ajoutés dans check-gamefeel-input ; rouge observé (.1 au lieu de .16), puis vert. Teste aussi que sélectionner A ne fuit pas dans une nouvelle journée et que le journal de diagnostic reste réservé à l’atelier.
+
+Adoption B vérifiée : test:gamefeel, check-045, tsc, test:journee (30/60/120 fps), parent-cycle-a3, floor-gaps-a3, inshape-i2-care et check-049 verts. Build:atelier vert ; raccourci B et journée ouverts hors ligne dans Chromium/Firefox, sans pageerror. SHA256 de 0.61 toujours identique. Aucun push ni publication.

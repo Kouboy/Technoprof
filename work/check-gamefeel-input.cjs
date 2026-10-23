@@ -10,9 +10,29 @@ function setup(variant='tolerant',segment='gaps') {
  const {g}=setup();assert.equal(g.room,317);assert.equal(g.gamefeelVariant,'tolerant');
  assert.equal(g.gamefeelTuning().attackBuffer,.16);assert.equal(g.gamefeelTuning().jumpBuffer,.09);
  assert.equal(g.journalSnapshot().gamefeel.variant,'tolerant');
- g.loadScenario('journee-validee');assert.equal(g.gamefeelTuning().attackBuffer,.1);
- assert.equal(g.gamefeelTuning().jumpBuffer,0);assert.equal(g.gamefeelLab,false);
+ g.loadScenario('journee-validee');assert.equal(g.gamefeelTuning().attackBuffer,.16);
+ assert.equal(g.gamefeelTuning().jumpBuffer,.09);assert.equal(g.gamefeelLab,false);
  assert.equal(g.journalSnapshot().gamefeel,undefined);
+}
+// Human-validated B is now the normal preset. A stays an explicit lab option.
+for(const scenario of [null,'journee-validee','inshape-navigation-i2-view-317']) {
+ const t=createGame(),g=t.g;
+ if(scenario){g.workshop=true;g.loadScenario(scenario);}else g.startDay();
+ assert.equal(g.gamefeelVariant,'tolerant');
+ assert.equal(g.gamefeelTuning().attackBuffer,.16);
+ assert.equal(g.gamefeelTuning().jumpBuffer,.09);
+ g.phase='school';g.encounterTime=g.bossIntro=g.schoolFade=g.hitStop=0;
+ g.roomTransition=null;g.enemies=[];g.px=60;g.py=153;g.vy=155;
+ t.press('SPACE');t.advance(.06,100);assert(g.vy<0,'normal game accepts B landing anticipation');
+ g.py=159;g.vy=0;g.attack=.15;g.attackHit=true;
+ t.press('X');t.advance(.18,100);
+ assert.equal(g.session.events.filter(e=>e.kind==='attack').length,1,'normal game accepts B late strike request');
+ assert(!g.session.events.some(e=>e.kind==='control'),'comparison traces stay in the lab');
+}
+{
+ const {g}=setup('reference');assert.equal(g.gamefeelTuning().jumpBuffer,0);
+ g.startDay();assert.equal(g.gamefeelVariant,'tolerant');assert.equal(g.gamefeelTuning().jumpBuffer,.09);
+ g.gamefeelVariant='reference';assert.equal(g.gamefeelTuning().jumpBuffer,.09,'A cannot leak outside its explicit lab');
 }
 // A fresh F in the final 140ms is accepted only in B. Holding never repeats.
 for(const variant of ['reference','tolerant']) {

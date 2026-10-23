@@ -313,7 +313,7 @@ export function installWorkshop(s: Host) {
   stationLabel.append(station);
   const comparisonNote = document.createElement("p");
   comparisonNote.textContent =
-    "Comparez A puis B dans la même situation, au clavier puis à la souris ou au toucher. Rejouer recommence cette situation ; changer de variante la relance aussi. A : frappe 100 ms, saut immédiat. B : frappe 160 ms, saut anticipé de 90 ms avant réception. PV, ennemis et délais identiques. Le journal conserve la variante et les décisions d’input ; exportez-le avant de relancer. La journée normale reste en A.";
+    "Comparez A puis B dans la même situation, au clavier puis à la souris ou au toucher. Rejouer recommence cette situation ; changer de variante la relance aussi. A : frappe 100 ms, saut immédiat. B : frappe 160 ms, saut anticipé de 90 ms avant réception. PV, ennemis et délais identiques. Le journal conserve la variante et les décisions d’input. B est le réglage normal, validé après essai ; A reste disponible pour comparaison.";
   comparison.append(variantLabel, stationLabel, comparisonNote);
   comparison.addEventListener("focusin", () => s.setWorkshopFocus(true));
   comparison.addEventListener("focusout", (event) => {

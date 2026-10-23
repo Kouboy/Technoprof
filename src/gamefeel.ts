@@ -1,10 +1,11 @@
 import { PLAY } from "./gameplay";
-// Workshop alternatives only. The normal day always uses reference.
+// B validated by human playtest. A remains available for explicit comparison.
 export const GAMEFEEL = {
   reference: { attackBuffer: PLAY.attackBuffer, jumpBuffer: 0 },
   tolerant: { attackBuffer: 0.16, jumpBuffer: 0.09 },
 } as const;
 export type GamefeelVariant = keyof typeof GAMEFEEL;
+export const DEFAULT_GAMEFEEL: GamefeelVariant = "tolerant";
 export const GAMEFEEL_STATIONS = {
   encounter: {
     label: "1 · Rencontre aux Ormeaux",

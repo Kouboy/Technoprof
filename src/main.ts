@@ -124,6 +124,7 @@ import { DAY_ONLY } from "./asset-profile";
 import { FailureArt, failureNotice } from "./interface-presentation";
 import {
   GAMEFEEL,
+  DEFAULT_GAMEFEEL,
   GAMEFEEL_STATIONS,
   gamefeelScenario,
   type GamefeelVariant,
@@ -137,11 +138,11 @@ class Game extends Phaser.Scene {
   attackBuffer = 0;
   jumpBuffer = 0;
   gamefeelLab = false;
-  gamefeelVariant: GamefeelVariant = "reference";
+  gamefeelVariant: GamefeelVariant = DEFAULT_GAMEFEEL;
   gamefeelStation: GamefeelStation = "encounter";
   gamefeelTuning() {
     return GAMEFEEL[
-      this.workshop && this.gamefeelLab ? this.gamefeelVariant : "reference"
+      this.workshop && this.gamefeelLab ? this.gamefeelVariant : DEFAULT_GAMEFEEL
     ];
   }
   traceControl(action: string, outcome: string, reason = "") {
@@ -1225,7 +1226,7 @@ class Game extends Phaser.Scene {
   }
   startDay() {
     this.gamefeelLab = false;
-    this.gamefeelVariant = "reference";
+    this.gamefeelVariant = DEFAULT_GAMEFEEL;
     this.navigationProfile = false;
     this.navigationMetrics = new NavigationMetrics();
     this.validatedDayRuns = {};
@@ -1708,7 +1709,7 @@ class Game extends Phaser.Scene {
     this.cancelBufferedActions("scenario");
     const comparison = this.workshop ? gamefeelScenario(name) : null;
     this.gamefeelLab = !!comparison;
-    this.gamefeelVariant = comparison?.variant ?? "reference";
+    this.gamefeelVariant = comparison?.variant ?? DEFAULT_GAMEFEEL;
     this.gamefeelStation = comparison?.station ?? "encounter";
     const requestedScenario = name;
     if (comparison) name = GAMEFEEL_STATIONS[comparison.station].scenario;
