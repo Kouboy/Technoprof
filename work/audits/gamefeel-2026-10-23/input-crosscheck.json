@@ -1,0 +1,71 @@
+[
+  {
+    "gap": 36,
+    "delay": 0.2,
+    "before": {
+      "attack": 0.33,
+      "hitStop": 0.0049999999999999975
+    },
+    "attacks": [
+      1.017
+    ]
+  },
+  {
+    "gap": 36,
+    "delay": 0.4,
+    "before": {
+      "attack": 0.14666666666666672,
+      "hitStop": 0
+    },
+    "attacks": [
+      1.017
+    ]
+  },
+  {
+    "gap": 36,
+    "delay": 0.48,
+    "before": {
+      "attack": 0.0662068965517239,
+      "hitStop": 0
+    },
+    "attacks": [
+      1.017,
+      1.563
+    ]
+  },
+  {
+    "gap": 136,
+    "delay": 0.2,
+    "before": {
+      "attack": 0.28,
+      "hitStop": 0
+    },
+    "attacks": [
+      1.017
+    ]
+  },
+  {
+    "gap": 136,
+    "delay": 0.4,
+    "before": {
+      "attack": 0.08000000000000007,
+      "hitStop": 0
+    },
+    "attacks": [
+      1.017,
+      1.5
+    ]
+  },
+  {
+    "gap": 136,
+    "delay": 0.48,
+    "before": {
+      "attack": 0,
+      "hitStop": 0
+    },
+    "attacks": [
+      1.017,
+      1.513
+    ]
+  }
+]

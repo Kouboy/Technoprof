@@ -1,0 +1,141 @@
+{
+  "scope": "Controlled initial states only, then normal inputs and actual simulation; no collision-free run is a human playtest",
+  "acceleration": [
+    {
+      "from": 110,
+      "reached": {
+        "180": 3.25,
+        "220": 5.825,
+        "240": 7.45,
+        "255": 8.908,
+        "260": 9.45
+      }
+    }
+  ],
+  "braking": [
+    {
+      "from": 110,
+      "seconds": 1.158,
+      "distanceMeters": 17.56
+    },
+    {
+      "from": 260,
+      "seconds": 2.742,
+      "distanceMeters": 98.53
+    }
+  ],
+  "steering": [
+    {
+      "speed": 110,
+      "holdSeconds": 0.3,
+      "releaseSeconds": 0.6,
+      "xAtRelease": 0.116,
+      "velocityAtRelease": 0.629,
+      "extraPixelsAfterRelease": 10.68,
+      "finalVelocity": 0.022
+    },
+    {
+      "speed": 260,
+      "holdSeconds": 0.3,
+      "releaseSeconds": 0.6,
+      "xAtRelease": 0.245,
+      "velocityAtRelease": 1.37,
+      "extraPixelsAfterRelease": 18.38,
+      "finalVelocity": 0.049
+    }
+  ],
+  "impacts": [
+    {
+      "from": 20,
+      "carDamage": 18,
+      "afterSpeed": 9.6,
+      "recoverySeconds": 0.292
+    },
+    {
+      "from": 110,
+      "carDamage": 18,
+      "afterSpeed": 52.8,
+      "recoverySeconds": 1.992
+    },
+    {
+      "from": 260,
+      "carDamage": 18,
+      "afterSpeed": 124.8,
+      "recoverySeconds": 8.85
+    }
+  ],
+  "passThenCrash": [
+    {
+      "mission": 1,
+      "seed": 4301,
+      "found": {
+        "delayMs": 83,
+        "distanceAtAnnouncement": 13.1
+      }
+    },
+    {
+      "mission": 1,
+      "seed": 8317,
+      "found": {
+        "delayMs": 83,
+        "distanceAtAnnouncement": 13.39
+      }
+    },
+    {
+      "mission": 1,
+      "seed": 2026,
+      "found": {
+        "delayMs": 100,
+        "distanceAtAnnouncement": 12.87
+      }
+    },
+    {
+      "mission": 2,
+      "seed": 4301,
+      "found": {
+        "delayMs": 83,
+        "distanceAtAnnouncement": 7.67
+      }
+    },
+    {
+      "mission": 2,
+      "seed": 8317,
+      "found": {
+        "delayMs": 67,
+        "distanceAtAnnouncement": 7.7
+      }
+    },
+    {
+      "mission": 2,
+      "seed": 2026,
+      "found": {
+        "delayMs": 67,
+        "distanceAtAnnouncement": 7.64
+      }
+    },
+    {
+      "mission": 3,
+      "seed": 4301,
+      "found": {
+        "delayMs": 83,
+        "distanceAtAnnouncement": 13.71
+      }
+    },
+    {
+      "mission": 3,
+      "seed": 8317,
+      "found": {
+        "delayMs": 83,
+        "distanceAtAnnouncement": 14.47
+      }
+    },
+    {
+      "mission": 3,
+      "seed": 2026,
+      "found": {
+        "delayMs": 83,
+        "distanceAtAnnouncement": 13.09
+      }
+    }
+  ]
+}

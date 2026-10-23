@@ -1,0 +1,11 @@
+{
+  "scenarios": [
+    "road-fast",
+    "road-dusk-fast",
+    "hit",
+    "whiff",
+    "inshape-navigation-i2-view-317"
+  ],
+  "method": "Actual workshop native action and 20ms step buttons; stills demonstrate alignment/readability, not subjective feel or auditory validation",
+  "errors": []
+}

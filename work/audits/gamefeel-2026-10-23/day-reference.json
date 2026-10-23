@@ -1,0 +1,150 @@
+{
+  "phase": "report",
+  "won": 3,
+  "collisions": 0,
+  "falls": 0,
+  "roomRuns": [
+    [
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      208,
+      206,
+      207
+    ],
+    [
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      108,
+      107,
+      108,
+      109,
+      110,
+      111
+    ],
+    [
+      300,
+      301,
+      302,
+      303,
+      304,
+      305,
+      306,
+      307,
+      317,
+      315,
+      317,
+      307,
+      308,
+      309
+    ]
+  ],
+  "ends": [
+    {
+      "remaining": 81.99999999996125,
+      "hp": 4,
+      "vehicle": 100
+    },
+    {
+      "remaining": 89.96666666661552,
+      "hp": 2,
+      "vehicle": 100
+    },
+    {
+      "remaining": 91.44999999993684,
+      "hp": 4,
+      "vehicle": 100
+    }
+  ],
+  "timing": {
+    "1": {
+      "seconds": {
+        "free": 15,
+        "receive": 3.017,
+        "road": 62.333,
+        "arrival": 5.817,
+        "arrivalFade": 1.1,
+        "transition": 3.4,
+        "orientation": 19.3,
+        "dialogue": 0.2,
+        "encounter": 6.617,
+        "hitStop": 0.717,
+        "recovery": 1.983,
+        "boss": 6.717,
+        "opening": 3.417,
+        "blackBefore": 0.8,
+        "course": 0.433,
+        "blackAfter": 0.8,
+        "later": 2.217
+      },
+      "clock": {
+        "road": 65.367,
+        "orientation": 19.3,
+        "encounter": 6.617,
+        "boss": 6.717
+      }
+    },
+    "2": {
+      "seconds": {
+        "free": 15,
+        "receive": 3.017,
+        "road": 56.367,
+        "arrival": 5.817,
+        "arrivalFade": 1.1,
+        "transition": 4,
+        "dialogue": 0.333,
+        "encounter": 13.283,
+        "hitStop": 1.217,
+        "orientation": 21.417,
+        "recovery": 2.067,
+        "boss": 10.933,
+        "opening": 3.417,
+        "blackBefore": 0.8,
+        "course": 0.433,
+        "blackAfter": 0.8,
+        "later": 2.217
+      },
+      "clock": {
+        "road": 59.4,
+        "encounter": 13.283,
+        "orientation": 21.417,
+        "boss": 10.933
+      }
+    },
+    "3": {
+      "seconds": {
+        "free": 15,
+        "receive": 3.017,
+        "road": 60.017,
+        "arrival": 5.817,
+        "arrivalFade": 1.1,
+        "transition": 4.6,
+        "dialogue": 0.333,
+        "encounter": 20.683,
+        "hitStop": 1.667,
+        "orientation": 26.367,
+        "recovery": 1.983,
+        "boss": 8.45,
+        "opening": 3.417,
+        "blackBefore": 0.8,
+        "course": 0.433,
+        "blackAfter": 0.8,
+        "later": 2.217
+      },
+      "clock": {
+        "road": 63.05,
+        "encounter": 20.683,
+        "orientation": 26.367,
+        "boss": 8.45
+      }
+    }
+  }
+}

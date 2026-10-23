@@ -1,0 +1,872 @@
+{
+  "help": [
+    {
+      "room": 0,
+      "help": "Q D/← → marcher. Suivez les plaques ; les accès indiquent leur touche à proximité."
+    },
+    {
+      "room": 1,
+      "help": "F/X : se défendre avec le livre. ESPACE : sauter les trous ou une charge. Vous pouvez aussi éviter l’adversaire."
+    },
+    {
+      "room": 4,
+      "help": "L’inspection bloque le livre. Évitez son attaque, puis frappez pendant son ouverture."
+    },
+    {
+      "room": 200,
+      "help": ""
+    },
+    {
+      "room": 201,
+      "help": ""
+    },
+    {
+      "room": 207,
+      "help": ""
+    }
+  ],
+  "queues": [
+    {
+      "kind": "keyboard",
+      "delay": 0.2,
+      "attacks": [
+        1.017
+      ]
+    },
+    {
+      "kind": "direct",
+      "delay": 0.2,
+      "attacks": [
+        1.017,
+        1.6
+      ]
+    },
+    {
+      "kind": "keyboard",
+      "delay": 0.4,
+      "attacks": [
+        1.017
+      ]
+    },
+    {
+      "kind": "direct",
+      "delay": 0.4,
+      "attacks": [
+        1.017,
+        1.667
+      ]
+    },
+    {
+      "kind": "keyboard",
+      "delay": 0.48,
+      "attacks": [
+        1.017,
+        1.563
+      ]
+    }
+  ],
+  "jumpBuffer": [
+    {
+      "leadFrames": 0,
+      "at": {
+        "py": 155.5,
+        "vy": 200
+      },
+      "minimum": 159,
+      "finalY": 159
+    },
+    {
+      "leadFrames": 1,
+      "at": {
+        "py": 152.16666666666666,
+        "vy": 190
+      },
+      "minimum": 155.5,
+      "finalY": 159
+    },
+    {
+      "leadFrames": 2,
+      "at": {
+        "py": 149,
+        "vy": 180
+      },
+      "minimum": 152.16666666666666,
+      "finalY": 159
+    }
+  ],
+  "periodicFights": [
+    {
+      "scenario": "hanouna-navigation-h1-boss",
+      "jumping": false,
+      "interval": 6,
+      "phase": "school",
+      "hp": 2,
+      "enemyHp": 0,
+      "elapsed": 12.616666666666925,
+      "attacks": 27,
+      "contacts": 6,
+      "blocked": 10
+    },
+    {
+      "scenario": "hanouna-navigation-h1-boss",
+      "jumping": false,
+      "interval": 12,
+      "phase": "school",
+      "hp": 2,
+      "enemyHp": 0,
+      "elapsed": 10.766666666666833,
+      "attacks": 22,
+      "contacts": 6,
+      "blocked": 6
+    },
+    {
+      "scenario": "hanouna-navigation-h1-boss",
+      "jumping": false,
+      "interval": 18,
+      "phase": "school",
+      "hp": 3,
+      "enemyHp": 0,
+      "elapsed": 6.766666666666643,
+      "attacks": 13,
+      "contacts": 6,
+      "blocked": 6
+    },
+    {
+      "scenario": "hanouna-navigation-h1-boss",
+      "jumping": true,
+      "interval": 6,
+      "phase": "school",
+      "hp": 4,
+      "enemyHp": 0,
+      "elapsed": 15.983333333333647,
+      "attacks": 35,
+      "contacts": 6,
+      "blocked": 9
+    },
+    {
+      "scenario": "hanouna-navigation-h1-boss",
+      "jumping": true,
+      "interval": 12,
+      "phase": "school",
+      "hp": 3,
+      "enemyHp": 0,
+      "elapsed": 10.566666666666823,
+      "attacks": 22,
+      "contacts": 6,
+      "blocked": 8
+    },
+    {
+      "scenario": "hanouna-navigation-h1-boss",
+      "jumping": true,
+      "interval": 18,
+      "phase": "school",
+      "hp": 3,
+      "enemyHp": 0,
+      "elapsed": 8.866666666666738,
+      "attacks": 16,
+      "contacts": 6,
+      "blocked": 6
+    },
+    {
+      "scenario": "bruel-navigation-a3-parent",
+      "jumping": false,
+      "interval": 6,
+      "phase": "fail",
+      "hp": 0,
+      "enemyHp": 6,
+      "elapsed": 16.716666666666935,
+      "attacks": 36,
+      "contacts": 0,
+      "blocked": 8
+    },
+    {
+      "scenario": "bruel-navigation-a3-parent",
+      "jumping": false,
+      "interval": 12,
+      "phase": "fail",
+      "hp": 0,
+      "enemyHp": 4,
+      "elapsed": 16.166666666666966,
+      "attacks": 31,
+      "contacts": 2,
+      "blocked": 6
+    },
+    {
+      "scenario": "bruel-navigation-a3-parent",
+      "jumping": false,
+      "interval": 18,
+      "phase": "fail",
+      "hp": 0,
+      "enemyHp": 4,
+      "elapsed": 17.183333333333575,
+      "attacks": 29,
+      "contacts": 2,
+      "blocked": 3
+    },
+    {
+      "scenario": "bruel-navigation-a3-parent",
+      "jumping": true,
+      "interval": 6,
+      "phase": "fail",
+      "hp": 0,
+      "enemyHp": 4,
+      "elapsed": 24.299999999999837,
+      "attacks": 51,
+      "contacts": 2,
+      "blocked": 9
+    },
+    {
+      "scenario": "bruel-navigation-a3-parent",
+      "jumping": true,
+      "interval": 12,
+      "phase": "fail",
+      "hp": 0,
+      "enemyHp": 4,
+      "elapsed": 16.366666666666955,
+      "attacks": 32,
+      "contacts": 2,
+      "blocked": 6
+    },
+    {
+      "scenario": "bruel-navigation-a3-parent",
+      "jumping": true,
+      "interval": 18,
+      "phase": "fail",
+      "hp": 0,
+      "enemyHp": 4,
+      "elapsed": 22.18333333333329,
+      "attacks": 37,
+      "contacts": 2,
+      "blocked": 3
+    },
+    {
+      "scenario": "inshape-navigation-i2-boss",
+      "jumping": false,
+      "interval": 6,
+      "phase": "fail",
+      "hp": 0,
+      "enemyHp": 6,
+      "elapsed": 12.250000000000242,
+      "attacks": 27,
+      "contacts": 0,
+      "blocked": 4
+    },
+    {
+      "scenario": "inshape-navigation-i2-boss",
+      "jumping": false,
+      "interval": 12,
+      "phase": "fail",
+      "hp": 0,
+      "enemyHp": 6,
+      "elapsed": 12.150000000000237,
+      "attacks": 24,
+      "contacts": 0,
+      "blocked": 2
+    },
+    {
+      "scenario": "inshape-navigation-i2-boss",
+      "jumping": false,
+      "interval": 18,
+      "phase": "fail",
+      "hp": 0,
+      "enemyHp": 6,
+      "elapsed": 12.200000000000239,
+      "attacks": 20,
+      "contacts": 0,
+      "blocked": 3
+    },
+    {
+      "scenario": "inshape-navigation-i2-boss",
+      "jumping": true,
+      "interval": 6,
+      "phase": "fail",
+      "hp": 0,
+      "enemyHp": 6,
+      "elapsed": 12.250000000000242,
+      "attacks": 27,
+      "contacts": 0,
+      "blocked": 4
+    },
+    {
+      "scenario": "inshape-navigation-i2-boss",
+      "jumping": true,
+      "interval": 12,
+      "phase": "fail",
+      "hp": 0,
+      "enemyHp": 2,
+      "elapsed": 12.650000000000261,
+      "attacks": 26,
+      "contacts": 4,
+      "blocked": 1
+    },
+    {
+      "scenario": "inshape-navigation-i2-boss",
+      "jumping": true,
+      "interval": 18,
+      "phase": "fail",
+      "hp": 0,
+      "enemyHp": 4,
+      "elapsed": 12.416666666666917,
+      "attacks": 20,
+      "contacts": 2,
+      "blocked": 3
+    }
+  ],
+  "days": [
+    {
+      "fps": 30,
+      "mode": "keyboard",
+      "won": 2,
+      "results": [
+        "COURS ASSURE",
+        "COURS ASSURE",
+        "PROF EPUISE"
+      ],
+      "falls": 0,
+      "collisions": 0,
+      "timing": {
+        "1": {
+          "seconds": {
+            "free": 15,
+            "receive": 3.017,
+            "road": 59.933,
+            "arrival": 5.817,
+            "arrivalFade": 1.1,
+            "transition": 3.4,
+            "orientation": 19.783,
+            "dialogue": 0.383,
+            "encounter": 5.517,
+            "hitStop": 0.783,
+            "recovery": 2.067,
+            "boss": 6.717,
+            "opening": 3.417,
+            "blackBefore": 0.8,
+            "course": 0.45,
+            "blackAfter": 0.8,
+            "later": 2.217
+          },
+          "clock": {
+            "road": 62.967,
+            "orientation": 19.783,
+            "encounter": 5.517,
+            "boss": 6.717
+          }
+        },
+        "2": {
+          "seconds": {
+            "free": 15,
+            "receive": 3.017,
+            "road": 51.483,
+            "arrival": 5.817,
+            "arrivalFade": 1.1,
+            "transition": 4,
+            "dialogue": 0.617,
+            "encounter": 13.05,
+            "hitStop": 1.167,
+            "orientation": 21.683,
+            "recovery": 2.133,
+            "boss": 10.517,
+            "opening": 3.417,
+            "blackBefore": 0.8,
+            "course": 0.45,
+            "blackAfter": 0.8,
+            "later": 2.217
+          },
+          "clock": {
+            "road": 54.517,
+            "encounter": 13.05,
+            "orientation": 21.683,
+            "boss": 10.517
+          }
+        },
+        "3": {
+          "seconds": {
+            "free": 15,
+            "receive": 3.017,
+            "road": 59.933,
+            "arrival": 5.817,
+            "arrivalFade": 1.1,
+            "transition": 2.5,
+            "dialogue": 0.25,
+            "encounter": 18.333,
+            "hitStop": 1,
+            "orientation": 13.55,
+            "fail": 2.05
+          },
+          "clock": {
+            "road": 62.967,
+            "encounter": 18.333,
+            "orientation": 13.55
+          }
+        },
+        "4": {
+          "seconds": {
+            "report": 0.017
+          },
+          "clock": {}
+        }
+      }
+    },
+    {
+      "fps": 30,
+      "mode": "direct",
+      "won": 3,
+      "results": [
+        "COURS ASSURE",
+        "COURS ASSURE",
+        "COURS ASSURE"
+      ],
+      "falls": 0,
+      "collisions": 0,
+      "timing": {
+        "1": {
+          "seconds": {
+            "free": 15,
+            "receive": 3.017,
+            "road": 63.017,
+            "arrival": 5.817,
+            "arrivalFade": 1.1,
+            "transition": 3.4,
+            "orientation": 19.383,
+            "dialogue": 0.383,
+            "encounter": 6.65,
+            "hitStop": 0.667,
+            "recovery": 2.067,
+            "boss": 6.733,
+            "opening": 3.417,
+            "blackBefore": 0.8,
+            "course": 0.433,
+            "blackAfter": 0.8,
+            "later": 2.217
+          },
+          "clock": {
+            "road": 66.05,
+            "orientation": 19.383,
+            "encounter": 6.65,
+            "boss": 6.733
+          }
+        },
+        "2": {
+          "seconds": {
+            "free": 15,
+            "receive": 3.017,
+            "road": 55.833,
+            "arrival": 5.817,
+            "arrivalFade": 1.1,
+            "transition": 4,
+            "dialogue": 0.617,
+            "encounter": 13.317,
+            "hitStop": 1.117,
+            "orientation": 21.45,
+            "recovery": 2.15,
+            "boss": 10.883,
+            "opening": 3.417,
+            "blackBefore": 0.8,
+            "course": 0.433,
+            "blackAfter": 0.8,
+            "later": 2.217
+          },
+          "clock": {
+            "road": 58.867,
+            "encounter": 13.317,
+            "orientation": 21.45,
+            "boss": 10.883
+          }
+        },
+        "3": {
+          "seconds": {
+            "free": 15,
+            "receive": 3.017,
+            "road": 59.933,
+            "arrival": 5.817,
+            "arrivalFade": 1.1,
+            "transition": 4.6,
+            "dialogue": 0.617,
+            "encounter": 22.8,
+            "hitStop": 1.867,
+            "orientation": 26.467,
+            "recovery": 2.067,
+            "boss": 8.5,
+            "opening": 3.417,
+            "blackBefore": 0.8,
+            "course": 0.45,
+            "blackAfter": 0.8,
+            "later": 2.217
+          },
+          "clock": {
+            "road": 62.967,
+            "encounter": 22.8,
+            "orientation": 26.467,
+            "boss": 8.5
+          }
+        }
+      }
+    },
+    {
+      "fps": 60,
+      "mode": "keyboard",
+      "won": 2,
+      "results": [
+        "COURS ASSURE",
+        "COURS ASSURE",
+        "PROF EPUISE"
+      ],
+      "falls": 0,
+      "collisions": 0,
+      "timing": {
+        "1": {
+          "seconds": {
+            "free": 15,
+            "receive": 3.017,
+            "road": 62.233,
+            "arrival": 5.817,
+            "arrivalFade": 1.1,
+            "transition": 3.4,
+            "orientation": 19.7,
+            "dialogue": 0.2,
+            "encounter": 5.417,
+            "hitStop": 0.833,
+            "recovery": 1.967,
+            "boss": 6.7,
+            "opening": 3.417,
+            "blackBefore": 0.8,
+            "course": 0.433,
+            "blackAfter": 0.8,
+            "later": 2.217
+          },
+          "clock": {
+            "road": 65.267,
+            "orientation": 19.7,
+            "encounter": 5.417,
+            "boss": 6.7
+          }
+        },
+        "2": {
+          "seconds": {
+            "free": 15,
+            "receive": 3.017,
+            "road": 51.5,
+            "arrival": 5.817,
+            "arrivalFade": 1.1,
+            "transition": 4,
+            "dialogue": 0.333,
+            "encounter": 12.767,
+            "hitStop": 1.217,
+            "orientation": 21.733,
+            "recovery": 2.05,
+            "boss": 10.633,
+            "opening": 3.417,
+            "blackBefore": 0.8,
+            "course": 0.433,
+            "blackAfter": 0.8,
+            "later": 2.217
+          },
+          "clock": {
+            "road": 54.533,
+            "encounter": 12.767,
+            "orientation": 21.733,
+            "boss": 10.633
+          }
+        },
+        "3": {
+          "seconds": {
+            "free": 15,
+            "receive": 3.017,
+            "road": 59.933,
+            "arrival": 5.817,
+            "arrivalFade": 1.1,
+            "transition": 2.5,
+            "dialogue": 0.133,
+            "encounter": 18.817,
+            "hitStop": 0.917,
+            "orientation": 13.55,
+            "fail": 2.033
+          },
+          "clock": {
+            "road": 62.967,
+            "encounter": 18.817,
+            "orientation": 13.55
+          }
+        }
+      }
+    },
+    {
+      "fps": 60,
+      "mode": "direct",
+      "won": 3,
+      "results": [
+        "COURS ASSURE",
+        "COURS ASSURE",
+        "COURS ASSURE"
+      ],
+      "falls": 0,
+      "collisions": 0,
+      "timing": {
+        "1": {
+          "seconds": {
+            "free": 15,
+            "receive": 3.017,
+            "road": 62.333,
+            "arrival": 5.817,
+            "arrivalFade": 1.1,
+            "transition": 3.4,
+            "orientation": 19.3,
+            "dialogue": 0.2,
+            "encounter": 6.617,
+            "hitStop": 0.717,
+            "recovery": 1.983,
+            "boss": 6.717,
+            "opening": 3.417,
+            "blackBefore": 0.8,
+            "course": 0.433,
+            "blackAfter": 0.8,
+            "later": 2.217
+          },
+          "clock": {
+            "road": 65.367,
+            "orientation": 19.3,
+            "encounter": 6.617,
+            "boss": 6.717
+          }
+        },
+        "2": {
+          "seconds": {
+            "free": 15,
+            "receive": 3.017,
+            "road": 56.367,
+            "arrival": 5.817,
+            "arrivalFade": 1.1,
+            "transition": 4,
+            "dialogue": 0.333,
+            "encounter": 13.283,
+            "hitStop": 1.217,
+            "orientation": 21.417,
+            "recovery": 2.067,
+            "boss": 10.933,
+            "opening": 3.417,
+            "blackBefore": 0.8,
+            "course": 0.433,
+            "blackAfter": 0.8,
+            "later": 2.217
+          },
+          "clock": {
+            "road": 59.4,
+            "encounter": 13.283,
+            "orientation": 21.417,
+            "boss": 10.933
+          }
+        },
+        "3": {
+          "seconds": {
+            "free": 15,
+            "receive": 3.017,
+            "road": 60.017,
+            "arrival": 5.817,
+            "arrivalFade": 1.1,
+            "transition": 4.6,
+            "dialogue": 0.333,
+            "encounter": 20.683,
+            "hitStop": 1.667,
+            "orientation": 26.367,
+            "recovery": 1.983,
+            "boss": 8.45,
+            "opening": 3.417,
+            "blackBefore": 0.8,
+            "course": 0.433,
+            "blackAfter": 0.8,
+            "later": 2.217
+          },
+          "clock": {
+            "road": 63.05,
+            "encounter": 20.683,
+            "orientation": 26.367,
+            "boss": 8.45
+          }
+        }
+      }
+    },
+    {
+      "fps": 120,
+      "mode": "keyboard",
+      "won": 2,
+      "results": [
+        "COURS ASSURE",
+        "COURS ASSURE",
+        "PROF EPUISE"
+      ],
+      "falls": 0,
+      "collisions": 0,
+      "timing": {
+        "1": {
+          "seconds": {
+            "free": 15.008,
+            "receive": 3.008,
+            "road": 64.358,
+            "arrival": 5.8,
+            "arrivalFade": 1.108,
+            "transition": 3.4,
+            "orientation": 19.642,
+            "dialogue": 0.1,
+            "encounter": 5.383,
+            "hitStop": 0.742,
+            "recovery": 1.917,
+            "boss": 6.692,
+            "opening": 3.408,
+            "blackBefore": 0.808,
+            "course": 0.408,
+            "blackAfter": 0.808,
+            "later": 2.208
+          },
+          "clock": {
+            "road": 67.375,
+            "orientation": 19.642,
+            "encounter": 5.383,
+            "boss": 6.692
+          }
+        },
+        "2": {
+          "seconds": {
+            "free": 15.008,
+            "receive": 3.008,
+            "road": 51.533,
+            "arrival": 5.8,
+            "arrivalFade": 1.108,
+            "transition": 4,
+            "dialogue": 0.167,
+            "encounter": 12.642,
+            "hitStop": 1.083,
+            "orientation": 21.7,
+            "recovery": 2,
+            "boss": 10.475,
+            "opening": 3.408,
+            "blackBefore": 0.808,
+            "course": 0.408,
+            "blackAfter": 0.808,
+            "later": 2.208
+          },
+          "clock": {
+            "road": 54.55,
+            "encounter": 12.642,
+            "orientation": 21.7,
+            "boss": 10.475
+          }
+        },
+        "3": {
+          "seconds": {
+            "free": 15.008,
+            "receive": 3.008,
+            "road": 60.108,
+            "arrival": 5.8,
+            "arrivalFade": 1.108,
+            "transition": 2.5,
+            "dialogue": 0.067,
+            "encounter": 19.692,
+            "hitStop": 0.85,
+            "orientation": 13.558,
+            "fail": 2.017
+          },
+          "clock": {
+            "road": 63.125,
+            "encounter": 19.692,
+            "orientation": 13.558
+          }
+        }
+      }
+    },
+    {
+      "fps": 120,
+      "mode": "direct",
+      "won": 3,
+      "results": [
+        "COURS ASSURE",
+        "COURS ASSURE",
+        "COURS ASSURE"
+      ],
+      "falls": 0,
+      "collisions": 0,
+      "timing": {
+        "1": {
+          "seconds": {
+            "free": 15.008,
+            "receive": 3.008,
+            "road": 63.2,
+            "arrival": 5.8,
+            "arrivalFade": 1.108,
+            "transition": 3.4,
+            "orientation": 19.258,
+            "dialogue": 0.1,
+            "encounter": 6.508,
+            "hitStop": 0.633,
+            "recovery": 1.925,
+            "boss": 6.675,
+            "opening": 3.408,
+            "blackBefore": 0.808,
+            "course": 0.408,
+            "blackAfter": 0.808,
+            "later": 2.208
+          },
+          "clock": {
+            "road": 66.217,
+            "orientation": 19.258,
+            "encounter": 6.508,
+            "boss": 6.675
+          }
+        },
+        "2": {
+          "seconds": {
+            "free": 15.008,
+            "receive": 3.008,
+            "road": 55.875,
+            "arrival": 5.8,
+            "arrivalFade": 1.108,
+            "transition": 4,
+            "dialogue": 0.167,
+            "encounter": 13.092,
+            "hitStop": 1.083,
+            "orientation": 21.35,
+            "recovery": 2.008,
+            "boss": 10.825,
+            "opening": 3.408,
+            "blackBefore": 0.808,
+            "course": 0.408,
+            "blackAfter": 0.808,
+            "later": 2.208
+          },
+          "clock": {
+            "road": 58.892,
+            "encounter": 13.092,
+            "orientation": 21.35,
+            "boss": 10.825
+          }
+        },
+        "3": {
+          "seconds": {
+            "free": 15.008,
+            "receive": 3.008,
+            "road": 60.525,
+            "arrival": 5.8,
+            "arrivalFade": 1.108,
+            "transition": 4.6,
+            "dialogue": 0.167,
+            "encounter": 20.6,
+            "hitStop": 1.558,
+            "orientation": 26.433,
+            "recovery": 1.925,
+            "boss": 8.317,
+            "opening": 3.408,
+            "blackBefore": 0.808,
+            "course": 0.408,
+            "blackAfter": 0.808,
+            "later": 2.208
+          },
+          "clock": {
+            "road": 63.542,
+            "encounter": 20.6,
+            "orientation": 26.433,
+            "boss": 8.317
+          }
+        }
+      }
+    }
+  ]
+}
