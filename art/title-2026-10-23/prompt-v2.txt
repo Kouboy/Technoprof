@@ -1,0 +1,11 @@
+Built-in image_gen, localized edit of concept-v1.png; output concept-v2.png.
+
+Precise localized correction of the supplied TECHNOPROF pixel-art title-screen concept. The attached image is the EDIT TARGET, not just a reference.
+
+The composition is approved. Preserve the entire composition, teacher portrait, hands and physics book, satchel, school architecture, inspector and papers, lighting, pixel-art treatment, colors, dark blank top and bottom bands, and metal frame. Keep the same aspect ratio and framing.
+
+ONLY correct the interior of the beige car in the lower-left quadrant, inside its FRONT WINDSHIELD. This car is already seen from the FRONT in a three-quarter view: headlights, grille, hood and front bumper are in the foreground. The previous picture incorrectly shows a rear parcel shelf with a brown briefcase and a stack of books immediately behind this front windshield, making the front cabin look like the trunk/rear window. Remove that briefcase and all books from the front windshield area.
+
+Replace that mistaken interior with a mechanically credible dark charcoal dashboard directly behind the windshield base, a small ordinary steering wheel behind the dashboard on the driver's side, and the upper backs/headrests of two worn dark cloth FRONT SEATS, further back in the shadowed cabin. Very restrained cyan reflections on the glass. Clearly recognizable A-pillars, front windshield and interior depth. No rear parcel shelf, rear hatch or trunk surface visible in place of the dashboard. No books or satchel on the dashboard; the teacher already holds these outside. A simple convincing cabin, with chosen readable pixel shapes rather than lots of tiny details.
+
+Preserve the car's exterior silhouette, angle, scale and position, beige hood, contrasting grey-blue replacement side door, thin wheels, rust, taped bumper, headlights and grille. Do not turn or flip the car and do not redesign it. Do not add new objects or text. Everything outside the windshield interior stays visually unchanged.

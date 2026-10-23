@@ -1,0 +1,7 @@
+Built-in image_gen edit. Target concept-v6-book.png. Output concept-v7-atom.png.
+
+Use case: precise-object-edit.
+Edit target: the attached approved TECHNOPROF title-screen illustration, 1448 x 1086.
+Make ONLY one small change: reposition the cream atom emblem on the red book so that its central nucleus lies at the geometric center of the FULL red cover, including the portion occluded by the teacher's hand. Use the intersection of the cover's diagonals, not the center of its unobscured area. The cover's approximate corners are (1030,540), (1288,630), (1228,823), (970,733), giving a center close to (1129,682). The current atom is too low, its nucleus near (1136,708). Move the ENTIRE atom emblem approximately 7 pixels left and 26 pixels UP. Preserve its size, cream color, line thickness, design, and natural placement on the tilted cover. Restore matching red cloth texture where its previous lines were. Keep all red cover edges and its thin page rims EXACTLY as they are: the book geometry is approved.
+
+ABSOLUTE INVARIANTS: do not redraw, rotate, reshape or resize the book, hand, fingers, bookmark, pages or cover. Do not alter any other pixel-art objects: teacher face/glasses/hair/coat/satchel, front-facing car and headlights, school, inspector, stamp, papers, chrome TECHNOPROF logo, exact Physique appliquée subtitle, metal borders and empty bottom cartouche. No new words or start overlays. Same 4:3 composition, pixel style, colors, lighting and dimensions. This is only centering a small existing printed emblem, not redesigning the image.

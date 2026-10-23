@@ -187,6 +187,35 @@ export function drawSurround(g: Phaser.GameObjects.Graphics) {
   g.fillRect(6, 175, 308, 1);
   g.fillStyle(0x526064);
   g.fillRect(7, 177, 306, 1);
+  // A single static metalwork pass; every mark stays outside VIEW and the CADRE.
+  const ink = (x: number, y: number, w: number, h: number, color: number) => {
+    g.fillStyle(color);
+    g.fillRect(x, y, w, h);
+  };
+  ink(1, 1, 318, 1, 0x758080);
+  ink(7, 3, 306, 1, 0x38494c);
+  ink(7, 5, 306, 1, 0x080d13);
+  ink(1, 7, 1, 168, 0x526064);
+  ink(4, 7, 1, 168, 0x24333b);
+  ink(315, 7, 1, 168, 0x38494c);
+  ink(318, 7, 1, 168, 0x080d13);
+  for (const x of [1, 314])
+    for (const y of [1, 51, 111, 170]) {
+      ink(x, y, 5, 5, 0x080d13);
+      ink(x, y, 4, 4, 0x38494c);
+      ink(x + 1, y, 2, 1, 0x929f9a);
+      ink(x, y + 1, 1, 2, 0x758080);
+      ink(x + 1, y + 2, 3, 1, 0x080d13);
+    }
+  for (const x of [31, 98, 222, 281]) {
+    ink(x, 1, 6, 1, 0x665e4a);
+    ink(x + 2, 2, 2, 1, 0x928269);
+    ink(x + 1, 176, 8, 1, 0x38494c);
+    ink(x + 4, 177, 3, 1, 0x928269);
+  }
+  ink(147, 1, 15, 4, 0x38494c);
+  ink(148, 1, 12, 1, 0x758080);
+  ink(150, 4, 9, 1, 0x080d13);
 }
 
 // Cut shadows at the real gaps: neither feet nor their shadow bridge the void.

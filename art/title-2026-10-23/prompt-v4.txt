@@ -1,0 +1,17 @@
+Built-in image_gen edit, source concept-v3.png; output concept-v4-logo.png.
+Publisher and blinking prompt are independent raster lettering layers in apercu-anime.html.
+
+Edit the attached approved TECHNOPROF title illustration. Preserve ALL existing artwork including the corrected mechanically credible front-view car with its BLACK grille and ROUND WHITE HEADLIGHTS, the teacher portrait, physics book, hands, satchel, school, inspector, flying papers, worn metal frame, lighting and palette. The illustration and composition are approved. Do not redraw the car or change any objects.
+
+ONLY add the title typography INSIDE THE EXISTING EMPTY DARK TOP CARTOUCHE.
+
+Top title exact spelling: "TECHNOPROF"
+Ten letters T E C H N O P R O F. One enormous single line, centered, spanning nearly the width of the cartouche while leaving the metal corner screws visible. Spectacular kitschy late-1980s action-computer-game logo: huge bold angular geometric letters, chrome/silver upper highlights, hard horizontal WHITE to CYAN to deep COBALT BLUE stepped bands, thick inky outlines, vivid dark RED extruded offset shadows. Big sculpted block capitals in genuine crisp pixel art, readable immediately. A deliberately over-the-top heroic Technocop-era title treatment, not sleek modern sci-fi. Hard-edged pixel bevel highlights, controlled few-pixel sparkle accents. NO blurry glow, NO smooth vector antialiasing, NO cursive.
+
+Directly under it, still INSIDE that same TOP cartouche, exact subtitle:
+"Physique appliquée"
+Centered in smaller light amber/cream raster lettering, clearly legible with the accent on é, separated from the giant logo by a few pixels. The two text lines must fit within the existing dark top band: do not cover the teacher's head or shift the illustration downward. Do not enlarge the top frame.
+
+KEEP THE EXISTING BOTTOM CARTOUCHE EMPTY AND DARK. The fictional company's name is not decided yet. Do not invent any publisher name or put any writing in that bottom band.
+Do not put any start command or text over the illustration: the blinking "<Press Start to Teach>" will be added as an independent animated pixel layer later.
+Output one complete 4:3 title screen with the top logo and subtitle only. No other new text, no watermark, no split panels.

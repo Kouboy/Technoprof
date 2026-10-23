@@ -36,12 +36,18 @@ const storage=new Map(),listeners={};
 const doc={getElementById:id=>nodes[id],createElement:tag=>new Node(tag),addEventListener:(type,fn)=>listeners[type]=fn};
 const ctx={document:doc,localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)}};
 vm.createContext(ctx);
+if(fs.existsSync('src/title-screen.ts')) {
+ const lettering=fs.readFileSync('src/cadre.ts','utf8').split('export const cleanText')[0];
+ const strip=s=>s.replace(/import[\s\S]*?from\s+['"][^'"]+['"];?/g,'').replace(/export /g,'');
+ vm.runInContext(ts('const TITLE_DATA="data:image/png;base64,";'+strip(lettering)+strip(fs.readFileSync('src/title-screen.ts','utf8'))),ctx);
+}
 vm.runInContext(ts(fs.readFileSync('src/player-experience.ts','utf8').replace(/^import[\s\S]*?from\s+['"][^'"]+['"];?\r?\n/gm,'').replace(/export /g,'')+'\nglobalThis.api={installPlayerExperience,contextualHelp,resultLine};'),ctx);
 const all=(node)=>[node,...node.children.filter(n=>n instanceof Node).flatMap(all)];
 const find=(text)=>all(nodes['player-panel']).find(n=>n.tagName==='BUTTON'&&n.textContent===text);
 const {g,advance}=createGame();g.audio.effectsVolume=1;g.audio.voiceVolume=1;
 g.syncPlayerUI=ctx.api.installPlayerExperience(g);
 assert(find('Prendre le service'));assert(g.playerMenu);
+assert.equal(nodes['player-panel'].className,'title-home','title has its illustrated home layout');
 find('Réglages').onclick();const sliders=all(nodes['player-panel']).filter(n=>n.type==='range');
 sliders[0].value='35';sliders[0].oninput();sliders[1].value='0';sliders[1].oninput();
 assert.equal(g.audio.effectsVolume,.35);assert.equal(g.audio.voiceVolume,0);assert.equal(JSON.parse(storage.get('technoprof-player-options')).effects,.35);

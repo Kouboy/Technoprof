@@ -59,7 +59,6 @@ import {
   enemyTuning,
   combatProfile,
   terminalReason,
-  FAILURE_LABELS,
   SeededRandom,
   type FailureReason,
 } from "./gameplay";
@@ -122,6 +121,7 @@ import {
 } from "./world";
 import { AudioKit } from "./audio";
 import { DAY_ONLY } from "./asset-profile";
+import { FailureArt, failureNotice } from "./interface-presentation";
 class Game extends Phaser.Scene {
   failureReason: FailureReason | null = null;
   playerRecovery = 0;
@@ -357,10 +357,12 @@ class Game extends Phaser.Scene {
   cadreReview = false;
   artReview = -1;
   arrivalStill = false;
+  failureArt?: FailureArt;
   reviewFacing = 1;
   preload() {
     this.runtime.mark("preload");
     this.audio.prepare();
+    FailureArt.preload(this);
     SliceArt.preload(this, !DAY_ONLY);
     NewSchoolArt.preload(this, !DAY_ONLY);
     SchoolProps.preload(this);
@@ -631,6 +633,7 @@ class Game extends Phaser.Scene {
     this.schoolWear = this.add.graphics().setDepth(1.7);
     this.sceneSurround = this.add.graphics().setDepth(4.1);
     drawSurround(this.sceneSurround);
+    this.failureArt = new FailureArt(this);
     this.physicalKeys = this.input.keyboard!.addKeys(
       Object.values(BINDINGS).flat().join(","),
     ) as typeof this.keys;
@@ -4177,6 +4180,7 @@ class Game extends Phaser.Scene {
     this.carArt?.hide();
     this.roadArt?.hide();
     this.foreground?.clear();
+    this.failureArt?.hide();
     if (this.sceneGraphics) this.g = this.sceneGraphics;
     this.g.clear();
     this.labels.forEach((t) => t.destroy());
@@ -4610,44 +4614,37 @@ class Game extends Phaser.Scene {
     this.txt(32, 85, s, 15, "#e6be65");
   }
   drawFailure() {
-    const exhausted = this.failureReason === "exhausted";
     const fade = Math.min(0.56, this.age * 0.45);
     this.g.fillStyle(0x080d13, fade);
     this.g.fillRect(7, 7, 306, 168);
     if (this.age < PLAY.failCardAt) return;
-    // A stamped administrative notice leaves the CADRE and its cause visible.
-    this.rect(23, 40, 274, 105, 0x080d13);
-    this.rect(25, 42, 270, 101, 0x223137);
-    this.rect(29, 46, 262, 93, 0x131d23);
-    this.rect(29, 46, 3, 93, 0xa77a50);
-    this.txt(41, 53, "RESEAU RECTORAL / CONSTAT", 7, "#8f9b94", true);
-    this.txt(41, 70, "AFFECTATION NON ASSUREE", 10, "#e5ae60", true);
-    this.txt(
-      41,
-      90,
-      FAILURE_LABELS[this.failureReason ?? "late"],
-      9,
-      "#e3d4b3",
-      true,
-    );
-    const detail =
-      this.failureReason === "breakdown"
-        ? "AUCUN VEHICULE DE REMPLACEMENT."
-        : exhausted
-          ? "VOTRE ABSENCE SERA COMPTABILISEE."
-          : "LE RETARD FIGURERA AU RAPPORT.";
-    this.txt(41, 108, detail, 6, "#a3aaa0", true);
+    const notice = failureNotice(this);
+    this.failureArt?.show(notice.frame);
+    const panel = this.failureArt?.panel ?? this.g;
+    // Edge captions leave the wreck, smoke and exhausted silhouette readable.
+    panel.fillStyle(0x080d13, 0.94);
+    panel.fillRect(14, 13, 292, 22);
+    panel.fillRect(177, 39, 129, 14);
+    panel.fillRect(14, 138, 292, 12);
+    panel.fillStyle(0x526064);
+    panel.fillRect(14, 13, 292, 1);
+    panel.fillStyle(0x854538);
+    panel.fillRect(14, 16, 3, 16);
+    const title = "AFFECTATION NON ASSUREE";
+    bitmap(panel, Math.round(160 - bitmapWidth(title, 2) / 2), 17, title, 0xd97561, 2);
+    bitmap(panel, 183, 43, notice.cause, 0xe3d4b3, 1, 118);
+    const detail = notice.detail.join(" ");
+    bitmap(panel, Math.round(160 - bitmapWidth(detail) / 2), 141, detail, 0xb9aa89);
     if (this.age >= PLAY.failContinueSeconds) {
-      const next =
-        this.mission === 2 ? "VOIR LE BILAN" : "AFFECTATION SUIVANTE";
-      this.rect(39, 122, 242, 13, 0x2d3c3e);
-      this.txt(
-        44,
-        125,
-        `${this.pointerMode ? "TOUCHER" : "ENTREE"} : ${next}`,
-        7,
-        "#e3d4b3",
-        true,
+      panel.fillStyle(0x080d13, 0.95);
+      panel.fillRect(14, 153, 292, 16);
+      const command = `${this.pointerMode ? "TOUCHER" : "ENTREE"} : ${notice.next}`;
+      bitmap(
+        panel,
+        Math.round(160 - bitmapWidth(command) / 2),
+        158,
+        command,
+        0xe3d4b3,
       );
     }
   }

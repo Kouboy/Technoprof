@@ -1,0 +1,28 @@
+Built-in image_gen, 23 octobre 2026. Première proposition de direction artistique, non intégrée au jeu.
+Output: concept-v1.png
+
+References in order:
+1. C:/Users/don_n/AppData/Local/Temp/codex-clipboard-77cc953d-1a3d-4c9f-b2fb-3322cbaad880.png
+2. art/references/salle-42c-direction-v1.png
+3. art/car-21/service.png
+
+PROMPT
+
+Create one NEW concept illustration for the title screen of TECHNOPROF — Physique appliquée, a French satirical retro action game about the deterioration of public education. This is a first art-direction proposal, not an edit to the supplied images.
+
+REFERENCE ROLES:
+Image 1 (Technocop title screenshot): reference for bombastic late-1980s action-game composition and coarse, boldly readable 8-bit pixel treatment ONLY. Parody the visual grammar, do not reproduce its character, logo, futuristic police equipment or guns.
+Image 2 (the game's college corridor): reference for the identity of the tired teacher, the red physics textbook, the French institutional setting, social pulp-comics ink, and human dignity. Keep the teacher recognizably the same man.
+Image 3 (service car sheet): vehicle identity reference only. Show ONE believable battered beige 1980s French compact with the blue-grey replacement door, narrow wheels and taped bumper. Do not include a sprite sheet or its magenta background.
+
+FORMAT: one complete 4:3 concept illustration, full bleed, intended for a logical 320x240 pixel title card shown at nearest-neighbor integer enlargement. Coarse deliberately visible pixels, hard pixel-step edges, purposeful clusters and sparse checkerboard dithering. Strong limited 16-to-24-color period-computer palette. NO soft brush painting, NO rendered 3D, NO smooth gradients or tiny high-resolution texture noise. This must feel like an ambitious real 8-bit loading-screen painting, not merely an illustration with a pixel filter.
+
+COMPOSITION: a large dramatic chest-up three-quarter portrait of the teacher dominates the center-right foreground, like the action hero in reference 1. He is in his early fifties, lean, weathered, greying disheveled hair, rectangular ordinary spectacles with a small cold cyan fluorescent reflection, tired eyes, slight stubble, worn brown coat over shirt. Determined but visibly exhausted: no smug smirk, no triumphant bodybuilder pose. He holds his thick burgundy physics textbook upright across his chest as the obvious absurd counterpart to an action hero's weapon. Distinct cream page block and a dangling bookmark, a simple small atom emblem on the cover. Hands anatomically credible and clearly separated from the book. A worn satchel strap crosses his shoulder.
+At left in the middle distance, a three-quarter FRONT view of his battered beige compact car, recognizable and fully mechanically plausible, the car pointing slightly toward the viewer. Rectangular headlights, wheels, dark bumper, a contrasting replacement side door.
+Behind them a recognizably ordinary provincial French public collège entrance: concrete facade, teal painted institutional doorframes, cracked windows repaired with tape, exposed pipes, one lit cold fluorescent, damaged plaster. This is a still functioning school, not an apocalypse. No US school buses, lockers or suburban American architecture.
+In the far right background, one SMALL stiff bureaucratic silhouette brandishes an oversized wooden-handled red rubber stamp. A graphic burst of loose administrative papers fans behind him instead of a movie explosion; keep this secondary and readable. No firearms, no fireballs, no injuries.
+Lighting is theatrical like an old action-game cover: cold cyan light from the left, amber fluorescent edge light, deep ink-black shadows, rust, institutional green, nicotine beige, concentrated burgundy red on the book and bureaucratic threat. Saturation can be stronger than ordinary gameplay, but preserve the social-pulp feeling.
+
+LAYOUT RESERVED FOR LATER CODE-DRAWN TYPOGRAPHY: keep the upper approximately 18 percent a dark, simple horizontal band with only faint worn-metal framing: the final TECHNOPROF logo will be placed there separately. Keep a shallow dark uncluttered bottom strip for the future start command. The main illustration occupies the intervening area without being tiny. Do not draw any letters, words, logo, menu labels, random signage text, captions or watermark. A thin battered dark institutional-metal perimeter frame with a few restrained screws ties this cover to the game's administrative CADRE. No HUD gauges on this title concept.
+
+The joke must read immediately: the epic action-game hero is a worn-out substitute teacher armed with a physics textbook and driving an underfunded public-service car. Give him dignity and specificity, never chibi or cute proportions.

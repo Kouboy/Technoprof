@@ -1,4 +1,5 @@
 import type { AudioKit } from "./audio";
+import { mountTitleArt } from "./title-screen";
 import { ENCOUNTERS, type Encounter, type DialogueState } from "./dialogue";
 export const RADIO_NAME = "Radio Educ' France";
 // Written apostrophe/abbreviation can be mispronounced by local TTS voices.
@@ -279,6 +280,13 @@ export function installPlayerExperience(s: Host) {
       dialogueCaption.hidden = !text;
     }
     root.hidden = !mode;
+    root.className =
+      menuPage === "home" && mode === "title"
+        ? "title-home"
+        : menuPage === "home" && mode === "report"
+          ? "result-home " +
+            (s.won >= 2 ? "result-maintained" : "result-radiated")
+          : "";
     const key = mode + ":" + menuPage + ":" + s.results.join("|");
     if (key === previous) return;
     previous = key;
@@ -303,6 +311,9 @@ export function installPlayerExperience(s: Host) {
               : "Service suspendu";
     root.append(eyebrow, heading);
     if (menuPage === "controls") {
+      paragraph(
+        "Trois affectations. Deux cours à assurer pour garder votre poste. Attendez l’ordre en voiture, rejoignez l’établissement puis trouvez la salle. Le délai est commun à la route et à la recherche ; l’arrivée automatique est gratuite.",
+      );
       controls();
       paragraph(
         "Une affectation ratée laisse place à la suivante. Les dégâts de la voiture restent ; le professeur récupère entre deux services.",
@@ -368,19 +379,11 @@ export function installPlayerExperience(s: Host) {
         "La radio reste sous-titrée. Une voix française locale est utilisée si elle est disponible ; sinon le bulletin est présenté en texte.",
       );
     } else if (mode === "title") {
-      paragraph("PHYSIQUE APPLIQUÉE");
-      if (s.validatedDay)
-        paragraph(
-          "Journée d’essai complète : Ormeaux, Auguste-Berthelot et Trois-Ponts. Parcours et décors issus des derniers ateliers.",
-        );
+      root.append(
+        mountTitleArt(button("Prendre le service", returnToGame, true)),
+      );
       paragraph(
         "Trois affectations. Deux cours à assurer pour garder votre poste.",
-      );
-      paragraph(
-        "Attendez l’ordre en voiture, rejoignez l’établissement puis trouvez la salle affectée. Dès la notification, un même délai couvre la route et la recherche de la salle. L’arrivée automatique ne vous coûte pas de temps.",
-      );
-      paragraph(
-        "Clavier : ZQSD ou flèches · ESPACE · F/X. Souris et tactile : interactions directement dans la scène. Paysage conseillé sur téléphone.",
       );
     } else if (mode === "report") {
       paragraph(
@@ -430,17 +433,14 @@ export function installPlayerExperience(s: Host) {
         ),
       );
     else {
-      actions.append(
-        button(
-          mode === "title"
-            ? "Prendre le service"
-            : mode === "report"
-              ? "Nouvelle journée"
-              : "Reprendre",
-          returnToGame,
-          true,
-        ),
-      );
+      if (mode !== "title")
+        actions.append(
+          button(
+            mode === "report" ? "Nouvelle journée" : "Reprendre",
+            returnToGame,
+            true,
+          ),
+        );
       actions.append(
         button("Commandes", () => open("controls")),
         button("Réglages", () => open("settings")),
@@ -474,7 +474,8 @@ export function installPlayerExperience(s: Host) {
         toggleMute();
       } else if (
         currentMode &&
-        event.key === "Enter" &&
+        (event.key === "Enter" ||
+          (event.key === " " && currentMode === "title")) &&
         !editable &&
         menuPage === "home"
       ) {
