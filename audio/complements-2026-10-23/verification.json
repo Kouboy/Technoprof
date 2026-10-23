@@ -1,0 +1,72 @@
+[
+  {
+    "id": "inspectrice",
+    "seconds": 30.968,
+    "loop": true,
+    "samples": 7,
+    "peakDbFS": -7.198,
+    "rmsDbFS": -19.0,
+    "loopBoundarySampleDelta": 0,
+    "moduleDecode": "ffmpeg/libopenmpt"
+  },
+  {
+    "id": "parent",
+    "seconds": 29.091,
+    "loop": true,
+    "samples": 6,
+    "peakDbFS": -9.047,
+    "rmsDbFS": -19.0,
+    "loopBoundarySampleDelta": 0,
+    "moduleDecode": "ffmpeg/libopenmpt"
+  },
+  {
+    "id": "securite",
+    "seconds": 26.667,
+    "loop": true,
+    "samples": 7,
+    "peakDbFS": -9.708,
+    "rmsDbFS": -19.0,
+    "loopBoundarySampleDelta": 0,
+    "moduleDecode": "ffmpeg/libopenmpt"
+  },
+  {
+    "id": "infirmerie",
+    "seconds": 53.333,
+    "loop": true,
+    "samples": 6,
+    "peakDbFS": -6.63,
+    "rmsDbFS": -24.0,
+    "loopBoundarySampleDelta": 0,
+    "moduleDecode": "ffmpeg/libopenmpt"
+  },
+  {
+    "id": "bossa",
+    "seconds": 35.556,
+    "loop": true,
+    "samples": 9,
+    "peakDbFS": -3.146,
+    "rmsDbFS": -19.0,
+    "loopBoundarySampleDelta": 0,
+    "moduleDecode": "ffmpeg/libopenmpt"
+  },
+  {
+    "id": "fusion",
+    "seconds": 32.0,
+    "loop": true,
+    "samples": 11,
+    "peakDbFS": -4.821,
+    "rmsDbFS": -19.0,
+    "loopBoundarySampleDelta": 0,
+    "moduleDecode": "ffmpeg/libopenmpt"
+  },
+  {
+    "id": "gameover",
+    "seconds": 12.0,
+    "loop": false,
+    "samples": 7,
+    "peakDbFS": -5.649,
+    "rmsDbFS": -19.092,
+    "loopBoundarySampleDelta": null,
+    "moduleDecode": "ffmpeg/libopenmpt"
+  }
+]

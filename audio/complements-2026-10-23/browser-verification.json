@@ -1,0 +1,24 @@
+[
+  {
+    "browser": "chromium",
+    "offline": true,
+    "played": 7,
+    "oneAtATime": true,
+    "sixActualLoopWraps": true,
+    "gameOverEndsOnce": true,
+    "stopAndReset": true,
+    "mobileWidths": true,
+    "errors": []
+  },
+  {
+    "browser": "firefox",
+    "offline": true,
+    "played": 7,
+    "oneAtATime": true,
+    "sixActualLoopWraps": true,
+    "gameOverEndsOnce": true,
+    "stopAndReset": true,
+    "mobileWidths": true,
+    "errors": []
+  }
+]
