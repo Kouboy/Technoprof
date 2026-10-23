@@ -110,6 +110,7 @@ export class AudioKit {
   effectsVolume = 1;
   ambienceVolume = 1;
   voiceVolume = 1;
+  musicVolume = 0.5;
   paused = false;
   wasMuted = false;
   previous = "";

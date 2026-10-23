@@ -2,11 +2,11 @@
 
 Ouvrir **Ecouter-Technoprof.html** dans ce dossier. Aucun serveur, aucune connexion. Les cinq fichiers WAV doivent rester à côté du lecteur. Un seul morceau joue à la fois ; les boucles peuvent être désactivées.
 
-Premières propositions originales à auditionner, **non intégrées au jeu** : titre de 48 s, autoradio de 34,3 s et trois thèmes d’établissement de 30 à 37 s. Les valeurs de durée et les mesures techniques exactes figurent dans manifest.json.
+Titre V2 de 48 s à auditionner ; autoradio de 34,3 s et trois thèmes d’établissement de 30 à 37 s conservés à l’identique. Les quatre morceaux acceptés peuvent maintenant être essayés dans le profil local musical séparé. Les valeurs de durée et les mesures techniques exactes figurent dans manifest.json.
 
 ## Direction
 
-- **Titre / Physique appliquée — 120 BPM** : pulsation lourde, motif de menace et accents de cuivres / cordes échantillonnés. Composé avec des idées de tension et d’énergie de cinéma d’action, sans reprendre les thèmes de films cités.
+- **Titre V2 / Danger et fatigue — 80 BPM** : pédale grave, cuivres bas, impacts métalliques espacés et cordes sans résolution. La version précédente était trop guillerette selon l’essai humain ; retrait du motif aigu et de la progression majeure. Le niveau RMS de comparaison reste -19 dBFS : le changement porte sur le tempo, le registre, les timbres et la composition.
 - **Autoradio / Service continu — 112 BPM** : guitare rythmique, réponses de guitare claire, basse et batterie sèche ; petit filtre de poste et souffle. Instrumental.
 - **Ormeaux / Première sonnerie — 104 BPM** : tension plus espacée, petits timbres de verre et nappes ternes.
 - **Berthelot / Quatre couches de beige — 116 BPM** : motif pincé, cordes usées, rythme plus nerveux.
@@ -26,8 +26,16 @@ Reconstruction depuis la racine du projet : `python tools/compose-maquettes.py` 
 2. Après le bulletin, l’affectation arrive ; les sons de DATA / notification restent au premier plan.
 3. Le morceau démarre à la fin de cette notification, au passage en conduite active, puis boucle pendant tout le trajet.
 4. Arrêt dès le début de la cinématique d’arrivée ou du Game Over.
-5. La pause / perte de focus devra suspendre la musique ; reprise au même endroit. Un réglage de volume musical séparé est à prévoir à l’intégration.
+5. La pause / perte de focus suspend la musique ; reprise au même endroit. Le volume Musique est séparé dans le profil d’essai.
 
-Les thèmes d’établissement devront laisser entendre les impacts et les signaux d’attaque, s’effacer pendant l’infirmerie et laisser les cloches / sons de classe seuls pendant l’ellipse. Ces règles sont une proposition de mixage pour l’intégration ; aucune n’a été ajoutée au code du jeu pendant cette passe d’écoute.
+## Essai en jeu
+
+Depuis la racine du projet, ouvrir **Jouer-Technoprof-Journee-Musique.html**. Il lance la journée avec `?musique=essai`. Garder ce raccourci, Jouer-Technoprof-Journee-Atelier.html et le dossier audio/maquettes-2026-10-23 ensemble. Les WAV restent externes et sont chargés un à un, à la demande ; le pack n’est pas ajouté au bundle du jeu.
+
+Le profil habituel demeure sans cette musique. Le titre V2 n’est pas encore intégré. Les thèmes d’établissement baissent pendant les répliques et se suspendent à l’infirmerie, avec reprise au même endroit. Les sons de classe et les cloches restent seuls pendant l’ellipse. Le Game Over et l’arrivée coupent immédiatement le morceau. Un bouton Relancer la musique apparaît si le navigateur bloque sa lecture. Dans l’atelier, un bouton de commande réessaie aussi la lecture après un geste réel.
+
+`npm run build:atelier` reconstruit le raccourci avec les exports locaux. `npm run test:musique` vérifie le contrôleur et son branchement. Le profil n’est pas publié sur Pages.
+
+La passe navigateur native hors ligne est dans `work/check-music-browser.cjs` : lancement habituel sans musique, profil musical avec quatre volumes, autoradio après notification, pause/reprise/mute, trois établissements et arrêt à l’infirmerie/arrivée/échec. `trial-browser-verification.json` consigne les passages Chromium et Firefox ; `browser-verification.json` couvre le lecteur d’écoute. Aucun de ces contrôles ne constitue une écoute artistique.
 
 Les contrôles techniques (fichiers, format, décodage, amplitude, jonctions et lecteur navigateur) ne remplacent pas le choix à l’oreille : grain, mélodie, fatigue d’écoute et équilibre avec les SFX restent à tester humainement.

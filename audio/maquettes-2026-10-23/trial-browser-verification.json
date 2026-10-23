@@ -1,0 +1,28 @@
+[
+  {
+    "browser": "chromium",
+    "offline": true,
+    "normalHasNoMusic": true,
+    "trialFourSliders": true,
+    "radioAfterBulletin": true,
+    "volume": true,
+    "pauseResume": true,
+    "muteResume": true,
+    "fourActualFilesPlayed": true,
+    "careArrivalFailureSilent": true,
+    "errors": []
+  },
+  {
+    "browser": "firefox",
+    "offline": true,
+    "normalHasNoMusic": true,
+    "trialFourSliders": true,
+    "radioAfterBulletin": true,
+    "volume": true,
+    "pauseResume": true,
+    "muteResume": true,
+    "fourActualFilesPlayed": true,
+    "careArrivalFailureSilent": true,
+    "errors": []
+  }
+]

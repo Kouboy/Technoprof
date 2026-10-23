@@ -4,6 +4,7 @@ const root = path.resolve(__dirname, "..");
 if (!fs.existsSync(path.join(root, "Jouer-Technoprof-Journee-Atelier.html")))
   throw Error("Build the reduced day first: npm run build:journee");
 console.log("Standalone day: H1 / A3 / I2, three roads and one final report");
+fs.writeFileSync(path.join(root, "Jouer-Technoprof-Journee-Musique.html"), `<!doctype html><html lang="fr"><meta charset="utf-8"><title>TECHNOPROF — Journée musicale</title><p><a href="Jouer-Technoprof-Journee-Atelier.html?musique=essai">Lancer la journée musicale</a></p><p>Conserver le dossier audio/maquettes-2026-10-23 à côté du jouable.</p><script>location.replace('Jouer-Technoprof-Journee-Atelier.html?musique=essai')</script></html>`);
 
 const presets = {
   "Jouer-Technoprof-Atelier-Gamefeel.html": "gamefeel-tolerant-encounter",

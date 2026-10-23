@@ -77,6 +77,7 @@ type Host = PlayerContext & {
   reducedShake: boolean;
   pauseReason: string;
   audio: AudioKit;
+  music?: { blocked: boolean; retry(): void };
   radioLines: string[];
   remaining: number;
   enemies?: { female?: boolean }[];
@@ -116,6 +117,9 @@ export function installPlayerExperience(s: Host) {
       s.audio.ambienceVolume = Number.isFinite(saved.ambience)
         ? Math.max(0, Math.min(1, saved.ambience))
         : 1;
+      s.audio.musicVolume = Number.isFinite(saved.music)
+        ? Math.max(0, Math.min(1, saved.music))
+        : 0.5;
       hints = saved.hints !== false;
       s.audio.muted = saved.muted === true;
     }
@@ -131,6 +135,7 @@ export function installPlayerExperience(s: Host) {
           effects: s.audio.effectsVolume,
           voice: s.audio.voiceVolume,
           ambience: s.audio.ambienceVolume,
+          music: s.audio.musicVolume,
           hints,
           muted: s.audio.muted,
         }),
@@ -184,6 +189,15 @@ export function installPlayerExperience(s: Host) {
   };
   const muteButton = button("Couper le son", toggleMute);
   toolbar.append(pauseButton, muteButton);
+  const musicRetry = s.music
+    ? button("Relancer la musique", () => s.music?.retry())
+    : undefined;
+  if (musicRetry) {
+    musicRetry.hidden = true;
+    const label = document.createElement("span");
+    label.textContent = "Journée musicale — essai";
+    toolbar.append(label, musicRetry);
+  }
   const paragraph = (text: string) => {
     const p = document.createElement("p");
     p.textContent = text;
@@ -228,6 +242,7 @@ export function installPlayerExperience(s: Host) {
     root.append(dl);
   };
   function sync() {
+    if (musicRetry) musicRetry.hidden = !s.music?.blocked;
     if (lastMuted !== s.audio.muted) {
       lastMuted = s.audio.muted;
       save();
@@ -337,6 +352,12 @@ export function installPlayerExperience(s: Host) {
           (v) => (s.audio.ambienceVolume = v),
         ],
       ];
+      if (s.music)
+        sliders.push([
+          "Musique",
+          s.audio.musicVolume,
+          (v) => (s.audio.musicVolume = v),
+        ]);
       for (const [label, value, change] of sliders) {
         const wrap = document.createElement("label"),
           input = document.createElement("input"),

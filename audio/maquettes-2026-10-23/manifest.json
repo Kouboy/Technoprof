@@ -1,5 +1,5 @@
 {
-  "version": "maquettes-1",
+  "version": "maquettes-2-titre",
   "sampleRate": 22050,
   "sourceSampleRate": 8287.136915887852,
   "sourceBits": 8,
@@ -7,17 +7,17 @@
   "tracks": [
     {
       "id": "titre",
-      "label": "Titre — Physique appliquée",
-      "description": "48 secondes : entrée lourde, motif de menace puis montée plus franche. Batterie, basse, cuivres synthétiques et cordes échantillonnés.",
-      "bpm": 120,
-      "bars": 24,
+      "label": "Titre — Danger et fatigue · V2",
+      "description": "48 secondes à 80 BPM : pédale grave, cuivres bas, impacts métalliques espacés et cordes sans résolution. Une menace qui pèse, sans montée héroïque.",
+      "bpm": 80,
+      "bars": 16,
       "duration": 48.0,
       "file": "01-titre.wav",
       "module": "01-titre.mod",
-      "peakDbFS": -5.19,
+      "peakDbFS": -7.6,
       "rmsDbFS": -19.0,
-      "loopJump": 0.0,
-      "sha256": "d67e13c0ec0ff19a880e7c636133a17557913cf5d54f22947d507d5500119dd9"
+      "loopJump": 4.336808689942018e-19,
+      "sha256": "638bbad7e75bf54adee2255aadf30eae87c58c7880f9a440b1e77253ddd47d0a"
     },
     {
       "id": "radio",

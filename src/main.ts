@@ -122,6 +122,7 @@ import {
 import { AudioKit } from "./audio";
 import { DAY_ONLY } from "./asset-profile";
 import { FailureArt, failureNotice } from "./interface-presentation";
+import { MusicKit } from "./music";
 import {
   GAMEFEEL,
   DEFAULT_GAMEFEEL,
@@ -163,6 +164,21 @@ class Game extends Phaser.Scene {
   }
   reducedShake = false;
   comicWords = true;
+  music?: MusicKit;
+  syncMusic() {
+    if (!this.music) return;
+    this.music.sync({
+      phase: this.phase,
+      mission: this.mission,
+      paused: this.paused || this.playerMenu,
+      muted: this.audio.muted,
+      care:
+        this.phase === "school" &&
+        (this.recoveryScene.active || !!this.roomSpec()?.care),
+      dialogue: this.encounterTime > 0 || this.bossIntro > 0,
+      volume: this.audio.musicVolume,
+    });
+  }
   groundContact?: Phaser.GameObjects.Graphics;
   roadWash?: Phaser.GameObjects.Graphics;
   schoolWear?: Phaser.GameObjects.Graphics;
@@ -682,6 +698,12 @@ class Game extends Phaser.Scene {
       this.game.events.off(Phaser.Core.Events.HIDDEN, focusLost);
       this.input.keyboard?.off("keydown", this.handleKeyDown, this);
     });
+    if (new URLSearchParams(location.search).get("musique") === "essai") {
+      this.music = new MusicKit();
+      this.events.once(Phaser.Scenes.Events.SHUTDOWN, () =>
+        this.music?.destroy(),
+      );
+    }
     const preview = DAY_ONLY
       ? "journee"
       : new URLSearchParams(location.search).get("essai") ||
@@ -1214,6 +1236,7 @@ class Game extends Phaser.Scene {
   }
   setPlayerMenu(open: boolean) {
     this.playerMenu = open;
+    this.syncMusic();
     this.cancelBufferedActions("menu");
     this.controls?.reset();
     this.direct?.cancel();
@@ -1225,6 +1248,7 @@ class Game extends Phaser.Scene {
     else keyboard.enableGlobalCapture();
   }
   startDay() {
+    this.music?.stop();
     this.gamefeelLab = false;
     this.gamefeelVariant = DEFAULT_GAMEFEEL;
     this.navigationProfile = false;
@@ -1250,6 +1274,7 @@ class Game extends Phaser.Scene {
     this.begin();
   }
   begin() {
+    this.music?.stop();
     this.cancelBufferedActions("mission");
     if (this.validatedDay && this.mission < 3) {
       this.navigationProfile = true;
@@ -1575,6 +1600,7 @@ class Game extends Phaser.Scene {
       this.direct?.cancel();
     }
     this.paused = value;
+    this.syncMusic();
     this.pauseReason = value ? reason : "";
     this.freshKey = false;
     // Focus loss may stop the render loop: silence audio in the event itself.
@@ -1706,6 +1732,7 @@ class Game extends Phaser.Scene {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   loadScenario(name: string) {
+    this.music?.stop();
     this.cancelBufferedActions("scenario");
     const comparison = this.workshop ? gamefeelScenario(name) : null;
     this.gamefeelLab = !!comparison;
@@ -4067,6 +4094,7 @@ class Game extends Phaser.Scene {
   }
   unlockAudio() {
     this.audio.unlock();
+    this.music?.retry();
   }
   hurt(direction = -this.face) {
     if (this.inv > 0) return;
@@ -4330,6 +4358,7 @@ class Game extends Phaser.Scene {
   draw() {
     this.sceneFade?.clear();
     if (this.substepping) return;
+    this.syncMusic();
     this.art?.hide();
     this.newSchoolArt?.hide();
     this.navigationArt?.hide();

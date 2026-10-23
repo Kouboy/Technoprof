@@ -2,8 +2,8 @@
   {
     "id": "titre",
     "seconds": 48.0,
-    "samplesUsed": 11,
-    "peakDbFS": -5.19,
+    "samplesUsed": 5,
+    "peakDbFS": -7.6,
     "rmsDbFS": -19.0,
     "loopBoundarySampleDelta": 0,
     "moduleDecode": "ffmpeg/libopenmpt"
