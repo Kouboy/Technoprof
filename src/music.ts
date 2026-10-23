@@ -1,11 +1,12 @@
-// Local audition profile only. No title music until its revised tone is approved.
+// Local musical profile; the approved title has its own foreground mix.
 export const MUSIC_FILES = {
-  radio: "02-autoradio.wav",
-  ormeaux: "03-ormeaux.wav",
-  berthelot: "04-berthelot.wav",
-  troisPonts: "05-trois-ponts.wav",
+  title: "titre-reference-2026-10-23/Technoprof-Titre-Interpretation.wav",
+  radio: "maquettes-2026-10-23/02-autoradio.wav",
+  ormeaux: "maquettes-2026-10-23/03-ormeaux.wav",
+  berthelot: "maquettes-2026-10-23/04-berthelot.wav",
+  troisPonts: "maquettes-2026-10-23/05-trois-ponts.wav",
 } as const;
-export const MUSIC_TUNING = { volume: 0.5, dialogueGain: 0.55 };
+export const MUSIC_TUNING = { volume: 0.5, titleGain: 1.8, dialogueGain: 0.55 };
 export type MusicState = {
   phase: string;
   mission: number;
@@ -17,6 +18,7 @@ export type MusicState = {
 };
 type Track = keyof typeof MUSIC_FILES;
 export function musicTrack(phase: string, mission: number): Track | null {
+  if (phase === "title") return "title";
   // receive includes the DATA notification. The radio starts after it ends.
   if (phase === "road") return "radio";
   if (phase === "school")
@@ -49,14 +51,19 @@ export class MusicKit {
       const player = (this.player ??= this.makePlayer());
       player.loop = true;
       player.preload = "auto";
-      player.src = "audio/maquettes-2026-10-23/" + MUSIC_FILES[desired];
+      player.src = "audio/" + MUSIC_FILES[desired];
       this.current = desired;
     }
     const volume = Number.isFinite(state.volume)
       ? Math.max(0, Math.min(1, state.volume))
       : MUSIC_TUNING.volume;
-    this.player!.volume =
-      volume * (state.dialogue ? MUSIC_TUNING.dialogueGain : 1);
+    const gain =
+      desired === "title"
+        ? MUSIC_TUNING.titleGain
+        : state.dialogue
+          ? MUSIC_TUNING.dialogueGain
+          : 1;
+    this.player!.volume = Math.min(1, volume * gain);
     this.suspended = state.paused || state.muted || state.care || volume === 0;
     if (this.suspended) {
       if (this.pending || !this.player!.paused) {

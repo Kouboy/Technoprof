@@ -11,7 +11,7 @@ async function observe(context){
 async function playing(page,file){
  await page.waitForFunction(file=>window.__musicAudio.some(a=>a.src.endsWith(file)&&!a.paused&&a.currentTime>.08&&!a.error),file,{timeout:35000});
 }
-const media=page=>page.evaluate(()=>window.__musicAudio.filter(a=>a.src.includes('/maquettes-2026-10-23/')).map(a=>({src:a.src,paused:a.paused,time:a.currentTime,volume:a.volume,error:a.error?.code})));
+const media=page=>page.evaluate(()=>window.__musicAudio.filter(a=>/\/(maquettes|titre-reference)-2026-10-23\//.test(a.src)).map(a=>({src:a.src,paused:a.paused,time:a.currentTime,volume:a.volume,error:a.error?.code})));
 (async()=>{
  const report=[];
  for(const [name,engine] of Object.entries({chromium,firefox})){
@@ -25,10 +25,14 @@ const media=page=>page.evaluate(()=>window.__musicAudio.filter(a=>a.src.includes
    context=await browser.newContext({offline:true,viewport:{width:1200,height:1000}});await observe(context);page=await context.newPage();page.setDefaultTimeout(45000);page.on('pageerror',e=>errors.push(e.message));
    await page.goto(root+'Jouer-Technoprof-Journee-Musique.html');
    await page.getByRole('button',{name:'Réglages',exact:true}).click();assert.equal(await page.getByRole('slider').count(),4);
+   await playing(page,'Technoprof-Titre-Interpretation.wav');assert.equal((await media(page))[0].volume,.9,'foreground title volume');
    const slider=page.getByRole('slider',{name:'Musique',exact:true});await slider.focus();await page.keyboard.press('Home');for(let i=0;i<25;i++)await page.keyboard.press('ArrowRight');assert.equal(await slider.inputValue(),'25');
+   await page.waitForFunction(()=>window.__musicAudio.some(a=>a.src.endsWith('Technoprof-Titre-Interpretation.wav')&&a.volume===.45));
+   await page.getByRole('button',{name:/Couper le son/}).click();await page.waitForFunction(()=>window.__musicAudio.every(a=>a.paused));const titleOffset=(await media(page))[0].time;
+   await page.getByRole('button',{name:/Activer le son/}).click();await playing(page,'Technoprof-Titre-Interpretation.wav');assert((await media(page))[0].time>=titleOffset);
    await page.getByRole('button',{name:'Retour',exact:true}).click();await page.locator('#game').focus();await page.keyboard.press('Enter');
-   await page.waitForTimeout(400);assert.equal((await media(page)).length,0,'bulletin has no instrumental');
-   await page.waitForFunction(()=>window.__musicAudio.some(a=>a.src.includes('/maquettes-2026-10-23/')),{},{timeout:35000});
+   await page.waitForTimeout(400);assert((await media(page)).every(a=>a.paused&&a.time===0),'title stops before the bulletin');
+   await page.waitForFunction(()=>window.__musicAudio.some(a=>a.src.endsWith('02-autoradio.wav')),{},{timeout:35000});
    const retry=page.getByRole('button',{name:'Relancer la musique',exact:true});if(await retry.isVisible())await retry.click();
    await playing(page,'02-autoradio.wav');assert.equal((await media(page))[0].volume,.25);
    await page.getByRole('button',{name:'Pause / aide',exact:true}).click();let before=(await media(page))[0];assert(before.paused);await page.waitForTimeout(200);assert.equal((await media(page))[0].time,before.time);
@@ -45,7 +49,7 @@ const media=page=>page.evaluate(()=>window.__musicAudio.filter(a=>a.src.includes
     await page.getByRole('combobox',{name:'Scénario',exact:true}).selectOption(scenario);await page.waitForFunction(()=>window.__musicAudio.every(a=>a.paused));
    }
    assert((await media(page)).every(a=>!a.error));assert.deepEqual(errors,[]);
-   report.push({browser:name,offline:true,normalHasNoMusic:true,trialFourSliders:true,radioAfterBulletin:true,volume:true,pauseResume:true,muteResume:true,fourActualFilesPlayed:true,careArrivalFailureSilent:true,errors});
+   report.push({browser:name,offline:true,normalHasNoMusic:true,trialFourSliders:true,titleForegroundGain:true,titleMenuPlayback:true,titleMuteResume:true,titleStopsBeforeBulletin:true,radioAfterBulletin:true,volume:true,pauseResume:true,muteResume:true,fiveActualFilesPlayed:true,careArrivalFailureSilent:true,errors});
    console.log('PASS native local musical trial: '+name);await context.close();
   }finally{await browser.close();}
  }

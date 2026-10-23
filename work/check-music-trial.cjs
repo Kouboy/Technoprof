@@ -10,7 +10,7 @@ class Player {
 }
 const state=()=>({phase:'free',mission:0,paused:false,muted:false,care:false,dialogue:false,volume:.5});
 const player=new Player(),music=new scope.MusicKit(()=>player),s=state();
-for(const phase of ['title','free','receive']){s.phase=phase;music.sync(s);assert.equal(player.playCalls,0);}
+for(const phase of ['free','receive']){s.phase=phase;music.sync(s);assert.equal(player.playCalls,0);}
 s.phase='road';music.sync(s);assert(player.src.endsWith('02-autoradio.wav'));assert(player.loop);assert.equal(player.playCalls,1);
 player.currentTime=10;for(let n=0;n<50;n++)music.sync(s);assert.equal(player.playCalls,1);assert.equal(player.currentTime,10);
 s.paused=true;music.sync(s);assert(player.paused);assert.equal(player.currentTime,10);
@@ -27,6 +27,25 @@ for(const mission of [0,1,2]){
  s.volume=.25;music.sync(s);assert.equal(player.volume,.25);s.volume=.5;
 }
 music.destroy();assert(player.paused);assert.equal(player.src,'');
+// The approved title leads the mix, remains audible in title menus and respects volume.
+{
+ const p=new Player(),m=new scope.MusicKit(()=>p),s=state();s.phase='title';m.sync(s);
+ assert(p.src.endsWith('titre-reference-2026-10-23/Technoprof-Titre-Interpretation.wav'));
+ assert(!p.paused);assert.equal(p.volume,.9,'title gain above the in-game mix');
+ s.dialogue=true;m.sync(s);assert.equal(p.volume,.9,'stale dialogue cannot duck the title');
+ s.volume=1;m.sync(s);assert.equal(p.volume,1,'bounded title gain');
+ p.currentTime=8;s.muted=true;m.sync(s);assert(p.paused);assert.equal(p.currentTime,8);
+ s.muted=false;m.sync(s);assert(!p.paused);assert.equal(p.currentTime,8);
+ s.phase='free';m.sync(s);assert(p.paused);assert.equal(p.currentTime,0,'title stops before the bulletin');
+ const {createGame}=require('./test-harness.cjs');const {g}=createGame();const q=new Player();
+ g.music=new scope.MusicKit(()=>q);g.audio.musicVolume=.5;g.phase='title';g.playerMenu=true;g.syncMusic();
+ assert(!q.paused,'the title menu must not silence its own music');
+ q.currentTime=4;g.pauseForFocusLoss();assert(q.paused);assert.equal(q.currentTime,4);
+ g.restoreMusicFocus();assert(!q.paused);assert.equal(q.currentTime,4);
+ g.setPlayerMenu(true);assert(!q.paused,'settings stay in the foreground title mix');
+ g.startDay();assert(q.paused);assert.equal(q.currentTime,0);
+ console.log('PASS title: approved asset, foreground gain, clamp, title menus, mute, focus and service start');
+}
 // The game adapter uses real phases/care state and stops on a focus pause.
 {
  const {createGame}=require('./test-harness.cjs');

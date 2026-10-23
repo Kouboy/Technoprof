@@ -149,7 +149,10 @@ export function installPlayerExperience(s: Host) {
     const b = document.createElement("button");
     b.textContent = text;
     if (primary) b.className = "primary";
-    b.onclick = action;
+    b.onclick = () => {
+      if (s.phase === "title") s.music?.retry();
+      action();
+    };
     return b;
   };
   const returnToGame = () => {
@@ -242,7 +245,13 @@ export function installPlayerExperience(s: Host) {
     root.append(dl);
   };
   function sync() {
-    if (musicRetry) musicRetry.hidden = !s.music?.blocked;
+    if (musicRetry) {
+      musicRetry.hidden = !s.music?.blocked;
+      const retryLabel =
+        s.phase === "title" ? "Écouter le titre" : "Relancer la musique";
+      if (musicRetry.textContent !== retryLabel)
+        musicRetry.textContent = retryLabel;
+    }
     if (lastMuted !== s.audio.muted) {
       lastMuted = s.audio.muted;
       save();

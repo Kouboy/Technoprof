@@ -30,9 +30,9 @@ Reconstruction depuis la racine du projet : `python tools/compose-maquettes.py` 
 
 ## Essai en jeu
 
-Depuis la racine du projet, ouvrir **Jouer-Technoprof-Journee-Musique.html**. Il lance la journée avec `?musique=essai`. Garder ce raccourci, Jouer-Technoprof-Journee-Atelier.html et le dossier audio/maquettes-2026-10-23 ensemble. Les WAV restent externes et sont chargés un à un, à la demande ; le pack n’est pas ajouté au bundle du jeu.
+Depuis la racine du projet, ouvrir **Jouer-Technoprof-Journee-Musique.html**. Il lance la journée avec `?musique=essai`. Garder ce raccourci, Jouer-Technoprof-Journee-Atelier.html et les dossiers audio/maquettes-2026-10-23 et audio/titre-reference-2026-10-23 ensemble. Les WAV restent externes et sont chargés un à un, à la demande ; le pack n’est pas ajouté au bundle du jeu.
 
-Le profil habituel demeure sans cette musique. Le titre V2 n’est pas encore intégré. Les thèmes d’établissement baissent pendant les répliques et se suspendent à l’infirmerie, avec reprise au même endroit. Les sons de classe et les cloches restent seuls pendant l’ellipse. Le Game Over et l’arrivée coupent immédiatement le morceau. Un bouton Relancer la musique apparaît si le navigateur bloque sa lecture. Dans l’atelier, un bouton de commande réessaie aussi la lecture après un geste réel.
+Le profil habituel demeure sans cette musique. L’écran titre du profil musical utilise désormais l’interprétation de 60 secondes validée par Nicolas dans audio/titre-reference-2026-10-23, avec un gain de 1,8 pour la placer au premier plan. La V2 de ce dossier reste une proposition d’écoute archivée. Les thèmes d’établissement baissent pendant les répliques et se suspendent à l’infirmerie, avec reprise au même endroit. Les sons de classe et les cloches restent seuls pendant l’ellipse. Le Game Over et l’arrivée coupent immédiatement le morceau. Un bouton Écouter le titre / Relancer la musique apparaît si le navigateur bloque sa lecture. Dans l’atelier, un bouton de commande réessaie aussi la lecture après un geste réel.
 
 `npm run build:atelier` reconstruit le raccourci avec les exports locaux. `npm run test:musique` vérifie le contrôleur et son branchement. Le profil n’est pas publié sur Pages.
 

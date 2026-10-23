@@ -25,4 +25,12 @@ python tools/check-title-reference.py
 
 `tools/analyse-title-reference.py` produit des estimations spectrales dans work/checkpoints, sans écrire dans le fichier source. Le manifeste conserve le SHA256 d’origine ; il faut ce fichier pour régénérer les phrases. Le MOD contient déjà les samples nécessaires à sa lecture.
 
-Les contrôles vérifient durée, ordre des sections, format des samples, amplitude, raccord et décodage indépendant du MOD par libopenmpt. L’appréciation musicale reste à faire à l’écoute. Le jeu et les cinq maquettes précédentes restent inchangés ; cette proposition n’est pas encore intégrée à l’écran titre.
+Les contrôles vérifient durée, ordre des sections, format des samples, amplitude, raccord et décodage indépendant du MOD par libopenmpt. Nicolas a validé cette interprétation à l’écoute.
+
+## Écran titre de la journée musicale
+
+L’interprétation validée est intégrée au profil local **Jouer-Technoprof-Journee-Musique.html**, avec un gain de titre de 1,8 par rapport aux musiques en jeu, soit environ +5,1 dB avant plafonnement. Au réglage Musique par défaut de 50 %, le titre joue à 90 % du volume du lecteur, contre 50 % pour la conduite. Le niveau reste borné à 100 %, sans modifier le WAV ni les autres morceaux.
+
+La musique continue dans les réglages et les commandes de l’écran titre. Elle respecte la coupure générale du son et se suspend quand la fenêtre perd le focus ; la reprise conserve sa position. Le lancement du service l’arrête avant le bulletin radio. Si le navigateur bloque le démarrage automatique, le bouton **Écouter le titre** l’autorise par un clic ; ouvrir les réglages peut aussi autoriser la lecture.
+
+Conserver les dossiers audio/titre-reference-2026-10-23 et audio/maquettes-2026-10-23 avec le jouable. Le lancement habituel et la 0.61 publiée restent inchangés. `npm run test:musique` couvre les règles du mix et les transitions ; `work/check-music-browser.cjs` contrôle la lecture réelle du profil dans Chromium et Firefox.

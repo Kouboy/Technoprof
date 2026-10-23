@@ -165,12 +165,16 @@ class Game extends Phaser.Scene {
   reducedShake = false;
   comicWords = true;
   music?: MusicKit;
+  musicFocusLost = false;
   syncMusic() {
     if (!this.music) return;
     this.music.sync({
       phase: this.phase,
       mission: this.mission,
-      paused: this.paused || this.playerMenu,
+      paused:
+        this.paused ||
+        this.musicFocusLost ||
+        (this.playerMenu && this.phase !== "title"),
       muted: this.audio.muted,
       care:
         this.phase === "school" &&
@@ -691,11 +695,16 @@ class Game extends Phaser.Scene {
     this.input.keyboard!.addCapture(["SPACE", "UP", "DOWN", "LEFT", "RIGHT"]);
     this.input.keyboard!.on("keydown", this.handleKeyDown, this);
     const focusLost = () => this.pauseForFocusLoss();
+    const focusReturned = () => this.restoreMusicFocus();
     this.game.events.on(Phaser.Core.Events.BLUR, focusLost);
     this.game.events.on(Phaser.Core.Events.HIDDEN, focusLost);
+    this.game.events.on(Phaser.Core.Events.FOCUS, focusReturned);
+    this.game.events.on(Phaser.Core.Events.VISIBLE, focusReturned);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.game.events.off(Phaser.Core.Events.BLUR, focusLost);
       this.game.events.off(Phaser.Core.Events.HIDDEN, focusLost);
+      this.game.events.off(Phaser.Core.Events.FOCUS, focusReturned);
+      this.game.events.off(Phaser.Core.Events.VISIBLE, focusReturned);
       this.input.keyboard?.off("keydown", this.handleKeyDown, this);
     });
     if (new URLSearchParams(location.search).get("musique") === "essai") {
@@ -1270,8 +1279,8 @@ class Game extends Phaser.Scene {
     this.shortcuts = 0;
     this.paused = false;
     this.pauseReason = "";
-    this.setPlayerMenu(false);
     this.begin();
+    this.setPlayerMenu(false);
   }
   begin() {
     this.music?.stop();
@@ -1625,6 +1634,8 @@ class Game extends Phaser.Scene {
     this.syncPlayerUI?.();
   }
   pauseForFocusLoss() {
+    this.musicFocusLost = true;
+    this.syncMusic();
     if (
       this.paused ||
       this.arrivalStill ||
@@ -1636,6 +1647,10 @@ class Game extends Phaser.Scene {
     this.input?.keyboard?.resetKeys();
     this.setPaused(true, "FENETRE INACTIVE");
     this.draw();
+  }
+  restoreMusicFocus() {
+    this.musicFocusLost = false;
+    this.syncMusic();
   }
   bookContact(e: Enemy) {
     const profile = this.combatProfile();
