@@ -24,7 +24,7 @@
 - [x] Banque originale : outil Python reproductible, PCM intégrés, WAV et écoute ; tests quantification, durée, variantes et saturation.
 - [x] WebAudio : caches par prise, variantes, surfaces et mix ; contrôle des voix et pause/mute.
 - [x] Vie sonore : contacts de pas, infirmerie, cinématiques et transitions ; tests 30/60/120 fps et interruptions.
-- [ ] Observation navigateur, régressions ciblées, relecture indépendante, exports locaux et site de playtest actualisés.
+- [x] Observation navigateur, régressions ciblées, relecture indépendante, exports locaux et site de playtest actualisés.
 
 ## Points de vigilance
 
@@ -46,4 +46,5 @@ Base `a7cabee`, branche atelier-navigation-bruel-a3, PNG utilisateur non suivi �
 - Observation native hors connexion, Chromium et Firefox : empreintes uniques des buffers réellement joués (17 matières identifiées), frappe au clavier, marche bois/métal, saut/réception, escalier, portière, marche/grille, entrée/dialogue/sortie d'infirmerie et pause. Rapport : `work/checkpoints/sfx-browser.json`.
 - Relecture indépendante : correction après tests rouges de deux cas limites (ancienne cour sans frame traitée comme intérieur ; porte d'arrivée relue à reprise de pause). Tests SFX verts après correction.
 - Le pilote natif attend l'état jouable et peut reprendre une pause de chargement visible via les commandes normales. Ses empreintes sont prises sur toute la durée des sons pour éviter de confondre les zéros initiaux des souffles. Aucune règle de pause ni de contrôle du jeu n'a été assouplie pour le pilote.
-- Dernière étape : vérifier le commit et le navigateur public après le push ; la trace de déploiement reste dans GitHub Actions et les résultats locaux dans `work/checkpoints/`.
+- Publication du jeu `26f5dd6` réussie : [workflow 40081285032](https://github.com/Kouboy/Technoprof/actions/runs/40081285032). `build-info.json` public identifie ce commit ; test du lien sans query réussi dans Chromium, Firefox et Chromium tactile 390 × 844 (titre, artwork, démarrage, audio et commandes, aucun échec HTTP ni erreur JavaScript). Rapport : `work/checkpoints/pages-live.json`.
+- Le test Pages attend désormais explicitement le chargement de l'image de titre, créée après le chargement du document. Le contrôle immédiat précédent pouvait échouer pendant son téléchargement.

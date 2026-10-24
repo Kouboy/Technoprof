@@ -100,6 +100,15 @@ async function main() {
       assert(await page.locator("#developer-controls").isHidden());
       assert(await page.locator("#developer-links").isHidden());
       assert(await page.locator("#workshop").isHidden());
+      // The title image is mounted by JS after the document load event.
+      await page.waitForFunction(
+        () => {
+          const img = document.querySelector(".title-art img");
+          return img?.complete && img.naturalWidth > 0;
+        },
+        null,
+        { timeout: 30000 },
+      );
       assert(
         await page
           .locator(".title-art img")
