@@ -120,7 +120,7 @@ import {
   type Enemy,
 } from "./world";
 import { AudioKit } from "./audio";
-import { DAY_ONLY } from "./asset-profile";
+import { DAY_ONLY, PUBLIC_PLAYTEST } from "./asset-profile";
 import { FailureArt, failureNotice } from "./interface-presentation";
 import { MusicKit } from "./music";
 import {
@@ -716,7 +716,10 @@ class Game extends Phaser.Scene {
       this.game.events.off(Phaser.Core.Events.VISIBLE, focusReturned);
       this.input.keyboard?.off("keydown", this.handleKeyDown, this);
     });
-    if (new URLSearchParams(location.search).get("musique") === "essai") {
+    if (
+      PUBLIC_PLAYTEST ||
+      new URLSearchParams(location.search).get("musique") === "essai"
+    ) {
       this.music = new MusicKit();
       this.events.once(Phaser.Scenes.Events.SHUTDOWN, () =>
         this.music?.destroy(),

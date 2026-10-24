@@ -3,12 +3,23 @@
 Jeu d’action rétro satirique français : rejoindre une affectation en voiture,
 traverser un établissement dégradé, puis faire cours avant la fin du délai.
 
+## Lien de playtest
+
+**[Jouer à Technoprof](https://kouboy.github.io/Technoprof/)** — journée complète
+Ormeaux H1 / Auguste-Berthelot A3 / Trois-Ponts I2, avec les douze morceaux.
+Le lien s’ouvre directement dans un navigateur, sans installation ni compte.
+Clavier, souris et toucher sont disponibles ; les commandes et quatre volumes
+séparés sont accessibles depuis le menu. Le son démarre après une interaction.
+Le menu de pause et le bilan permettent d’exporter le journal d’essai.
+
 ## Jouer à la version d’atelier actuelle
 
 Ouvrir **Jouer-Technoprof-Journee-Atelier.html**, puis **Prendre le service**.
 Ce fichier autonome fonctionne sur disque, hors connexion. Il enchaîne les trois
 trajets et les établissements validés : Ormeaux H1, Auguste-Berthelot A3 et
 Trois-Ponts I2. Le journal d’essai réunit toute la journée.
+Pour jouer avec la musique sur disque, ouvrir **Jouer-Technoprof-Journee-Musique.html**
+et conserver le dossier `audio/` ainsi que le HTML journée à côté du lanceur.
 
 Pour le régénérer depuis les sources (Node.js 24 et npm) :
 
@@ -26,10 +37,9 @@ arrière-plans. `npm run build:journee` régénère uniquement ce fichier ;
 Les dix-neuf autres lanceurs sont de petits raccourcis ; conserver
 `Jouer-Technoprof.html` à côté pour les utiliser. Les exports sont ignorés par Git.
 
-La [0.61 publiée](https://kouboy.github.io/Technoprof/) et la
-[release v0.61](https://github.com/Kouboy/Technoprof/releases/tag/v0.61) restent
-les références publiques antérieures à l’atelier. Elles ne sont pas mises à jour
-par les envois sur cette branche. Le HTML local `Jouer-Technoprof-0.61.html`
+La [release v0.61](https://github.com/Kouboy/Technoprof/releases/tag/v0.61) conserve
+la référence publique antérieure à l’atelier. Le site Pages sert désormais la
+journée actuelle avec musique. Le HTML local `Jouer-Technoprof-0.61.html`
 reste intact ; les versions 0.40–0.60 sont rangées dans `archives/versions/`.
 
 ## Développer et vérifier
@@ -44,6 +54,9 @@ npm run test:rapide
 | `npm run test:rapide` | Règles principales, conduite, lumières, audio de route et voiture |
 | `npm run test:journee` | Trois trajets + H1/A3/I2, commandes, soins, transitions et bilan à 30/60/120 fps simulés |
 | `npm run test:assets` | Catalogue de compilation, images retenues intactes et préchargement des acteurs partagés |
+| `npm run test:musique` | Douze thèmes, priorités, pauses et reprises |
+| `npm run test:pages` | Export web : images inchangées et douze WAV |
+| `npm run build:pages` | Journée musicale pour Pages, puis vérification du contenu de `dist/` |
 | `npm run test:retouches` | Nouveaux délais/dégâts, radio et claquement de portière |
 | `npm run test:signaletique` | Panneaux et rendu des trois établissements |
 | `npm run test:sequences` | Entrée en classe, échecs et feedbacks sonores |
@@ -74,5 +87,14 @@ distingue les premiers gains du [chargement allégé de la journée](docs/techni
 L’[historique Git](HISTORIQUE.md) décrit les sauvegardes importées.
 
 GitHub Pages publie `dist/` uniquement après un envoi sur `main`, via
-[pages.yml](.github/workflows/pages.yml). La branche d’atelier conserve les essais
-locaux et la 0.61 publiée intacte.
+[pages.yml](.github/workflows/pages.yml). Le workflow vérifie la journée, la
+musique et les assets avant de construire et publier le site. Le mode `pages`
+sépare les images du JavaScript, préserve leurs octets et copie uniquement les
+douze WAV utilisés. Les fichiers `build-info.json` et `.nojekyll` sont générés ;
+le premier identifie le commit servi. La branche d’atelier conserve les essais
+locaux ; la release et le HTML figés 0.61 restent intacts.
+
+Pour vérifier le build sous `/Technoprof/` dans Chromium, Firefox et une fenêtre
+tactile mobile, lancer `node work/check-pages-browser.cjs` avec Playwright
+disponible (`PLAYWRIGHT_MODULE` peut désigner son module installé). Le même test
+accepte `PAGES_URL` pour contrôler le déploiement public.

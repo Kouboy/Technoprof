@@ -20,7 +20,14 @@ for(const [i,m] of a.MISSIONS.entries())for(const r of Object.values(m.rooms).fi
  assert.equal(g.enemies.length,1);assert(g.encounterTime);const clock=g.remaining,x=g.px,enemy=g.enemies[0].x;
  g.keys.RIGHT.isDown=true;h.advance(10);g.keys.RIGHT.isDown=false;assert.equal(g.px,x);assert.equal(g.enemies[0].x,enemy);assert.equal(g.remaining,clock);
  // Early action reveals, fresh next action confirms, and confirmation cannot attack.
- g.dialogue.characters=0;h.press('X');assert(g.encounterTime);h.press('X');assert.equal(g.encounterTime,0);assert.equal(g.attack,0);
+  // Approved rewrites can span several pages; every page must use reveal/advance.
+  const pages=g.encounter().pages;
+  for(let page=0;page<pages.length;page++){
+    g.dialogue.characters=0;h.press('X');assert(g.encounterTime);assert.equal(g.dialogue.page,page);
+    assert.equal(g.dialogue.characters,pages[page].join('').length);
+    h.press('X');assert.equal(g.attack,0);assert.equal(g.remaining,clock);
+    if(page+1<pages.length){assert(g.encounterTime);assert.equal(g.dialogue.page,page+1);}else assert.equal(g.encounterTime,0);
+  }
  g.enterRoom(m.start,45);g.enterRoom(r.id,45);assert.equal(g.encounterTime,0);
 }
 const reports=[];
