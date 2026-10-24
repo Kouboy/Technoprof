@@ -123,6 +123,9 @@ import { AudioKit } from "./audio";
 import { DAY_ONLY, PUBLIC_PLAYTEST } from "./asset-profile";
 import { FailureArt, failureNotice } from "./interface-presentation";
 import { MusicKit } from "./music";
+import { campaignWon, requiredAssignments, type RunPolicy } from "./campaign";
+import { CinematicSequence } from "./cinematic";
+import { CinematicArt } from "./cinematic-art";
 import {
   floorSound,
   passageSound,
@@ -430,11 +433,13 @@ class Game extends Phaser.Scene {
   artReview = -1;
   arrivalStill = false;
   failureArt?: FailureArt;
+  cinematicArt?: CinematicArt;
   reviewFacing = 1;
   preload() {
     this.runtime.mark("preload");
     this.audio.prepare();
     FailureArt.preload(this);
+    CinematicArt.preload(this);
     SliceArt.preload(this, !DAY_ONLY);
     NewSchoolArt.preload(this, !DAY_ONLY);
     SchoolProps.preload(this);
@@ -587,6 +592,7 @@ class Game extends Phaser.Scene {
     }
     this.cameras.main.setZoom(2).setScroll(-160, -120);
     this.g = this.add.graphics().setDepth(3);
+    this.cinematicArt = new CinematicArt(this);
     this.art = new SliceArt(this, !DAY_ONLY);
     this.schoolProps = new SchoolProps(this);
     this.newSchoolArt = new NewSchoolArt(this, !DAY_ONLY);
@@ -988,16 +994,18 @@ class Game extends Phaser.Scene {
       if (preview === "accueil") {
         const bar = document.getElementById("pose-controls")!;
         bar.hidden = false;
-        for (const won of [2, 1]) {
+        for (const won of [3, 2]) {
           const button = document.createElement("button");
           button.textContent = `Aperçu du bilan ${won}/3`;
           button.onclick = () => {
-            this.startDay();
-            for (let mission = 0; mission < 3; mission++) {
-              this.phase = mission === 1 ? "road" : "school";
-              this.finish(mission < won, mission === 1 ? "breakdown" : "late");
-              this.next();
-            }
+            // Static UI fixture: never simulate an invalid continuation after failure.
+            this.startDay(false);
+            this.won = won;
+            this.mission = 2;
+            this.results = Array.from({ length: 3 }, (_, mission) =>
+              resultLine(mission < won, "late", false),
+            );
+            this.phase = "report";
             this.draw();
           };
           bar.append(button);
@@ -1279,7 +1287,11 @@ class Game extends Phaser.Scene {
     if (open) keyboard.disableGlobalCapture();
     else keyboard.enableGlobalCapture();
   }
-  startDay() {
+  runPolicy: RunPolicy = "three-required";
+  cinematic: CinematicSequence | null = null;
+  introSeen = false;
+  startDay(showIntro = !this.introSeen) {
+    this.cinematic = null;
     this.music?.stop();
     this.gamefeelLab = false;
     this.gamefeelVariant = DEFAULT_GAMEFEEL;
@@ -1303,7 +1315,33 @@ class Game extends Phaser.Scene {
     this.paused = false;
     this.pauseReason = "";
     this.begin();
+    if (this.runPolicy === "three-required" && showIntro) {
+      this.cinematic = new CinematicSequence("intro");
+      this.phase = "intro";
+      this.session.record("cinematic-start",this.mission,this.room,{kind:"intro"});
+    }
     this.setPlayerMenu(false);
+  }
+  advanceCinematic(skip = false) {
+    const sequence = this.cinematic;
+    if (!sequence || this.paused || this.playerMenu) return;
+    if (skip) sequence.skip();
+    else if (!sequence.advance()) return;
+    this.session.record("cinematic-advance",this.mission,this.room,{kind:sequence.kind,index:sequence.index,done:sequence.done,skipped:skip});
+    this.cancelBufferedActions("cinematic");
+    if (sequence.done) {
+      this.direct?.cancel();
+      this.cinematic = null;
+      this.age = 0;
+      if (sequence.kind === "intro") {
+        this.introSeen = true;
+        this.phase = "free";
+      } else {
+        this.phase = "report";
+        this.persistJournal();
+      }
+    }
+    this.draw();
   }
   begin() {
     this.music?.stop();
@@ -1534,6 +1572,8 @@ class Game extends Phaser.Scene {
         "blackAfter",
         "later",
         "report",
+        "intro",
+        "ending",
       ].includes(this.phase)
     )
       return;
@@ -1598,10 +1638,20 @@ class Game extends Phaser.Scene {
     this.persistJournal();
   }
   next() {
+    if (this.cinematic || this.phase === "report") return;
+    if (this.runPolicy === "three-required" && this.phase === "fail") {
+      this.startDay(false);
+      return;
+    }
     this.navigationProfile = false;
     this.mission++;
     if (this.mission === 3) {
       this.phase = "report";
+      if (this.runPolicy === "three-required" && campaignWon(this.won)) {
+        this.phase = "ending";
+        this.cinematic = new CinematicSequence("ending");
+        this.session.record("cinematic-start",this.mission,this.room,{kind:"ending"});
+      }
       this.age = 0;
       if (this.validatedDay) this.persistJournal();
     } else this.begin();
@@ -1634,6 +1684,7 @@ class Game extends Phaser.Scene {
       outdoor: (this.roomSpec()?.frame ?? this.room) === 0,
       arrivalEntry: this.mission === 0 ? ("gate" as const) : ("door" as const),
       transition: this.roomTransition,
+      cinematic: this.cinematic,
     };
   }
   motorRunning() {
@@ -1719,6 +1770,11 @@ class Game extends Phaser.Scene {
   }
   journalSnapshot() {
     const snapshot = {
+      campaign: {
+        policy: this.runPolicy,
+        requiredSuccesses: requiredAssignments(this.runPolicy),
+        firstFailureEndsRun: this.runPolicy === "three-required",
+      },
       ...this.session.snapshot(
         this.seed,
         this.collisions,
@@ -1788,6 +1844,11 @@ class Game extends Phaser.Scene {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   loadScenario(name: string) {
+    this.cinematic = null;
+    this.runPolicy =
+      name === "journee-validee" || name.startsWith("cinematic-")
+        ? "three-required"
+        : "legacy-two";
     this.music?.stop();
     this.cancelBufferedActions("scenario");
     const comparison = this.workshop ? gamefeelScenario(name) : null;
@@ -1823,6 +1884,26 @@ class Game extends Phaser.Scene {
     this.cadreReview = false;
     this.arrivalStill = false;
     this.artReview = -1;
+    if (
+      this.workshop &&
+      (name === "cinematic-intro" || name === "cinematic-ending")
+    ) {
+      this.validatedDay = true;
+      this.startDay(name === "cinematic-intro");
+      if (name === "cinematic-ending") {
+        this.won = 3;
+        this.mission = 3;
+        this.results = ["COURS ASSURE", "COURS ASSURE", "COURS ASSURE"];
+        this.phase = "ending";
+        this.cinematic = new CinematicSequence("ending");
+      }
+      this.session.record("scenario", this.mission, this.room, {
+        name,
+        preview: true,
+      });
+      this.draw();
+      return;
+    }
     if (this.workshop && name.startsWith("sequence-")) {
       // Explicit frozen visual fixtures, never used by the normal day.
       const fixtures: Record<string, string> = {
@@ -2509,7 +2590,10 @@ class Game extends Phaser.Scene {
       return;
     }
     this.age += dt;
-    if (this.phase === "title" || this.phase === "report") {
+    if (this.phase === "intro" || this.phase === "ending") {
+      this.cinematic?.tick(dt, false);
+      if (attackPressed || enterPressed || jumpPressed) this.advanceCinematic();
+    } else if (this.phase === "title" || this.phase === "report") {
       if (enterPressed) this.startDay();
     } else if (this.phase === "opening") {
       if (this.age > PLAY.openingSeconds) {
@@ -2543,7 +2627,13 @@ class Game extends Phaser.Scene {
         // Presentation only: no collision, distance-to-destination or clock update.
         this.travel += this.visualSpeed() * dt;
       }
-      if (this.age >= PLAY.failContinueSeconds && enterPressed) this.next();
+      if (
+        this.age >= PLAY.failContinueSeconds &&
+        (enterPressed ||
+          (this.runPolicy === "three-required" &&
+            (attackPressed || jumpPressed)))
+      )
+        this.next();
     } else if (this.phase === "tow") {
       if (this.age > 3) {
         this.vehicle = 65;
@@ -4432,10 +4522,22 @@ class Game extends Phaser.Scene {
     this.roadArt?.hide();
     this.foreground?.clear();
     this.failureArt?.hide();
+    this.cinematicArt?.hide();
     if (this.sceneGraphics) this.g = this.sceneGraphics;
     this.g.clear();
     this.labels.forEach((t) => t.destroy());
     this.labels = [];
+    if (this.cinematic && ["intro", "ending"].includes(this.phase)) {
+      this.groundContact?.clear();
+      this.roadWash?.clear();
+      this.schoolWear?.clear();
+      this.sceneSurround?.clear();
+      this.rect(0, 0, 320, 240, 0x10191f);
+      this.cinematicArt?.render(this.cinematic);
+      if (this.workshop) drawWorkshop(this);
+      this.syncPlayerUI?.();
+      return;
+    }
     if (
       !this.usesHanounaArt() &&
       !this.usesNewSchoolArt() &&
@@ -4471,7 +4573,7 @@ class Game extends Phaser.Scene {
       this.txt(45, 25, "TECHNOPROF", 29, "#e6be65");
       this.txt(55, 61, "PHYSIQUE APPLIQUEE", 13);
       if (this.phase === "title") {
-        this.txt(39, 103, "3 AFFECTATIONS. 2 SERVICES REQUIS.", 8, "#ede0b8");
+        this.txt(39, 103, "3 AFFECTATIONS. 3 SERVICES REQUIS.", 8, "#ede0b8");
         this.txt(42, 121, "UN LIVRE. UNE JOURNEE A TENIR.", 8, "#ede0b8");
         this.rect(48, 145, 225, 18, 0x142523);
         this.txt(
@@ -4491,7 +4593,7 @@ class Game extends Phaser.Scene {
             : undefined;
         const maintained = i1Result
           ? i1Result.outcome === "success"
-          : this.won >= 2;
+          : campaignWon(this.won, this.runPolicy);
         this.txt(
           33,
           84,
@@ -4519,7 +4621,7 @@ class Game extends Phaser.Scene {
           153,
           i1Result
             ? `ESSAI D'UNE AFFECTATION / NAVIGATION ${this.navigationRevision}`
-            : this.won >= 2
+            : campaignWon(this.won, this.runPolicy)
               ? "MOYENS JUGES SUFFISANTS. RECONDUCTION."
               : "LES CONTRAINTES NE SAURAIENT EXCUSER.",
           8,
@@ -4881,7 +4983,10 @@ class Game extends Phaser.Scene {
     panel.fillRect(14, 13, 292, 1);
     panel.fillStyle(0x854538);
     panel.fillRect(14, 16, 3, 16);
-    const title = "AFFECTATION NON ASSUREE";
+    const title =
+      this.runPolicy === "three-required"
+        ? "JOURNEE INTERROMPUE"
+        : "AFFECTATION NON ASSUREE";
     bitmap(
       panel,
       Math.round(160 - bitmapWidth(title, 2) / 2),

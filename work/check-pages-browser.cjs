@@ -143,6 +143,12 @@ async function main() {
       );
       await activate("Retour");
       await activate("Prendre le service");
+      if (
+        await page
+          .getByRole("button", { name: "Passer l’introduction", exact: true })
+          .isVisible()
+      )
+        await activate("Passer l’introduction");
       await page.waitForFunction(
         () =>
           window.__musicPlayers.some(

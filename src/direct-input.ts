@@ -100,7 +100,9 @@ export class DirectInput {
       !road &&
       s.phase !== "school" &&
       s.phase !== "course" &&
-      s.phase !== "fail"
+      s.phase !== "fail" &&
+      s.phase !== "intro" &&
+      s.phase !== "ending"
     )
       return false;
     if (road && y > 175) return false;
@@ -157,6 +159,10 @@ export class DirectInput {
     if (this.blocked()) return;
     const s = this.host;
     s.pointerMode = true;
+    if (s.phase === "intro" || s.phase === "ending") {
+      this.pulse("X");
+      return;
+    }
     if (s.phase === "course") {
       if (s.age > 0.3) this.pulse("CONTINUE");
       return;

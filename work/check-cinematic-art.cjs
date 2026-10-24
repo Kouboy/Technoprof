@@ -1,0 +1,96 @@
+const fs = require("node:fs"),
+  vm = require("node:vm"),
+  assert = require("node:assert/strict");
+const strip = (s) =>
+  s
+    .replace(/import[\s\S]*?from\s+['"][^'"]+['"];?/g, "")
+    .replace(/export /g, "");
+const bytes = fs.readFileSync("art/cinematics-2026-10-24/storyboard-atlas.png");
+const payload = JSON.parse(
+  fs.readFileSync("src/cinematic-data.ts", "utf8").match(/= ("[^"]+")/)[1],
+);
+assert.deepEqual(
+  Buffer.from(payload.split(",")[1], "base64"),
+  bytes,
+  "atlas original bytes preserved",
+);
+const width = bytes.readUInt32BE(16),
+  height = bytes.readUInt32BE(20),
+  frames = [];
+const texture = {
+  getSourceImage: () => ({ width, height }),
+  add: (id, _source, x, y, w, h) => frames.push({ id, x, y, w, h }),
+  setFilter() {},
+};
+const image = {
+  setDepth() {
+    return this;
+  },
+  setDisplaySize(w, h) {
+    this.w = w;
+    this.h = h;
+    return this;
+  },
+  setVisible(v) {
+    this.visible = v;
+    return this;
+  },
+  setFrame(f) {
+    this.frame = f;
+    return this;
+  },
+  setAlpha(a) {
+    this.alpha = a;
+    return this;
+  },
+};
+const rects=[];
+const graphics = {
+  setDepth() {
+    return this;
+  },
+  fillStyle() {},
+  fillRect(x,y,w,h) {rects.push({x,y,w,h});},
+  clear() {},
+};
+const scope = { CINEMATIC_DATA: payload };
+vm.createContext(scope);
+vm.runInContext(
+  require("node:module").stripTypeScriptTypes(
+    strip(fs.readFileSync("src/cinematic.ts", "utf8")) +
+      "\n" +
+      strip(fs.readFileSync("src/cinematic-art.ts", "utf8")),
+  ) + ";globalThis.api={CinematicArt,CinematicSequence};",
+  scope,
+);
+const art = new scope.api.CinematicArt({
+  textures: { get: () => texture },
+  add: { graphics: () => graphics, image: () => image },
+});
+assert.equal(frames.length, 11);
+for (const f of frames) {
+  assert([f.x, f.y, f.w, f.h].every(Number.isInteger));
+  assert(
+    f.x >= 4 && f.y >= 4 && f.x + f.w <= width - 4 && f.y + f.h <= height - 4,
+  );
+  assert(f.w > 0 && f.h > 0);
+}
+for (const kind of ["intro", "ending"]) {
+  const s = new scope.api.CinematicSequence(kind);
+  while (!s.done) {
+    s.tick(0.6, false);
+    art.render(s);
+    assert(image.visible);
+    assert.equal(image.frame, String(s.frame));
+    assert.equal(image.alpha, 1);
+    s.advance();
+  }
+}
+art.hide();
+assert(!image.visible);
+assert.equal(image.w, 212);
+assert.equal(image.h, 158);
+for(const r of rects)assert(r.x>=0&&r.y>=0&&r.x+r.w<=320&&r.y+r.h<=240,'cinematic uses the same 320x240 logical camera coordinates');
+console.log(
+  "PASS illustrated animatic: original atlas bytes, eleven bounded integer crops, centered panels and visibility cleanup",
+);

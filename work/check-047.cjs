@@ -41,6 +41,7 @@ if(fs.existsSync('src/title-screen.ts')) {
  const strip=s=>s.replace(/import[\s\S]*?from\s+['"][^'"]+['"];?/g,'').replace(/export /g,'');
  vm.runInContext(ts('const TITLE_DATA="data:image/png;base64,";'+strip(lettering)+strip(fs.readFileSync('src/title-screen.ts','utf8'))),ctx);
 }
+vm.runInContext(ts(fs.readFileSync('src/campaign.ts','utf8').replace(/export /g,'')),ctx);
 vm.runInContext(ts(fs.readFileSync('src/player-experience.ts','utf8').replace(/^import[\s\S]*?from\s+['"][^'"]+['"];?\r?\n/gm,'').replace(/export /g,'')+'\nglobalThis.api={installPlayerExperience,contextualHelp,resultLine};'),ctx);
 const all=(node)=>[node,...node.children.filter(n=>n instanceof Node).flatMap(all)];
 const find=(text)=>all(nodes['player-panel']).find(n=>n.tagName==='BUTTON'&&n.textContent===text);

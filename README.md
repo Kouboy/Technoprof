@@ -18,8 +18,17 @@ Ouvrir **Jouer-Technoprof-Journee-Atelier.html**, puis **Prendre le service**.
 Ce fichier autonome fonctionne sur disque, hors connexion. Il enchaîne les trois
 trajets et les établissements validés : Ormeaux H1, Auguste-Berthelot A3 et
 Trois-Ponts I2. Le journal d’essai réunit toute la journée.
+Sur la branche `codex/three-assignments-cinematics`, les trois affectations doivent
+réussir : le premier échec interrompt la journée, et recommencer repart du début.
+Cette passe locale ajoute une introduction et une conclusion illustrées muettes,
+encore provisoires. F/X, Entrée, Espace ou un toucher avancent les images ;
+l’introduction peut être passée. Les deux musiques de cinématique restent à composer.
+GitHub Pages conserve la version publiée pendant cette validation.
 Pour jouer avec la musique sur disque, ouvrir **Jouer-Technoprof-Journee-Musique.html**
 et conserver le dossier `audio/` ainsi que le HTML journée à côté du lanceur.
+
+Pour voir la conclusion sans gagner la journée, ouvrir **Jouer-Labo.html**, choisir
+le scénario **Cinématique / conclusion muette (animatique)**, puis **Rejouer**.
 
 Pour le régénérer depuis les sources (Node.js 24 et npm) :
 
@@ -53,6 +62,7 @@ npm run test:rapide
 | --- | --- |
 | `npm run test:rapide` | Règles principales, conduite, lumières, audio de route et voiture |
 | `npm run test:journee` | Trois trajets + H1/A3/I2, commandes, soins, transitions et bilan à 30/60/120 fps simulés |
+| `npm run test:cinematiques` | Règle 3/3, échec terminal, onze vignettes, pause, cadrage et bruitages |
 | `npm run test:assets` | Catalogue de compilation, images retenues intactes et préchargement des acteurs partagés |
 | `npm run test:musique` | Douze thèmes, priorités, pauses et reprises |
 | `npm run test:sfx` | Samples low-fi, variantes, sols, pas/cinématiques, portes/escaliers et interruptions |

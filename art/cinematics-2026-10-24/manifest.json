@@ -1,0 +1,136 @@
+{
+  "asset": "storyboard-atlas.png",
+  "status": "provisional_animatic_storyboard",
+  "generated_with": "built-in image_gen",
+  "source_reference": "../title-2026-10-23/apercu-titre.png",
+  "original_unchanged": true,
+  "sha256": "F63E9DC36FBBB508618CC893635C92B6201EFEE62B92B5662A6F4D140C99D953",
+  "width": 1672,
+  "height": 941,
+  "columns": 4,
+  "rows": 3,
+  "ordering": "row-major",
+  "cell_width": 418,
+  "cell_height": 313.6666666666667,
+  "recommended_sampling": {
+    "formula": "sx=(index%4)*width/4; sy=floor(index/4)*height/3; sw=width/4; sh=height/3",
+    "optional_inset_pixels": 4,
+    "reason": "Thin painted black seams; 941 height is not divisible by 3. Fractional source rectangles or normalized UVs avoid accumulating a row offset."
+  },
+  "observed_seam_bands": {
+    "vertical": [
+      [
+        416,
+        420
+      ],
+      [
+        834,
+        838
+      ],
+      [
+        1252,
+        1256
+      ]
+    ],
+    "horizontal": [
+      [
+        312,
+        316
+      ],
+      [
+        625,
+        628
+      ]
+    ]
+  },
+  "panels": [
+    {
+      "index": 0,
+      "row": 0,
+      "column": 0,
+      "scene": "cold dawn: old professor wakes in bed, mobile 6:10"
+    },
+    {
+      "index": 1,
+      "row": 0,
+      "column": 1,
+      "scene": "hurried coffee and coat in apartment entry, textbook, keys and beige car"
+    },
+    {
+      "index": 2,
+      "row": 0,
+      "column": 2,
+      "scene": "night: marking exam papers at desk"
+    },
+    {
+      "index": 3,
+      "row": 0,
+      "column": 3,
+      "scene": "night: removes glasses and rubs eyes"
+    },
+    {
+      "index": 4,
+      "row": 1,
+      "column": 0,
+      "scene": "turns towards closed door at sound"
+    },
+    {
+      "index": 5,
+      "row": 1,
+      "column": 1,
+      "scene": "young rested lookalike visitor in open doorway"
+    },
+    {
+      "index": 6,
+      "row": 1,
+      "column": 2,
+      "scene": "kind gesture with hands on shoulders and invitation"
+    },
+    {
+      "index": 7,
+      "row": 1,
+      "column": 3,
+      "scene": "new bright equipped French school corridor"
+    },
+    {
+      "index": 8,
+      "row": 2,
+      "column": 0,
+      "scene": "bright classroom, varied pupils, serene teacher and adult aide beside pupil"
+    },
+    {
+      "index": 9,
+      "row": 2,
+      "column": 1,
+      "scene": "old professor startled directly under school bell"
+    },
+    {
+      "index": 10,
+      "row": 2,
+      "column": 2,
+      "scene": "grey morning wake-up over exam papers, mobile 6:10"
+    },
+    {
+      "index": 11,
+      "row": 2,
+      "column": 3,
+      "scene": "solid black"
+    }
+  ],
+  "visual_review": {
+    "passed": [
+      "Twelve cells laid out four by three",
+      "Last cell solid black",
+      "Clear recurring old professor identity and red atom textbook",
+      "Readable 6:10 phones in opening and return",
+      "No captions, dialogue bubbles, titles or scene numbering",
+      "Bell mounted directly above old professor",
+      "Adult teacher and separate adult aide visible near pupils"
+    ],
+    "provisional_limitations": [
+      "Final desk shares exam stacks, mug, lamp and home mood but does not exactly repeat the earlier desk camera composition; a bed/window is visible behind the final wake-up.",
+      "Panel 6 combines shoulders contact with one outstretched arm rather than both hands remaining on the shoulders.",
+      "Pixel-like illustration contains fine shaded detail and is suitable for provisional animatic staging; not a final production pixel asset."
+    ]
+  }
+}

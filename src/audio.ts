@@ -37,6 +37,12 @@ export type SceneSoundContext = {
   outdoor?: boolean;
   arrivalEntry?: "gate" | "door";
   transition?: PassageAudio | null;
+  cinematic?: {
+    kind: string;
+    index: number;
+    age: number;
+    token?: number;
+  } | null;
 };
 type SceneCue = [Material, number, number, string?];
 export const OPENING_CUES: SceneCue[] = [
@@ -126,6 +132,8 @@ export class AudioKit {
   surface: FloorSound = "tile";
   passage?: PassageAudio;
   passagePlayed = new Set<number>();
+  storyKey = "";
+  storyPulse = -1;
   preparing = false;
   voices = new Set<Voice>();
   muted = false;
@@ -597,6 +605,45 @@ export class AudioKit {
       });
     }
     if (phase === "course") this.classroomAge += dt;
+    const story = context.cinematic;
+    const storyKey = story
+      ? (story.token ?? 0) + ":" + story.kind + ":" + story.index
+      : "";
+    if (storyKey !== this.storyKey) {
+      this.stopGroup("cue");
+      this.stopGroup("fx");
+      this.storyKey = storyKey;
+      this.storyPulse = -1;
+    }
+    if (story && (phase === "intro" || phase === "ending")) {
+      const alarm =
+        (story.kind === "intro" && story.index === 0) ||
+        (story.kind === "ending" && story.index === 8);
+      const pulse = alarm ? Math.floor(story.age / 1.6) : 0;
+      if (pulse !== this.storyPulse) {
+        this.storyPulse = pulse; // Muted/paused events are never queued for later.
+        if (!this.muted) {
+          if (alarm && story.age % 1.6 < 0.18) {
+            [0, 0.16, 0.32].forEach((delay) =>
+              this.tone(880, 0.09, 0.035, 880, delay),
+            );
+          } else if (
+            story.kind === "ending" &&
+            story.index === 2 &&
+            story.age < 0.18
+          ) {
+            this.tone(660, 0.25, 0.045, 660);
+            this.tone(523, 0.4, 0.035, 523, 0.24);
+          } else if (
+            story.kind === "ending" &&
+            story.index === 7 &&
+            story.age < 0.18
+          ) {
+            this.play("bell-start", 0, 0.9, 0, "cue");
+          }
+        }
+      }
+    }
     const distance = context.distance ?? Infinity;
     const interval =
       ["receive", "road"].includes(phase) &&
