@@ -1,0 +1,677 @@
+[
+  {
+    "kind": "swing",
+    "take": 0,
+    "file": "swing-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2426,
+    "sha256": "a38b2a1c28d3b7838c055ade39f291bdbe0b2525b19517974fe2409800adb837"
+  },
+  {
+    "kind": "swing",
+    "take": 1,
+    "file": "swing-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2426,
+    "sha256": "8bf3143a016ee4dddb432467eda3ef6515e6b92ffd1caf5cb3f5cc6511d51c6f"
+  },
+  {
+    "kind": "book",
+    "take": 0,
+    "file": "book-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2646,
+    "sha256": "18918a7a198d696855a6a40809d9a127e9dbd8996d5659aa26ec44e22fb7ae63"
+  },
+  {
+    "kind": "book",
+    "take": 1,
+    "file": "book-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2646,
+    "sha256": "2adf06b01936c83df45b6e583aeef5d798774834e6687cae51239603cbc1a743"
+  },
+  {
+    "kind": "book",
+    "take": 2,
+    "file": "book-3.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2646,
+    "sha256": "42001df5c11863c7618e114acf3d09f78a267197151431355608673cb9e1013a"
+  },
+  {
+    "kind": "block",
+    "take": 0,
+    "file": "block-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2205,
+    "sha256": "6de1bf14c9634f246faf948252db1915990bdf4174239fb5d12c8342ac00a278"
+  },
+  {
+    "kind": "block",
+    "take": 1,
+    "file": "block-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2205,
+    "sha256": "ccc8fe023fc997e208114a512691433145dd802d241f30d27d7d3b721dba3ab8"
+  },
+  {
+    "kind": "body",
+    "take": 0,
+    "file": "body-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 3308,
+    "sha256": "3f5cd559c003b964e181c6ee5d8cc3dce577c66ff3d3529021efd5c5bbacbbe9"
+  },
+  {
+    "kind": "body",
+    "take": 1,
+    "file": "body-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 3308,
+    "sha256": "237dab3bf8f76624bd7a98f5648ca71fb7d757f9f621bd8b8a2f13ae331cad53"
+  },
+  {
+    "kind": "defeat",
+    "take": 0,
+    "file": "defeat-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 5512,
+    "sha256": "f1cacc5ad35b0266eb51c716f161279999ccf1000cb85dc04f672c01b1b32462"
+  },
+  {
+    "kind": "defeat",
+    "take": 1,
+    "file": "defeat-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 5512,
+    "sha256": "4f938b748a8a904ee1d001a748855ac21e9036cc9305cbe7b822e252cd64327f"
+  },
+  {
+    "kind": "stamp",
+    "take": 0,
+    "file": "stamp-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2426,
+    "sha256": "94879a7304cd0ae735ee17a4dcc2df282664d018e926e732135d5b265cea1745"
+  },
+  {
+    "kind": "stamp",
+    "take": 1,
+    "file": "stamp-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2426,
+    "sha256": "141c30ed9ffd51431e87cbd3fe3cdd22e6261ef5152661e57304637cfe4338b4"
+  },
+  {
+    "kind": "sweep",
+    "take": 0,
+    "file": "sweep-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 3308,
+    "sha256": "9bc6d1a0f0d15eb7e460b2de9591afd4839a81aa8edd6522ad5f3c789d424a69"
+  },
+  {
+    "kind": "sweep",
+    "take": 1,
+    "file": "sweep-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 3308,
+    "sha256": "5788083724a113e8ed2be001dd02ba9586ae1910b1f74e775fd356a1c772e225"
+  },
+  {
+    "kind": "step",
+    "take": 0,
+    "file": "step-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "0293ac9643b309236605b13d5e5f9f585ff3a7302eb3bc6fbd6d0aa63fbfd869"
+  },
+  {
+    "kind": "step",
+    "take": 1,
+    "file": "step-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "acd0ca7f94776f2c6a16dc7a6a0844c1a9d3844eb641592a110751115ad4b915"
+  },
+  {
+    "kind": "step",
+    "take": 2,
+    "file": "step-3.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "958331097a3cdd72bf64023d1b89480447213a7dc6c0ca4102640b0b07f70efa"
+  },
+  {
+    "kind": "step-wood",
+    "take": 0,
+    "file": "step-wood-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "aca664991e899839844a890bac47fb051c8df2889c9b7f6d24b2d75541c418b6"
+  },
+  {
+    "kind": "step-wood",
+    "take": 1,
+    "file": "step-wood-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "a412a66d751ceeb32d39ddacb89db71e36b87b7ed7479b18c6eeafdd130b6d49"
+  },
+  {
+    "kind": "step-wood",
+    "take": 2,
+    "file": "step-wood-3.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "6950177f17442e74489e09c8a8c73a563e31bb8b4b13b92f84318305709a300d"
+  },
+  {
+    "kind": "step-concrete",
+    "take": 0,
+    "file": "step-concrete-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "69d85196f3914d20410203d36afea6d11022e32faa12cf085b0a070ba72bceee"
+  },
+  {
+    "kind": "step-concrete",
+    "take": 1,
+    "file": "step-concrete-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "8a16f322c291b9805936660e316fcb7a37d3b177e8efdc04c83e4619faed9b7c"
+  },
+  {
+    "kind": "step-concrete",
+    "take": 2,
+    "file": "step-concrete-3.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "b04b1f395c651ad5f75577ce8ea72c2c60854ece385d1700ec58654ed6693ec2"
+  },
+  {
+    "kind": "step-metal",
+    "take": 0,
+    "file": "step-metal-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "e707a36a29e2a6f318ea4abb513499bca0e1419608be1e61fa0c7746bb5684ae"
+  },
+  {
+    "kind": "step-metal",
+    "take": 1,
+    "file": "step-metal-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "5fdfde6fe61ad5c93f576fee6ad8a8977ded7fc254cb0c857f3d4def641ee2fd"
+  },
+  {
+    "kind": "step-metal",
+    "take": 2,
+    "file": "step-metal-3.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "4fad7eac7e2fdbe80050e3dcf650aca9c601b046847a1d7130856eac7dd3e587"
+  },
+  {
+    "kind": "step-gravel",
+    "take": 0,
+    "file": "step-gravel-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "604759b4ed84ec41d2de28224288d85792687591fc401e15a39d3fb8cb0802da"
+  },
+  {
+    "kind": "step-gravel",
+    "take": 1,
+    "file": "step-gravel-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "bd1aef8b205a571a1de62ee0ba754556ec4c6a485b404c908793c70c94b9412d"
+  },
+  {
+    "kind": "step-gravel",
+    "take": 2,
+    "file": "step-gravel-3.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1764,
+    "sha256": "65ffdf46a775a105caf782861c4ceb2f22bcd87114760f9e9b8c19edcb9b9b9f"
+  },
+  {
+    "kind": "stairs",
+    "take": 0,
+    "file": "stairs-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 3087,
+    "sha256": "f9751cd4f4bfc543cdbd6bb12d4789c102a47a33f33abaab9d9a625208006018"
+  },
+  {
+    "kind": "stairs",
+    "take": 1,
+    "file": "stairs-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 3087,
+    "sha256": "b9c34950e018cee796eae014f15a056da39e321df8aa193321df42d303318838"
+  },
+  {
+    "kind": "gate",
+    "take": 0,
+    "file": "gate-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 7938,
+    "sha256": "ebac1d9f67409d48a6ad2206c0f82b96b1ec4a116cad6586aa9e5e9b64efd2cf"
+  },
+  {
+    "kind": "jump",
+    "take": 0,
+    "file": "jump-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1984,
+    "sha256": "269a4d5d924902737c652db31307e95828587a4bfe3af338d4040152e20d4932"
+  },
+  {
+    "kind": "jump",
+    "take": 1,
+    "file": "jump-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1984,
+    "sha256": "2e0b8cd7b2c491e9e40e6b4d3c52ae38de3be4890d0bcbc43a7a1c95c9a32166"
+  },
+  {
+    "kind": "land",
+    "take": 0,
+    "file": "land-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2977,
+    "sha256": "e365be1f909b85a5074e7899e2b56715e86a8df9ab83f4c009ddb1b373032ef0"
+  },
+  {
+    "kind": "land",
+    "take": 1,
+    "file": "land-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2977,
+    "sha256": "ffb728b84fb63b6683a83ba959aa417fdc2056cbfc24e416bb822fda03ab844b"
+  },
+  {
+    "kind": "crumble",
+    "take": 0,
+    "file": "crumble-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 3859,
+    "sha256": "5bf9ab21cc8dbeaeade7f8ff832e59c5df3c181e61664b5bde5ec18b75d789bd"
+  },
+  {
+    "kind": "crumble",
+    "take": 1,
+    "file": "crumble-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 3859,
+    "sha256": "af4ba4c13474dddc147df4fae1e00bed53fd49d3ddc159e43bbe871e45df7d2c"
+  },
+  {
+    "kind": "door",
+    "take": 0,
+    "file": "door-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 9371,
+    "sha256": "f13e0dd103b9e98931a33d05b1b8350f1818ec5079e3ef3988bd1494b2305648"
+  },
+  {
+    "kind": "door",
+    "take": 1,
+    "file": "door-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 9371,
+    "sha256": "7c854f307eced65e57842ad9e8d85e1f331f27ceb16d474e564a07523fb8d236"
+  },
+  {
+    "kind": "car-door",
+    "take": 0,
+    "file": "car-door-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 3528,
+    "sha256": "a94de1c25abbfebac9e6a103313f48a736046bfd0a3ca08a079d0485600a521f"
+  },
+  {
+    "kind": "car-door",
+    "take": 1,
+    "file": "car-door-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 3528,
+    "sha256": "f2575a659841c7e98ea39ba051ba54e4f727d9eb07d6e2e439fe56b91d76ea88"
+  },
+  {
+    "kind": "handle",
+    "take": 0,
+    "file": "handle-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1984,
+    "sha256": "a0b2e023c47153a4e5a147e60ccc0e0f31fa4ef065196ba8934eea9bc132d457"
+  },
+  {
+    "kind": "handle",
+    "take": 1,
+    "file": "handle-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1984,
+    "sha256": "f6b12991bd73261b42b3d495fc46f5bc9d79ede8e717f98cc69aafbefa074ce5"
+  },
+  {
+    "kind": "stall",
+    "take": 0,
+    "file": "stall-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 9922,
+    "sha256": "3b7329d25754ed2eb64aa6b36133b60bafba0e8241f897765efcd326bb61938c"
+  },
+  {
+    "kind": "stall",
+    "take": 1,
+    "file": "stall-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 9922,
+    "sha256": "2190b548a96427ee8105f049475964640633d5fcee20cd498488d064f7491db4"
+  },
+  {
+    "kind": "cloth",
+    "take": 0,
+    "file": "cloth-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 7166,
+    "sha256": "e3d2b7548d350bc19bf1468eef07b4bd0910f756a18f992a490e04e0f956dd93"
+  },
+  {
+    "kind": "cloth",
+    "take": 1,
+    "file": "cloth-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 7166,
+    "sha256": "cf66b3fcc2799498498b94760bda5cfbc996a9e8e09256825f099f6e6d997974"
+  },
+  {
+    "kind": "bell-start",
+    "take": 0,
+    "file": "bell-start-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 12679,
+    "sha256": "01a90abc7d3c1e015b5225a916cbba1a6ef0c567e5ef1b5d0993e955e8feb453"
+  },
+  {
+    "kind": "bell-end",
+    "take": 0,
+    "file": "bell-end-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 14884,
+    "sha256": "ddf8878befabf7cc207866209e75f1581f7e077de890093b2673d535ee532072"
+  },
+  {
+    "kind": "chair",
+    "take": 0,
+    "file": "chair-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 9371,
+    "sha256": "5bddaf7aabbc474905f5dad64fd559e209fc2b90b7b6672d0b53d7784b774f12"
+  },
+  {
+    "kind": "chair",
+    "take": 1,
+    "file": "chair-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 9371,
+    "sha256": "dae59a7245b2858317e03e4188b1729e9a3671f02173d37ddabc74e9069d54b2"
+  },
+  {
+    "kind": "paper",
+    "take": 0,
+    "file": "paper-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 5512,
+    "sha256": "b545e9271f30a23617dd6adacc7941e92153c13e8254580071109be5459a8633"
+  },
+  {
+    "kind": "paper",
+    "take": 1,
+    "file": "paper-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 5512,
+    "sha256": "905ddf5357944ed5594d589f896161afa4a1bc5bafda823183e415469e8ae4a3"
+  },
+  {
+    "kind": "talk",
+    "take": 0,
+    "file": "talk-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 474,
+    "sha256": "8e2f6d672a795a4630fdbf5f7fed81646e8a0cda417c1234bdb0404aff4c8435"
+  },
+  {
+    "kind": "chalk",
+    "take": 0,
+    "file": "chalk-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 11576,
+    "sha256": "11525631c968dea6b832f0003690a077e3282dea5cf3afd0f67e48c327b282e0"
+  },
+  {
+    "kind": "chalk",
+    "take": 1,
+    "file": "chalk-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 11576,
+    "sha256": "27c66e90b8324d5725b94ae0a9744983078b8ef184bb7849715a71d2cc442ccb"
+  },
+  {
+    "kind": "rattle",
+    "take": 0,
+    "file": "rattle-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2205,
+    "sha256": "10a5628f13ac55f691b7af97fd5470b05b515dd3566b30d6d5647b0c98dcc1f0"
+  },
+  {
+    "kind": "rattle",
+    "take": 1,
+    "file": "rattle-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2205,
+    "sha256": "0c373b20d304452548dd2b9bcd93e4c7c674bc661e9b192b07a2ff46961fc962"
+  },
+  {
+    "kind": "impact",
+    "take": 0,
+    "file": "impact-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 6836,
+    "sha256": "3c39d4beda8da76924b39b057e429d83485d2e7a22ec0140ab753dc54ab7bfff"
+  },
+  {
+    "kind": "impact",
+    "take": 1,
+    "file": "impact-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 6836,
+    "sha256": "643b8259427aedf0f84514187fa01a594edcb2dd66d94108dc786f04c4a66fcb"
+  },
+  {
+    "kind": "skid",
+    "take": 0,
+    "file": "skid-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2646,
+    "sha256": "59b876aaf4cba3f277932c99be9e2e5ca7e08346f2d0b0766c6485b6a5f7e651"
+  },
+  {
+    "kind": "skid",
+    "take": 1,
+    "file": "skid-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2646,
+    "sha256": "c9127efbc3e9c583ab7dd645941c376f673288ba854b9830c4d3f4ed7d4c6ccb"
+  },
+  {
+    "kind": "gravel",
+    "take": 0,
+    "file": "gravel-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2205,
+    "sha256": "8bb020b172ff4c10db9dd31df34a33f9c140bcd8ba5f5d49e4c940b692f906dd"
+  },
+  {
+    "kind": "gravel",
+    "take": 1,
+    "file": "gravel-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 2205,
+    "sha256": "357220d303e470bfbd1d24e5e46e7b353925d29df3472c4240d266292a0016e4"
+  },
+  {
+    "kind": "pass",
+    "take": 0,
+    "file": "pass-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 8820,
+    "sha256": "5b0f3988ba9427c1a42e37e0b75f0d51796fe7102c99e57f6813f8c292bd64a0"
+  },
+  {
+    "kind": "pass",
+    "take": 1,
+    "file": "pass-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 8820,
+    "sha256": "db77233b6201069ce4221776e9f3852b15f8fdb9cd8d61494a863e9b106f4d3a"
+  },
+  {
+    "kind": "truck",
+    "take": 0,
+    "file": "truck-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 11576,
+    "sha256": "1167e0ee31428e1c339de95e39c8f6b17c0527888b13ca1da8aac9975b9f54ad"
+  },
+  {
+    "kind": "truck",
+    "take": 1,
+    "file": "truck-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 11576,
+    "sha256": "ce911f8d24a31512456001ad757e6c710f89f113a1ec9d45bfd70595c328fe3f"
+  },
+  {
+    "kind": "drip",
+    "take": 0,
+    "file": "drip-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 4190,
+    "sha256": "d767ad4ec75dde1d43f4a38df23d9d3a8ef97224a38a7815ec455df100fd557b"
+  },
+  {
+    "kind": "drip",
+    "take": 1,
+    "file": "drip-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 4190,
+    "sha256": "c1f5c55aa34ad9d62af4c5abba7713d7375566a3dcf61c6a9f3346cb9b9b345e"
+  },
+  {
+    "kind": "relay",
+    "take": 0,
+    "file": "relay-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1544,
+    "sha256": "a6fb254d3107930dcf817aa15b0afdd2326ce920aac2eb0ddcb72cd9e14a087b"
+  },
+  {
+    "kind": "relay",
+    "take": 1,
+    "file": "relay-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 1544,
+    "sha256": "b0293dd87ce0923d9527a27aa25d0212ac87090a2fa25e4d823f4918291f5aae"
+  },
+  {
+    "kind": "data",
+    "take": 0,
+    "file": "data-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 24806,
+    "sha256": "cc663ff46f40f097906416495b814704119cd0c1de199d8ea1aa1105decb8b70"
+  }
+]

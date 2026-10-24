@@ -55,6 +55,7 @@ npm run test:rapide
 | `npm run test:journee` | Trois trajets + H1/A3/I2, commandes, soins, transitions et bilan à 30/60/120 fps simulés |
 | `npm run test:assets` | Catalogue de compilation, images retenues intactes et préchargement des acteurs partagés |
 | `npm run test:musique` | Douze thèmes, priorités, pauses et reprises |
+| `npm run test:sfx` | Samples low-fi, variantes, sols, pas/cinématiques, portes/escaliers et interruptions |
 | `npm run test:pages` | Export web : images inchangées et douze WAV |
 | `npm run build:pages` | Journée musicale pour Pages, puis vérification du contenu de `dist/` |
 | `npm run test:retouches` | Nouveaux délais/dégâts, radio et claquement de portière |
@@ -76,6 +77,7 @@ les répliques. La souris et le toucher utilisent directement la scène.
 
 - `src/` : jeu, rendu, données et images intégrées.
 - `art/` : sources artistiques.
+- `audio/sfx-2026-10-24/` : palette SFX originale, prises WAV et écoute ; les mêmes PCM sont intégrés au jeu pour le lancement sur disque.
 - [docs/](docs/README.md) : documents d’atelier, audits et historique du design.
 - `tools/` : outils maintenus de rangement et de profilage.
 - [work/](work/README.md) : tests, pilotes et anciens outils de fabrication.
@@ -98,3 +100,8 @@ Pour vérifier le build sous `/Technoprof/` dans Chromium, Firefox et une fenêt
 tactile mobile, lancer `node work/check-pages-browser.cjs` avec Playwright
 disponible (`PLAYWRIGHT_MODULE` peut désigner son module installé). Le même test
 accepte `PAGES_URL` pour contrôler le déploiement public.
+
+La palette SFX se régénère avec `python tools/compose-sfx.py` (NumPy requis).
+Les gains restent dans `src/audio-materials.ts`, les surfaces et contacts de pas
+dans `src/soundscape.ts`, les séquences et le mix dans `src/audio.ts`.
+`audio/sfx-2026-10-24/Ecouter-SFX.html` permet d'écouter chaque prise séparément.

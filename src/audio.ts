@@ -7,6 +7,8 @@ import {
   type Material,
 } from "./audio-materials";
 import { DRIVE } from "./driving";
+import { sfxTakes } from "./sfx-samples";
+import { WALK_SOUND, type FloorSound, type PassageAudio } from "./soundscape";
 type Voice = {
   source: AudioBufferSourceNode | OscillatorNode;
   nodes: AudioNode[];
@@ -31,6 +33,10 @@ export type SceneSoundContext = {
   road?: boolean;
   reason?: string | null;
   distance?: number;
+  surface?: FloorSound;
+  outdoor?: boolean;
+  arrivalEntry?: "gate" | "door";
+  transition?: PassageAudio | null;
 };
 type SceneCue = [Material, number, number, string?];
 export const OPENING_CUES: SceneCue[] = [
@@ -46,7 +52,19 @@ export function sceneCues(
 ): SceneCue[] {
   if (phase === "opening") return OPENING_CUES;
   if (phase === "arrival")
-    return [["car-door", DRIVE.teacherExitSeconds, 0.95]];
+    return [
+      ["car-door", DRIVE.teacherExitSeconds, 0.95],
+      ...Array.from({ length: 10 }, (_, i): SceneCue => [
+        "step",
+        2.48 + i * (2 / 7),
+        0.65 - i * 0.035,
+      ]),
+      [
+        context.arrivalEntry === "gate" ? "gate" : "door",
+        context.arrivalEntry === "gate" ? 3.65 : 4.55,
+        0.6,
+      ],
+    ];
   if (phase === "course") return [["bell-start", 0, 0.75, "classroom"]];
   if (phase === "later") return [["bell-end", 0, 0.75, "classroom"]];
   if (phase !== "fail") return [];
@@ -102,8 +120,12 @@ export class AudioKit {
   roomSend?: GainNode;
   ambienceSend?: GainNode;
   loops: Partial<Record<Material, Loop>> = {};
-  buffers = new Map<Material, AudioBuffer>();
-  samples = new Map<Material, Float32Array>();
+  buffers = new Map<string, AudioBuffer>();
+  samples = new Map<string, Float32Array>();
+  takes = new Map<Material, number>();
+  surface: FloorSound = "tile";
+  passage?: PassageAudio;
+  passagePlayed = new Set<number>();
   preparing = false;
   voices = new Set<Voice>();
   muted = false;
@@ -205,16 +227,18 @@ export class AudioKit {
     }
     void this.context.resume().catch(() => {});
   }
-  buffer(kind: Material) {
+  buffer(kind: Material, take = 0) {
     const c = this.context!;
-    let b = this.buffers.get(kind);
+    const key = take ? kind + ":" + take : kind;
+    let b = this.buffers.get(key);
     if (!b) {
       const pcm =
-        this.samples.get(kind) ?? makeMaterial(kind, AUDIO.sampleRate);
-      this.samples.set(kind, pcm);
+        this.samples.get(key) ??
+        makeMaterial(kind, AUDIO.sampleRate, 5301 + take);
+      this.samples.set(key, pcm);
       b = c.createBuffer(1, pcm.length, AUDIO.sampleRate);
       b.getChannelData(0).set(pcm);
-      this.buffers.set(kind, b);
+      this.buffers.set(key, b);
     }
     return b;
   }
@@ -274,8 +298,10 @@ export class AudioKit {
     offset = 0,
   ) {
     if (!this.context || !this.master || this.muted || this.paused) return;
+    const take = this.takes.get(kind) ?? 0;
+    this.takes.set(kind, take + 1);
     const c = this.context,
-      buffer = this.buffer(kind),
+      buffer = this.buffer(kind, take % sfxTakes(kind)),
       start = c.currentTime + Math.max(0, delay);
     if (offset >= buffer.duration) return;
     const source = c.createBufferSource(),
@@ -315,6 +341,9 @@ export class AudioKit {
     source.stop(start + duration + 0.004);
   }
   fx(kind: Material, side = 0, weight = 1) {
+    if (kind === "step" && this.surface !== "tile")
+      kind = ("step-" + this.surface) as Material;
+    if (kind.startsWith("step") && this.careRoom) weight *= WALK_SOUND.quiet;
     this.play(
       kind,
       side,
@@ -459,6 +488,8 @@ export class AudioKit {
     if (!this.context || !this.master) return;
     const c = this.context,
       wasPaused = this.paused;
+    this.surface =
+      phase === "arrival" ? "concrete" : (context.surface ?? "tile");
     this.paused = paused;
     this.master.gain.setTargetAtTime(
       this.muted || paused ? 0 : AUDIO.master * this.effectsVolume,
@@ -492,6 +523,8 @@ export class AudioKit {
       this.classroomAge = 0;
       this.sequenceAge = 0;
       this.sequencePlayed.clear();
+      this.passage = undefined;
+      this.passagePlayed.clear();
       if (phase === "course") this.classroom();
       if (phase === "receive") {
         this.play("relay", 0, 1);
@@ -509,13 +542,60 @@ export class AudioKit {
       const offset = Math.max(0, age - at);
       if (
         age >= at &&
-        (!this.sequencePlayed.has(index) || (wasPaused && kind !== "car-door"))
+        (!this.sequencePlayed.has(index) ||
+          (wasPaused &&
+            phase !== "arrival" &&
+            !["car-door", "step", "gate"].includes(kind)))
       ) {
         this.sequencePlayed.add(index);
-        if (offset < FOLEY[kind][0])
-          this.play(kind, 0.2, weight, 0, group ?? "fx", 1, offset);
+        const sample: Material =
+          kind === "step" && this.surface !== "tile"
+            ? (("step-" + this.surface) as Material)
+            : kind;
+        if (offset < FOLEY[sample][0])
+          this.play(sample, 0.2, weight, 0, group ?? "fx", 1, offset);
       }
     });
+    const transition = phase === "school" ? context.transition : null;
+    if (transition) {
+      if (transition !== this.passage) {
+        this.stopGroup("movement");
+        this.passage = transition;
+        this.passagePlayed.clear();
+      }
+      const cues: SceneCue[] =
+        transition.sound === "stairs"
+          ? [["stairs", 0, 0.8]]
+          : transition.sound === "door"
+            ? [
+                ["handle", 0, 0.55],
+                ["door", 0.035, 0.38],
+              ]
+            : [
+                ["step", 0.025, 0.55],
+                ["step", 0.17, 0.48],
+              ];
+      cues.forEach(([kind, at, gain], i) => {
+        if (transition.age >= at && !this.passagePlayed.has(i)) {
+          this.passagePlayed.add(i);
+          const offset = transition.age - at;
+          const sample: Material =
+            kind === "step" && transition.surface !== "tile"
+              ? (("step-" + transition.surface) as Material)
+              : kind;
+          if (offset < FOLEY[sample][0])
+            this.play(
+              sample,
+              0,
+              gain * (care ? WALK_SOUND.quiet : 1),
+              0,
+              "movement",
+              1,
+              offset,
+            );
+        }
+      });
+    }
     if (phase === "course") this.classroomAge += dt;
     const distance = context.distance ?? Infinity;
     const interval =
@@ -550,7 +630,7 @@ export class AudioKit {
       this.room = room;
       this.pulse = 0;
     }
-    const outdoor = room === 0;
+    const outdoor = context.outdoor ?? room === 0;
     this.loops.room?.gain.gain.setTargetAtTime(
       school
         ? care

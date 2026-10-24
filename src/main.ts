@@ -124,6 +124,14 @@ import { DAY_ONLY, PUBLIC_PLAYTEST } from "./asset-profile";
 import { FailureArt, failureNotice } from "./interface-presentation";
 import { MusicKit } from "./music";
 import {
+  floorSound,
+  passageSound,
+  walkContacts,
+  WALK_SOUND,
+  type FloorSound,
+  type PassageSound,
+} from "./soundscape";
+import {
   GAMEFEEL,
   DEFAULT_GAMEFEEL,
   GAMEFEEL_STATIONS,
@@ -143,7 +151,9 @@ class Game extends Phaser.Scene {
   gamefeelStation: GamefeelStation = "encounter";
   gamefeelTuning() {
     return GAMEFEEL[
-      this.workshop && this.gamefeelLab ? this.gamefeelVariant : DEFAULT_GAMEFEEL
+      this.workshop && this.gamefeelLab
+        ? this.gamefeelVariant
+        : DEFAULT_GAMEFEEL
     ];
   }
   traceControl(action: string, outcome: string, reason = "") {
@@ -489,7 +499,6 @@ class Game extends Phaser.Scene {
   audio = new AudioKit();
   bossIntro = 0;
   walkClock = 0;
-  stepClock = 0;
   impact = 0;
   impactX = 0;
   impactY = 132;
@@ -503,6 +512,8 @@ class Game extends Phaser.Scene {
     spawn: number;
     age: number;
     swapped: boolean;
+    sound: PassageSound;
+    surface: FloorSound;
   } | null = null;
   exitHeld = false;
   dialogueSoundWait = 0;
@@ -1453,7 +1464,6 @@ class Game extends Phaser.Scene {
       spawn: this.px,
       introduction: this.encounterTime,
     });
-    this.audio.fx("step", (this.px - 160) / 190, 0.8);
     if (
       this.recoveryProfile() &&
       !!this.roomSpec()?.care &&
@@ -1493,7 +1503,16 @@ class Game extends Phaser.Scene {
     this.exitHeld = this.keys.UP.isDown || this.keys.DOWN.isDown;
     this.direct?.cancel();
     this.attackBuffer = 0;
-    this.roomTransition = { target, spawn, age: 0, swapped: false };
+    const destination = roomSpec(this.mission, target, this.navigationSpec());
+    const passage = this.roomSpec()?.exits?.find((e) => e.target === target);
+    this.roomTransition = {
+      target,
+      spawn,
+      age: 0,
+      swapped: false,
+      sound: passageSound(this.roomSpec()!, destination, !!passage?.edge),
+      surface: floorSound(this.mission, destination),
+    };
   }
 
   roomTransitionAlpha() {
@@ -1598,6 +1617,12 @@ class Game extends Phaser.Scene {
     )
       this.freshKey = true;
   }
+  walkSound(dt: number) {
+    const before = this.walkClock;
+    this.walkClock += dt * WALK_SOUND.phasePerSecond;
+    if (walkContacts(before, this.walkClock))
+      this.audio.fx("step", (this.px - 160) / 190);
+  }
   sceneSoundContext() {
     return {
       age: this.age,
@@ -1605,6 +1630,10 @@ class Game extends Phaser.Scene {
       road: this.brokenRoad,
       reason: this.failureReason,
       distance: this.missionSpec().meters - this.road,
+      surface: floorSound(this.mission, this.roomSpec()),
+      outdoor: (this.roomSpec()?.frame ?? this.room) === 0,
+      arrivalEntry: this.mission === 0 ? ("gate" as const) : ("door" as const),
+      transition: this.roomTransition,
     };
   }
   motorRunning() {
@@ -1635,7 +1664,7 @@ class Game extends Phaser.Scene {
       value,
       this.remaining,
       0,
-      this.roomSpec()?.frame === 0 ? 0 : this.room,
+      this.room,
       this.encounterTime > 0 ||
         this.schoolFade > 0 ||
         !!this.roomTransition ||
@@ -2950,12 +2979,7 @@ class Game extends Phaser.Scene {
         this.attack === 0 &&
         Math.abs(this.px - previousX) > 0.01
       ) {
-        this.walkClock += dt * 13;
-        this.stepClock += dt;
-        if (this.stepClock > 0.27) {
-          this.stepClock = 0;
-          this.audio.fx("step", (this.px - 160) / 190);
-        }
+        this.walkSound(dt);
       }
       if (jumpPressed && this.py === PLAY.floor && !recovering) {
         this.jumpBuffer = 0;
@@ -3935,7 +3959,7 @@ class Game extends Phaser.Scene {
       const d = target - this.px;
       this.face = Math.sign(d) || this.face;
       this.px += Math.sign(d) * Math.min(Math.abs(d), INFIRMARY.walk * dt);
-      this.walkClock += dt * 13;
+      if (Math.abs(d) > 0.01) this.walkSound(dt);
       if (Math.abs(target - this.px) < 0.01) {
         if (scene.state === "enter") {
           scene.state = "dialogue";
