@@ -33,6 +33,8 @@ locale 0.61 conserve son SHA256. La review a conduit à corriger Start pendant u
 La popup HTML actuelle ne maîtrise pas les boutons système. Proposition : ouvrir
 le même jeu dans Edge/Chrome en mode application via Jouer.cmd, sans nouveau
 moteur. Le rendu logique reste 640×480 ; pas de surcoût de simulation attendu.
-Le choix est en attente après la question de Nicolas sur les performances ; ne
-pas modifier son lanceur natif avant son accord. Une comparaison sur le même
-navigateur évite de confondre effet du mode fenêtre et différences entre moteurs.
+Nicolas a choisi Chrome après ses essais comparatifs. `Jouer.cmd` doit ouvrir
+directement le HTML journée avec musique dans Chrome en mode application ;
+aucun changement au navigateur par défaut ni installation. Conserver le repli
+HTML si Chrome manque. Vérifier les chemins contenant des espaces, le lancement
+réel et les boutons système, puis l’agrandissement en 4:3. Publication suspendue.

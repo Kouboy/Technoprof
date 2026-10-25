@@ -43,6 +43,8 @@ pendant le playtest matériel. Les rapports natifs vont dans
 
 ## Fenêtre native
 
-Le lanceur `Jouer.cmd` reste inchangé : le choix d’un lancement Edge/Chrome en
-mode application attend la réponse de Nicolas. Les boutons système de la popup
-actuelle dépendent du navigateur. La publication reste suspendue.
+Nicolas a choisi Chrome après ses essais. `Jouer.cmd` ouvre le HTML journée avec
+musique dans Chrome en mode application, avec les boutons système et sans
+onglets. Il cherche les installations Windows habituelles ; sans Chrome, il
+conserve le lanceur HTML dans le navigateur par défaut. Aucun changement de
+navigateur par défaut ni installation. La publication reste suspendue.
