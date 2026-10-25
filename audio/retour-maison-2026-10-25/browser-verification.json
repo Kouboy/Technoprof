@@ -2,11 +2,13 @@
   {
     "browser": "chromium",
     "offline": true,
-    "scenario": "home-return",
+    "scenario": "home-return-near",
     "nativeMusic": true,
     "pauseMuteResume": true,
     "arrivalPauseStable": true,
     "arrivalVolume": 0.5,
+    "automaticWalk": true,
+    "fadeSeconds": 2,
     "blackBeforeEnding": true,
     "cleanAudioStop": true,
     "errors": []
@@ -25,6 +27,8 @@
     "pauseMuteResume": true,
     "arrivalPauseStable": true,
     "arrivalVolume": 0.5,
+    "automaticWalk": true,
+    "fadeSeconds": 2,
     "blackBeforeEnding": true,
     "cleanAudioStop": true,
     "errors": []

@@ -17,9 +17,10 @@ function lastClass(){const t=createGame({policy:'three-required'}),g=t.g;g.valid
  g.road=2999.9;g.speed=80;t.advance(.1);assert.equal(g.phase,'homeArrival');
  g.setPaused(true);const age=g.age;t.advance(10);assert.equal(g.age,age);g.setPaused(false);
  t.advance(1.9);assert.equal(g.phase,'homeArrival');assert.equal(g.speed,0);assert(!g.motorRunning());
- t.advance(1.12);assert.equal(g.phase,'homeArrival','hold a genuinely black image before the ending');
+ t.advance(1.12);assert.equal(g.phase,'homeArrival','the homecoming continues after parking');
  assert(!g.session.missionTiming[4],'return time must not create a fourth assignment');
- t.advance(.3);assert.equal(g.phase,'ending');assert.equal(g.cinematic.index,0);assert.equal(g.remaining,timer);assert.equal(JSON.stringify(g.results),results);
+ t.advance(.3);assert.equal(g.phase,'homeArrival','the teacher must still be walking, not already inside the final montage');
+ t.advance(9.1);assert.equal(g.phase,'ending');assert.equal(g.cinematic.index,0);assert.equal(g.remaining,timer);assert.equal(JSON.stringify(g.results),results);
  assert(g.session.events.some(e=>e.kind==='home-return-start'));assert(g.session.events.some(e=>e.kind==='home-return-end'));
  g.skipCinematic();assert.equal(g.phase,'report');g.startDay(false);assert.equal(g.phase,'free');assert.equal(g.mission,0);assert.equal(g.vehicle,100);
 }
@@ -27,7 +28,7 @@ for(const fps of [30,60,120]){
  const t=lastClass(),g=t.g;g.obstacles=[];g.car=0;g.keys.UP.isDown=true;
  for(let i=0;i<fps*120&&g.phase==='home';i++)t.step(1000/fps);
  assert.equal(g.phase,'homeArrival');assert(Math.abs(g.road-3000)<.001);assert.equal(g.won,3);
- t.advance(3.4,fps);assert.equal(g.phase,'ending');
+ t.advance(12.3,fps);assert.equal(g.phase,'ending');
 }
 {
  const t=lastClass(),g=t.g;g.keys.DOWN.isDown=true;t.advance(3);assert.equal(g.speed,0);const road=g.road;t.advance(1);assert.equal(g.road,road);

@@ -39,9 +39,6 @@ export const HOME_DRIVE = {
   cruiseSpeed: 80,
   cruiseResponse: 2,
   trafficCount: 6,
-  parkingSeconds: 1.8,
-  fadeSeconds: 1.2,
-  blackSeconds: 0.25,
 };
 export function isHomePhase(phase: string) {
   return phase === "home" || phase === "homeArrival";

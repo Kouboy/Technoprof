@@ -1,0 +1,23 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const c={};vm.createContext(c);vm.runInContext(require('node:module').stripTypeScriptTypes(fs.readFileSync('src/home-arrival.ts','utf8').replace(/export /g,''))+';this.frame=homeArrivalFrame;this.tuning=HOME_ARRIVAL;',c);
+const f=c.frame,h=c.tuning,near=(a,b)=>assert(Math.abs(a-b)<1e-8);
+near(f(0).carX,40);near(f(1.8).carX,111);assert(!f(2.2).teacherVisible);assert(f(2.3).teacherVisible);
+assert(f(3.4).teacherX>130&&f(3.4).teacherX<246);near(f(9.45).teacherX,246);near(f(9.45).teacherY,134);
+assert((h.teacherTo-h.teacherFrom)/h.walkSeconds<25,'walk home is slower than school arrivals');
+near(f(9.95).fade,0);near(f(10.95).fade,.5);near(f(11.95).fade,1);assert(!f(12.19).done);assert(f(12.21).done);
+near(f(0).radioGain,1);near(f(2.025).radioGain,.5);near(f(2.25).radioGain,0);
+for(const age of [NaN,-5,0,2,7,20]){const p=f(age);assert(Number.isFinite(p.teacherX));assert(p.fade>=0&&p.fade<=1);assert(p.radioGain>=0&&p.radioGain<=1)}
+const {AudioKit}=require('./audio-harness.cjs').load(),a=new AudioKit(),events=[];
+a.context={currentTime:0};a.master={gain:{setTargetAtTime(){}}};a.stopGroup=()=>{};a.tone=()=>{};
+a.play=(kind,...rest)=>{if(!a.muted&&!a.paused)events.push({kind,rest})};
+const cue=(age,paused=false)=>a.scene('homeArrival',paused,100,.02,0,false,{age});
+cue(0);cue(2.64);assert.equal(events.length,0);cue(2.66);assert.equal(events.filter(e=>e.kind==='car-door').length,1);
+cue(2.7,true);cue(2.7);assert.equal(events.filter(e=>e.kind==='car-door').length,1,'slam is not replayed after pause');
+cue(2.96);assert(events.some(e=>e.kind==='step-concrete'));const n=events.length;cue(2.96,true);cue(2.96);assert.equal(events.length,n);
+for(let t=3;t<10;t+=.02)cue(t);assert.equal(events.filter(e=>e.kind==='step-concrete').length,13);
+const end=events.length;cue(11);cue(12);assert.equal(events.length,end,'no footstep during black fade');
+const {createGame}=require('./test-harness.cjs'),t=createGame({policy:'three-required'}),g=t.g;
+g.workshop=true;g.loadScenario('home-return-near');g.road=3000;t.step();assert.equal(g.phase,'homeArrival');
+t.advance(6);const age=g.age,clock=g.remaining,walk=f(age).teacherX;g.setPaused(true);t.advance(20);assert.equal(g.age,age);near(f(g.age).teacherX,walk);
+g.setPaused(false);g.keys.LEFT.isDown=g.keys.X.isDown=true;t.advance(6.3);assert.equal(g.phase,'ending');assert.equal(g.remaining,clock);assert.equal(g.results.length,3);
+console.log('PASS homecoming: reused sprite scales, automatic slow walk, 2s fade and black hold, engine/radio timing, one slam, concrete steps, pause and inert gameplay inputs');

@@ -139,7 +139,7 @@ for (const mission of [0, 1, 2])
   assert.equal(g.phase, "home");
   assert.equal(g.won, 3);
   g.road = 3000;
-  t.advance(3.4);
+  t.advance(12.4);
   assert.equal(g.phase, "ending");
   const before = g.remaining;
   t.advance(58);

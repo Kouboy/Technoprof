@@ -131,9 +131,9 @@ music.destroy();assert(player.paused);assert.equal(player.src,'');
  assert(p.src.endsWith('13-retour-maison.wav'));assert(p.loop);assert.equal(p.volume,.4);
  p.currentTime=12;g.setPaused(true);assert(p.paused);g.setPaused(false);assert.equal(p.currentTime,12);
  g.phase='homeArrival';g.age=0;g.draw();assert.equal(p.volume,.4,'parking cannot amplify the radio before its fade');
- g.age=2.4;g.draw();assert(Math.abs(p.volume-.2)<1e-8);assert.equal(p.currentTime,12);
+ g.age=2.025;g.draw();assert(Math.abs(p.volume-.2)<1e-8);assert.equal(p.currentTime,12);
  g.setPaused(true);assert(p.paused);g.setPaused(false);assert(Math.abs(p.volume-.2)<1e-8);
- g.age=3.1;g.draw();assert.equal(p.volume,0);g.completeHomeReturn();g.draw();assert(p.paused);assert.equal(g.music.current,null);
+ g.age=2.25;g.draw();assert.equal(p.volume,0);g.completeHomeReturn();g.draw();assert(p.paused);assert.equal(g.music.current,null);
  console.log('PASS home radio: dedicated loop, pause offset, parking fade, silence before ending');
 }
 (async()=>{

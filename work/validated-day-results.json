@@ -110,7 +110,7 @@
       },
       "homeReturn": {
         "seconds": 98.3499999999957,
-        "arrivalSeconds": 3.26666666666666,
+        "arrivalSeconds": 12.200000000000186,
         "completions": [
           {
             "meters": 3000,
@@ -230,7 +230,7 @@
       },
       "homeReturn": {
         "seconds": 98.33333333332904,
-        "arrivalSeconds": 3.26666666666666,
+        "arrivalSeconds": 12.200000000000186,
         "completions": [
           {
             "meters": 3000,
@@ -350,7 +350,7 @@
       },
       "homeReturn": {
         "seconds": 98.33333333335766,
-        "arrivalSeconds": 3.2583333333333244,
+        "arrivalSeconds": 12.20833333333328,
         "completions": [
           {
             "meters": 3000,

@@ -16,7 +16,7 @@ for (const fps of [30, 60, 120]) {
   assert.equal(r.phase, "report");
   assert.equal(g.runPolicy, "three-required");
   assert(r.homeReturn.seconds > 90, "the day really drives home before the ending");
-  assert(r.homeReturn.arrivalSeconds >= 3.25, "parking, fade and black hold precede ending");
+  assert(r.homeReturn.arrivalSeconds >= 12.2, "parking, slow walk, 2s fade and black hold precede ending");
   assert.equal(r.homeReturn.completions.length, 1);
   assert.equal(r.homeReturn.completions[0].meters, 3000);
   assert.equal(r.homeReturn.completions[0].vehicle, r.ends[2].vehicle);

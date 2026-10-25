@@ -7,6 +7,7 @@ import {
   type Material,
 } from "./audio-materials";
 import { DRIVE } from "./driving";
+import { HOME_ARRIVAL } from "./home-arrival";
 import { sfxTakes } from "./sfx-samples";
 import { WALK_SOUND, type FloorSound, type PassageAudio } from "./soundscape";
 import type { CinematicCue } from "./cinematic";
@@ -59,6 +60,13 @@ export function sceneCues(
   context: SceneSoundContext,
 ): SceneCue[] {
   if (phase === "opening") return OPENING_CUES;
+  if (phase === "homeArrival")
+    return [
+      ["car-door", HOME_ARRIVAL.doorSlamAt, 0.95],
+      ...Array.from({length: Math.ceil(HOME_ARRIVAL.walkSeconds / HOME_ARRIVAL.stepSeconds)}, (_, i): SceneCue => [
+        "step", HOME_ARRIVAL.walkAt + i * HOME_ARRIVAL.stepSeconds, 0.5 - i * 0.015,
+      ]),
+    ];
   if (phase === "arrival")
     return [
       ["car-door", DRIVE.teacherExitSeconds, 0.95],
@@ -499,7 +507,7 @@ export class AudioKit {
     const c = this.context,
       wasPaused = this.paused;
     this.surface =
-      phase === "arrival" ? "concrete" : (context.surface ?? "tile");
+      phase === "arrival" || phase === "homeArrival" ? "concrete" : (context.surface ?? "tile");
     this.paused = paused;
     this.master.gain.setTargetAtTime(
       this.muted || paused ? 0 : AUDIO.master * this.effectsVolume,

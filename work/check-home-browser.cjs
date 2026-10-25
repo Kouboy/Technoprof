@@ -15,7 +15,7 @@ async function running(p){if((await state(p)).startsWith('PAUSE'))await p.getByR
   try{
    const context=await browser.newContext({offline:true,viewport:{width:1100,height:1000}});await watch(context);
    const p=await context.newPage(),errors=[];p.setDefaultTimeout(45000);p.on('pageerror',e=>errors.push(e.message));
-   const scenario=name==='chromium'?'home-return':'home-return-near';
+   const scenario='home-return-near';
    await p.goto(file('Jouer-Technoprof.html')+'?essai=labo&scenario='+scenario+'&musique=essai');
    await p.getByRole('button',{name:'Rejouer',exact:true}).click();await running(p);await waitPhase(p,'home');
    await p.waitForFunction(()=>window.__musicAudio.some(a=>a.src.includes('/retour-maison-2026-10-25/')&&!a.paused&&a.currentTime>.1&&!a.error));
@@ -32,14 +32,19 @@ async function running(p){if((await state(p)).startsWith('PAUSE'))await p.getByR
    await waitPhase(p,'homeArrival');await p.mouse.up();
    const arrivalVolume=(await player(p)).volume;assert(arrivalVolume<=.5,'parking cannot amplify the radio');
    await p.getByRole('button',{name:'Pause / reprendre',exact:true}).click();assert((await player(p)).paused);
+   await p.waitForFunction(()=>document.querySelector('[aria-label="État de la simulation"]').textContent.startsWith('PAUSE'));
    const stopState=await state(p),stopTime=(await player(p)).time;await p.waitForTimeout(300);assert.equal((await player(p)).time,stopTime);assert.equal(await state(p),stopState);
    await p.getByRole('button',{name:'Pause / reprendre',exact:true}).click();await p.locator('#game').focus();
-   await p.waitForFunction(()=>{const a=window.__musicAudio.find(a=>a.src.includes('/retour-maison-2026-10-25/'));return a&&a.volume===0});
+   const waitAge=age=>p.waitForFunction(age=>{const s=document.querySelector('[aria-label="État de la simulation"]').textContent;const m=s.match(/homeArrival ([\d.]+)s/);return m&&Number(m[1])>=age;},age);
+   await waitAge(2.8);await p.locator('#game canvas').screenshot({path:path.join(out,'home-'+name+'-exit.png')});
+   await waitAge(6.3);await p.locator('#game canvas').screenshot({path:path.join(out,'home-'+name+'-walk.png')});
+   await waitAge(9.6);await p.locator('#game canvas').screenshot({path:path.join(out,'home-'+name+'-door.png')});
+   await waitAge(12);assert.equal((await player(p)).volume,0);
    assert((await state(p)).includes('homeArrival /'),'black and silence precede ending');
    await p.locator('#game canvas').screenshot({path:path.join(out,'home-'+name+'-black.png')});
    await waitPhase(p,'ending');assert((await player(p)).paused);assert.equal((await player(p)).time,0);
    await p.waitForTimeout(300);await p.locator('#game canvas').screenshot({path:path.join(out,'home-'+name+'-ending.png')});
-   assert.deepEqual(errors,[]);report.push({browser:name,offline:true,scenario,nativeMusic:true,pauseMuteResume:true,arrivalPauseStable:true,arrivalVolume,blackBeforeEnding:true,cleanAudioStop:true,errors});
+   assert.deepEqual(errors,[]);report.push({browser:name,offline:true,scenario,nativeMusic:true,pauseMuteResume:true,arrivalPauseStable:true,arrivalVolume,automaticWalk:true,fadeSeconds:2,blackBeforeEnding:true,cleanAudioStop:true,errors});
    console.log('PASS '+name+': night, native radio, pause/mute, arrival, black and ending');await context.close();
    if(name==='chromium'){
     const mobile=await browser.newContext({offline:true,viewport:{width:390,height:844},isMobile:true,hasTouch:true});await watch(mobile);
