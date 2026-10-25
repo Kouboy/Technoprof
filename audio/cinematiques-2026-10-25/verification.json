@@ -1,0 +1,19 @@
+{
+  "seconds": 57,
+  "channels": 2,
+  "outputBits": 16,
+  "sourceBits": 8,
+  "sampleCount": 12,
+  "hardCutSeconds": 50,
+  "musicAfterCut": "digital silence",
+  "noAnticipatoryFade": true,
+  "peak": 0.507476806640625,
+  "rmsDbFSByPhase": {
+    "fatigue": -25.94,
+    "invitation": -23.74,
+    "campus": -21.36,
+    "classe": -20.61,
+    "apaisement": -20.13
+  },
+  "stemSumWithinTwoLSB": true
+}
