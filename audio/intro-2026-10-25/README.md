@@ -9,7 +9,7 @@ Deux plans sans dialogue, sur dix secondes :
 | 0–5,5 s | Réveil à 6h10, encore de nuit. Même alarme que dans la conclusion, basse tenue, piano grave descendant, chambre étroite et lourde. |
 | 5,5–10 s | Café, manteau, livre, clés et départ. Six pulsations à 80 BPM, petites ponctuations de tissu, poignée, clés et pas. |
 
-L'image suit le temps réel de la piste audio. Pause, reprise et recherche restent synchronisées. Le changement d'image intervient à 5,5 s, avec une apparition de 180 ms. Aucun texte narratif ni voix dans le film. La musique conserve une tension non résolue pour préparer le trajet.
+L'image suit le temps réel de la piste audio. Pause, reprise et recherche restent synchronisées. L'ouverture part du noir et révèle la première image en une seconde, dès le début du son, sans rallonger le film. Le changement d'image intervient à 5,5 s, avec une apparition de 180 ms. Aucun texte narratif ni voix dans le film. La musique conserve une tension non résolue pour préparer le trajet.
 
 La retouche d'éclairage des deux vignettes a été produite avec l'outil intégré image_gen : dehors, il fait encore nuit, comme au réveil final à 6h10. Le PNG généré est conservé intact dans `../../art/intro-2026-10-25/intro-night.png`. Prompt : `prompt-night.txt`, cadrages : `layout.json` dans le même dossier. Seul le lecteur effectue le recadrage, sans déformation.
 

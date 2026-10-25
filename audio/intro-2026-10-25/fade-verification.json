@@ -1,0 +1,32 @@
+[
+  {
+    "browser": "chromium",
+    "openingSeconds": 1,
+    "pauseStable": true,
+    "restartPlayed": true,
+    "seconds": 10,
+    "errors": [],
+    "blackAtZero": true,
+    "brightness": [
+      0.0,
+      46.80599538182418,
+      93.77022513607125
+    ],
+    "measurement": "Central image region, excluding CSS object-fit margins"
+  },
+  {
+    "browser": "firefox",
+    "openingSeconds": 1,
+    "pauseStable": true,
+    "restartPlayed": true,
+    "seconds": 10,
+    "errors": [],
+    "blackAtZero": true,
+    "brightness": [
+      0.0,
+      46.54393452086426,
+      93.25391720270493
+    ],
+    "measurement": "Central image region, excluding CSS object-fit margins"
+  }
+]

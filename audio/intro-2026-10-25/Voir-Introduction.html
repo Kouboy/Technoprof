@@ -21,6 +21,7 @@ const scenes=[{"id": "wake-in-bed", "label": "6h10 — Le réveil", "at": 0, "en
 const frames=[[4, 4, 968, 760], [990, 4, 1054, 760]];
 const imageUrl="../../art/intro-2026-10-25/intro-night.png?v=9e2e066d2f93";
 const image=new Image();image.src=imageUrl;
+const openingFadeSeconds=1;
 let ready=false,lastStatus='',problem='';
 function draw(){
  const time=media.currentTime||0,index=Math.max(0,scenes.findLastIndex(s=>s.at<=time)),scene=scenes[index];
@@ -30,9 +31,10 @@ function draw(){
  ctx.fillStyle='#080d13';ctx.fillRect(48,27,224,170);
  ctx.fillStyle='#38494c';ctx.fillRect(50,29,220,166);
  ctx.fillStyle='#17242c';ctx.fillRect(52,31,216,162);
+ ctx.fillStyle='#000';ctx.fillRect(54,33,212,158);
  if(ready){
   const [x,y,w,h]=frames[scene.frame],scale=Math.max(212/w,158/h);
-  ctx.globalAlpha=media.paused&&time===0?1:Math.min(1,(time-scene.at)/.18);
+  ctx.globalAlpha=Math.min(1,(time-scene.at)/(index===0?openingFadeSeconds:.18));
   ctx.save();ctx.beginPath();ctx.rect(54,33,212,158);ctx.clip();
   ctx.drawImage(image,x,y,w,h,160-w*scale/2,112-h*scale/2,w*scale,h*scale);
   ctx.restore();ctx.globalAlpha=1;
