@@ -7,7 +7,10 @@ Deux liens permanents à communiquer :
 
 Publication du playtest autorisée par Nicolas le 25 octobre 2026 : journée
 complète, fenêtre Chrome, manette, CADRE harmonisé, nouvelles jauges et retour
-au titre après la fin ou le Game Over. Tag de livraison : `playtest-2026-10-25`.
+au titre après la fin ou le Game Over. Livraison initiale : `playtest-2026-10-25`.
+Le contrôle sur petit écran a révélé un chevauchement des zones tactiles du
+titre après les réglages. Le correctif `playtest-2026-10-25-r2` réserve deux
+zones de 44 px et leur espacement sans déplacer le titre sur grand écran.
 
 ## Version locale
 
