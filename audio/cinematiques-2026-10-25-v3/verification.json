@@ -1,0 +1,18 @@
+{
+  "seconds": 69,
+  "sourceBits": 8,
+  "voices": 4,
+  "musicalSamples": 10,
+  "cueSample": "alarm-dry.wav",
+  "hardCut": 62,
+  "alarm": 63.2,
+  "musicAfterCut": "digital silence",
+  "holdsUntilCut": true,
+  "rmsOfficeDbFS": -22.17,
+  "officeGainOverV2Db": 8.0,
+  "officeLowEnergyFraction": 0.963,
+  "v2OfficeLowEnergyFraction": 0.445,
+  "mixPeak": 0.507476806640625,
+  "stemSumWithinTwoLSB": true,
+  "allFourteenScenesContinuous": true
+}

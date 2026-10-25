@@ -1,0 +1,1422 @@
+{
+  "seconds": 69,
+  "voices": 4,
+  "events": [
+    {
+      "at": 0.1,
+      "lane": 0,
+      "sample": "office-pedal",
+      "pitch": 41,
+      "duration": 8.25,
+      "gain": 0.27
+    },
+    {
+      "at": 0.12,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 53,
+      "duration": 2.6,
+      "gain": 0.43200000000000005
+    },
+    {
+      "at": 0.3,
+      "lane": 3,
+      "sample": "piano",
+      "pitch": 41,
+      "duration": 0.34,
+      "gain": 0.18
+    },
+    {
+      "at": 0.5,
+      "lane": 2,
+      "sample": "strings-minor",
+      "pitch": 41,
+      "duration": 3.6,
+      "gain": 0.1485
+    },
+    {
+      "at": 1.55,
+      "lane": 3,
+      "sample": "piano",
+      "pitch": 41,
+      "duration": 0.34,
+      "gain": 0.18
+    },
+    {
+      "at": 2.7,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 51,
+      "duration": 2.2,
+      "gain": 0.3672
+    },
+    {
+      "at": 2.8,
+      "lane": 3,
+      "sample": "piano",
+      "pitch": 41,
+      "duration": 0.34,
+      "gain": 0.18
+    },
+    {
+      "at": 4.05,
+      "lane": 3,
+      "sample": "piano",
+      "pitch": 41,
+      "duration": 0.34,
+      "gain": 0.18
+    },
+    {
+      "at": 5.0,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 50,
+      "duration": 1.6,
+      "gain": 0.33480000000000004
+    },
+    {
+      "at": 5.2,
+      "lane": 2,
+      "sample": "strings-minor",
+      "pitch": 41,
+      "duration": 3.1,
+      "gain": 0.1155
+    },
+    {
+      "at": 5.3,
+      "lane": 3,
+      "sample": "piano",
+      "pitch": 41,
+      "duration": 0.34,
+      "gain": 0.18
+    },
+    {
+      "at": 6.55,
+      "lane": 3,
+      "sample": "piano",
+      "pitch": 41,
+      "duration": 0.34,
+      "gain": 0.18
+    },
+    {
+      "at": 6.8,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 56,
+      "duration": 1.5,
+      "gain": 0.30240000000000006
+    },
+    {
+      "at": 7.8,
+      "lane": 3,
+      "sample": "piano",
+      "pitch": 41,
+      "duration": 0.34,
+      "gain": 0.18
+    },
+    {
+      "at": 10.8,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 63,
+      "duration": 1.7,
+      "gain": 0.24
+    },
+    {
+      "at": 11,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 44,
+      "duration": 4.05,
+      "gain": 0.15
+    },
+    {
+      "at": 11,
+      "lane": 2,
+      "sample": "strings-major9",
+      "pitch": 56,
+      "duration": 4.05,
+      "gain": 0.16
+    },
+    {
+      "at": 11.6,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 65,
+      "duration": 1.5,
+      "gain": 0.34
+    },
+    {
+      "at": 13.5,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 68,
+      "duration": 1.5,
+      "gain": 0.34
+    },
+    {
+      "at": 15,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 39,
+      "duration": 4.05,
+      "gain": 0.16
+    },
+    {
+      "at": 15,
+      "lane": 2,
+      "sample": "strings-major6",
+      "pitch": 51,
+      "duration": 4.05,
+      "gain": 0.2
+    },
+    {
+      "at": 15.4,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 67,
+      "duration": 1.5,
+      "gain": 0.34
+    },
+    {
+      "at": 17.2,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 70,
+      "duration": 1.8,
+      "gain": 0.34
+    },
+    {
+      "at": 19,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 39,
+      "duration": 2.8,
+      "gain": 0.14
+    },
+    {
+      "at": 19,
+      "lane": 2,
+      "sample": "strings-major6",
+      "pitch": 51,
+      "duration": 6.05,
+      "gain": 0.19
+    },
+    {
+      "at": 19.25,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 63,
+      "duration": 1.3,
+      "gain": 0.14
+    },
+    {
+      "at": 19.4,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 63,
+      "duration": 0.95,
+      "gain": 0.31
+    },
+    {
+      "at": 20.4,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 65,
+      "duration": 0.95,
+      "gain": 0.31
+    },
+    {
+      "at": 20.6,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 67,
+      "duration": 1.3,
+      "gain": 0.14
+    },
+    {
+      "at": 21.4,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 67,
+      "duration": 0.95,
+      "gain": 0.31
+    },
+    {
+      "at": 21.95,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 70,
+      "duration": 1.3,
+      "gain": 0.14
+    },
+    {
+      "at": 22,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 46,
+      "duration": 2.9,
+      "gain": 0.12
+    },
+    {
+      "at": 22.6,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 70,
+      "duration": 0.95,
+      "gain": 0.31
+    },
+    {
+      "at": 23.3,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 72,
+      "duration": 1.3,
+      "gain": 0.14
+    },
+    {
+      "at": 23.8,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 68,
+      "duration": 0.95,
+      "gain": 0.31
+    },
+    {
+      "at": 25.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 44,
+      "duration": 1.2000000000000002,
+      "gain": 0.17
+    },
+    {
+      "at": 25.0,
+      "lane": 2,
+      "sample": "strings-major6",
+      "pitch": 56,
+      "duration": 6.05,
+      "gain": 0.27
+    },
+    {
+      "at": 25.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 60,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 25.25,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 68,
+      "duration": 0.5828,
+      "gain": 0.37
+    },
+    {
+      "at": 25.87,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 70,
+      "duration": 0.5828,
+      "gain": 0.37
+    },
+    {
+      "at": 25.93,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 63,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 26.49,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 72,
+      "duration": 0.5828,
+      "gain": 0.37
+    },
+    {
+      "at": 26.5,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 51,
+      "duration": 1.2000000000000002,
+      "gain": 0.17
+    },
+    {
+      "at": 26.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 68,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 27.11,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 75,
+      "duration": 0.5828,
+      "gain": 0.37
+    },
+    {
+      "at": 27.43,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 72,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 27.73,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 77,
+      "duration": 0.5828,
+      "gain": 0.37
+    },
+    {
+      "at": 28.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 56,
+      "duration": 1.2000000000000002,
+      "gain": 0.17
+    },
+    {
+      "at": 28.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 60,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 28.35,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 75,
+      "duration": 0.5828,
+      "gain": 0.37
+    },
+    {
+      "at": 28.93,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 63,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 28.97,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 72,
+      "duration": 0.5828,
+      "gain": 0.37
+    },
+    {
+      "at": 29.5,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 51,
+      "duration": 1.2000000000000002,
+      "gain": 0.17
+    },
+    {
+      "at": 29.59,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 70,
+      "duration": 0.5828,
+      "gain": 0.37
+    },
+    {
+      "at": 29.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 68,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 30.21,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 68,
+      "duration": 0.5828,
+      "gain": 0.37
+    },
+    {
+      "at": 30.43,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 72,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 31.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 37,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 31.0,
+      "lane": 2,
+      "sample": "strings-major6",
+      "pitch": 49,
+      "duration": 7.05,
+      "gain": 0.27
+    },
+    {
+      "at": 31.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 61,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 31.25,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 65,
+      "duration": 0.6486,
+      "gain": 0.37
+    },
+    {
+      "at": 31.78,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 65,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 31.94,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 68,
+      "duration": 0.6486,
+      "gain": 0.37
+    },
+    {
+      "at": 32.2,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 44,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 32.379999999999995,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 68,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 32.629999999999995,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 72,
+      "duration": 0.6486,
+      "gain": 0.37
+    },
+    {
+      "at": 32.980000000000004,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 70,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 33.32,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 70,
+      "duration": 0.6486,
+      "gain": 0.37
+    },
+    {
+      "at": 33.4,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 49,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 33.58,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 61,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 34.010000000000005,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 68,
+      "duration": 0.6486,
+      "gain": 0.37
+    },
+    {
+      "at": 34.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 65,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 34.6,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 44,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 34.7,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 65,
+      "duration": 0.6486,
+      "gain": 0.37
+    },
+    {
+      "at": 34.78,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 68,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 35.379999999999995,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 70,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 35.39,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 63,
+      "duration": 0.6486,
+      "gain": 0.37
+    },
+    {
+      "at": 35.8,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 37,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 35.980000000000004,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 61,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 36.08,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 65,
+      "duration": 0.6486,
+      "gain": 0.37
+    },
+    {
+      "at": 36.58,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 65,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 36.769999999999996,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 68,
+      "duration": 0.6486,
+      "gain": 0.37
+    },
+    {
+      "at": 37.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 44,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 37.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 68,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 37.78,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 70,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 38.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 39,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 38.0,
+      "lane": 2,
+      "sample": "strings-major9",
+      "pitch": 51,
+      "duration": 5.05,
+      "gain": 0.27
+    },
+    {
+      "at": 38.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 63,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 38.2,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 67,
+      "duration": 0.5357999999999999,
+      "gain": 0.37
+    },
+    {
+      "at": 38.77,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 70,
+      "duration": 0.5357999999999999,
+      "gain": 0.37
+    },
+    {
+      "at": 38.78,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 67,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 39.2,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 46,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 39.34,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 72,
+      "duration": 0.5357999999999999,
+      "gain": 0.37
+    },
+    {
+      "at": 39.38,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 70,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 39.91,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 70,
+      "duration": 0.5357999999999999,
+      "gain": 0.37
+    },
+    {
+      "at": 39.98,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 72,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 40.4,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 51,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 40.48,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 67,
+      "duration": 0.5357999999999999,
+      "gain": 0.37
+    },
+    {
+      "at": 40.58,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 63,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 41.05,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 65,
+      "duration": 0.5357999999999999,
+      "gain": 0.37
+    },
+    {
+      "at": 41.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 67,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 41.6,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 46,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 41.62,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 67,
+      "duration": 0.5357999999999999,
+      "gain": 0.37
+    },
+    {
+      "at": 41.78,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 70,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 42.19,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 70,
+      "duration": 0.5357999999999999,
+      "gain": 0.37
+    },
+    {
+      "at": 42.38,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 72,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 43.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 44,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 43.0,
+      "lane": 2,
+      "sample": "strings-major6",
+      "pitch": 56,
+      "duration": 6.05,
+      "gain": 0.31
+    },
+    {
+      "at": 43.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 60,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 43.2,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 72,
+      "duration": 0.5828,
+      "gain": 0.41
+    },
+    {
+      "at": 43.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 63,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 43.82,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 70,
+      "duration": 0.5828,
+      "gain": 0.41
+    },
+    {
+      "at": 44.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 68,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 44.2,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 51,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 44.44,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 68,
+      "duration": 0.5828,
+      "gain": 0.41
+    },
+    {
+      "at": 44.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 72,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 45.06,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 75,
+      "duration": 0.5828,
+      "gain": 0.41
+    },
+    {
+      "at": 45.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 60,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 45.4,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 56,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 45.68,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 72,
+      "duration": 0.5828,
+      "gain": 0.41
+    },
+    {
+      "at": 45.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 63,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 46.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 68,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 46.3,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 70,
+      "duration": 0.5828,
+      "gain": 0.41
+    },
+    {
+      "at": 46.6,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 51,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 46.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 72,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 46.92,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 68,
+      "duration": 0.5828,
+      "gain": 0.41
+    },
+    {
+      "at": 47.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 60,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 47.54,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 67,
+      "duration": 0.5828,
+      "gain": 0.41
+    },
+    {
+      "at": 47.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 63,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 47.8,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 44,
+      "duration": 0.96,
+      "gain": 0.17
+    },
+    {
+      "at": 48.16,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 68,
+      "duration": 0.5828,
+      "gain": 0.41
+    },
+    {
+      "at": 48.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 68,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 48.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 72,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 49.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 37,
+      "duration": 0.8,
+      "gain": 0.17
+    },
+    {
+      "at": 49.0,
+      "lane": 2,
+      "sample": "strings-major6",
+      "pitch": 49,
+      "duration": 4.05,
+      "gain": 0.31
+    },
+    {
+      "at": 49.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 61,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 49.2,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 77,
+      "duration": 0.4888,
+      "gain": 0.41
+    },
+    {
+      "at": 49.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 65,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 49.72,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 75,
+      "duration": 0.4888,
+      "gain": 0.41
+    },
+    {
+      "at": 50.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 44,
+      "duration": 0.8,
+      "gain": 0.17
+    },
+    {
+      "at": 50.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 68,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 50.24,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 73,
+      "duration": 0.4888,
+      "gain": 0.41
+    },
+    {
+      "at": 50.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 73,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 50.76,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 72,
+      "duration": 0.4888,
+      "gain": 0.41
+    },
+    {
+      "at": 51.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 49,
+      "duration": 0.8,
+      "gain": 0.17
+    },
+    {
+      "at": 51.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 61,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 51.28,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 68,
+      "duration": 0.4888,
+      "gain": 0.41
+    },
+    {
+      "at": 51.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 65,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 51.8,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 70,
+      "duration": 0.4888,
+      "gain": 0.41
+    },
+    {
+      "at": 52.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 44,
+      "duration": 0.8,
+      "gain": 0.17
+    },
+    {
+      "at": 52.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 68,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 52.32,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 73,
+      "duration": 0.4888,
+      "gain": 0.41
+    },
+    {
+      "at": 52.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 73,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 53.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 39,
+      "duration": 0.8,
+      "gain": 0.17
+    },
+    {
+      "at": 53.0,
+      "lane": 2,
+      "sample": "strings-dominant",
+      "pitch": 51,
+      "duration": 3.05,
+      "gain": 0.31
+    },
+    {
+      "at": 53.15,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 70,
+      "duration": 0.46059999999999995,
+      "gain": 0.41
+    },
+    {
+      "at": 53.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 62,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 53.64,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 67,
+      "duration": 0.46059999999999995,
+      "gain": 0.41
+    },
+    {
+      "at": 53.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 67,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 54.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 46,
+      "duration": 0.8,
+      "gain": 0.17
+    },
+    {
+      "at": 54.13,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 65,
+      "duration": 0.46059999999999995,
+      "gain": 0.41
+    },
+    {
+      "at": 54.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 70,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 54.62,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 70,
+      "duration": 0.46059999999999995,
+      "gain": 0.41
+    },
+    {
+      "at": 54.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 72,
+      "duration": 0.85,
+      "gain": 0.21
+    },
+    {
+      "at": 55.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 51,
+      "duration": 0.8,
+      "gain": 0.17
+    },
+    {
+      "at": 55.11,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 72,
+      "duration": 0.46059999999999995,
+      "gain": 0.41
+    },
+    {
+      "at": 55.18,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 62,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 55.6,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 67,
+      "duration": 0.46059999999999995,
+      "gain": 0.41
+    },
+    {
+      "at": 55.68,
+      "lane": 3,
+      "sample": "harp",
+      "pitch": 67,
+      "duration": 0.85,
+      "gain": 0.17
+    },
+    {
+      "at": 56.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 44,
+      "duration": 1.6800000000000002,
+      "gain": 0.17
+    },
+    {
+      "at": 56.0,
+      "lane": 2,
+      "sample": "strings-major6",
+      "pitch": 56,
+      "duration": 6.6,
+      "gain": 0.31
+    },
+    {
+      "at": 56.0,
+      "lane": 3,
+      "sample": "air-major6",
+      "pitch": 68,
+      "duration": 6.6,
+      "gain": 0.18
+    },
+    {
+      "at": 56.15,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 75,
+      "duration": 1.2,
+      "gain": 0.39
+    },
+    {
+      "at": 57.55,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 72,
+      "duration": 1.2,
+      "gain": 0.39
+    },
+    {
+      "at": 58.1,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 51,
+      "duration": 1.6800000000000002,
+      "gain": 0.17
+    },
+    {
+      "at": 59.0,
+      "lane": 1,
+      "sample": "flute",
+      "pitch": 68,
+      "duration": 3.6,
+      "gain": 0.39
+    },
+    {
+      "at": 60.2,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 56,
+      "duration": 1.6800000000000002,
+      "gain": 0.17
+    }
+  ]
+}

@@ -1,0 +1,209 @@
+{
+  "status": "audition-v3-not-integrated",
+  "seconds": 69,
+  "musicCut": 62,
+  "alarmStarts": 63.2,
+  "sourceBits": 8,
+  "sampleRate": 22050,
+  "voices": 4,
+  "usedSamples": [
+    "air-major6",
+    "bass",
+    "flute",
+    "harp",
+    "office-pedal",
+    "piano",
+    "strings-dominant",
+    "strings-major6",
+    "strings-major9",
+    "strings-minor"
+  ],
+  "timeline": [
+    {
+      "id": "grading",
+      "label": "Correction nocturne",
+      "at": 0,
+      "end": 5,
+      "seconds": 5,
+      "atlas": 0,
+      "frame": 2,
+      "cut": false
+    },
+    {
+      "id": "fatigue",
+      "label": "Fatigue",
+      "at": 5,
+      "end": 8.5,
+      "seconds": 3.5,
+      "atlas": 0,
+      "frame": 3,
+      "cut": false
+    },
+    {
+      "id": "doorbell",
+      "label": "La sonnette",
+      "at": 8.5,
+      "end": 11.0,
+      "seconds": 2.5,
+      "atlas": 0,
+      "frame": 4,
+      "cut": false
+    },
+    {
+      "id": "visitor",
+      "label": "Le visiteur",
+      "at": 11.0,
+      "end": 15.0,
+      "seconds": 4,
+      "atlas": 2,
+      "frame": 0,
+      "cut": false
+    },
+    {
+      "id": "invitation",
+      "label": "L’invitation",
+      "at": 15.0,
+      "end": 19.0,
+      "seconds": 4,
+      "atlas": 1,
+      "frame": 1,
+      "cut": false
+    },
+    {
+      "id": "car-ride",
+      "label": "Le trajet au lever du jour",
+      "at": 19,
+      "end": 25,
+      "seconds": 6,
+      "atlas": 3,
+      "frame": 0,
+      "cut": false
+    },
+    {
+      "id": "courtyard",
+      "label": "La cour",
+      "at": 25.0,
+      "end": 32.0,
+      "seconds": 7,
+      "atlas": 1,
+      "frame": 3,
+      "cut": false
+    },
+    {
+      "id": "corridor",
+      "label": "Le couloir",
+      "at": 32.0,
+      "end": 37.0,
+      "seconds": 5,
+      "atlas": 0,
+      "frame": 7,
+      "cut": false
+    },
+    {
+      "id": "preparation",
+      "label": "Préparer les cours",
+      "at": 37.0,
+      "end": 43.0,
+      "seconds": 6,
+      "atlas": 1,
+      "frame": 4,
+      "cut": false
+    },
+    {
+      "id": "classroom",
+      "label": "La classe",
+      "at": 43.0,
+      "end": 50.0,
+      "seconds": 7,
+      "atlas": 1,
+      "frame": 5,
+      "cut": false
+    },
+    {
+      "id": "aesh",
+      "label": "L’accompagnement AESH",
+      "at": 50.0,
+      "end": 56.0,
+      "seconds": 6,
+      "atlas": 1,
+      "frame": 6,
+      "cut": false
+    },
+    {
+      "id": "exterior",
+      "label": "Le campus, vue d’ensemble",
+      "at": 56.0,
+      "end": 62.0,
+      "seconds": 6,
+      "atlas": 1,
+      "frame": 2,
+      "cut": false
+    },
+    {
+      "id": "bell",
+      "label": "La cloche",
+      "at": 62.0,
+      "end": 63.2,
+      "seconds": 1.2,
+      "atlas": 0,
+      "frame": 9,
+      "cut": true
+    },
+    {
+      "id": "wake",
+      "label": "6h10, encore la nuit",
+      "at": 63.2,
+      "end": 69.0,
+      "seconds": 5.8,
+      "atlas": 1,
+      "frame": 7,
+      "cut": true
+    }
+  ],
+  "files": [
+    {
+      "file": "Fin-Musique.wav",
+      "sha256": "b0eab416fc8ee44daa2b27eb1388e88ad0c58f881777e6328cab104c41cdae7f",
+      "peakDbFS": -7.09
+    },
+    {
+      "file": "Fin-Reperes.wav",
+      "sha256": "4cc907ea94c4958714c9e6b1fa75f5c6c52c30108e8d16e080c40e3dd81b156e",
+      "peakDbFS": -5.89
+    },
+    {
+      "file": "Fin-Montage.wav",
+      "sha256": "49e27e3be3e332c67ed12b516bb5630a65a74c6c12ea65108219702c62cc4ca1",
+      "peakDbFS": -5.89
+    }
+  ],
+  "carArtwork": "art/cinematics-2026-10-25-v3/car-ride.png",
+  "carArtworkSha256": "80c3bee0d60515a58c6fbd402ceb6d4a819388f84ec6814c03b102a61e39762e",
+  "effectEvents": [
+    {
+      "id": "doorbell",
+      "at": 8.5
+    },
+    {
+      "id": "bell",
+      "at": 62
+    },
+    {
+      "id": "alarm",
+      "at": 63.2
+    },
+    {
+      "id": "chair",
+      "at": 63.225
+    },
+    {
+      "id": "paper",
+      "at": 63.36
+    }
+  ],
+  "cueSources": [
+    "audio/sfx-2026-10-24/bell-start-1.wav",
+    "audio/sfx-2026-10-24/paper-1.wav",
+    "audio/sfx-2026-10-24/chair-1.wav"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "asset": "car-ride.png",
+  "prompt": "prompt-car-ride.txt",
+  "generatedWith": "built-in image_gen",
+  "originalBytesUnchanged": true,
+  "sha256": "80c3bee0d60515a58c6fbd402ceb6d4a819388f84ec6814c03b102a61e39762e",
+  "width": 1448,
+  "height": 1086,
+  "visualReview": [
+    "Young man drives on the far side, steering wheel in front of him, speaking cheerfully",
+    "Older passenger in foreground wears the same brown coat, rubs his eyes and holds his single pair of glasses",
+    "Clean modern sober cabin and peaceful French residential dawn",
+    "One full-bleed 4:3 scene, no spoken or written dialogue"
+  ]
+}
