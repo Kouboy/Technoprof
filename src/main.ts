@@ -237,6 +237,7 @@ class Game extends Phaser.Scene {
   pointerMode = false;
   physicalKeys?: Record<string, Phaser.Input.Keyboard.Key>;
   playerMenu = false;
+  pauseControl = false;
   roomEnteredAt = 0;
   seed = 4301;
   random = new SeededRandom();
@@ -4666,6 +4667,9 @@ class Game extends Phaser.Scene {
   draw() {
     this.sceneFade?.clear();
     if (this.substepping) return;
+    this.sceneSurround?.setVisible(
+      !(this.cinematic && ["intro", "ending"].includes(this.phase)),
+    );
     this.syncMusic();
     this.art?.hide();
     this.newSchoolArt?.hide();
@@ -4699,7 +4703,6 @@ class Game extends Phaser.Scene {
       this.groundContact?.clear();
       this.roadWash?.clear();
       this.schoolWear?.clear();
-      this.sceneSurround?.clear();
       this.rect(0, 0, 320, 240, 0x10191f);
       this.cinematicArt?.render(this.cinematic);
       if (this.workshop) drawWorkshop(this);

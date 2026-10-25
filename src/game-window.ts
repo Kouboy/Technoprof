@@ -20,19 +20,16 @@ export function installGameWindow(
     status.hidden = !message;
   };
   const fit = () => {
-    if (!body.classList.contains("dedicated-window")) return;
+    if (!body.classList.contains("player-screen")) return;
     const style = getComputedStyle(body);
     const width =
-      window.innerWidth -
+      (document.documentElement.clientWidth || window.innerWidth) -
       parseFloat(style.paddingLeft) -
       parseFloat(style.paddingRight);
     const height =
-      window.innerHeight -
+      (document.documentElement.clientHeight || window.innerHeight) -
       parseFloat(style.paddingTop) -
-      parseFloat(style.paddingBottom) -
-      toolbar.getBoundingClientRect().height -
-      document.getElementById("player-feedback")!.getBoundingClientRect()
-        .height;
+      parseFloat(style.paddingBottom);
     body.style.setProperty(
       "--window-game-width",
       Math.max(1, Math.floor(Math.min(width, (height * 4) / 3))) + "px",
@@ -48,6 +45,7 @@ export function installGameWindow(
     }
   };
   const apply = () => {
+    body.classList.toggle("player-screen", true);
     body.classList.toggle(
       "dedicated-window",
       dedicated || !!document.fullscreenElement,

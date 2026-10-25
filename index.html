@@ -494,7 +494,7 @@
       color: #fff0cb;
     }
     /* Dedicated window: the complete 4:3 frame plus accessible native controls. */
-    body.dedicated-window {
+    body.player-screen {
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -507,34 +507,34 @@
       overflow: hidden;
       background: #080d13;
     }
-    body.dedicated-window #game-shell,
-    body.dedicated-window #game,
-    body.dedicated-window #player-panel.title-home {
+    body.player-screen #game-shell,
+    body.player-screen #game,
+    body.player-screen #player-panel.title-home {
       width: var(--window-game-width, min(100vw, 120vh));
       height: auto;
       aspect-ratio: 4 / 3;
       flex-shrink: 0;
     }
-    body.dedicated-window #player-panel.title-home {
+    body.player-screen #player-panel.title-home {
       box-sizing: border-box;
       border: 0;
       padding: 0;
       overflow: hidden;
     }
-    body.dedicated-window #game-shell,
-    body.dedicated-window #game {
+    body.player-screen #game-shell,
+    body.player-screen #game {
       height: calc(var(--window-game-width, 100vw) * 3 / 4);
     }
-    body.dedicated-window #game canvas {
+    body.player-screen #game canvas {
       display: block;
       max-width: none;
       max-height: none;
       box-shadow: none;
     }
-    body.dedicated-window .title-home > p {
+    body.player-screen .title-home > p {
       display: none;
     }
-    body.dedicated-window .title-home .player-actions {
+    body.player-screen .title-home .player-actions {
       position: absolute;
       left: 0;
       right: 0;
@@ -542,12 +542,12 @@
       margin: 0;
       gap: 6px;
     }
-    body.dedicated-window .title-home .player-actions button {
+    body.player-screen .title-home .player-actions button {
       min-height: 28px;
       padding: 3px 9px;
       font-size: clamp(10px, 1.8vw, 13px);
     }
-    body.dedicated-window #player-toolbar {
+    body.player-screen #player-toolbar {
       flex-shrink: 0;
       box-sizing: border-box;
       width: 100%;
@@ -558,12 +558,12 @@
       align-items: center;
       gap: 4px;
     }
-    body.dedicated-window #player-toolbar button {
+    body.player-screen #player-toolbar button {
       margin: 0;
       min-height: 32px;
       font-size: 12px;
     }
-    body.dedicated-window #player-toolbar > span:not(#window-status) {
+    body.player-screen #player-toolbar > span:not(#window-status) {
       display: none;
     }
     #window-status {
@@ -571,22 +571,70 @@
       font-size: 12px;
       padding: 4px;
     }
-    body.dedicated-window #player-feedback {
+    body.player-screen #player-feedback {
       width: min(94vw, 900px);
       min-height: 0;
       flex-shrink: 0;
       margin: 0;
     }
-    body.dedicated-window #player-feedback p {
+    body.player-screen #player-feedback p {
       margin: 3px;
       font-size: 12px;
       line-height: 1.3;
     }
-    body.dedicated-window > #developer-controls,
-    body.dedicated-window > #developer-links,
-    body.dedicated-window > #workshop,
-    body.dedicated-window > #legacy-tests {
+    body.player-screen > #developer-controls,
+    body.player-screen > #developer-links,
+    body.player-screen > #workshop,
+    body.player-screen > #legacy-tests {
       display: none;
+    }
+    /* Player controls live in the pause/settings menu, never below the frame. */
+    body.player-screen #player-toolbar,
+    body.player-screen #player-feedback {
+      display: none !important;
+    }
+    body.player-screen
+      #player-panel:not(.title-home):not([hidden])
+      #player-toolbar {
+      display: flex !important;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid #38494c;
+      width: 100%;
+    }
+    #cadre-pause {
+      position: absolute;
+      right: 1.5%;
+      bottom: 0.2%;
+      width: 6%;
+      height: 3.8%;
+      min-width: 44px;
+      min-height: 44px;
+      z-index: 5;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: transparent;
+      font-size: 0;
+      box-shadow: none;
+      touch-action: manipulation;
+    }
+    #cadre-pause::before {
+      content: "";
+      position: absolute;
+      right: 33%;
+      bottom: 12%;
+      box-sizing: border-box;
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid #82908b;
+      border-right: 2px solid #82908b;
+      opacity: 0.7;
+    }
+    #cadre-pause:hover::before,
+    #cadre-pause:focus-visible::before {
+      opacity: 1;
+      border-color: #e5ae60;
     }
   </style>
   <div id="game-shell">

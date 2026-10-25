@@ -40,15 +40,23 @@ async function bounds(page) {
     const toolbar = document
       .getElementById("player-toolbar")
       .getBoundingClientRect();
+    const panel = document
+      .getElementById("player-panel")
+      .getBoundingClientRect();
     return {
       width: shell.width,
       height: shell.height,
       bottom: shell.bottom,
       toolbarBottom: toolbar.bottom,
+      panelBottom: panel.bottom,
+      toolbarInMenu: !!document
+        .getElementById("player-toolbar")
+        .closest("#player-panel"),
       viewport: innerHeight,
       scroll: document.documentElement.scrollHeight,
       scrollWidth: document.documentElement.scrollWidth,
       viewportWidth: innerWidth,
+      clientWidth: document.documentElement.clientWidth,
       parentStyle: document.getElementById("game").style.cssText,
       parentHeight: getComputedStyle(document.getElementById("game")).height,
       variable: document.body.style.getPropertyValue("--window-game-width"),
@@ -59,14 +67,34 @@ async function bounds(page) {
     "4:3 frame " + JSON.stringify(b),
   );
   assert(
-    b.toolbarBottom <= b.viewport + 1,
+    (b.toolbarInMenu ? b.panelBottom : b.toolbarBottom) <= b.viewport + 1,
     "controls visible " + JSON.stringify(b),
   );
   assert(
     b.scroll <= b.viewport + 1 && b.scrollWidth <= b.viewportWidth + 1,
     "no overflow " + JSON.stringify(b),
   );
+  assert(
+    b.width <= b.clientWidth + 0.1,
+    "frame must not widen the mobile layout viewport",
+  );
   return b;
+}
+async function openPause(page) {
+  if (
+    !(await page
+      .getByRole("button", { name: "Reprendre", exact: true })
+      .isVisible())
+  )
+    await page
+      .getByRole("button", { name: "Pause / aide", exact: true })
+      .click();
+}
+async function skipFilm(page) {
+  await openPause(page);
+  await page
+    .getByRole("button", { name: "Passer la cinématique", exact: true })
+    .click();
 }
 async function canvasBounds(page) {
   const b = await page.evaluate(() => {
@@ -121,9 +149,8 @@ async function canvasBounds(page) {
         await page
           .getByRole("button", { name: "Prendre le service", exact: true })
           .click();
-        await page
-          .getByRole("button", { name: "Passer la cinématique", exact: true })
-          .click();
+        await skipFilm(page);
+        await openPause(page);
         [game] = await Promise.all([
           page.waitForEvent("popup"),
           page
@@ -153,6 +180,7 @@ async function canvasBounds(page) {
         : [
             { width: 960, height: 800 },
             { width: 1280, height: 720 },
+            { width: 1920, height: 1080 },
             { width: 640, height: 700 },
           ]) {
         await game.setViewportSize(size);
@@ -167,9 +195,7 @@ async function canvasBounds(page) {
       await game
         .getByRole("button", { name: "Prendre le service", exact: true })
         .click();
-      await game
-        .getByRole("button", { name: "Passer la cinématique", exact: true })
-        .click();
+      await skipFilm(game);
       await game.waitForTimeout(400);
       await game
         .getByRole("button", { name: "Pause / aide", exact: true })
@@ -189,10 +215,43 @@ async function canvasBounds(page) {
       await bounds(game);
       await canvasBounds(game);
       assert(
-        await game.locator("#radio-caption").isVisible(),
-        "radio captions remain visible",
+        await game.locator("#player-feedback").isHidden(),
+        "no external messages while playing",
+      );
+      assert(
+        await game.locator("#player-toolbar").isHidden(),
+        "controls live inside pause",
+      );
+      const pauseBox = await game.locator("#cadre-pause").boundingBox();
+      assert(
+        pauseBox.width >= 44 && pauseBox.height >= 44,
+        "discreet icon keeps a usable touch target",
       );
       await game.screenshot({ path: path.join(output, name + "-road.png") });
+      if (!touch) {
+        await game.setViewportSize({ width: 1920, height: 1080 });
+        await game.waitForTimeout(250);
+        const full = await bounds(game);
+        assert.equal(full.width, 1440);
+        assert.equal(full.height, 1080);
+      }
+      await game
+        .locator("#game canvas")
+        .screenshot({ path: path.join(output, name + "-frame.png") });
+      // Mobile element screenshots may use the layout viewport's wrong offset.
+      // Capture the real viewport and retain the actual canvas bounds instead.
+      const frameBox = await game.locator("#game canvas").boundingBox();
+      const viewport = await game.evaluate(() => ({
+        width: innerWidth,
+        height: innerHeight,
+      }));
+      await game.screenshot({
+        path: path.join(output, name + "-frame-page.png"),
+      });
+      fs.writeFileSync(
+        path.join(output, name + "-frame-box.json"),
+        JSON.stringify({ frameBox, viewport }),
+      );
       if (!touch) {
         await game.keyboard.press("Escape");
         await page.bringToFront();
@@ -261,6 +320,7 @@ async function canvasBounds(page) {
       }
       assert.deepEqual(errors, []);
       if (name === "chromium") {
+        await ctx.close();
         const blocked = await browser.newContext();
         await blocked.addInitScript(() => {
           window.open = () => null;
@@ -274,7 +334,16 @@ async function canvasBounds(page) {
           };
         });
         const retry = await blocked.newPage();
+        retry.on("pageerror", (e) =>
+          console.error("Blocked-popup page error: " + e.message),
+        );
         await retry.goto(url);
+        await retry
+          .getByRole("button", { name: "Réglages", exact: true })
+          .waitFor({ timeout: 90000 });
+        await retry
+          .getByRole("button", { name: "Réglages", exact: true })
+          .click();
         await retry
           .getByRole("button", { name: "Ouvrir dans une fenêtre", exact: true })
           .waitFor({ timeout: 90000 });
@@ -290,25 +359,48 @@ async function canvasBounds(page) {
           .getByRole("button", { name: "Adapter cet onglet", exact: true })
           .click();
         await retry
+          .getByRole("button", { name: "Retour", exact: true })
+          .click();
+        await retry
           .getByRole("button", { name: "Prendre le service", exact: true })
           .click();
         // The large local art preparation can trigger the intentional long-frame
         // pause on its first live frame. Resume through the player's own control.
         await retry.waitForTimeout(500);
-        const resume = retry.getByRole('button',{name:'Reprendre',exact:true});
-        if(await resume.isVisible()) await resume.click();
-        try { await retry.waitForFunction(
-          () =>
-            window.__windowAudio.some(
-              (a) =>
-                a.src.includes("Intro-Musique") &&
-                !a.paused &&
-                a.currentTime > 0.2,
-            ),
-          null,
-          { timeout: 15000 },
-        ); } catch(error) {
-          console.error(await retry.evaluate(()=>({focus:document.hasFocus(),panel:document.getElementById('player-panel').innerText,sequence:document.getElementById('game').getAttribute('data-sequence'),audio:window.__windowAudio.map(a=>({src:a.src.split('/').pop(),paused:a.paused,time:a.currentTime,ready:a.readyState,error:a.error?.code}))})));
+        const resume = retry.getByRole("button", {
+          name: "Reprendre",
+          exact: true,
+        });
+        if (await resume.isVisible()) await resume.click();
+        try {
+          await retry.waitForFunction(
+            () =>
+              window.__windowAudio.some(
+                (a) =>
+                  a.src.includes("Intro-Musique") &&
+                  !a.paused &&
+                  a.currentTime > 0.2,
+              ),
+            null,
+            { timeout: 15000 },
+          );
+        } catch (error) {
+          console.error(
+            await retry.evaluate(() => ({
+              focus: document.hasFocus(),
+              panel: document.getElementById("player-panel").innerText,
+              sequence: document
+                .getElementById("game")
+                .getAttribute("data-sequence"),
+              audio: window.__windowAudio.map((a) => ({
+                src: a.src.split("/").pop(),
+                paused: a.paused,
+                time: a.currentTime,
+                ready: a.readyState,
+                error: a.error?.code,
+              })),
+            })),
+          );
           throw error;
         }
         await blocked.close();

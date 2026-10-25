@@ -3,7 +3,21 @@
 Jeu d’action rétro satirique français : rejoindre une affectation en voiture,
 traverser un établissement dégradé, puis faire cours avant la fin du délai.
 
-## Lien de playtest
+## Jouer et télécharger
+
+**[▶ Jouer à la version actuellement publiée](https://kouboy.github.io/Technoprof/)** ·
+[Versions déjà publiées](https://github.com/Kouboy/Technoprof/releases)
+
+La nouvelle publication et son ZIP sont préparés, **en attente de validation
+humaine**. Le futur lien stable sera
+`https://github.com/Kouboy/Technoprof/releases/latest/download/Technoprof-local.zip`.
+
+Pour la version locale : télécharger le ZIP, **extraire tout le dossier**, puis
+ouvrir `Technoprof/Jouer-Technoprof-Fenetre.html` et cliquer sur **Ouvrir le jeu
+dans sa fenêtre**. Sur Windows, `Jouer.cmd` ouvre aussi le lanceur. Le jeu fonctionne
+hors connexion : conserver le dossier `audio/` avec les fichiers HTML.
+
+## Version de playtest
 
 **[Jouer à Technoprof](https://kouboy.github.io/Technoprof/)** — journée complète
 Ormeaux H1 / Auguste-Berthelot A3 / Trois-Ponts I2, retour nocturne à Maison et cinématiques sonorisées.
@@ -16,8 +30,9 @@ Le menu de pause et le bilan permettent d’exporter le journal d’essai.
 
 **Lancement conseillé : ouvrir Jouer-Technoprof-Fenetre.html**, puis **Ouvrir le jeu
 dans sa fenêtre**. `Jouer.cmd` ouvre ce lanceur sur Windows. Le cadre conserve le
-ratio 4:3 quand la fenêtre est redimensionnée ; les commandes Pause/son et les
-sous-titres restent accessibles. Le plein écran est facultatif. En cas de blocage
+ratio 4:3 en utilisant toute la place disponible. Un petit bouton Pause discret
+dans le CADRE donne accès au son, au plein écran et aux commandes. Le bulletin
+radio est consultable dans le menu de pause pendant la croisière. En cas de blocage
 des fenêtres, le lien **Jouer dans cet onglet** conserve le même affichage adapté.
 Garder `Jouer-Technoprof-Journee-Atelier.html` et le dossier `audio/` à côté du
 lanceur. Ce lanceur de moins de 2 Kio ne duplique pas les images du jeu.
@@ -82,6 +97,7 @@ npm run test:rapide
 | `npm run test:rapide` | Règles principales, conduite, lumières, audio de route et voiture |
 | `npm run test:playtest` | Validation consolidée de la journée actuelle : interface, gamefeel, musiques, cinéma, SFX, assets, signalétique, textes et fenêtre |
 | `npm run test:fenetre` | Ouverture, réutilisation, blocage et repli, plein écran refusé/accepté |
+| `npm run test:cadre` | Cadre après intro, dessin des jauges et cinq barres auto/professeur |
 | `npm run test:lettres` | Rendu bitmap identique et réduction du nombre de rectangles |
 | `npm run audit:projet` | Inventaire en lecture seule et accessibilité des modules depuis le jeu |
 | `npm run test:journee` | Trois trajets + H1/A3/I2, commandes, soins, transitions et bilan à 30/60/120 fps simulés |
@@ -91,6 +107,7 @@ npm run test:rapide
 | `npm run test:sfx` | Samples low-fi, variantes, sols, pas/cinématiques, portes/escaliers et interruptions |
 | `npm run test:pages` | Export web : images inchangées, treize thèmes et quatre stems cinéma |
 | `npm run build:pages` | Journée musicale pour Pages, puis vérification du contenu de `dist/` |
+| `npm run package:local` | Après `build:journee` : ZIP joueur avec ses 17 WAV, manifeste et SHA256 (PowerShell 7) |
 | `npm run test:retouches` | Nouveaux délais/dégâts, radio et claquement de portière |
 | `npm run test:signaletique` | Panneaux et rendu des trois établissements |
 | `npm run test:sequences` | Entrée en classe, échecs et feedbacks sonores |
@@ -122,6 +139,8 @@ distingue les premiers gains du [chargement allégé de la journée](docs/techni
 L’[historique Git](HISTORIQUE.md) décrit les sauvegardes importées.
 La [passe fenêtre et nettoyage du 25 octobre](docs/technique/FENETRE-NETTOYAGE-2026-10-25.md)
 documente les vérifications, le rangement et les limites des optimisations.
+La [procédure de publication](docs/technique/PUBLICATION.md) décrit Pages et le
+ZIP de Release, construits depuis le même commit.
 
 GitHub Pages publie `dist/` uniquement après un envoi sur `main`, via
 [pages.yml](.github/workflows/pages.yml). Le workflow vérifie la journée, la

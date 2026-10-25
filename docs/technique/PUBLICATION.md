@@ -1,0 +1,50 @@
+# Publier le playtest : navigateur et version locale
+
+Deux liens permanents à communiquer :
+
+- Navigateur : https://kouboy.github.io/Technoprof/
+- ZIP local : https://github.com/Kouboy/Technoprof/releases/latest/download/Technoprof-local.zip
+
+## Version locale
+
+Le téléchargement est l'asset **Technoprof-local.zip** d'une GitHub Release.
+Extraire le ZIP entier, puis ouvrir `Technoprof/Jouer-Technoprof-Fenetre.html`.
+Sur Windows, `Jouer.cmd` ouvre ce lanceur. Le navigateur et les fichiers locaux
+suffisent ; aucune installation du moteur ni serveur ne sont nécessaires.
+
+L'archive contient uniquement la journée jouable, le lanceur, Jouer.cmd, les
+consignes, le questionnaire, un manifeste et les 17 WAV réellement utilisés.
+Le fichier `BUILD-INFO.json` indique le commit et les SHA256 des fichiers.
+Le SHA256 du ZIP est publié séparément dans `Technoprof-local.zip.sha256`.
+Les ateliers et archives de développement restent dans le dépôt, hors du ZIP.
+
+## Publication reproductible
+
+1. Vérifier la version : `npm run test:playtest`.
+2. Fusionner la PR validée vers `main`. Le workflow Pages construit et déploie
+   automatiquement le profil web ; vérifier son succès et le commit de
+   `https://kouboy.github.io/Technoprof/build-info.json`.
+3. Sur ce même commit : `npm run build:journee`, puis `npm run package:local`.
+   Le ZIP et son empreinte sont écrits dans `work/checkpoints/release/`.
+   Pour remplacer uniquement ces fichiers générés : `npm run package:local -- -Force`.
+4. Vérifier le ZIP avec `python work/check-local-package.py <chemin-du-zip>` et
+   tester le lanceur extrait dans un navigateur hors connexion.
+5. Créer une Release datée, liée au commit exact, joindre le ZIP et son SHA256,
+   puis la désigner comme dernière Release. Les anciennes versions restent disponibles.
+   Exemple de tag : `playtest-2026-10-25`.
+6. Comparer la taille et le digest de l'asset publié avec le ZIP local, vérifier
+   l'accès public et les deux liens du README.
+
+Le nom de l'asset reste **Technoprof-local.zip** dans chaque Release : l'URL
+`releases/latest/download/...` continue ainsi à pointer vers le téléchargement
+actuel. La Release publique datée est un playtest, sans déclaration de version
+commerciale finale. Ne pas joindre les archives locales historiques, sauvegardes
+ou fichiers personnels au téléchargement joueur.
+
+Le package utilise PowerShell 7 et les bibliothèques ZIP de .NET, sans dépendance
+npm supplémentaire. Le contrôle indépendant utilise la bibliothèque standard ZIP
+de Python. Il faut construire avant de créer le ZIP : le packaging n'invente pas
+un binaire à partir des sources et refuse un fichier attendu manquant.
+L'export journée enregistre aussi le commit et les empreintes des deux HTML dans
+`dist-day/local-build-info.json` : le packaging refuse un export d'un autre commit
+ou modifié après sa construction.

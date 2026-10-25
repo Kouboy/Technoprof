@@ -1,5 +1,10 @@
 # Fenêtre dédiée et préparation des playtests — 25 octobre 2026
 
+Suite aux retours humains, la présentation avec barre et textes extérieurs a été
+remplacée. Voir [les retouches d'affichage](RETOUCHES-AFFICHAGE-2026-10-25.md) :
+cadre conservé après l'intro, plein viewport 4:3, pause discrète et jauge auto en
+cinq barres. La publication reste en attente du prochain feu vert.
+
 ## Lancer le jeu
 
 Ouvrir `Jouer-Technoprof-Fenetre.html`, puis **Ouvrir le jeu dans sa fenêtre**.
@@ -141,5 +146,5 @@ le HTML journée et 157 Mio pour le site avec son audio. Cette passe ne prétend
 résoudre le poids artistique par du rangement. Les grands avertissements de
 bundle Vite restent attendus pour l'export autonome et le moteur commun.
 
-Cette passe est locale sur `codex/window-cleanup` ; le site publié ne change pas
-tant qu'elle n'est pas fusionnée et publiée.
+Cette passe a été préparée sur `codex/window-cleanup`. Sa publication navigateur
+et son téléchargement local suivent la [procédure de publication](PUBLICATION.md).

@@ -9,7 +9,13 @@ assert(
 const source = stripTypeScriptTypes(
   fs.readFileSync("src/game-window.ts", "utf8").replace(/export /g, ""),
 );
-function fixture({ blocked = false, dedicated = false, denied = false } = {}) {
+function fixture({
+  blocked = false,
+  dedicated = false,
+  denied = false,
+  width = 1000,
+  height = 800,
+} = {}) {
   const classes = new Set(),
     events = {},
     nodes = {};
@@ -41,6 +47,7 @@ function fixture({ blocked = false, dedicated = false, denied = false } = {}) {
       focused++;
     },
   };
+  const sizes = {};
   const body = {
     classList: {
       toggle(k, on) {
@@ -51,7 +58,11 @@ function fixture({ blocked = false, dedicated = false, denied = false } = {}) {
         return classes.has(k);
       },
     },
-    style: { setProperty() {} },
+    style: {
+      setProperty(k, v) {
+        sizes[k] = v;
+      },
+    },
   };
   const doc = {
     body,
@@ -82,8 +93,8 @@ function fixture({ blocked = false, dedicated = false, denied = false } = {}) {
   let requested;
   const win = {
     location,
-    innerWidth: 1000,
-    innerHeight: 800,
+    innerWidth: width,
+    innerHeight: height,
     screen: { availWidth: 1600, availHeight: 1000 },
     open(...args) {
       opens++;
@@ -130,10 +141,26 @@ function fixture({ blocked = false, dedicated = false, denied = false } = {}) {
       return requested;
     },
     nodes,
+    sizes,
   };
 }
 (async () => {
   const f = fixture();
+  assert(
+    f.classes.has("player-screen"),
+    "all player views use the fitted frame",
+  );
+  assert.equal(
+    f.sizes["--window-game-width"],
+    "1000px",
+    "no reserved external toolbar or feedback space",
+  );
+  const large = fixture({ dedicated: true, width: 1920, height: 1080 });
+  assert.equal(
+    large.sizes["--window-game-width"],
+    "1440px",
+    "4:3 fills 1080p height without 960px cap",
+  );
   f.button("Ouvrir dans une fenêtre").onclick();
   assert.equal(f.opens, 1);
   assert.equal(f.pauses, 1);

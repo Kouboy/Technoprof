@@ -77,6 +77,7 @@ export function contextualHelp(s: PlayerContext) {
   return "";
 }
 type Host = PlayerContext & {
+  pauseControl?: boolean;
   runPolicy?: RunPolicy;
   cinematic?: {
     index: number;
@@ -114,6 +115,7 @@ export function installPlayerExperience(s: Host) {
   const loading = document.getElementById("loading");
   if (loading) loading.hidden = true;
   toolbar.hidden = false;
+  s.pauseControl = true;
   let hints = true,
     menuPage = "home",
     previous = "",
@@ -187,6 +189,11 @@ export function installPlayerExperience(s: Host) {
     sync();
   };
   const pauseButton = button("Pause / aide", () => open("home"));
+  const pauseControl = button("Pause", () => open("home"));
+  pauseControl.id = "cadre-pause";
+  pauseControl.setAttribute("aria-label", "Pause / aide");
+  pauseControl.title = "Pause / menu (P ou Échap)";
+  document.getElementById("game-shell")?.append(pauseControl);
   const toggleMute = () => {
     s.audio.muted = !s.audio.muted;
     save();
@@ -210,10 +217,13 @@ export function installPlayerExperience(s: Host) {
   const muteButton = button("Couper le son", toggleMute);
   toolbar.append(pauseButton, muteButton);
   const storySkip = button("Passer la cinématique", () => {
+    if (s.paused) s.setPaused(false);
+    s.setPlayerMenu(false);
     s.skipCinematic?.();
+    sync();
     game.focus();
   });
-  for (const b of [storySkip])
+  for (const b of [storySkip, pauseControl])
     b.onkeydown = (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
@@ -224,7 +234,10 @@ export function installPlayerExperience(s: Host) {
   storySkip.hidden = true;
   toolbar.append(storySkip);
   const musicRetry = s.music
-    ? button("Relancer la musique", () => { s.music?.retry(); s.cinematicAudio?.retry(); })
+    ? button("Relancer la musique", () => {
+        s.music?.retry();
+        s.cinematicAudio?.retry();
+      })
     : undefined;
   if (musicRetry) {
     musicRetry.hidden = true;
@@ -300,6 +313,7 @@ export function installPlayerExperience(s: Host) {
       currentMode = mode;
     }
     pauseButton.hidden = !mode ? false : true;
+    pauseControl.hidden = !!mode;
     const inStory = s.phase === "intro" || s.phase === "ending";
     const storyKey = s.cinematic
       ? s.cinematic.kind + ":" + s.cinematic.index
@@ -308,7 +322,7 @@ export function installPlayerExperience(s: Host) {
       previousStory = storyKey;
       game.setAttribute("data-sequence", storyKey);
     }
-    storySkip.hidden = !inStory || !!mode;
+    storySkip.hidden = !inStory;
     const muteText = s.audio.muted ? "Activer le son (M)" : "Couper le son (M)";
     if (muteButton.textContent !== muteText) muteButton.textContent = muteText;
     const hint = hints ? contextualHelp(s) : "";
@@ -360,6 +374,7 @@ export function installPlayerExperience(s: Host) {
     s.setPlayerMenu(!!mode);
     if (!mode) return;
     root.replaceChildren();
+    root.scrollTop = 0;
     const eyebrow = document.createElement("small");
     eyebrow.textContent = "CADRE / PERSONNEL REMPLAÇANT";
     const heading = document.createElement("h1");
@@ -377,6 +392,7 @@ export function installPlayerExperience(s: Host) {
                 : "Radiation prononcée"
               : "Service suspendu";
     root.append(eyebrow, heading);
+    if (menuPage !== "home" || mode !== "title") root.append(toolbar);
     if (menuPage === "controls") {
       paragraph(
         "Trois affectations à réussir. Au premier échec, la tentative se termine et vous repartez à la première affectation. Attendez l’ordre en voiture, rejoignez l’établissement puis trouvez la salle. Le délai est commun à la route et à la recherche ; l’arrivée automatique est gratuite.",
@@ -434,7 +450,11 @@ export function installPlayerExperience(s: Host) {
           s.reducedShake,
           (v: boolean) => (s.reducedShake = v),
         ],
-        ["Rappels contextuels", hints, (v: boolean) => (hints = v)],
+        [
+          "Aide contextuelle dans le menu pause",
+          hints,
+          (v: boolean) => (hints = v),
+        ],
       ] as [string, boolean, (v: boolean) => void][]) {
         const wrap = document.createElement("label"),
           input = document.createElement("input");
@@ -449,7 +469,7 @@ export function installPlayerExperience(s: Host) {
         root.append(wrap);
       }
       paragraph(
-        "La radio reste sous-titrée. Une voix française locale est utilisée si elle est disponible ; sinon le bulletin est présenté en texte.",
+        "Le bulletin radio est consultable dans le menu pause pendant la croisière. Une voix française locale est utilisée si elle est disponible.",
       );
     } else if (mode === "title") {
       root.append(
@@ -486,6 +506,12 @@ export function installPlayerExperience(s: Host) {
           : "Le délai est arrêté. Soufflez un instant.",
       );
       paragraph(DAY_BRIEFS[Math.min(2, s.mission)]);
+      if (hints) {
+        const hint = contextualHelp({ ...s, paused: false });
+        if (hint) paragraph(hint);
+      }
+      if (s.phase === "free")
+        paragraph(RADIO_NAME + " — " + RADIO_BULLETINS[Math.min(2, s.mission)]);
     }
     const actions = document.createElement("div");
     actions.className = "player-actions";

@@ -11,6 +11,7 @@ classement. Les décisions de gameplay historiques restent consultables.
 - `historique/` : notes GAMEPLAY 0.43–0.61, audits 0.42/0.54/0.60 et anciens plans.
 - [Nettoyage et performance](technique/NETTOYAGE-2026-10-22.md) : état technique mesuré.
 - [Fenêtre et nettoyage avant playtests](technique/FENETRE-NETTOYAGE-2026-10-25.md) : lanceur dédié, vérifications, rangement et mesures actuelles.
+- [Retouches d'affichage après essais humains](technique/RETOUCHES-AFFICHAGE-2026-10-25.md) : cadre conservé après intro, affichage 4:3 étendu, pause discrète et jauge auto.
 - [Assets de la journée](technique/ASSETS-JOURNEE-2026-10-22.md) : séparation de la livraison et des anciens ateliers.
 - `superpowers/plans/` : étapes techniques en cours.
 - [Retour nocturne à Maison](RETOUR-MAISON-A-PREVOIR.md) : quatrième trajet protégé, réglages et lancement local.

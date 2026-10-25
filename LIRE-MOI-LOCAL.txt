@@ -1,24 +1,26 @@
-TECHNOPROF - JOURNEE D'ATELIER
+TECHNOPROF — Physique appliquée
+Version locale de playtest
 
-Ouvrir Jouer-Technoprof-Fenetre.html, puis Ouvrir le jeu dans sa fenetre.
-Jouer.cmd ouvre ce lanceur sur Windows. Le cadre reste en 4:3 au redimensionnement.
-Si la fenetre est bloquee, utiliser Jouer dans cet onglet.
-Garder le fichier Journee-Atelier et le dossier audio/ a cote du lanceur.
+1. Extraire le ZIP entier avant de lancer le jeu.
+2. Dans le dossier Technoprof, ouvrir Jouer-Technoprof-Fenetre.html.
+3. Cliquer sur « Ouvrir le jeu dans sa fenêtre », puis « Prendre le service ».
+Sur Windows, Jouer.cmd ouvre aussi le lanceur. Si une fenêtre est bloquée,
+choisir « Jouer dans cet onglet ». Le cadre reste en 4:3 au redimensionnement.
 
-Trois trajets et trois etablissements : Ormeaux H1, Auguste-Berthelot A3,
-lycee professionnel des Trois-Ponts I2. Le fichier de journee est autonome
-sans musique peut etre copie seul. La journee musicale utilise aussi audio/.
-Les autres ateliers sont de petits raccourcis :
-garder Jouer-Technoprof.html a cote pour les utiliser.
-La journee allegee (~128 Mo) contient les memes images utiles ; le fichier
-d'atelier complet (~163 Mo) conserve aussi les anciens essais.
+Le jeu fonctionne hors connexion, sans installation ni serveur.
+Garder le dossier audio/ à côté des fichiers HTML pour entendre les musiques
+et les cinématiques. Les réglages proposent quatre volumes séparés.
 
-Commandes : fleches ou ZQSD ; Espace = saut ; F/X = frappe ou dialogue.
-Souris et toucher directement dans la scene. L'aide en jeu explique les gestes.
+Trois affectations à réussir : Collège des Ormeaux, Lycée Auguste-Berthelot,
+Lycée professionnel des Trois-Ponts. Le premier échec termine la tentative.
 
-Anciennes livraisons 0.40-0.60 : archives/versions (avec manifestes SHA256).
-La 0.61 publiee reste a la racine, inchangee.
-Documentation et tests : README.md et docs/README.md.
+Commandes : flèches ou ZQSD ; Espace = saut ; F/X = frappe ou dialogue.
+Souris et toucher directement dans la scène. Commandes et réglages sont dans
+le menu ; P ou Échap suspend le jeu. Sur téléphone, le paysage est conseillé.
 
-Pour regenerer le jouable : npm run build:atelier.
-Pour regenerer uniquement la journee : npm run build:journee.
+Après l'essai : Pause / aide > Exporter mon essai sauvegarde un journal JSON.
+Le questionnaire RETOURS-TEST.txt aide à noter les retours. Rien n'est transmis
+automatiquement. BUILD-INFO.json identifie la version et ses fichiers.
+
+Jouer en ligne : https://kouboy.github.io/Technoprof/
+Dernier téléchargement : https://github.com/Kouboy/Technoprof/releases/latest
