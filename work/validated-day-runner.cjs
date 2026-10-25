@@ -162,10 +162,7 @@ exports.runDay = ({
     if (g.phase === "intro" || g.phase === "ending") {
       const frames = cinematics[g.phase];
       if (frames.at(-1) !== g.cinematic.index) frames.push(g.cinematic.index);
-      if (g.cinematic.ready) {
-        if (mode === "keyboard") pulse("ENTER");
-        else tap(160, 120);
-      }
+      // Automatic montage: no input should be needed or injected here.
     } else if (["free", "receive", "road"].includes(g.phase)) {
       const probe = {
         ...g,

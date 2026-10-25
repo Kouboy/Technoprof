@@ -81,6 +81,6 @@ export class CinematicArt {
       .setTexture(key, frame)
       .setDisplaySize(size.w * scale, size.h * scale)
       .setVisible(true)
-      .setAlpha(Math.min(1, sequence.age / CINEMATIC.fadeSeconds));
+      .setAlpha(sequence.panel.cut ? 1 : Math.min(1, sequence.age / CINEMATIC.fadeSeconds));
   }
 }

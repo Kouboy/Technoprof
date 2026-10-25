@@ -215,5 +215,5 @@ fs.writeFileSync(
   ) + "\n",
 );
 console.log(
-  "PASS complete day: three roads + H1/A3/I2 courses at 30/60/120 fps, 2/12 input-driven cinematic panels with frozen clocks, shared clocks, care, damage persistence, terminal 2/3 failure, pause, timeout, fresh H1 retry, lab switch and explicit legacy isolation.",
+  "PASS complete day: three roads + H1/A3/I2 courses at 30/60/120 fps, automatic 10/57s cinematics with frozen mission clocks, shared clocks, care, damage persistence, terminal 2/3 failure, pause, timeout, fresh H1 retry, lab switch and explicit legacy isolation.",
 );

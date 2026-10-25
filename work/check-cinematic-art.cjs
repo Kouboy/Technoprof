@@ -99,9 +99,13 @@ for (const kind of ["intro", "ending"]) {
     assert(Math.abs(image.w / image.h - crop.w / crop.h) < 0.001, "preserve each illustration's proportions");
     assert(image.w <= 212.0001 && image.h <= 158.0001);
     assert.equal(image.alpha, 1);
-    s.advance();
+    s.tick(s.panel.seconds - s.age, false);
   }
 }
+const start = new scope.api.CinematicSequence("intro");
+art.render(start); assert.equal(image.alpha, 0, "ordinary opening fades in");
+const rupture = new scope.api.CinematicSequence("ending");
+for (const index of [10, 11]) { rupture.index = index; rupture.age = 0; art.render(rupture); assert.equal(image.alpha, 1, "bell and wake-up cut immediately"); }
 art.hide();
 assert(!image.visible);
 assert(image.w <= 212.0001 && image.h <= 158.0001);

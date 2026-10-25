@@ -1,29 +1,38 @@
 export type CinematicKind = "intro" | "ending";
 export type CinematicCue = "alarm" | "doorbell" | "bell";
 export type CinematicTexture = "cinematic-storyboard" | "cinematic-intro-v2" | "cinematic-campus-v2";
-type CinematicPanel = { id: string; texture: CinematicTexture; frame: number; cue?: CinematicCue };
-const original = (id: string, frame: number, cue?: CinematicCue): CinematicPanel =>
-  ({ id, texture: "cinematic-storyboard", frame, cue });
-const campus = (id: string, frame: number): CinematicPanel =>
-  ({ id, texture: "cinematic-campus-v2", frame });
+type CinematicPanel = { id: string; texture: CinematicTexture; frame: number; seconds: number; cue?: CinematicCue; cut?: boolean };
+const original = (id: string, frame: number, seconds: number, cue?: CinematicCue, cut = false): CinematicPanel =>
+  ({ id, texture: "cinematic-storyboard", frame, seconds, cue, cut });
+const campus = (id: string, frame: number, seconds: number): CinematicPanel =>
+  ({ id, texture: "cinematic-campus-v2", frame, seconds });
 export const CINEMATIC_PANELS: Record<CinematicKind, readonly CinematicPanel[]> = {
   intro: [
-    { id: "wake-in-bed", texture: "cinematic-intro-v2", frame: 0, cue: "alarm" },
-    { id: "departure", texture: "cinematic-intro-v2", frame: 1 },
+    { id: "wake-in-bed", texture: "cinematic-intro-v2", frame: 0, seconds: 5.5, cue: "alarm" },
+    { id: "departure", texture: "cinematic-intro-v2", frame: 1, seconds: 4.5 },
   ],
   ending: [
-    original("grading", 2), original("fatigue", 3), original("doorbell", 4, "doorbell"),
-    original("visitor", 5), original("invitation", 6), campus("courtyard", 0),
-    original("corridor", 7), campus("preparation", 1), original("classroom", 8),
-    campus("aesh", 2), original("bell", 9, "bell"), original("wake", 10, "alarm"),
+    original("grading", 2, 5), original("fatigue", 3, 3.5), original("doorbell", 4, 2.5, "doorbell"),
+    original("visitor", 5, 4), original("invitation", 6, 4), campus("courtyard", 0, 7),
+    original("corridor", 7, 5), campus("preparation", 1, 6), original("classroom", 8, 7),
+    campus("aesh", 2, 6), original("bell", 9, 1.2, "bell", true), original("wake", 10, 5.8, "alarm", true),
   ],
 };
-export const CINEMATIC = { minimumSeconds: 0.45, fadeSeconds: 0.18 };
+export const CINEMATIC = { fadeSeconds: 0.18 };
+export function cinematicTimecodes(kind: CinematicKind) {
+  let start = 0;
+  return CINEMATIC_PANELS[kind].map(panel => {
+    const entry = { id: panel.id, start, end: start + panel.seconds, seconds: panel.seconds, cue: panel.cue ?? "" };
+    start = entry.end;
+    return entry;
+  });
+}
 export class CinematicSequence {
   private static serial = 0;
   readonly token = ++CinematicSequence.serial;
   index = 0;
   age = 0;
+  elapsed = 0;
   done = false;
   readonly count: number;
   readonly kind: CinematicKind;
@@ -40,22 +49,28 @@ export class CinematicSequence {
   get frame() {
     return this.panel.frame;
   }
-  get ready() {
-    return !this.done && this.age >= CINEMATIC.minimumSeconds;
+  get totalSeconds() {
+    return CINEMATIC_PANELS[this.kind].reduce((sum, p) => sum + p.seconds, 0);
   }
   tick(dt: number, paused: boolean) {
-    if (!paused && !this.done) this.age += dt;
-  }
-  advance() {
-    if (!this.ready) return false;
-    if (this.index + 1 === this.count) this.done = true;
-    else {
-      this.index++;
-      this.age = 0;
+    if (paused || this.done || !Number.isFinite(dt) || dt < 0) return;
+    this.elapsed = Math.min(this.totalSeconds, this.elapsed + dt);
+    let start = 0;
+    for (let i = 0; i < this.count; i++) {
+      const end = start + CINEMATIC_PANELS[this.kind][i].seconds;
+      if (this.elapsed + 1e-9 < end) {
+        this.index = i;
+        this.age = Math.max(0, this.elapsed - start);
+        return;
+      }
+      start = end;
     }
-    return true;
+    this.elapsed = this.totalSeconds;
+    this.index = this.count - 1;
+    this.age = this.panel.seconds;
+    this.done = true;
   }
   skip() {
-    if (this.kind === "intro") this.done = true;
+    this.done = true;
   }
 }

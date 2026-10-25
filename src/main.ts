@@ -1322,12 +1322,16 @@ class Game extends Phaser.Scene {
     }
     this.setPlayerMenu(false);
   }
-  advanceCinematic(skip = false) {
+  skipCinematic() {
     const sequence = this.cinematic;
     if (!sequence || this.paused || this.playerMenu) return;
-    if (skip) sequence.skip();
-    else if (!sequence.advance()) return;
-    this.session.record("cinematic-advance",this.mission,this.room,{kind:sequence.kind,index:sequence.index,done:sequence.done,skipped:skip});
+    sequence.skip();
+    this.completeCinematic(true);
+  }
+  completeCinematic(skipped = false) {
+    const sequence = this.cinematic;
+    if (!sequence?.done) return;
+    this.session.record("cinematic-end",this.mission,this.room,{kind:sequence.kind,elapsed:sequence.elapsed,skipped});
     this.cancelBufferedActions("cinematic");
     if (sequence.done) {
       this.direct?.cancel();
@@ -2591,8 +2595,12 @@ class Game extends Phaser.Scene {
     }
     this.age += dt;
     if (this.phase === "intro" || this.phase === "ending") {
-      this.cinematic?.tick(dt, false);
-      if (attackPressed || enterPressed || jumpPressed) this.advanceCinematic();
+      const story = this.cinematic;
+      const previous = story?.index;
+      story?.tick(dt, false);
+      if (story && story.index !== previous)
+        this.session.record("cinematic-panel",this.mission,this.room,{kind:story.kind,id:story.panel.id,index:story.index,elapsed:story.elapsed});
+      this.completeCinematic();
     } else if (this.phase === "title" || this.phase === "report") {
       if (enterPressed) this.startDay();
     } else if (this.phase === "opening") {

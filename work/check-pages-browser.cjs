@@ -145,9 +145,11 @@ async function main() {
       await activate("Prendre le service");
       if (
         await page
-          .getByRole("button", { name: "Passer l’introduction", exact: true })
+          .getByRole("button", { name: "Passer la cinématique", exact: true })
           .isVisible()
       )
+        await activate("Passer la cinématique");
+      else if (await page.getByRole("button", { name: "Passer l’introduction", exact: true }).isVisible())
         await activate("Passer l’introduction");
       await page.waitForFunction(
         () =>

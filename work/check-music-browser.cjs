@@ -32,7 +32,7 @@ const media=page=>page.evaluate(()=>window.__musicAudio.filter(a=>/\/(maquettes|
    await page.getByRole('button',{name:/Activer le son/}).click();await playing(page,'Technoprof-Titre-Interpretation.wav');assert((await media(page))[0].time>=titleOffset);
    await page.getByRole('button',{name:'Retour',exact:true}).click();await page.locator('#game').focus();await page.keyboard.press('Enter');
    await page.waitForTimeout(400);assert((await media(page)).every(a=>a.paused&&a.time===0),'title stops before the bulletin');
-   const introSkip=page.getByRole('button',{name:'Passer l’introduction',exact:true});if(await introSkip.isVisible())await introSkip.click();
+   const introSkip=page.getByRole('button',{name:/^Passer (la cinématique|l’introduction)$/});if(await introSkip.isVisible())await introSkip.click();
    await page.waitForFunction(()=>window.__musicAudio.some(a=>a.src.endsWith('02-autoradio.wav')),{},{timeout:35000});
    const retry=page.getByRole('button',{name:'Relancer la musique',exact:true});if(await retry.isVisible())await retry.click();
    await playing(page,'02-autoradio.wav');assert.equal((await media(page))[0].volume,.25);

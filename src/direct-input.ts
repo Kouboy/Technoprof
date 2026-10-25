@@ -160,7 +160,6 @@ export class DirectInput {
     const s = this.host;
     s.pointerMode = true;
     if (s.phase === "intro" || s.phase === "ending") {
-      this.pulse("X");
       return;
     }
     if (s.phase === "course") {

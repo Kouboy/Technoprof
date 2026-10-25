@@ -23,8 +23,10 @@ réussir : le premier échec interrompt la journée, et recommencer repart du d�
 Cette passe locale ajoute une introduction et une conclusion illustrées muettes,
 encore provisoires : deux images d’introduction, douze de conclusion, dont trois
 étapes de découverte du campus idéal (cour, préparation, accompagnement AESH).
-F/X, Entrée, Espace ou un toucher avancent les images ;
-l’introduction peut être passée. Les deux musiques de cinématique restent à composer.
+La lecture est automatique : introduction 10 secondes, conclusion 57 secondes.
+Pause suspend le montage ; le bouton « Passer la cinématique » passe la séquence
+entière. Les touches de jeu et le toucher sur l’image ne changent pas son rythme.
+Les deux musiques restent à composer sur les [timecodes du montage](docs/cinematiques/MONTAGE.md).
 GitHub Pages conserve la version publiée pendant cette validation.
 Pour jouer avec la musique sur disque, ouvrir **Jouer-Technoprof-Journee-Musique.html**
 et conserver le dossier `audio/` ainsi que le HTML journée à côté du lanceur.

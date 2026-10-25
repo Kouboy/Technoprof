@@ -42,7 +42,7 @@ export type PlayerContext = {
 export function contextualHelp(s: PlayerContext) {
   if (s.paused) return "";
   if (s.phase === "intro" || s.phase === "ending")
-    return "F/X, Entrée, Espace ou toucher : image suivante.";
+    return "Lecture automatique · Pause pour interrompre · Passer la cinématique pour poursuivre.";
   if (s.phase === "course" && s.age > 1)
     return "Une touche ou un toucher pour poursuivre après le cours.";
   if (s.mission !== 0)
@@ -79,9 +79,8 @@ type Host = PlayerContext & {
     index: number;
     count: number;
     kind: string;
-    ready?: boolean;
   } | null;
-  advanceCinematic?(skip?: boolean): void;
+  skipCinematic?(): void;
   sceneSoundContext?(): SceneSoundContext;
   validatedDay?: boolean;
   won: number;
@@ -206,15 +205,11 @@ export function installPlayerExperience(s: Host) {
   };
   const muteButton = button("Couper le son", toggleMute);
   toolbar.append(pauseButton, muteButton);
-  const storyNext = button("Continuer", () => {
-    s.advanceCinematic?.();
+  const storySkip = button("Passer la cinématique", () => {
+    s.skipCinematic?.();
     game.focus();
   });
-  const storySkip = button("Passer l’introduction", () => {
-    s.advanceCinematic?.(true);
-    game.focus();
-  });
-  for (const b of [storyNext, storySkip])
+  for (const b of [storySkip])
     b.onkeydown = (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
@@ -222,8 +217,8 @@ export function installPlayerExperience(s: Host) {
         if (!event.repeat) b.click();
       }
     };
-  storyNext.hidden = storySkip.hidden = true;
-  toolbar.append(storyNext, storySkip);
+  storySkip.hidden = true;
+  toolbar.append(storySkip);
   const musicRetry = s.music
     ? button("Relancer la musique", () => s.music?.retry())
     : undefined;
@@ -309,9 +304,7 @@ export function installPlayerExperience(s: Host) {
       previousStory = storyKey;
       game.setAttribute("data-sequence", storyKey);
     }
-    storyNext.hidden = !inStory || !!mode;
-    storyNext.disabled = s.cinematic?.ready === false;
-    storySkip.hidden = s.phase !== "intro" || !!mode;
+    storySkip.hidden = !inStory || !!mode;
     const muteText = s.audio.muted ? "Activer le son (M)" : "Couper le son (M)";
     if (muteButton.textContent !== muteText) muteButton.textContent = muteText;
     const hint = hints ? contextualHelp(s) : "";
@@ -536,7 +529,6 @@ export function installPlayerExperience(s: Host) {
       ) {
         event.preventDefault();
         event.stopImmediatePropagation();
-        if (!event.repeat && !s.paused) s.advanceCinematic?.();
         return;
       }
       if (event.repeat) return;
