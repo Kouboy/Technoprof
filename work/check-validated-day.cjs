@@ -15,6 +15,12 @@ for (const fps of [30, 60, 120]) {
   assert(!g.workshop, "continuous pilot uses normal player rules");
   assert.equal(r.phase, "report");
   assert.equal(g.runPolicy, "three-required");
+  assert(r.homeReturn.seconds > 90, "the day really drives home before the ending");
+  assert(r.homeReturn.arrivalSeconds >= 3.25, "parking, fade and black hold precede ending");
+  assert.equal(r.homeReturn.completions.length, 1);
+  assert.equal(r.homeReturn.completions[0].meters, 3000);
+  assert.equal(r.homeReturn.completions[0].vehicle, r.ends[2].vehicle);
+  assert.equal(r.results.length, 3, "return adds no fourth assignment result");
   assert.deepEqual(r.cinematics.intro, [0, 1]);
   assert.deepEqual(r.cinematics.ending, Array.from({ length: 12 }, (_, i) => i));
   assert(
@@ -215,5 +221,5 @@ fs.writeFileSync(
   ) + "\n",
 );
 console.log(
-  "PASS complete day: three roads + H1/A3/I2 courses at 30/60/120 fps, automatic 10/57s cinematics with frozen mission clocks, shared clocks, care, damage persistence, terminal 2/3 failure, pause, timeout, fresh H1 retry, lab switch and explicit legacy isolation.",
+  "PASS complete day: three assignments + protected 3 km home road and parked black fade at 30/60/120 fps; automatic 10/57s cinematics, shared clocks, care, damage persistence, terminal 2/3 failure, pause, timeout, fresh H1 retry, lab switch and legacy isolation.",
 );

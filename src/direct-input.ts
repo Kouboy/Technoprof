@@ -95,7 +95,7 @@ export class DirectInput {
     if (this.blocked() || this.gesture) return false;
     const s = this.host;
     s.pointerMode = true;
-    const road = ["free", "receive", "road"].includes(s.phase);
+    const road = ["free", "receive", "road", "home"].includes(s.phase);
     if (
       !road &&
       s.phase !== "school" &&
@@ -228,7 +228,7 @@ export class DirectInput {
     const context =
       s.room +
       ":" +
-      (["free", "receive", "road"].includes(s.phase) ? "drive" : s.phase) +
+      (["free", "receive", "road", "home"].includes(s.phase) ? "drive" : s.phase) +
       ":" +
       (s.encounterTime > 0) +
       ":" +

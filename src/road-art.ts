@@ -470,8 +470,8 @@ export class RoadArt {
       for (let y = 7; y < horizon; y++) {
         const p = (y - 7) / (horizon - 7);
         glow.fillStyle(
-          mission === 2 ? 0xd68a66 : mission === 0 ? 0xd7b786 : 0xf9e4b1,
-          (mission === 1 ? 0.1 : 0.38) * p * p,
+          mission === 3 ? 0x496075 : mission === 2 ? 0xd68a66 : mission === 0 ? 0xd7b786 : 0xf9e4b1,
+          (mission === 3 ? 0.07 : mission === 1 ? 0.1 : 0.38) * p * p,
         );
         glow.fillRect(7, y, 306, 1);
       }
@@ -509,7 +509,7 @@ export class RoadArt {
     mission: number,
     speed: number,
   ) {
-    if (mission !== 2 || (key === "district" && frame !== 2)) return;
+    if (mission < 2 || (key === "district" && frame !== 2)) return;
     const bulbs = roadLightPlacement(key, frame, width, flip);
     if (!bulbs.length) return;
     if (key === "district")
@@ -625,7 +625,7 @@ export class RoadArt {
       .setPosition(x, y)
       .setDisplaySize(width, (width * h) / w)
       .setFlipX(flip)
-      .setTint(this.mission === 2 ? ROAD_LIGHT.duskTint : 0xffffff)
+      .setTint(this.mission === 3 ? 0x8094ad : this.mission === 2 ? ROAD_LIGHT.duskTint : 0xffffff)
       .setDepth(this.depth + 0.0001)
       .setVisible(true);
     const tag = roadDecoration(id, key, frame);
@@ -641,7 +641,7 @@ export class RoadArt {
         .setPosition(x + p.dx, y + p.bottom)
         .setDisplaySize(p.width, p.height)
         .setFlipX(false)
-        .setTint(this.mission === 2 ? ROAD_LIGHT.duskTint : 0xffffff)
+        .setTint(this.mission === 3 ? 0x8094ad : this.mission === 2 ? ROAD_LIGHT.duskTint : 0xffffff)
         .setDepth(this.depth + 0.0002)
         .setVisible(true);
     }

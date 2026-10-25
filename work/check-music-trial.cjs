@@ -124,6 +124,18 @@ music.destroy();assert(player.paused);assert.equal(player.src,'');
  const calls=p.playCalls;p.currentTime=12;p.ended=true;p.paused=true;t.advance(1);assert.equal(p.playCalls,calls);
  console.log('PASS real three-mission flow: roads, arrival silence, exploration, complete care and offset return, boss intro/combat/KO, opening and one-shot failure');
 }
+// The protected return keeps a single loop through parking, fades, then stops.
+{
+ const {createGame}=require('./test-harness.cjs'),t=createGame({policy:'three-required'}),g=t.g,p=new Player();
+ g.music=new scope.MusicKit(()=>p);g.audio.musicVolume=.4;g.draw=()=>g.syncMusic();g.mission=g.won=3;g.startHomeReturn();g.draw();
+ assert(p.src.endsWith('13-retour-maison.wav'));assert(p.loop);assert.equal(p.volume,.4);
+ p.currentTime=12;g.setPaused(true);assert(p.paused);g.setPaused(false);assert.equal(p.currentTime,12);
+ g.phase='homeArrival';g.age=0;g.draw();assert.equal(p.volume,.4,'parking cannot amplify the radio before its fade');
+ g.age=2.4;g.draw();assert(Math.abs(p.volume-.2)<1e-8);assert.equal(p.currentTime,12);
+ g.setPaused(true);assert(p.paused);g.setPaused(false);assert(Math.abs(p.volume-.2)<1e-8);
+ g.age=3.1;g.draw();assert.equal(p.volume,0);g.completeHomeReturn();g.draw();assert(p.paused);assert.equal(g.music.current,null);
+ console.log('PASS home radio: dedicated loop, pause offset, parking fade, silence before ending');
+}
 (async()=>{
  let reject;
  const delayed=new Player();delayed.play=function(){this.playCalls++;return new Promise((resolve,rejectFn)=>reject=rejectFn);};

@@ -32,6 +32,28 @@ export const TRAFFIC = {
   // Dense streams keep their authored stagger instead of converging into walls.
   convoySpeed: 74,
 };
+// The return is a protected epilogue, not a fourth assignment.
+export const HOME_DRIVE = {
+  meters: 3000,
+  maxSpeed: 110,
+  cruiseSpeed: 80,
+  cruiseResponse: 2,
+  trafficCount: 6,
+  parkingSeconds: 1.8,
+  fadeSeconds: 1.2,
+  blackSeconds: 0.25,
+};
+export function isHomePhase(phase: string) {
+  return phase === "home" || phase === "homeArrival";
+}
+export function homeTrafficCue(index: number, random: number) {
+  return {
+    gap: (450 + random * 250) * DRIVE.motionScale * (index === 0 ? 1 : 3),
+    x: index % 2 ? -0.62 : 0.62,
+    type: index % 3 === 2 ? 2 : 0,
+    speed: 60 + (index % 3) * 4,
+  };
+}
 export type Traffic = {
   z: number;
   x: number;

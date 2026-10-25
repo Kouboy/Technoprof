@@ -73,6 +73,8 @@ type Host = {
   exportJournal(): void;
 };
 const SCENARIOS: Record<string, string> = {
+  "home-return": "Maison / retour nocturne protégé",
+  "home-return-near": "Maison / derniers mètres et fondu final",
   "cinematic-intro": "Cinématique / introduction muette (animatique)",
   "cinematic-ending": "Cinématique / conclusion muette (animatique)",
   "gamefeel-reference-encounter": "Gamefeel A / rencontre",

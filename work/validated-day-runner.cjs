@@ -163,7 +163,7 @@ exports.runDay = ({
       const frames = cinematics[g.phase];
       if (frames.at(-1) !== g.cinematic.index) frames.push(g.cinematic.index);
       // Automatic montage: no input should be needed or injected here.
-    } else if (["free", "receive", "road"].includes(g.phase)) {
+    } else if (["free", "receive", "road", "home"].includes(g.phase)) {
       const probe = {
         ...g,
         keys: Object.fromEntries(
@@ -281,6 +281,11 @@ exports.runDay = ({
       schoolClocks,
       ends,
       cinematics,
+      homeReturn: {
+        seconds: g.session.phaseSeconds.home ?? 0,
+        arrivalSeconds: g.session.phaseSeconds.homeArrival ?? 0,
+        completions: g.session.events.filter(e => e.kind === "home-return-end").map(e => e.data),
+      },
       collisions: g.collisions,
       falls: g.session.falls,
       journal: g.journalSnapshot(),

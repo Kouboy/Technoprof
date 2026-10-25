@@ -41,6 +41,9 @@ export type PlayerContext = {
 };
 export function contextualHelp(s: PlayerContext) {
   if (s.paused) return "";
+  if (s.phase === "home")
+    return "La journée est assurée. Rentrez tranquillement : aucun délai. Freinez pour ralentir ; relâchez pour reprendre votre allure.";
+  if (s.phase === "homeArrival") return "Vous êtes arrivé. Fin de service.";
   if (s.phase === "intro" || s.phase === "ending")
     return "Lecture automatique · Pause pour interrompre · Passer la cinématique pour poursuivre.";
   if (s.phase === "course" && s.age > 1)

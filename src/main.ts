@@ -101,6 +101,9 @@ import { SliceArt } from "./slice-art";
 import Phaser from "phaser";
 import {
   DRIVE,
+  HOME_DRIVE,
+  isHomePhase,
+  homeTrafficCue,
   trafficCue,
   TRAFFIC,
   trafficWidth,
@@ -202,7 +205,8 @@ class Game extends Phaser.Scene {
         this.encounterTime > 0 ||
         this.bossIntro > 0 ||
         this.recoveryScene.state === "dialogue",
-      volume: this.audio.musicVolume,
+      volume: this.audio.musicVolume *
+        (this.phase === "homeArrival" ? Math.max(0, Math.min(1, 1 - (this.age - HOME_DRIVE.parkingSeconds) / HOME_DRIVE.fadeSeconds)) : 1),
     });
   }
   groundContact?: Phaser.GameObjects.Graphics;
@@ -1566,6 +1570,7 @@ class Game extends Phaser.Scene {
   }
 
   finish(ok: boolean, reason?: FailureReason) {
+    if (isHomePhase(this.phase)) return;
     this.cancelBufferedActions("finish");
     if (
       [
@@ -1642,7 +1647,7 @@ class Game extends Phaser.Scene {
     this.persistJournal();
   }
   next() {
-    if (this.cinematic || this.phase === "report") return;
+    if (this.cinematic || this.phase === "report" || isHomePhase(this.phase)) return;
     if (this.runPolicy === "three-required" && this.phase === "fail") {
       this.startDay(false);
       return;
@@ -1652,13 +1657,61 @@ class Game extends Phaser.Scene {
     if (this.mission === 3) {
       this.phase = "report";
       if (this.runPolicy === "three-required" && campaignWon(this.won)) {
-        this.phase = "ending";
-        this.cinematic = new CinematicSequence("ending");
-        this.session.record("cinematic-start",this.mission,this.room,{kind:"ending"});
+        this.startHomeReturn();
       }
       this.age = 0;
       if (this.validatedDay) this.persistJournal();
     } else this.begin();
+  }
+  startHomeReturn() {
+    this.cancelBufferedActions("home-return");
+    this.direct?.cancel();
+    this.controls?.reset();
+    this.input?.keyboard?.resetKeys();
+    this.audio.radio("", false);
+    this.music?.stop();
+    this.cinematic = null;
+    this.phase = "home";
+    this.navigationProfile = false;
+    this.recoveryScene.reset();
+    this.roomTransition = null;
+    this.encounterTime = this.bossIntro = this.hitStop = 0;
+    this.schoolFade = this.falling = this.impact = 0;
+    this.failureReason = null;
+    this.arena = false;
+    this.enemies = [];
+    this.projectiles = [];
+    this.particles = [];
+    this.tireMarks = [];
+    this.notified = this.arrivalAlert = this.brokenRoad = false;
+    this.age = this.road = this.travel = this.car = this.steerVelocity = 0;
+    this.trafficHit = this.crashPush = this.shoulder = this.shoulderClock = 0;
+    this.skidClock = this.rattleClock = 0;
+    this.messageTime = 0;
+    this.boardMessage = "";
+    this.returnFade = 1.2;
+    this.speed = HOME_DRIVE.cruiseSpeed;
+    this.trafficIndex = 0;
+    let z = 0;
+    this.obstacles = Array.from({length: HOME_DRIVE.trafficCount}, () => {
+      const cue = homeTrafficCue(this.trafficIndex++, this.random.next());
+      z += cue.gap;
+      return {z, x: cue.x, type: cue.type, speed: cue.speed};
+    });
+    this.session.record("home-return-start", this.mission, this.room, {meters: HOME_DRIVE.meters, vehicle: this.vehicle});
+  }
+  completeHomeReturn() {
+    if (this.phase !== "homeArrival") return;
+    this.session.record("home-return-end", this.mission, this.room, {meters: this.road, vehicle: this.vehicle});
+    this.cancelBufferedActions("home-arrival");
+    this.direct?.cancel();
+    this.music?.stop();
+    this.audio.motor(0, false, false);
+    this.phase = "ending";
+    this.age = 0;
+    this.cinematic = new CinematicSequence("ending");
+    this.session.record("cinematic-start", this.mission, this.room, {kind: "ending"});
+    this.persistJournal();
   }
   handleKeyDown(event: Pick<KeyboardEvent, "key" | "repeat">) {
     this.audio.unlock();
@@ -1694,7 +1747,8 @@ class Game extends Phaser.Scene {
   motorRunning() {
     return (
       !this.paused &&
-      (["free", "receive", "road"].includes(this.phase) ||
+      (["free", "receive", "road", "home"].includes(this.phase) ||
+        (this.phase === "homeArrival" && this.age < HOME_DRIVE.parkingSeconds) ||
         (this.phase === "arrival" && this.age < DRIVE.parkingSeconds))
     );
   }
@@ -1888,6 +1942,22 @@ class Game extends Phaser.Scene {
     this.cadreReview = false;
     this.arrivalStill = false;
     this.artReview = -1;
+    if (this.workshop && (name === "home-return" || name === "home-return-near")) {
+      this.runPolicy = "three-required";
+      this.validatedDay = true;
+      this.mission = this.won = 3;
+      this.results = ["COURS ASSURE", "COURS ASSURE", "COURS ASSURE"];
+      this.vehicle = 48;
+      this.startHomeReturn();
+      if (name === "home-return-near") {
+        this.road = HOME_DRIVE.meters - 70;
+        this.travel = this.road * DRIVE.motionScale;
+        for (const o of this.obstacles) o.z += this.travel;
+      }
+      this.session.record("scenario", this.mission, this.room, {name, preview: true});
+      this.draw();
+      return;
+    }
     if (
       this.workshop &&
       (name === "cinematic-intro" || name === "cinematic-ending")
@@ -2562,7 +2632,7 @@ class Game extends Phaser.Scene {
                       ? "encounter"
                       : "orientation"
           : this.phase;
-    this.session.measure(this.mission, category, dt);
+    if (!isHomePhase(this.phase)) this.session.measure(this.mission, category, dt);
     if (this.phase !== this.lastLoggedPhase) {
       this.session.record("phase", this.mission, this.room, {
         from: this.lastLoggedPhase,
@@ -2656,7 +2726,15 @@ class Game extends Phaser.Scene {
       }
     } else if (this.phase === "arrivalFade") {
       if (this.age > 1.1) this.school();
-    } else if (["free", "receive", "road"].includes(this.phase)) {
+    } else if (this.phase === "homeArrival") {
+      const p = Math.min(1, this.age / HOME_DRIVE.parkingSeconds);
+      this.speed = this.parkSpeed * (1 - p);
+      this.car = this.parkFrom + (0.95 - this.parkFrom) * (p * p * (3 - 2 * p));
+      this.steerVelocity = 0.2 * Math.sin(p * Math.PI);
+      this.travel += this.visualSpeed() * dt;
+      if (this.age >= HOME_DRIVE.parkingSeconds + HOME_DRIVE.fadeSeconds + HOME_DRIVE.blackSeconds) this.completeHomeReturn();
+    } else if (["free", "receive", "road", "home"].includes(this.phase)) {
+      const home = this.phase === "home";
       const cruising = this.phase === "free";
       const throttle = this.keys.UP.isDown,
         brake = this.keys.DOWN.isDown;
@@ -2664,11 +2742,13 @@ class Game extends Phaser.Scene {
         ? -DRIVE.braking
         : throttle
           ? DRIVE.acceleration * (1 - this.speed / 340)
-          : -1.5 - this.speed * 0.012;
+          : home
+            ? (HOME_DRIVE.cruiseSpeed - this.speed) / HOME_DRIVE.cruiseResponse
+            : -1.5 - this.speed * 0.012;
       this.speed = Phaser.Math.Clamp(
         this.speed + acceleration * dt,
         0,
-        this.notified ? TUNING.maxSpeed : 110,
+        home ? HOME_DRIVE.maxSpeed : this.notified ? TUNING.maxSpeed : 110,
       );
       const steer =
         (this.keys.RIGHT.isDown ? 1 : 0) - (this.keys.LEFT.isDown ? 1 : 0);
@@ -2802,11 +2882,11 @@ class Game extends Phaser.Scene {
           }
         }
         if (distance < -40) {
-          const cue = trafficCue(
+          const cue = (home ? homeTrafficCue(this.trafficIndex++, this.random.next()) : trafficCue(
             this.trafficIndex++,
             this.mission,
             this.random.next(),
-          );
+          ));
           const tail = Math.max(
             this.travel + DRIVE.visibleDistance + 80,
             ...this.obstacles
@@ -2824,7 +2904,7 @@ class Game extends Phaser.Scene {
         }
       }
 
-      if (this.vehicle <= 0) {
+      if (!home && this.vehicle <= 0) {
         if (this.notified) this.finish(false);
         else {
           this.phase = "tow";
@@ -2832,6 +2912,17 @@ class Game extends Phaser.Scene {
         }
         this.draw();
         return;
+      }
+      if (home) {
+        this.road = Math.min(HOME_DRIVE.meters, this.road + (this.speed / 3.6) * dt);
+        if (this.road >= HOME_DRIVE.meters) {
+          this.phase = "homeArrival";
+          this.parkFrom = this.car;
+          this.parkSpeed = this.speed;
+          this.age = 0;
+          this.direct?.cancel();
+          this.cancelBufferedActions("home-parking");
+        }
       }
       if (
         cruising &&
@@ -3470,7 +3561,7 @@ class Game extends Phaser.Scene {
       type,
       speed: this.speed,
     });
-    this.vehicle = Math.max(
+    this.vehicle = isHomePhase(this.phase) ? this.vehicle : Math.max(
       0,
       this.vehicle - (type === 1 ? DRIVE.truckDamage : DRIVE.carDamage),
     );
@@ -4563,7 +4654,7 @@ class Game extends Phaser.Scene {
       this.rect(5, 5, 310, 172, 0x080b10);
     }
     if (
-      ["road", "free", "receive", "tow"].includes(this.phase) ||
+      ["road", "free", "receive", "tow", "home", "homeArrival"].includes(this.phase) ||
       (this.phase === "fail" && this.brokenRoad)
     )
       this.drawRoad();
@@ -4645,6 +4736,8 @@ class Game extends Phaser.Scene {
         "receive",
         "arrival",
         "arrivalFade",
+        "home",
+        "homeArrival",
         "school",
         "opening",
       ].includes(this.phase)
@@ -4717,7 +4810,7 @@ class Game extends Phaser.Scene {
               destinationHUD: this.missionSpec().hud,
               classroom: this.missionSpec().classroom,
             },
-        this.missionSpec().meters,
+        isHomePhase(this.phase) ? HOME_DRIVE.meters : this.missionSpec().meters,
       );
     else {
       this.g.fillStyle(0x080d13);
@@ -4735,7 +4828,9 @@ class Game extends Phaser.Scene {
     if (this.phase === "later") this.txt(47, 88, "Une heure plus tard...", 14);
     if (this.phase === "arrivalFade")
       this.fadeViewport(Math.min(1, this.age / 1.1));
-    if (this.phase === "free" && this.returnFade > 0)
+    if (this.phase === "homeArrival")
+      this.fadeViewport(Math.max(0, Math.min(1, (this.age - HOME_DRIVE.parkingSeconds) / HOME_DRIVE.fadeSeconds)));
+    if (["free", "home"].includes(this.phase) && this.returnFade > 0)
       this.fadeViewport(this.returnFade / 1.2);
     if (this.phase === "fail") this.drawFailure();
     if (this.phase === "school") {
@@ -4790,7 +4885,7 @@ class Game extends Phaser.Scene {
       this.banner("DEPANNAGE EN COURS");
       this.txt(45, 120, "VOITURE DE SERVICE / DEPANNAGE", 8);
     }
-    for (const p of ["free", "receive", "road", "school"].includes(this.phase)
+    for (const p of ["free", "receive", "road", "home", "school"].includes(this.phase)
       ? this.particles
       : [])
       if (p.x > 8 && p.x < 308 && p.y > 8 && p.y < 173)
@@ -4805,7 +4900,7 @@ class Game extends Phaser.Scene {
     if (
       feedback &&
       !this.paused &&
-      ["school", "free", "receive", "road"].includes(this.phase)
+      ["school", "free", "receive", "road", "home"].includes(this.phase)
     ) {
       const x = feedback.x,
         y = feedback.y;
@@ -4909,7 +5004,7 @@ class Game extends Phaser.Scene {
     this.groundContact?.clear();
     this.roadWash?.clear();
     if (
-      ["free", "road", "receive", "tow"].includes(this.phase) ||
+      ["free", "road", "receive", "tow", "home", "homeArrival"].includes(this.phase) ||
       (this.phase === "fail" && this.brokenRoad)
     ) {
       this.roadWash?.fillStyle(light.wash, light.opacity);
@@ -5212,7 +5307,7 @@ class Game extends Phaser.Scene {
     // One depth projection for road, markings, traffic and verges.
     const project = (d: number, lane = 0) =>
       roadProjection(this.travel, d, lane);
-    this.rect(7, 7, 306, 168, [0x7d9daa, 0x9cb3a5, 0x815762][this.mission]);
+    this.rect(7, 7, 306, 168, [0x7d9daa, 0x9cb3a5, 0x815762, 0x101c30][this.mission]);
     if (this.roadArt)
       this.roadArt.sky(
         horizon,
@@ -5226,7 +5321,7 @@ class Game extends Phaser.Scene {
       horizon,
       306,
       175 - horizon,
-      [0x414b3c, 0x4c5140, 0x303d3b][this.mission],
+      [0x414b3c, 0x4c5140, 0x303d3b, 0x1a2630][this.mission],
     );
     for (let y = Math.ceil(horizon + 1); y <= 175; y++) {
       const scale = (Math.min(y, bottom) - horizon) / (bottom - horizon),
@@ -5316,7 +5411,7 @@ class Game extends Phaser.Scene {
         this.rect(c - scale, y, Math.max(1, 2 * scale), 1, 0xd1ccad);
     }
 
-    if (this.mission === 2) {
+    if (this.mission >= 2) {
       // Front beams lie on the ground behind traffic, never on top of a vehicle.
       const source = project(0, this.car),
         end = project(ROAD_LIGHT.beamReach, this.car * 0.45);
@@ -5350,7 +5445,7 @@ class Game extends Phaser.Scene {
     if (this.roadArt) {
       scenery.length = 0;
       scenery.push(
-        ...districtAnchors(this.travel, this.missionSpec().district),
+        ...districtAnchors(this.travel, isHomePhase(this.phase) ? "mixed" : this.missionSpec().district),
       );
     }
     const renderScenery = (t: Scenery) => {
@@ -5695,7 +5790,7 @@ class Game extends Phaser.Scene {
       }
     }
     if (
-      this.mission === 2 ||
+      this.mission >= 2 ||
       this.keys.DOWN.isDown ||
       (this.phase === "fail" && this.brokenRoad && this.speed > 0)
     ) {
@@ -5704,7 +5799,7 @@ class Game extends Phaser.Scene {
         ["rightLamp", x + 14.5],
       ] as const) {
         const lamp = this.carArt?.anchor(kind) ?? { x: fallback, y: 156 };
-        if (this.mission === 2)
+        if (this.mission >= 2)
           drawRoadLamp(
             this.g,
             lamp.x,

@@ -7,6 +7,7 @@ export const MUSIC_FILES = {
   troisPonts: "maquettes-2026-10-23/05-trois-ponts.wav",
   radioMidi: "complements-2026-10-23/10-autoradio-midi.wav",
   radioSoir: "complements-2026-10-23/11-autoradio-soir.wav",
+  radioHome: "retour-maison-2026-10-25/13-retour-maison.wav",
   bossInspectrice: "complements-2026-10-23/06-boss-inspectrice.wav",
   bossParent: "complements-2026-10-23/07-boss-parent.wav",
   bossSecurite: "complements-2026-10-23/08-boss-securite.wav",
@@ -39,6 +40,7 @@ export function musicTrack(
 ): Track | null {
   const index = Math.max(0, Math.min(2, mission));
   if (phase === "title") return "title";
+  if (phase === "home" || phase === "homeArrival") return "radioHome";
   if (phase === "fail")
     return age >= MUSIC_TUNING.failureDelay ? "gameOver" : null;
   // receive includes the DATA notification. The radio starts after it ends.
