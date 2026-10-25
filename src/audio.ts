@@ -9,6 +9,7 @@ import {
 import { DRIVE } from "./driving";
 import { sfxTakes } from "./sfx-samples";
 import { WALK_SOUND, type FloorSound, type PassageAudio } from "./soundscape";
+import type { CinematicCue } from "./cinematic";
 type Voice = {
   source: AudioBufferSourceNode | OscillatorNode;
   nodes: AudioNode[];
@@ -42,6 +43,7 @@ export type SceneSoundContext = {
     index: number;
     age: number;
     token?: number;
+    cue?: CinematicCue;
   } | null;
 };
 type SceneCue = [Material, number, number, string?];
@@ -616,9 +618,7 @@ export class AudioKit {
       this.storyPulse = -1;
     }
     if (story && (phase === "intro" || phase === "ending")) {
-      const alarm =
-        (story.kind === "intro" && story.index === 0) ||
-        (story.kind === "ending" && story.index === 8);
+      const alarm = story.cue === "alarm";
       const pulse = alarm ? Math.floor(story.age / 1.6) : 0;
       if (pulse !== this.storyPulse) {
         this.storyPulse = pulse; // Muted/paused events are never queued for later.
@@ -628,15 +628,13 @@ export class AudioKit {
               this.tone(880, 0.09, 0.035, 880, delay),
             );
           } else if (
-            story.kind === "ending" &&
-            story.index === 2 &&
+            story.cue === "doorbell" &&
             story.age < 0.18
           ) {
             this.tone(660, 0.25, 0.045, 660);
             this.tone(523, 0.4, 0.035, 523, 0.24);
           } else if (
-            story.kind === "ending" &&
-            story.index === 7 &&
+            story.cue === "bell" &&
             story.age < 0.18
           ) {
             this.play("bell-start", 0, 0.9, 0, "cue");

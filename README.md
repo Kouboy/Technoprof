@@ -21,7 +21,9 @@ Trois-Ponts I2. Le journal d’essai réunit toute la journée.
 Sur la branche `codex/three-assignments-cinematics`, les trois affectations doivent
 réussir : le premier échec interrompt la journée, et recommencer repart du début.
 Cette passe locale ajoute une introduction et une conclusion illustrées muettes,
-encore provisoires. F/X, Entrée, Espace ou un toucher avancent les images ;
+encore provisoires : deux images d’introduction, douze de conclusion, dont trois
+étapes de découverte du campus idéal (cour, préparation, accompagnement AESH).
+F/X, Entrée, Espace ou un toucher avancent les images ;
 l’introduction peut être passée. Les deux musiques de cinématique restent à composer.
 GitHub Pages conserve la version publiée pendant cette validation.
 Pour jouer avec la musique sur disque, ouvrir **Jouer-Technoprof-Journee-Musique.html**

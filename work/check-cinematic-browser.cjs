@@ -33,18 +33,18 @@ async function main(){
    await page.getByRole('button',{name:'Rejouer',exact:true}).click();await page.locator('#game').focus();
    const status=page.getByRole('generic',{name:'État de la simulation',exact:true});
    const state=()=>page.locator('[aria-label="État de la simulation"]').innerText();
-   await page.waitForFunction(()=>document.querySelector('[aria-label="État de la simulation"]').textContent.includes('image 1/9'));
+   await page.waitForFunction(()=>document.querySelector('[aria-label="État de la simulation"]').textContent.includes('image 1/12'));
    await page.waitForTimeout(600);
    if((await state()).startsWith('PAUSE'))await page.getByRole('button',{name:'Pause / reprendre',exact:true}).click();
-   for(let i=0;i<9;i++){
-    assert((await state()).includes(`image ${i+1}/9`));await page.waitForTimeout(500);
+   for(let i=0;i<12;i++){
+    assert((await state()).includes(`image ${i+1}/12`));await page.waitForTimeout(500);
     await page.locator('#game canvas').screenshot({path:path.join(out,`cinematic-${name}-ending-${i}.png`)});
     await page.keyboard.press('f',{delay:100});
-    await page.waitForFunction(index=>{const t=document.querySelector('[aria-label="État de la simulation"]').textContent;return index===8?t.includes('report /'):t.includes(`image ${index+2}/9`);},i);
+    await page.waitForFunction(index=>{const t=document.querySelector('[aria-label="État de la simulation"]').textContent;return index===11?t.includes('report /'):t.includes(`image ${index+2}/12`);},i);
    }
    assert((await state()).includes('report /'));assert.deepEqual(errors,[]);
-   reports.push({browser:name,offline:true,intro:2,ending:9,pausedStable:true,heldActionStable:true,readableScreenshots:true,noCaptions:true,errors});
-   console.log('PASS native silent animatic '+name+': intro, nine ending panels, pause, held input and clean report');
+   reports.push({browser:name,offline:true,intro:2,ending:12,pausedStable:true,heldActionStable:true,readableScreenshots:true,noCaptions:true,errors});
+   console.log('PASS native silent animatic '+name+': corrected intro, twelve ending panels, pause, held input and clean report');
    await context.close();
    if(name==='chromium'){
     const mobile=await browser.newContext({offline:true,viewport:{width:390,height:844},isMobile:true,hasTouch:true});

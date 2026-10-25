@@ -21,11 +21,19 @@ assert(c.api.campaignWon(3, "three-required"));
 assert(c.api.campaignWon(2, "legacy-two"), "historical comparison is explicit");
 for (const [kind, count] of [
   ["intro", 2],
-  ["ending", 9],
+  ["ending", 12],
 ]) {
   const s = new c.api.CinematicSequence(kind);
   assert.equal(s.index, 0);
   assert.equal(s.count, count);
+  if (kind === "ending") {
+    const ids = [];
+    const cues = [];
+    for (let i = 0; i < count; i++) { s.index = i; ids.push(s.panel.id); if (s.cue) cues.push([i, s.cue]); }
+    assert.deepEqual(Array.from(ids), ["grading", "fatigue", "doorbell", "visitor", "invitation", "courtyard", "corridor", "preparation", "classroom", "aesh", "bell", "wake"]);
+    assert.deepEqual(JSON.parse(JSON.stringify(cues)), [[2, "doorbell"], [10, "bell"], [11, "alarm"]]);
+    s.index = 0;
+  }
   assert(!s.advance(), "entry frame action rejected");
   s.tick(0.5, false);
   assert.equal(s.age, 0.5);
@@ -99,7 +107,7 @@ for (const mission of [0, 1, 2])
   assert.equal(g.phase, "ending");
   assert.equal(g.won, 3);
   const before = g.remaining;
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 12; i++) {
     t.advance(0.6);
     t.press("X");
   }
@@ -107,5 +115,5 @@ for (const mission of [0, 1, 2])
   assert.equal(g.remaining, before);
 }
 console.log(
-  "PASS strict 3/3 campaign, every failure resets whole run, 2/9 silent panels, frozen time and single advance",
+  "PASS strict 3/3 campaign, every failure resets whole run, 2/12 silent panels with expanded campus, semantic sound cues, frozen time and single advance",
 );
