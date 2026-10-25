@@ -1,0 +1,20 @@
+{
+  "seconds": 63,
+  "sourceBits": 8,
+  "voices": 4,
+  "events": 158,
+  "samples": 9,
+  "hardCut": 56,
+  "alarm": 57.2,
+  "postCutMusic": "digital silence",
+  "rmsDbFS": {
+    "fatigue": -30.17,
+    "exterieur": -20.74,
+    "cour": -20.47,
+    "preparation": -18.95,
+    "classe": -19.67,
+    "apaisement": -17.55
+  },
+  "peak": 0.507476806640625,
+  "originalArtworkBytes": true
+}

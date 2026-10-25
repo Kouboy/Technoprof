@@ -1,0 +1,29 @@
+[
+  {
+    "browser": "chromium",
+    "offline": true,
+    "seconds": 63,
+    "allScenes": 13,
+    "pausedStable": true,
+    "bell": 56.003692,
+    "wake": 57.224064,
+    "ended": true,
+    "errors": []
+  },
+  {
+    "browser": "chromium-touch",
+    "campusTap": true,
+    "noOverflow": true
+  },
+  {
+    "browser": "firefox",
+    "offline": true,
+    "seconds": 63,
+    "allScenes": 13,
+    "pausedStable": true,
+    "bell": 56.015416,
+    "wake": 57.235,
+    "ended": true,
+    "errors": []
+  }
+]

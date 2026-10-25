@@ -12,6 +12,7 @@ classement. Les décisions de gameplay historiques restent consultables.
 - [Nettoyage et performance](technique/NETTOYAGE-2026-10-22.md) : état technique mesuré.
 - [Assets de la journée](technique/ASSETS-JOURNEE-2026-10-22.md) : séparation de la livraison et des anciens ateliers.
 - `superpowers/plans/` : étapes techniques en cours.
+- [Retour nocturne à Maison](RETOUR-MAISON-A-PREVOIR.md) : intention de quatrième trajet conservée pour une passe ultérieure.
 
 Les anciens scripts de fabrication de documents dans `work/` peuvent contenir
 les anciens chemins. Ils sont historiques ; ils ne font pas partie des commandes
