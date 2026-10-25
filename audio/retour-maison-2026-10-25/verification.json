@@ -1,0 +1,13 @@
+{
+  "seconds": 50.52630385487528,
+  "sourceBits": 8,
+  "modSignature": "M.K.",
+  "channels": 4,
+  "samples": 9,
+  "outputChannels": 2,
+  "outputBits": 16,
+  "peak": 0.646026611328125,
+  "dc": -3.906100987451811e-08,
+  "loopSeam": 0.0,
+  "sha256": "d00c9407e3763a59b89c60fb9c7ceb2e0868078b7a7cc677ff3388de2b1f7b9e"
+}

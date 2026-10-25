@@ -1,0 +1,60 @@
+{
+  "status": "provisional_wordless_animatic_v2",
+  "generatedWith": "built-in image_gen",
+  "assets": [
+    {
+      "file": "intro-v2.png",
+      "prompt": "prompt-intro-v2.txt",
+      "role": "Replacement two-panel intro",
+      "reference": "../title-2026-10-23/car-front-v1.png",
+      "columns": 2,
+      "rows": 1,
+      "seamX": 980,
+      "width": 2048,
+      "height": 768,
+      "sha256": "97443ffaad93e80045593ec60128abead84ed747899012b77652d252f2eddefd",
+      "originalUnchanged": true
+    },
+    {
+      "file": "campus-v3-ramp.png",
+      "prompt": "prompt-campus-v3-ramp.txt",
+      "role": "Three additions: courtyard, teacher preparation, AESH",
+      "reference": "campus-v2.png",
+      "columns": 3,
+      "rows": 1,
+      "width": 2172,
+      "height": 724,
+      "sha256": "2f8c800032ae3fcb78ef69df415e37ae83366dec38eb7d9e52af91963d8d2917",
+      "originalUnchanged": true
+    }
+  ],
+  "endingOrder": [
+    "grading",
+    "fatigue",
+    "doorbell",
+    "visitor",
+    "invitation",
+    "courtyard",
+    "corridor",
+    "preparation",
+    "classroom",
+    "aesh",
+    "bell",
+    "wake"
+  ],
+  "presentation": "Original PNG bytes embedded; runtime crops only; fit preserves aspect ratio within centered frame",
+  "visualReview": [
+    "Wake-in-bed wears gray sleep shirt; spectacles on bedside table, no coat or glasses on face",
+    "Departure car uses verified front reference: grille, headlights, bonnet, windscreen and front wipers",
+    "Courtyard is French and accessible",
+    "Teachers have calm workspace and functional materials",
+    "AESH works alongside student; classroom reveal precedes close human view",
+    "No dialogue or captions",
+    "Courtyard entrance corrected: continuous gently sloped ramp, handrails and flush landings, no step across wheelchair route"
+  ],
+  "provisionalLimitations": [
+    "Campus output has square cells rather than requested 4:3; centered fit avoids stretching or cutting people",
+    "Final desk illustration retains initial provisional camera continuity limitation",
+    "Cinematic compositions still pending"
+  ]
+}

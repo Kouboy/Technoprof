@@ -5,6 +5,7 @@ import { VIEW } from "./presentation";
 export function failureNotice(s: {
   failureReason: string | null;
   mission: number;
+  runPolicy?: string;
 }) {
   const reason = s.failureReason;
   return {
@@ -26,7 +27,12 @@ export function failureNotice(s: {
         : reason === "exhausted"
           ? ["VOTRE ABSENCE SERA", "COMPTABILISEE."]
           : ["LE RETARD FIGURERA", "AU RAPPORT."],
-    next: s.mission === 2 ? "VOIR LE BILAN" : "AFFECTATION SUIVANTE",
+    next:
+      s.runPolicy === "legacy-two"
+        ? s.mission === 2
+          ? "VOIR LE BILAN"
+          : "AFFECTATION SUIVANTE"
+        : "RECOMMENCER LA JOURNEE",
   };
 }
 

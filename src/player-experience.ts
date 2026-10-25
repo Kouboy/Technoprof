@@ -1,4 +1,5 @@
-import type { AudioKit } from "./audio";
+import type { AudioKit, SceneSoundContext } from "./audio";
+import { campaignWon, type RunPolicy } from "./campaign";
 import { mountTitleArt } from "./title-screen";
 import { ENCOUNTERS, type Encounter, type DialogueState } from "./dialogue";
 export const RADIO_NAME = "Radio Educa France";
@@ -40,6 +41,11 @@ export type PlayerContext = {
 };
 export function contextualHelp(s: PlayerContext) {
   if (s.paused) return "";
+  if (s.phase === "home")
+    return "La journée est assurée. Rentrez tranquillement : aucun délai. Freinez pour ralentir ; relâchez pour reprendre votre allure.";
+  if (s.phase === "homeArrival") return "Vous êtes arrivé. Fin de service.";
+  if (s.phase === "intro" || s.phase === "ending")
+    return "Lecture automatique · Pause pour interrompre · Passer la cinématique pour poursuivre.";
   if (s.phase === "course" && s.age > 1)
     return "Une touche ou un toucher pour poursuivre après le cours.";
   if (s.mission !== 0)
@@ -71,6 +77,14 @@ export function contextualHelp(s: PlayerContext) {
   return "";
 }
 type Host = PlayerContext & {
+  runPolicy?: RunPolicy;
+  cinematic?: {
+    index: number;
+    count: number;
+    kind: string;
+  } | null;
+  skipCinematic?(): void;
+  sceneSoundContext?(): SceneSoundContext;
   validatedDay?: boolean;
   won: number;
   results: string[];
@@ -78,6 +92,7 @@ type Host = PlayerContext & {
   pauseReason: string;
   audio: AudioKit;
   music?: { blocked: boolean; retry(): void };
+  cinematicAudio?: { blocked: boolean; retry(): void };
   radioLines: string[];
   remaining: number;
   enemies?: { female?: boolean }[];
@@ -103,6 +118,7 @@ export function installPlayerExperience(s: Host) {
     menuPage = "home",
     previous = "",
     currentMode = "";
+  let previousStory = "";
   try {
     const saved = JSON.parse(
       localStorage.getItem("technoprof-player-options") || "null",
@@ -186,14 +202,29 @@ export function installPlayerExperience(s: Host) {
       0,
       s.room,
       s.encounterTime > 0,
+      s.sceneSoundContext?.(),
     );
     game.focus();
     sync();
   };
   const muteButton = button("Couper le son", toggleMute);
   toolbar.append(pauseButton, muteButton);
+  const storySkip = button("Passer la cinématique", () => {
+    s.skipCinematic?.();
+    game.focus();
+  });
+  for (const b of [storySkip])
+    b.onkeydown = (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!event.repeat) b.click();
+      }
+    };
+  storySkip.hidden = true;
+  toolbar.append(storySkip);
   const musicRetry = s.music
-    ? button("Relancer la musique", () => s.music?.retry())
+    ? button("Relancer la musique", () => { s.music?.retry(); s.cinematicAudio?.retry(); })
     : undefined;
   if (musicRetry) {
     musicRetry.hidden = true;
@@ -246,7 +277,7 @@ export function installPlayerExperience(s: Host) {
   };
   function sync() {
     if (musicRetry) {
-      musicRetry.hidden = !s.music?.blocked;
+      musicRetry.hidden = !s.music?.blocked && !s.cinematicAudio?.blocked;
       const retryLabel =
         s.phase === "title" ? "Écouter le titre" : "Relancer la musique";
       if (musicRetry.textContent !== retryLabel)
@@ -269,6 +300,15 @@ export function installPlayerExperience(s: Host) {
       currentMode = mode;
     }
     pauseButton.hidden = !mode ? false : true;
+    const inStory = s.phase === "intro" || s.phase === "ending";
+    const storyKey = s.cinematic
+      ? s.cinematic.kind + ":" + s.cinematic.index
+      : "";
+    if (storyKey !== previousStory) {
+      previousStory = storyKey;
+      game.setAttribute("data-sequence", storyKey);
+    }
+    storySkip.hidden = !inStory || !!mode;
     const muteText = s.audio.muted ? "Activer le son (M)" : "Couper le son (M)";
     if (muteButton.textContent !== muteText) muteButton.textContent = muteText;
     const hint = hints ? contextualHelp(s) : "";
@@ -310,7 +350,9 @@ export function installPlayerExperience(s: Host) {
         ? "title-home"
         : menuPage === "home" && mode === "report"
           ? "result-home " +
-            (s.won >= 2 ? "result-maintained" : "result-radiated")
+            (campaignWon(s.won, s.runPolicy)
+              ? "result-maintained"
+              : "result-radiated")
           : "";
     const key = mode + ":" + menuPage + ":" + s.results.join("|");
     if (key === previous) return;
@@ -330,18 +372,18 @@ export function installPlayerExperience(s: Host) {
           : mode === "title"
             ? "TECHNOPROF"
             : mode === "report"
-              ? s.won >= 2
+              ? campaignWon(s.won, s.runPolicy)
                 ? "Maintien en poste"
                 : "Radiation prononcée"
               : "Service suspendu";
     root.append(eyebrow, heading);
     if (menuPage === "controls") {
       paragraph(
-        "Trois affectations. Deux cours à assurer pour garder votre poste. Attendez l’ordre en voiture, rejoignez l’établissement puis trouvez la salle. Le délai est commun à la route et à la recherche ; l’arrivée automatique est gratuite.",
+        "Trois affectations à réussir. Au premier échec, la tentative se termine et vous repartez à la première affectation. Attendez l’ordre en voiture, rejoignez l’établissement puis trouvez la salle. Le délai est commun à la route et à la recherche ; l’arrivée automatique est gratuite.",
       );
       controls();
       paragraph(
-        "Une affectation ratée laisse place à la suivante. Les dégâts de la voiture restent ; le professeur récupère entre deux services.",
+        "Les dégâts de la voiture restent entre les affectations réussies ; le professeur récupère. Recommencer restaure toute la journée.",
       );
     } else if (menuPage === "settings") {
       const sliders: [string, number, (v: number) => void][] = [
@@ -413,12 +455,10 @@ export function installPlayerExperience(s: Host) {
       root.append(
         mountTitleArt(button("Prendre le service", returnToGame, true)),
       );
-      paragraph(
-        "Trois affectations. Deux cours à assurer pour garder votre poste.",
-      );
+      paragraph("Trois affectations à assurer. Un échec termine la tentative.");
     } else if (mode === "report") {
       paragraph(
-        `${s.won} cours assuré${s.won > 1 ? "s" : ""} sur 3 — minimum exigé : 2.`,
+        `${s.won} cours assuré${s.won > 1 ? "s" : ""} sur 3 — trois réussites requises.`,
       );
       const list = document.createElement("ol");
       s.results.forEach((result, i) => {
@@ -435,7 +475,7 @@ export function installPlayerExperience(s: Host) {
       });
       root.append(list);
       paragraph(
-        s.won >= 2
+        campaignWon(s.won, s.runPolicy)
           ? "Le service a tenu. Les moyens sont donc déclarés suffisants."
           : "Les contraintes matérielles ne sauraient, selon le rapport, excuser les carences.",
       );
@@ -483,10 +523,19 @@ export function installPlayerExperience(s: Host) {
   document.addEventListener(
     "keydown",
     (event) => {
-      if (event.repeat) return;
       const editable = (event.target as HTMLElement)?.matches(
         "input,select,button",
       );
+      if (
+        (s.phase === "intro" || s.phase === "ending") &&
+        !editable &&
+        ["f", "x", "Enter", " "].includes(event.key)
+      ) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+      if (event.repeat) return;
       if (
         event.key === "Escape" ||
         (s.paused && event.key.toLowerCase() === "p")

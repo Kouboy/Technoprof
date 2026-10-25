@@ -1,0 +1,37 @@
+{
+  "files": [
+    {
+      "file": "Intro-Musique.wav",
+      "seconds": 10.0,
+      "peak": 0.334991455078125,
+      "dc": -0.00012154570079985119,
+      "rmsDbFS": -22.021760026645477
+    },
+    {
+      "file": "Intro-Reperes.wav",
+      "seconds": 10.0,
+      "peak": 0.208404541015625,
+      "dc": -9.251462629322563e-06,
+      "rmsDbFS": -28.0779671142442
+    },
+    {
+      "file": "Intro-Montage.wav",
+      "seconds": 10.0,
+      "peak": 0.38836669921875,
+      "dc": -0.00013080429111748867,
+      "rmsDbFS": -21.05555702653801
+    }
+  ],
+  "sampleBits": {
+    "bass.wav": 8,
+    "dry-pulse.wav": 8,
+    "keys.wav": 8,
+    "office-pedal.wav": 8,
+    "piano.wav": 8,
+    "strings-minor.wav": 8
+  },
+  "timelineContiguous": true,
+  "fourLanes": true,
+  "alarmMatchesEnding": true,
+  "artworkHashMatches": true
+}

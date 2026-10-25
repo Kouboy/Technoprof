@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TECHNOPROF — Une école possible · V2 · essai musical</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#111a20;color:#dcd5bd;font:16px/1.5 system-ui,sans-serif}main{max-width:900px;margin:auto;padding:22px 18px 40px}h1{font-size:24px;color:#e5b56f;margin:0 0 8px}p{margin:8px 0 16px}.muted{color:#a4b2b2;font-size:14px}canvas{width:100%;max-height:65vh;aspect-ratio:4/3;object-fit:contain;display:block;background:#141e26;image-rendering:pixelated;border:1px solid #45565a}audio{width:100%;margin:12px 0}button,a{font:inherit}button{padding:10px 15px;color:inherit;background:#293c42;border:1px solid #7c8c88;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #e5b56f;outline-offset:3px}nav{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}a{color:#e5b56f;margin-right:18px}output{display:block;min-height:26px;font:14px/1.5 monospace;color:#abbdbc}.error{color:#ffad8f}@media(max-width:500px){main{padding:15px 10px}h1{font-size:20px}button{padding:10px}}
+</style><main>
+<h1>TECHNOPROF — Une école possible · V2</h1>
+<p>Deuxième essai musical et visuel de la conclusion. Écouter une première fois les 63 secondes en entier : le rêve doit finir par sembler vrai, jusqu’à la cloche.</p>
+<canvas id="film" width="640" height="480" role="img" aria-label="Cinématique illustrée sans dialogue"></canvas>
+<audio id="audio" controls preload="auto" src="Fin-Montage.wav"></audio>
+<output id="status">Chargement des illustrations…</output>
+<nav aria-label="Lecture et repères d’écoute">
+<button id="restart">Voir depuis le début</button>
+<button data-time="19">Le campus · 19 s</button>
+<button data-time="50">Le panorama · 50 s</button>
+<button data-time="54">La rupture · 54 s</button>
+</nav>
+<p class="muted">Piano fatigué, puis flûte chantante, harpe et basse mobile : un rêve progressivement plus enjoué, en samples PCM 8 bits. L’image suit la position réelle du son : pause et déplacement dans le morceau restent synchronisés. Cette maquette n’est pas encore intégrée au jeu.</p>
+<p><a href="Fin-Musique.wav">Musique seule</a><a href="Fin-Montage.wav">Musique + repères</a><a href="MONTAGE-V2.md">Découpage du film</a></p>
+</main><script>
+const media=document.querySelector('#audio'),canvas=document.querySelector('#film'),ctx=canvas.getContext('2d'),status=document.querySelector('#status');
+const scenes=[{"id": "grading", "label": "Correction nocturne", "at": 0, "end": 5, "seconds": 5, "atlas": 0, "frame": 2, "cut": false}, {"id": "fatigue", "label": "Fatigue", "at": 5, "end": 8.5, "seconds": 3.5, "atlas": 0, "frame": 3, "cut": false}, {"id": "doorbell", "label": "La sonnette", "at": 8.5, "end": 11.0, "seconds": 2.5, "atlas": 0, "frame": 4, "cut": false}, {"id": "visitor", "label": "Le visiteur", "at": 11.0, "end": 15.0, "seconds": 4, "atlas": 2, "frame": 0, "cut": false}, {"id": "invitation", "label": "L’invitation", "at": 15.0, "end": 19.0, "seconds": 4, "atlas": 1, "frame": 1, "cut": false}, {"id": "courtyard", "label": "La cour", "at": 19.0, "end": 26.0, "seconds": 7, "atlas": 1, "frame": 3, "cut": false}, {"id": "corridor", "label": "Le couloir", "at": 26.0, "end": 31.0, "seconds": 5, "atlas": 0, "frame": 7, "cut": false}, {"id": "preparation", "label": "Préparer les cours", "at": 31.0, "end": 37.0, "seconds": 6, "atlas": 1, "frame": 4, "cut": false}, {"id": "classroom", "label": "La classe", "at": 37.0, "end": 44.0, "seconds": 7, "atlas": 1, "frame": 5, "cut": false}, {"id": "aesh", "label": "L’accompagnement AESH", "at": 44.0, "end": 50.0, "seconds": 6, "atlas": 1, "frame": 6, "cut": false}, {"id": "exterior", "label": "Le campus, vue d’ensemble", "at": 50.0, "end": 56.0, "seconds": 6, "atlas": 1, "frame": 2, "cut": false}, {"id": "bell", "label": "La cloche", "at": 56.0, "end": 57.2, "seconds": 1.2, "atlas": 0, "frame": 9, "cut": true}, {"id": "wake", "label": "6h10, encore la nuit", "at": 57.2, "end": 63.0, "seconds": 5.8, "atlas": 1, "frame": 7, "cut": true}];
+const urls=["../../art/cinematics-2026-10-24/storyboard-atlas.png", "../../art/cinematics-2026-10-25-v2/storyboard-v2.png", "../../art/cinematics-2026-10-25-v2/visitor-coat.png"];
+const images=urls.map(url=>{const img=new Image();img.src=url;return img});
+const atlasFrames=[[4, 4, 504, 334], [516, 4, 504, 334], [4, 346, 504, 342], [516, 346, 504, 342], [4, 696, 504, 374], [516, 696, 504, 374], [4, 1078, 504, 454], [516, 1078, 504, 454]];
+const atlasFocus=[0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0.5];
+let ready=false,lastStatus='',problem='';
+function draw(){
+ const time=media.currentTime||0;
+ const index=Math.max(0,scenes.findLastIndex(s=>s.at<=time));const scene=scenes[index];
+ canvas.dataset.scene=String(index);canvas.dataset.time=time.toFixed(3);
+ ctx.setTransform(2,0,0,2,0,0);ctx.imageSmoothingEnabled=false;ctx.globalAlpha=1;
+ ctx.fillStyle='#141e26';ctx.fillRect(0,0,320,240);
+ ctx.fillStyle='#080d13';ctx.fillRect(48,27,224,170);
+ ctx.fillStyle='#38494c';ctx.fillRect(50,29,220,166);
+ ctx.fillStyle='#17242c';ctx.fillRect(52,31,216,162);
+ if(ready){
+  const img=images[scene.atlas],cols=scene.atlas===0?4:2,rows=scene.atlas===0?3:4;
+  let x=Math.round((scene.frame%cols)*img.width/cols)+4,y=Math.round(Math.floor(scene.frame/cols)*img.height/rows)+4;
+  let w=Math.round(((scene.frame%cols)+1)*img.width/cols)-4-x,h=Math.round((Math.floor(scene.frame/cols)+1)*img.height/rows)-4-y;
+  if(scene.atlas===1){[x,y,w,h]=atlasFrames[scene.frame]}
+  if(scene.atlas===2){x=4;y=4;w=img.width-8;h=img.height-8}
+  const scale=Math.max(212/w,158/h);
+  ctx.globalAlpha=scene.cut?1:Math.min(1,(time-scene.at)/.18);
+  const focusY=scene.atlas===1?atlasFocus[scene.frame]:.5;ctx.save();ctx.beginPath();ctx.rect(54,33,212,158);ctx.clip();ctx.drawImage(img,x,y,w,h,160-w*scale/2,33-(h*scale-158)*focusY,w*scale,h*scale);ctx.restore();ctx.globalAlpha=1;
+ }
+ const label=problem||(ready?(media.ended?'Fin — ':'')+time.toFixed(1)+' / 63.0 s · '+scene.label:'Chargement des illustrations…');
+ if(label!==lastStatus){status.textContent=label;lastStatus=label}
+ requestAnimationFrame(draw);
+}
+Promise.all(images.map(img=>img.decode())).then(()=>{ready=true}).catch(()=>{status.className='error';problem='Illustrations introuvables. Conserver ce lecteur dans le dossier du projet.'});
+async function play(at){media.currentTime=at;try{await media.play();problem='';status.className=''}catch(e){status.className='error';problem='Appuyer sur Lecture pour autoriser le son.'}}
+document.querySelector('#restart').onclick=()=>play(0);
+for(const button of document.querySelectorAll('[data-time]'))button.onclick=()=>play(Number(button.dataset.time));
+document.addEventListener('visibilitychange',()=>{if(document.hidden)media.pause()});
+draw();
+</script></html>

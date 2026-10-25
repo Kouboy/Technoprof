@@ -1,0 +1,22 @@
+[
+  {
+    "browser": "chromium",
+    "offline": true,
+    "seconds": 57,
+    "pausedStable": true,
+    "bell": 50.033835,
+    "wake": 51.229615,
+    "ended": true,
+    "errors": []
+  },
+  {
+    "browser": "firefox",
+    "offline": true,
+    "seconds": 57,
+    "pausedStable": true,
+    "bell": 50.015312,
+    "wake": 51.233395,
+    "ended": true,
+    "errors": []
+  }
+]

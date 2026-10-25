@@ -128,7 +128,9 @@ export type CadreState = {
   failureReason?: "late" | "exhausted" | "breakdown" | null;
 };
 export function cadreModel(s: CadreState, routeMeters: number) {
+  const home = s.phase === "home" || s.phase === "homeArrival";
   const driving =
+    home ||
     ["free", "receive", "road", "arrival", "arrivalFade", "tow"].includes(
       s.phase,
     ) ||
@@ -182,20 +184,21 @@ export function cadreModel(s: CadreState, routeMeters: number) {
       : failureLabels[s.failureReason ?? ""] ||
         "ECHEC - AFFECTATION INTERROMPUE";
   return {
+    home,
     driving,
     assigned,
     near,
     veryNear: near && meters < 500,
     suspended,
     terminal,
-    status,
+    status: home ? "FIN DE SERVICE" : status,
     failureCause,
     time: assigned
       ? String(Math.floor(seconds / 60)).padStart(2, "0") +
         ":" +
         String(seconds % 60).padStart(2, "0")
       : "--:--",
-    distance: assigned
+    distance: assigned || home
       ? (meters / 1000).toFixed(2).replace(".", ",") + " KM"
       : "",
     urgent,
@@ -316,8 +319,8 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
     r(x + 2, y, 3, 1, 0x928269);
     r(x + 3, y + 1, 1, 1, 0x665e4a);
   }
-  compact(12, 187, m.assigned ? "AFFECTATION" : "RECEPTION", paper, 88);
-  centerSmall(120, 82, 187, "DELAIS");
+  compact(12, 187, m.home ? "DESTINATION" : m.assigned ? "AFFECTATION" : "RECEPTION", paper, 88);
+  centerSmall(120, 82, 187, m.home ? "JOURNEE" : "DELAIS");
   compact(217, 187, m.driving ? "AUTO" : "PERSONNEL", paper, 62);
   const clockColor = m.urgent ? red : m.assigned ? amber : dim;
   // Small signal lamps carry state; no ornamental flashing in ordinary play.
@@ -326,7 +329,17 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
   r(196, 187, 3, 3, ink);
   r(197, 188, 1, 1, m.suspended ? dim : clockColor);
 
-  if (m.assigned) {
+  if (m.home) {
+    // A modest home silhouette replaces the classroom door card.
+    r(15, 210, 19, 17, 0x526064);
+    r(17, 211, 15, 14, 0x24333b);
+    for (let i = 0; i < 11; i++) r(14 + i, 207 - i, 2, 2, paper);
+    for (let i = 0; i < 11; i++) r(24 + i, 197 + i, 2, 2, paper);
+    r(19, 214, 5, 5, 0xb9aa89);
+    r(26, 216, 4, 9, 0x080d13);
+    compact(40, 200, "RETOUR", dim, 65);
+    t(39, 214, "MAISON", paper, 1, 67);
+  } else if (m.assigned) {
     // Destination card: wired glazing, worn latch and a dented lower plate.
     r(12, 198, 22, 30, 0x526064);
     r(13, 199, 20, 28, ink);
@@ -382,7 +395,7 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
   const clockX = 118 + Math.floor((86 - clockWidth(m.time)) / 2);
   let cursor = clockX;
   g.fillStyle(clockColor);
-  for (const c of m.time) {
+  for (const c of m.home ? "" : m.time) {
     const glyph = CADRE_DIGITS[c];
     glyph.forEach((row, y) =>
       [...row].forEach((pixel, x) => {
@@ -391,6 +404,7 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
     );
     cursor += (glyph[0].length + 1) * 2;
   }
+  if (m.home) t(140, 203, "3/3", paper, 2, 52);
   r(125, 221, 72, 1, 0x24333b);
   centerSmall(
     120,
@@ -411,7 +425,7 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
       r(218 + i * 9, 227, 7, 2, 0x24333b);
       if (health > i * 10) r(218 + i * 9, 227, 7, 2, healthColor);
     }
-    if (m.assigned) {
+    if (m.assigned || m.home) {
       t(218, 198, Math.round(s.speed) + " KM/H", paper, 1, 88);
       compact(218, 206, "RESTE", dim, 30);
       const digits = m.distance.replace(" KM", "");
@@ -447,7 +461,9 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
     Math.min(s.mission + 1, 3) +
     "/3";
   const line =
-    s.phase === "fail"
+    m.home
+      ? s.phase === "homeArrival" ? "MAISON / FIN DE SERVICE" : "21:30 / RETOUR A LA MAISON / FM"
+      : s.phase === "fail"
       ? m.failureCause
       : s.phase === "report"
         ? "RESEAU RECTORAL - JOURNEE TERMINEE"

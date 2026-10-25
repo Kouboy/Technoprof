@@ -7,8 +7,10 @@ import {
   type Material,
 } from "./audio-materials";
 import { DRIVE } from "./driving";
+import { HOME_ARRIVAL } from "./home-arrival";
 import { sfxTakes } from "./sfx-samples";
 import { WALK_SOUND, type FloorSound, type PassageAudio } from "./soundscape";
+import type { CinematicCue } from "./cinematic";
 type Voice = {
   source: AudioBufferSourceNode | OscillatorNode;
   nodes: AudioNode[];
@@ -37,6 +39,14 @@ export type SceneSoundContext = {
   outdoor?: boolean;
   arrivalEntry?: "gate" | "door";
   transition?: PassageAudio | null;
+  cinematic?: {
+    kind: string;
+    index: number;
+    age: number;
+    token?: number;
+    cue?: CinematicCue;
+  } | null;
+  cinematicSoundtrack?: boolean;
 };
 type SceneCue = [Material, number, number, string?];
 export const OPENING_CUES: SceneCue[] = [
@@ -51,6 +61,13 @@ export function sceneCues(
   context: SceneSoundContext,
 ): SceneCue[] {
   if (phase === "opening") return OPENING_CUES;
+  if (phase === "homeArrival")
+    return [
+      ["car-door", HOME_ARRIVAL.doorSlamAt, 0.95],
+      ...Array.from({length: Math.ceil(HOME_ARRIVAL.walkSeconds / HOME_ARRIVAL.stepSeconds)}, (_, i): SceneCue => [
+        "step", HOME_ARRIVAL.walkAt + i * HOME_ARRIVAL.stepSeconds, 0.5 - i * 0.015,
+      ]),
+    ];
   if (phase === "arrival")
     return [
       ["car-door", DRIVE.teacherExitSeconds, 0.95],
@@ -126,6 +143,8 @@ export class AudioKit {
   surface: FloorSound = "tile";
   passage?: PassageAudio;
   passagePlayed = new Set<number>();
+  storyKey = "";
+  storyPulse = -1;
   preparing = false;
   voices = new Set<Voice>();
   muted = false;
@@ -489,7 +508,7 @@ export class AudioKit {
     const c = this.context,
       wasPaused = this.paused;
     this.surface =
-      phase === "arrival" ? "concrete" : (context.surface ?? "tile");
+      phase === "arrival" || phase === "homeArrival" ? "concrete" : (context.surface ?? "tile");
     this.paused = paused;
     this.master.gain.setTargetAtTime(
       this.muted || paused ? 0 : AUDIO.master * this.effectsVolume,
@@ -597,6 +616,41 @@ export class AudioKit {
       });
     }
     if (phase === "course") this.classroomAge += dt;
+    const story = context.cinematic;
+    const storyKey = story
+      ? (story.token ?? 0) + ":" + story.kind + ":" + story.index
+      : "";
+    if (storyKey !== this.storyKey) {
+      this.stopGroup("cue");
+      this.stopGroup("fx");
+      this.storyKey = storyKey;
+      this.storyPulse = -1;
+    }
+    if (story && !context.cinematicSoundtrack && (phase === "intro" || phase === "ending")) {
+      const alarm = story.cue === "alarm";
+      const pulse = alarm ? Math.floor(story.age / 1.6) : 0;
+      if (pulse !== this.storyPulse) {
+        this.storyPulse = pulse; // Muted/paused events are never queued for later.
+        if (!this.muted) {
+          if (alarm && story.age % 1.6 < 0.18) {
+            [0, 0.16, 0.32].forEach((delay) =>
+              this.tone(880, 0.09, 0.035, 880, delay),
+            );
+          } else if (
+            story.cue === "doorbell" &&
+            story.age < 0.18
+          ) {
+            this.tone(660, 0.25, 0.045, 660);
+            this.tone(523, 0.4, 0.035, 523, 0.24);
+          } else if (
+            story.cue === "bell" &&
+            story.age < 0.18
+          ) {
+            this.play("bell-start", 0, 0.9, 0, "cue");
+          }
+        }
+      }
+    }
     const distance = context.distance ?? Infinity;
     const interval =
       ["receive", "road"].includes(phase) &&

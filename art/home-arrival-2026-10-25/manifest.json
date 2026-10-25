@@ -1,0 +1,18 @@
+{
+  "source": "background.png",
+  "sha256": "48ef0da014ea2c71c1bbe87aaed0b1d9372bc2a479cb6e56b061c51b9a81cf8c",
+  "prompt": "prompt-background.txt",
+  "tool": "built-in image_gen",
+  "original": "exec-077aff37-3ebe-4c0d-8da7-c5dd5c5665e5.png",
+  "render": [
+    7,
+    7,
+    306,
+    168
+  ],
+  "doorThreshold": [
+    246,
+    134
+  ],
+  "note": "Original generated PNG copied unchanged; teacher and car are existing runtime sprites."
+}

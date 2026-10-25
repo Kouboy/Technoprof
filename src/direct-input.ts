@@ -95,12 +95,14 @@ export class DirectInput {
     if (this.blocked() || this.gesture) return false;
     const s = this.host;
     s.pointerMode = true;
-    const road = ["free", "receive", "road"].includes(s.phase);
+    const road = ["free", "receive", "road", "home"].includes(s.phase);
     if (
       !road &&
       s.phase !== "school" &&
       s.phase !== "course" &&
-      s.phase !== "fail"
+      s.phase !== "fail" &&
+      s.phase !== "intro" &&
+      s.phase !== "ending"
     )
       return false;
     if (road && y > 175) return false;
@@ -157,6 +159,9 @@ export class DirectInput {
     if (this.blocked()) return;
     const s = this.host;
     s.pointerMode = true;
+    if (s.phase === "intro" || s.phase === "ending") {
+      return;
+    }
     if (s.phase === "course") {
       if (s.age > 0.3) this.pulse("CONTINUE");
       return;
@@ -223,7 +228,7 @@ export class DirectInput {
     const context =
       s.room +
       ":" +
-      (["free", "receive", "road"].includes(s.phase) ? "drive" : s.phase) +
+      (["free", "receive", "road", "home"].includes(s.phase) ? "drive" : s.phase) +
       ":" +
       (s.encounterTime > 0) +
       ":" +

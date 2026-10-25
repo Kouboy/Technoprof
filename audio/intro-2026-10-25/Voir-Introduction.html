@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TECHNOPROF — Prise de service · essai musical</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#111a20;color:#dcd5bd;font:16px/1.5 system-ui,sans-serif}main{max-width:900px;margin:auto;padding:22px 18px 40px}h1{font-size:24px;color:#e5b56f;margin:0 0 8px}p{margin:8px 0 16px}.muted{color:#a4b2b2;font-size:14px}canvas{width:100%;max-height:65vh;aspect-ratio:4/3;object-fit:contain;display:block;background:#141e26;image-rendering:pixelated;border:1px solid #45565a}audio{width:100%;margin:12px 0}button,a{font:inherit}button{padding:10px 15px;color:inherit;background:#293c42;border:1px solid #7c8c88;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #e5b56f;outline-offset:3px}nav{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}a{color:#e5b56f;margin-right:18px}output{display:block;min-height:26px;font:14px/1.5 monospace;color:#abbdbc}.error{color:#ffad8f}@media(max-width:500px){main{padding:15px 10px}h1{font-size:20px}button{padding:10px}}
+</style><main>
+<h1>TECHNOPROF — Prise de service</h1>
+<p>Une introduction de dix secondes, sans dialogue : le réveil à 6h10, puis le départ précipité.</p>
+<canvas id="film" width="640" height="480" role="img" aria-label="Cinématique illustrée sans dialogue : réveil puis départ"></canvas>
+<audio id="audio" controls preload="auto" src="Intro-Montage.wav"></audio>
+<output id="status">Chargement des illustrations…</output>
+<nav aria-label="Lecture et repères d’écoute">
+<button id="restart">Voir depuis le début</button>
+<button data-time="5.5">Le départ · 5,5 s</button>
+</nav>
+<p class="muted">La même alarme que dans la conclusion, un réveil pesant, puis une pulsation pressée à 80 BPM. Quelques froissements, des clés et des pas accompagnent le départ. Samples PCM 8 bits ; images et son restent synchronisés pendant les pauses et les déplacements dans le morceau. Maquette à écouter avant intégration au jeu.</p>
+<p><a href="Intro-Musique.wav">Musique seule</a><a href="Intro-Montage.wav">Montage complet</a><a href="../cinematiques-2026-10-25-v3/Voir-La-Fin-V3.html">Revoir la conclusion</a></p>
+</main><script>
+const media=document.querySelector('#audio'),canvas=document.querySelector('#film'),ctx=canvas.getContext('2d'),status=document.querySelector('#status');
+const scenes=[{"id": "wake-in-bed", "label": "6h10 — Le réveil", "at": 0, "end": 5.5, "seconds": 5.5, "frame": 0}, {"id": "departure", "label": "Le départ", "at": 5.5, "end": 10, "seconds": 4.5, "frame": 1}];
+const frames=[[4, 4, 968, 760], [990, 4, 1054, 760]];
+const imageUrl="../../art/intro-2026-10-25/intro-night.png?v=9e2e066d2f93";
+const image=new Image();image.src=imageUrl;
+const openingFadeSeconds=1;
+let ready=false,lastStatus='',problem='';
+function draw(){
+ const time=media.currentTime||0,index=Math.max(0,scenes.findLastIndex(s=>s.at<=time)),scene=scenes[index];
+ canvas.dataset.scene=String(index);canvas.dataset.time=time.toFixed(3);
+ ctx.setTransform(2,0,0,2,0,0);ctx.imageSmoothingEnabled=false;ctx.globalAlpha=1;
+ ctx.fillStyle='#141e26';ctx.fillRect(0,0,320,240);
+ ctx.fillStyle='#080d13';ctx.fillRect(48,27,224,170);
+ ctx.fillStyle='#38494c';ctx.fillRect(50,29,220,166);
+ ctx.fillStyle='#17242c';ctx.fillRect(52,31,216,162);
+ ctx.fillStyle='#000';ctx.fillRect(54,33,212,158);
+ if(ready){
+  const [x,y,w,h]=frames[scene.frame],scale=Math.max(212/w,158/h);
+  ctx.globalAlpha=Math.min(1,(time-scene.at)/(index===0?openingFadeSeconds:.18));
+  ctx.save();ctx.beginPath();ctx.rect(54,33,212,158);ctx.clip();
+  ctx.drawImage(image,x,y,w,h,160-w*scale/2,112-h*scale/2,w*scale,h*scale);
+  ctx.restore();ctx.globalAlpha=1;
+ }
+ const label=problem||(ready?(media.ended?'Fin — ':'')+time.toFixed(1)+' / 10.0 s · '+scene.label:'Chargement des illustrations…');
+ if(label!==lastStatus){status.textContent=label;lastStatus=label}
+ requestAnimationFrame(draw);
+}
+image.decode().then(()=>{ready=true}).catch(()=>{status.className='error';problem='Illustrations introuvables. Conserver ce lecteur dans le dossier du projet.'});
+async function play(at){media.currentTime=at;try{await media.play();problem='';status.className=''}catch(e){status.className='error';problem='Appuyer sur Lecture pour autoriser le son.'}}
+document.querySelector('#restart').onclick=()=>play(0);
+for(const button of document.querySelectorAll('[data-time]'))button.onclick=()=>play(Number(button.dataset.time));
+document.addEventListener('visibilitychange',()=>{if(document.hidden)media.pause()});
+draw();
+</script></html>

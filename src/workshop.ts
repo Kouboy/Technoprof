@@ -19,6 +19,7 @@ import {
 } from "./gamefeel";
 
 type Host = {
+  cinematic?: { kind: string; index: number; count: number } | null;
   phase: string;
   room: number;
   age: number;
@@ -72,6 +73,10 @@ type Host = {
   exportJournal(): void;
 };
 const SCENARIOS: Record<string, string> = {
+  "home-return": "Maison / retour nocturne protégé",
+  "home-return-near": "Maison / derniers mètres et fondu final",
+  "cinematic-intro": "Cinématique / introduction muette (animatique)",
+  "cinematic-ending": "Cinématique / conclusion muette (animatique)",
   "gamefeel-reference-encounter": "Gamefeel A / rencontre",
   "gamefeel-tolerant-encounter": "Gamefeel B / rencontre",
   "gamefeel-reference-parent": "Gamefeel A / Parent influent",
@@ -530,6 +535,9 @@ export function drawWorkshop(s: Host) {
       .join("\n") +
     `\nTemps simulé ${s.session.elapsed.toFixed(1)}s / ${s.collisions} chocs / ${s.session.falls} chutes / ${s.punches} coups réussis\n${seconds}` +
     `\nDernier événement : ${lastEvent?.kind ?? "—"}${stall}` +
+    (s.cinematic
+      ? `\nCinématique ${s.cinematic.kind} / image ${s.cinematic.index + 1}/${s.cinematic.count}`
+      : "") +
     (s.gamefeelLab
       ? `\nCOMPARAISON ${s.gamefeelVariant === "reference" ? "A" : "B"} / ${GAMEFEEL_STATIONS[s.gamefeelStation].label}\n` +
         s.session.events

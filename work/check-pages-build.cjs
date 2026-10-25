@@ -11,7 +11,7 @@ const info = JSON.parse(read("build-info.json"));
 assert.equal(info.profile, "journee-musicale");
 assert.match(info.commit, /^[a-f0-9]{40}$/);
 assert.deepEqual(info.music, musicFiles(root));
-assert.equal(info.music.length, 12);
+assert.equal(info.music.length, 17);
 const html = read("index.html").toString();
 assert(html.includes("Day player bootstrap"));
 assert(!html.includes("const testView"));
@@ -59,11 +59,11 @@ const shippedAudio = filesIn(path.join(dist, "audio"))
 assert.deepEqual(
   shippedAudio,
   [...info.music].sort(),
-  "Ship only the twelve used tracks",
+  "Ship only the seventeen used audio stems/tracks",
 );
 const all = filesIn(dist);
 const total = all.reduce((sum, file) => sum + fs.statSync(file).size, 0);
 assert(total < 1024 ** 3, "Pages site size");
 console.log(
-  `PASS Pages build: ${info.images.length} intact images, 12 original WAVs, relative entrypoint, ${(total / 1024 ** 2).toFixed(1)} MiB total`,
+  `PASS Pages build: ${info.images.length} intact images, 17 original WAVs, relative entrypoint, ${(total / 1024 ** 2).toFixed(1)} MiB total`,
 );

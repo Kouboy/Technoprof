@@ -1,0 +1,103 @@
+{
+  "asset": "storyboard-v2.png",
+  "generatedWith": "built-in image_gen",
+  "originalBytesUnchanged": true,
+  "sha256": "0f4183f1080cc80cb2a59de9795f8a54410c41a7f2b5a0c7998317902235727b",
+  "width": 1024,
+  "height": 1536,
+  "frames": [
+    [
+      4,
+      4,
+      504,
+      334
+    ],
+    [
+      516,
+      4,
+      504,
+      334
+    ],
+    [
+      4,
+      346,
+      504,
+      342
+    ],
+    [
+      516,
+      346,
+      504,
+      342
+    ],
+    [
+      4,
+      696,
+      504,
+      374
+    ],
+    [
+      516,
+      696,
+      504,
+      374
+    ],
+    [
+      4,
+      1078,
+      504,
+      454
+    ],
+    [
+      516,
+      1078,
+      504,
+      454
+    ]
+  ],
+  "scenes": [
+    "visitor",
+    "invitation",
+    "exterior",
+    "courtyard",
+    "preparation",
+    "classroom",
+    "aesh",
+    "wake"
+  ],
+  "prompts": [
+    "prompt.txt",
+    "prompt-glasses.txt"
+  ],
+  "referenceImages": [
+    "../cinematics-2026-10-24/storyboard-atlas.png",
+    "../cinematics-2026-10-24/campus-v3-ramp.png"
+  ],
+  "notes": [
+    "Actual generated row heights differ; measured source crops and fixed-aspect runtime cover fill the frame without stretching",
+    "Final wake-up: black night window, gray shirt without coat, one pair of spectacles on desk",
+    "Exterior: stadium, park, promenade and happy school life",
+    "Single-leaf doors and continuous accessible ramp reviewed visually",
+    "AESH crop anchors at top to retain the background teacher face; notebook gesture remains in frame"
+  ],
+  "focusY": [
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0,
+    0.5
+  ],
+  "visitorOverride": {
+    "asset": "visitor-coat.png",
+    "prompt": "prompt-visitor-coat.txt",
+    "generatedWith": "built-in image_gen",
+    "originalBytesUnchanged": true,
+    "sha256": "32174ed0222bb84f6c9cd732160c90aa85b6ca2f801087272d746f0245404678",
+    "width": 1448,
+    "height": 1086,
+    "continuity": "Professor wears his brown coat; no duplicate coat on the wall rack or chair"
+  }
+}

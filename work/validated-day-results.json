@@ -9,6 +9,7 @@
       "bruel": "discovery",
       "inshape": "first",
       "phase": "report",
+      "failureReason": null,
       "results": [
         "COURS ASSURE",
         "COURS ASSURE",
@@ -60,18 +61,18 @@
         ]
       ],
       "arrivalClocks": [
-        113.94999999995943,
+        114.33333333329274,
         136.1333333332865,
         147.03333333328322
       ],
       "schoolClocks": [
-        113.94999999995943,
+        114.33333333329274,
         136.1333333332865,
         147.03333333328322
       ],
       "ends": [
         {
-          "remaining": 81.18333333329463,
+          "remaining": 81.5833333332946,
           "hp": 4,
           "vehicle": 100
         },
@@ -86,6 +87,39 @@
           "vehicle": 100
         }
       ],
+      "cinematics": {
+        "intro": [
+          0,
+          1
+        ],
+        "ending": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "clocksStable": true
+      },
+      "homeReturn": {
+        "seconds": 98.3499999999957,
+        "arrivalSeconds": 12.200000000000186,
+        "completions": [
+          {
+            "meters": 3000,
+            "vehicle": 100
+          }
+        ]
+      },
       "collisions": 0,
       "falls": 0
     },
@@ -97,6 +131,7 @@
       "bruel": "discovery",
       "inshape": "first",
       "phase": "report",
+      "failureReason": null,
       "results": [
         "COURS ASSURE",
         "COURS ASSURE",
@@ -148,18 +183,18 @@
         ]
       ],
       "arrivalClocks": [
-        114.63333333329273,
+        114.09999999995942,
         135.59999999995273,
         146.94999999994982
       ],
       "schoolClocks": [
-        114.63333333329273,
+        114.09999999995942,
         135.59999999995273,
         146.94999999994982
       ],
       "ends": [
         {
-          "remaining": 81.99999999996125,
+          "remaining": 81.46666666662794,
           "hp": 4,
           "vehicle": 100
         },
@@ -174,6 +209,39 @@
           "vehicle": 100
         }
       ],
+      "cinematics": {
+        "intro": [
+          0,
+          1
+        ],
+        "ending": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "clocksStable": true
+      },
+      "homeReturn": {
+        "seconds": 98.33333333332904,
+        "arrivalSeconds": 12.200000000000186,
+        "completions": [
+          {
+            "meters": 3000,
+            "vehicle": 100
+          }
+        ]
+      },
       "collisions": 0,
       "falls": 0
     },
@@ -185,6 +253,7 @@
       "bruel": "discovery",
       "inshape": "first",
       "phase": "report",
+      "failureReason": null,
       "results": [
         "COURS ASSURE",
         "COURS ASSURE",
@@ -236,18 +305,18 @@
         ]
       ],
       "arrivalClocks": [
-        113.78333333336931,
+        113.70000000003591,
         136.1083333333869,
         146.45833333339112
       ],
       "schoolClocks": [
-        113.78333333336931,
+        113.70000000003591,
         136.1083333333869,
         146.45833333339112
       ],
       "ends": [
         {
-          "remaining": 81.34166666667683,
+          "remaining": 81.25833333334343,
           "hp": 4,
           "vehicle": 100
         },
@@ -262,6 +331,39 @@
           "vehicle": 100
         }
       ],
+      "cinematics": {
+        "intro": [
+          0,
+          1
+        ],
+        "ending": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "clocksStable": true
+      },
+      "homeReturn": {
+        "seconds": 98.33333333335766,
+        "arrivalSeconds": 12.20833333333328,
+        "completions": [
+          {
+            "meters": 3000,
+            "vehicle": 100
+          }
+        ]
+      },
       "collisions": 0,
       "falls": 0
     },
@@ -272,7 +374,8 @@
       "mode": "keyboard",
       "bruel": "discovery",
       "inshape": "first",
-      "phase": "report",
+      "phase": "fail",
+      "failureReason": "exhausted",
       "results": [
         "COURS ASSURE",
         "COURS ASSURE",
@@ -343,6 +446,19 @@
           "vehicle": 100
         }
       ],
+      "cinematics": {
+        "intro": [
+          0,
+          1
+        ],
+        "ending": [],
+        "clocksStable": true
+      },
+      "homeReturn": {
+        "seconds": 0,
+        "arrivalSeconds": 0,
+        "completions": []
+      },
       "collisions": 0,
       "falls": 0
     }

@@ -1,0 +1,15 @@
+{
+  "title": "Maison — Après les cours",
+  "bpm": 76,
+  "bars": 16,
+  "voices": 4,
+  "sourceBits": 8,
+  "sampleRate": 22050,
+  "seconds": 50.52630385487528,
+  "loop": true,
+  "samples": 9,
+  "peakDbFS": -3.7949136021112952,
+  "rmsDbFS": -20.99999820786064,
+  "seamDelta": 0.0,
+  "wavSha256": "d00c9407e3763a59b89c60fb9c7ceb2e0868078b7a7cc677ff3388de2b1f7b9e"
+}

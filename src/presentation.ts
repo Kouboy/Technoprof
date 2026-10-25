@@ -36,9 +36,17 @@ export const DAYLIGHT = [
     wash: 0x2b203d,
     opacity: 0.23,
   },
+  {
+    name: "Nuit · 21:30",
+    background: 0x536b83,
+    actor: 0x9bafc2,
+    sky: 0x263b5c,
+    wash: 0x080e25,
+    opacity: 0.38,
+  },
 ];
 export function daylight(mission: number) {
-  return DAYLIGHT[Math.max(0, Math.min(2, Math.floor(mission)))];
+  return DAYLIGHT[Math.max(0, Math.min(3, Math.floor(mission)))];
 }
 
 // Decorative events stay behind actors and away from passage markers / hazards.

@@ -1,0 +1,13 @@
+Use case: precise-object-edit.
+Asset: replacement INTRODUCTION ONLY for TECHNOPROF, two side-by-side landscape panels, a strict 2 columns x 1 row strip. Each panel 4:3, overall 8:3. No margins, thin black seam. Target logical total 1280x480 or larger in the same ratio.
+
+INPUT IMAGE 1: edit target is ONLY its first two cells (top row, columns one and two). All other cells in that reference are context for character identity/style; do not reproduce them.
+INPUT IMAGE 2: authoritative FRONT THREE-QUARTER CAR REFERENCE. Use its actual correct front anatomy for the background car in panel two. Do not inherit the incorrect reversed car from image one.
+
+Preserve the first two scenes' composition, crisp intentional pixel art, French social pulp comic contours, tired thin adult professor about 55, messy graying hair, shabby apartment, dawn light, red physics textbook with cream atom emblem, worn satchel.
+
+LEFT PANEL — WAKING IN BED: same old professor under crumpled blue bedding, stretching a hand to ringing smartphone clearly displaying ONLY "6:10". He is wearing a plain light gray sleep shirt, bare neckline, NO OVERCOAT/JACKET, NO TIE, NO GLASSES ON HIS FACE. His rectangular spectacles are folded visibly on the bedside table, away from his face. Readable tired older face, recognizable angular nose and gray messy hair. Rustic cluttered cold bedroom, no narrative text. Keep the ringing phone and bed easy to read.
+
+RIGHT PANEL — DEPARTURE: same old professor now wearing his spectacles and putting on his worn brown overcoat while finishing coffee, red atom textbook tucked under arm, old car keys hanging naturally from hand, worn satchel at hip. Open door reveals his battered beige French compact hatchback in FRONT three-quarter view. Precisely follow image 2: black horizontal front grille, ROUND PALE HEADLIGHTS, small AMBER indicators below, black taped FRONT bumper, rust and mismatched gray-blue door, sloping bonnet between windscreen and grille, TWO BLACK WIPERS at base of front WINDSCREEN, steering wheel and front seats behind windscreen. NO red rear lamps on front, NO hatch/tailgate or rear shelf on front, NO rear window wiper on front. Car remains a small background element beyond open door, coherent perspective, not a second foreground object.
+
+No readable text anywhere except diegetic phone time 6:10 on left. No captions, speech bubbles, logos, title, labels, numbering or onomatopoeia. Keep strong silhouette readability at small size. Two full scenes only, no other panels. Do not change professor into young man, no glossy 3D, no cartoon toy car, no smooth painting.

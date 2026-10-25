@@ -11,10 +11,9 @@ exports.runDay = ({
   bruel = "discovery",
   inshape = "first",
 } = {}) => {
-  const t = createGame(),
+  const t = createGame({ policy: "three-required" }),
     g = t.g,
-    api = t.api,
-    dt = 1 / fps;
+    api = t.api;
   g.workshop = true;
   g.seed = seed;
   g.validatedDay = true;
@@ -137,17 +136,34 @@ exports.runDay = ({
     arrivalClocks = [],
     schoolClocks = [],
     ends = [];
+  const cinematics = { intro: [], ending: [], clocksStable: true };
+  const chargedClocks = () =>
+    JSON.stringify([
+      g.remaining,
+      Object.entries(g.session.missionTiming).flatMap(([mission, timing]) =>
+        Object.entries(timing.clock).map(([phase, seconds]) => [
+          mission,
+          phase,
+          seconds,
+        ]),
+      ),
+    ]);
   let mission = -1,
     ri = 0,
     lastRoom = -1;
   for (let n = 0; n < fps * 1400 && g.phase !== "report"; n++) {
     for (const k of Object.values(g.physicalKeys)) k.isDown = false;
+    const cinematicClock = g.cinematic ? chargedClocks() : null;
     if (g.mission !== mission) {
       mission = g.mission;
       ri = 0;
       lastRoom = -1;
     }
-    if (["free", "receive", "road"].includes(g.phase)) {
+    if (g.phase === "intro" || g.phase === "ending") {
+      const frames = cinematics[g.phase];
+      if (frames.at(-1) !== g.cinematic.index) frames.push(g.cinematic.index);
+      // Automatic montage: no input should be needed or injected here.
+    } else if (["free", "receive", "road", "home"].includes(g.phase)) {
       const probe = {
         ...g,
         keys: Object.fromEntries(
@@ -231,17 +247,21 @@ exports.runDay = ({
       } else if (g.phase === "course" && g.age > 0.4) {
         if (mode === "keyboard") pulse("ENTER");
         else tap(160, 120);
-      } else if (g.phase === "fail" && g.age > 2) {
-        ends[mission] ??= {
-          remaining: g.remaining,
-          hp: g.hp,
-          vehicle: g.vehicle,
-        };
-        if (mode === "keyboard") pulse("ENTER");
-        else tap(160, 120);
       }
     }
     t.step(1000 / fps);
+    if (cinematicClock !== null && cinematicClock !== chargedClocks())
+      cinematics.clocksStable = false;
+    // Preserve the first terminal attempt for diagnosis. Restarting here would
+    // erase its journal and turn a failed pilot into a repeated hidden retry.
+    if (g.phase === "fail") {
+      ends[mission] ??= {
+        remaining: g.remaining,
+        hp: g.hp,
+        vehicle: g.vehicle,
+      };
+      break;
+    }
   }
   return {
     g,
@@ -253,12 +273,19 @@ exports.runDay = ({
       bruel,
       inshape,
       phase: g.phase,
+      failureReason: g.failureReason,
       results: [...g.results],
       won: g.won,
       roomRuns,
       arrivalClocks,
       schoolClocks,
       ends,
+      cinematics,
+      homeReturn: {
+        seconds: g.session.phaseSeconds.home ?? 0,
+        arrivalSeconds: g.session.phaseSeconds.homeArrival ?? 0,
+        completions: g.session.events.filter(e => e.kind === "home-return-end").map(e => e.data),
+      },
       collisions: g.collisions,
       falls: g.session.falls,
       journal: g.journalSnapshot(),

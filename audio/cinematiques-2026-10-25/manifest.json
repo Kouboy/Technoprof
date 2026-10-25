@@ -1,0 +1,202 @@
+{
+  "status": "audition-v1-not-integrated",
+  "seconds": 57.0,
+  "musicCut": 50.0,
+  "alarmStarts": 51.2,
+  "sourceBits": 8,
+  "sampleRate": 22050,
+  "voices": 4,
+  "palette": [
+    {
+      "name": "piano",
+      "bits": 8,
+      "sampleRate": 8287,
+      "loop": false,
+      "frames": 45579
+    },
+    {
+      "name": "bass",
+      "bits": 8,
+      "sampleRate": 8287,
+      "loop": true,
+      "frames": 45579
+    },
+    {
+      "name": "strings-minor",
+      "bits": 8,
+      "sampleRate": 8287,
+      "loop": true,
+      "frames": 20718
+    },
+    {
+      "name": "air-minor",
+      "bits": 8,
+      "sampleRate": 8287,
+      "loop": true,
+      "frames": 20718
+    },
+    {
+      "name": "strings-major9",
+      "bits": 8,
+      "sampleRate": 8287,
+      "loop": true,
+      "frames": 20718
+    },
+    {
+      "name": "air-major9",
+      "bits": 8,
+      "sampleRate": 8287,
+      "loop": true,
+      "frames": 20718
+    },
+    {
+      "name": "strings-major7",
+      "bits": 8,
+      "sampleRate": 8287,
+      "loop": true,
+      "frames": 20718
+    },
+    {
+      "name": "air-major7",
+      "bits": 8,
+      "sampleRate": 8287,
+      "loop": true,
+      "frames": 20718
+    },
+    {
+      "name": "strings-major6",
+      "bits": 8,
+      "sampleRate": 8287,
+      "loop": true,
+      "frames": 20718
+    },
+    {
+      "name": "air-major6",
+      "bits": 8,
+      "sampleRate": 8287,
+      "loop": true,
+      "frames": 20718
+    },
+    {
+      "name": "strings-dominant",
+      "bits": 8,
+      "sampleRate": 8287,
+      "loop": true,
+      "frames": 20718
+    },
+    {
+      "name": "air-dominant",
+      "bits": 8,
+      "sampleRate": 8287,
+      "loop": true,
+      "frames": 20718
+    }
+  ],
+  "timeline": [
+    {
+      "scene": "grading",
+      "start": "00:00.000",
+      "end": "00:05.000",
+      "seconds": "5",
+      "cue": ""
+    },
+    {
+      "scene": "fatigue",
+      "start": "00:05.000",
+      "end": "00:08.500",
+      "seconds": "3.5",
+      "cue": ""
+    },
+    {
+      "scene": "doorbell",
+      "start": "00:08.500",
+      "end": "00:11.000",
+      "seconds": "2.5",
+      "cue": "doorbell"
+    },
+    {
+      "scene": "visitor",
+      "start": "00:11.000",
+      "end": "00:15.000",
+      "seconds": "4",
+      "cue": ""
+    },
+    {
+      "scene": "invitation",
+      "start": "00:15.000",
+      "end": "00:19.000",
+      "seconds": "4",
+      "cue": ""
+    },
+    {
+      "scene": "courtyard",
+      "start": "00:19.000",
+      "end": "00:26.000",
+      "seconds": "7",
+      "cue": ""
+    },
+    {
+      "scene": "corridor",
+      "start": "00:26.000",
+      "end": "00:31.000",
+      "seconds": "5",
+      "cue": ""
+    },
+    {
+      "scene": "preparation",
+      "start": "00:31.000",
+      "end": "00:37.000",
+      "seconds": "6",
+      "cue": ""
+    },
+    {
+      "scene": "classroom",
+      "start": "00:37.000",
+      "end": "00:44.000",
+      "seconds": "7",
+      "cue": ""
+    },
+    {
+      "scene": "aesh",
+      "start": "00:44.000",
+      "end": "00:50.000",
+      "seconds": "6",
+      "cue": ""
+    },
+    {
+      "scene": "bell",
+      "start": "00:50.000",
+      "end": "00:51.200",
+      "seconds": "1.2",
+      "cue": "bell"
+    },
+    {
+      "scene": "wake",
+      "start": "00:51.200",
+      "end": "00:57.000",
+      "seconds": "5.8",
+      "cue": "alarm"
+    }
+  ],
+  "composition": "Original phrase; opening recalls only the approximate rebuilt F/Eb/D/Ab bass contour of the title, not a transcription of its lead",
+  "files": [
+    {
+      "file": "Fin-Musique.wav",
+      "sha256": "7060ecdb069310cfe06c904f003d401712275a9b30026eed06f99c76c8bf2c09",
+      "peakDbFS": -6.69,
+      "rmsDbFS": -22.57
+    },
+    {
+      "file": "Fin-Reperes.wav",
+      "sha256": "f1411bfe4fc8c8ab4442b9e1b260aa83cba685f510190ee9e250f55c670a03d2",
+      "peakDbFS": -5.89,
+      "rmsDbFS": -32.47
+    },
+    {
+      "file": "Fin-Montage.wav",
+      "sha256": "ee40ee610d98f49c9e7a6f78d5670aa8eba521e05b3ef99eab5c45b2b00c850b",
+      "peakDbFS": -5.89,
+      "rmsDbFS": -22.15
+    }
+  ]
+}

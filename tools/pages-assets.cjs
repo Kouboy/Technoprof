@@ -13,6 +13,9 @@ function musicFiles(root) {
   const files = [...map[1].matchAll(/"([^"\n]+\.wav)"/g)].map(
     (m) => "audio/" + m[1],
   );
+  const films = fs.readFileSync(path.join(root, "src/cinematic-audio.ts"), "utf8").match(/export const CINEMATIC_AUDIO = \{([\s\S]*?)\} as const;/);
+  if (!films) throw Error("Cinematic audio catalogue not found");
+  files.push(...[...films[1].matchAll(/"([^"\n]+\.wav)"/g)].map(m => "audio/" + m[1]));
   if (
     !files.length ||
     files.some((f) => f.includes("..") || !f.startsWith("audio/"))

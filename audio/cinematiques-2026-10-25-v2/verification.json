@@ -1,0 +1,24 @@
+{
+  "seconds": 63,
+  "sourceBits": 8,
+  "voices": 4,
+  "events": 158,
+  "samples": 9,
+  "hardCut": 56,
+  "alarm": 57.2,
+  "postCutMusic": "digital silence",
+  "rmsDbFS": {
+    "fatigue": -30.17,
+    "cour": -20.66,
+    "couloir": -20.2,
+    "preparation": -20.27,
+    "classe": -19.07,
+    "aesh": -19.65,
+    "panorama": -17.55
+  },
+  "peak": 0.507476806640625,
+  "originalArtworkBytes": true,
+  "audioUnchangedAfterPictureEdit": true,
+  "exteriorImmediatelyBeforeBell": true,
+  "visitorIsolatedCoatCorrection": true
+}

@@ -14,6 +14,19 @@ for (const fps of [30, 60, 120]) {
   const { g, report: r } = runDay({ fps, mode: "direct" });
   assert(!g.workshop, "continuous pilot uses normal player rules");
   assert.equal(r.phase, "report");
+  assert.equal(g.runPolicy, "three-required");
+  assert(r.homeReturn.seconds > 90, "the day really drives home before the ending");
+  assert(r.homeReturn.arrivalSeconds >= 12.2, "parking, slow walk, 2s fade and black hold precede ending");
+  assert.equal(r.homeReturn.completions.length, 1);
+  assert.equal(r.homeReturn.completions[0].meters, 3000);
+  assert.equal(r.homeReturn.completions[0].vehicle, r.ends[2].vehicle);
+  assert.equal(r.results.length, 3, "return adds no fourth assignment result");
+  assert.deepEqual(r.cinematics.intro, [0, 1]);
+  assert.deepEqual(r.cinematics.ending, Array.from({ length: 14 }, (_, i) => i));
+  assert(
+    r.cinematics.clocksStable,
+    "intro and ending never charge gameplay clocks",
+  );
   assert.equal(
     r.won,
     3,
@@ -86,22 +99,29 @@ for (const fps of [30, 60, 120]) {
   );
   results.push({ ...r, journal: undefined });
 }
-// A less effective keyboard pilot fails the final encounter, but still receives
-// the ordinary 2/3-day report, not the isolated final-boss trial outcome.
+// A less effective keyboard pilot stops at its first terminal final encounter.
+// Two successful courses cannot unlock either the ending or a winning report.
 const keyboard = runDay({ mode: "keyboard" }).report;
-assert.equal(keyboard.phase, "report");
+assert.equal(keyboard.phase, "fail");
 assert.equal(keyboard.won, 2);
 assert.equal(keyboard.results.length, 3);
 assert.equal(keyboard.journal.navigationByMission[3].end.outcome, "failure");
+assert.equal(
+  keyboard.journal.events.filter((e) => e.kind === "failure").length,
+  1,
+);
+assert.deepEqual(keyboard.cinematics.intro, [0, 1]);
+assert.deepEqual(keyboard.cinematics.ending, []);
+assert(keyboard.cinematics.clocksStable);
 results.push({ ...keyboard, journal: undefined });
 
-// Lifecycle tests: timeout on the real road clock, advance, reset and lab switch.
-const t = createGame(),
+// Lifecycle: the real road timeout ends the attempt; ENTER starts a fresh H1.
+const t = createGame({ policy: "three-required" }),
   g = t.g;
 g.workshop = true;
 g.validatedDay = true;
 g.seed = 4301;
-g.startDay();
+g.startDay(false);
 g.workshop = false;
 assert.equal(g.phase, "free");
 assert(!g.notified);
@@ -125,35 +145,53 @@ g.setPaused(false);
 for (let n = 0; n < 30 * 280 && g.phase !== "fail"; n++) t.step(1000 / 30);
 assert.equal(g.phase, "fail");
 assert.equal(g.failureReason, "late");
+const failedSession = g.session;
+assert.equal(g.journalSnapshot().navigationByMission[1].end.outcome, "failure");
 t.advance(2.2, 30);
 t.press("ENTER");
 assert.equal(g.phase, "free");
-assert.equal(g.navigationRevision, "A3");
-assert.equal(g.remaining, 195);
+assert.equal(g.mission, 0);
+assert.equal(g.navigationRevision, "H1");
+assert.equal(g.room, 200);
+assert.equal(g.remaining, 180);
+assert.equal(g.vehicle, 100);
+assert.equal(g.hp, 5);
 assert(!g.navigationCare.used && !g.recoveryScene.active);
-assert.equal(Object.keys(g.validatedDayRuns).length, 1);
-assert.equal(g.journalSnapshot().navigationByMission[1].end.outcome, "failure");
-assert.equal(g.journalSnapshot().navigationByMission[2].revision, "A3");
-// Isolated state setup: persisting a worn car and used care across begin must
-// reset personnel/room state, while preserving vehicle condition.
+assert.equal(Object.keys(g.validatedDayRuns).length, 0);
+assert.notEqual(g.session, failedSession, "retry owns a new journal");
+assert.deepEqual(Object.keys(g.journalSnapshot().navigationByMission), ["1"]);
+assert.equal(
+  g.journalSnapshot().events.filter((e) => e.kind === "failure").length,
+  0,
+);
+assert.equal(g.results.length, 0);
+assert.equal(g.won, 0);
+assert.equal(g.cinematic, null, "retry goes straight to the car");
+// Isolated lifecycle fixture: success preserves a worn car across assignments,
+// while a later failure resets the whole attempt rather than advancing to I2.
 g.vehicle = 38;
 g.hp = 1;
 g.navigationCare.used = true;
-g.finish(false);
+g.finish(true);
 g.next();
 assert.equal(g.vehicle, 38);
 assert.equal(g.hp, 5);
 assert(!g.navigationCare.used);
-assert.equal(g.navigationRevision, "I2");
-assert.equal(g.room, 300);
+assert.equal(g.navigationRevision, "A3");
+assert.equal(g.room, 100);
+assert.equal(g.won, 1);
+g.hp = 1;
+g.navigationCare.used = true;
 g.finish(false);
+assert.equal(g.phase, "fail");
 g.next();
-assert.equal(g.phase, "report");
-assert.equal(Object.keys(g.journalSnapshot().navigationByMission).length, 3);
-g.startDay();
+assert.equal(g.phase, "free");
+assert.equal(g.mission, 0);
 assert.equal(g.navigationRevision, "H1");
 assert.equal(g.room, 200);
 assert.equal(g.vehicle, 100);
+assert.equal(g.hp, 5);
+assert(!g.navigationCare.used && !g.recoveryScene.active);
 assert.equal(g.results.length, 0);
 assert.equal(g.won, 0);
 assert.equal(Object.keys(g.validatedDayRuns).length, 0);
@@ -165,7 +203,7 @@ assert.equal(Object.keys(g.validatedDayRuns).length, 0);
 assert(
   g.journalSnapshot().navigation && !g.journalSnapshot().navigationByMission,
 );
-const legacy = createGame().g;
+const legacy = createGame({ policy: "legacy-two" }).g;
 legacy.startDay();
 assert(!legacy.validatedDay && !legacy.navigationProfile);
 assert(!legacy.navigationSpec());
@@ -183,5 +221,5 @@ fs.writeFileSync(
   ) + "\n",
 );
 console.log(
-  "PASS complete day: three roads + H1/A3/I2 courses at 30/60/120 fps, shared clocks, care, damage persistence, 2/3 failure report, pause, timeout, replay, lab switch and legacy isolation.",
+  "PASS complete day: three assignments + protected 3 km home road and parked black fade at 30/60/120 fps; automatic 10/69s cinematics, shared clocks, care, damage persistence, terminal 2/3 failure, pause, timeout, fresh H1 retry, lab switch and legacy isolation.",
 );

@@ -40,8 +40,8 @@ assert.equal(
   null,
 );
 const files = musicFiles(root);
-assert.equal(files.length, 12);
-assert.equal(new Set(files).size, 12);
+assert.equal(files.length, 17);
+assert.equal(new Set(files).size, 17);
 for (const file of files) {
   assert(file.startsWith("audio/"));
   assert(file.endsWith(".wav"));
@@ -64,7 +64,7 @@ const info = JSON.parse(
   emitted.find((e) => e.fileName === "build-info.json").source,
 );
 assert.equal(info.profile, "journee-musicale");
-assert.equal(info.music.length, 12);
+assert.equal(info.music.length, 17);
 console.log(
-  "PASS Pages export: image bytes preserved/deduplicated, only project data transformed, twelve identical WAVs and build identity",
+  "PASS Pages export: image bytes preserved/deduplicated, only project data transformed, seventeen identical WAVs and build identity",
 );

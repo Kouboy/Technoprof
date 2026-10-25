@@ -1,0 +1,44 @@
+[
+  {
+    "browser": "chromium",
+    "offline": true,
+    "intro": 2,
+    "ending": 14,
+    "seconds": [
+      10,
+      69
+    ],
+    "nativeStems": true,
+    "cueMaster": true,
+    "automatic": true,
+    "pausedStable": true,
+    "inertActionInput": true,
+    "readableScreenshots": true,
+    "noCaptions": true,
+    "errors": []
+  },
+  {
+    "browser": "chromium-touch",
+    "inertTouch": true,
+    "explicitSkip": true,
+    "noHorizontalOverflow": true
+  },
+  {
+    "browser": "firefox",
+    "offline": true,
+    "intro": 2,
+    "ending": 14,
+    "seconds": [
+      10,
+      69
+    ],
+    "nativeStems": true,
+    "cueMaster": true,
+    "automatic": true,
+    "pausedStable": true,
+    "inertActionInput": true,
+    "readableScreenshots": true,
+    "noCaptions": true,
+    "errors": []
+  }
+]

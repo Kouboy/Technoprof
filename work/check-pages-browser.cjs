@@ -59,7 +59,7 @@ async function main() {
   for (const file of info.music) {
     const response = await fetch(new URL(file, base), { method: "HEAD" });
     assert.equal(response.status, 200, file);
-    assert(Number(response.headers.get("content-length")) > 1000000, file);
+    assert(Number(response.headers.get("content-length")) > 500000, file);
   }
   const report = [];
   for (const [name, engine, mobile] of [
@@ -143,6 +143,14 @@ async function main() {
       );
       await activate("Retour");
       await activate("Prendre le service");
+      if (
+        await page
+          .getByRole("button", { name: "Passer la cinématique", exact: true })
+          .isVisible()
+      )
+        await activate("Passer la cinématique");
+      else if (await page.getByRole("button", { name: "Passer l’introduction", exact: true }).isVisible())
+        await activate("Passer l’introduction");
       await page.waitForFunction(
         () =>
           window.__musicPlayers.some(

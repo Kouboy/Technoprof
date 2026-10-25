@@ -11,7 +11,8 @@ for (const reason of ['breakdown', 'exhausted', 'late', null]) {
     const s = { failureReason: reason, mission, brokenRoad: reason === 'breakdown', pointerMode: false };
     const before = JSON.stringify(s), n = context.notice(s);
     assert.equal(JSON.stringify(s), before, 'presentation never changes simulation');
-    assert.equal(n.next, mission === 2 ? 'VOIR LE BILAN' : 'AFFECTATION SUIVANTE');
+    assert.equal(n.next, 'RECOMMENCER LA JOURNEE');
+    assert.equal(context.notice({...s,runPolicy:'legacy-two'}).next,mission === 2 ? 'VOIR LE BILAN' : 'AFFECTATION SUIVANTE','explicit historical fixture');
     assert.equal(n.frame, reason === 'breakdown' ? 'road' : reason === 'exhausted' ? 'school' : null);
     assert(n.cause.length && n.detail.length);
     assert(!JSON.stringify(n).includes('RADIATION'), 'one assignment failure is not radiation');
