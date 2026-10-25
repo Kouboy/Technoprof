@@ -17,6 +17,27 @@ async function profile(engine, name, scenario) {
     const page = await browser.newPage({
       viewport: { width: 1000, height: 900 },
     });
+    // Optional controlled A/B: swap only the two lettering modules, keeping
+    // the current simulation, layout, renderer, route and browser identical.
+    if (process.env.PROFILE_FONT_REFERENCE) {
+      for (const file of ["cadre", "small-lettering"]) {
+        const source = fs.readFileSync(
+          path.join(process.env.PROFILE_FONT_REFERENCE, file + ".ts"),
+          "utf8",
+        );
+        const code = require("node:module")
+          .stripTypeScriptTypes(source)
+          .replace(
+            'from "./small-lettering"',
+            'from "/src/small-lettering.ts"',
+          );
+        await page.route(
+          new RegExp("/src/" + file + "\\.ts(?:\\?|$)"),
+          (route) =>
+            route.fulfill({ contentType: "text/javascript", body: code }),
+        );
+      }
+    }
     const errors = [];
     page.on("pageerror", (e) => errors.push(e.message));
     await page.addInitScript(() => {
@@ -134,6 +155,7 @@ async function profile(engine, name, scenario) {
       );
     const result = {
       name,
+      lettering: process.env.PROFILE_FONT_REFERENCE ? "reference" : "current",
       version: browser.version(),
       scenario,
       readyMs,

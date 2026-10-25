@@ -84,22 +84,26 @@ export function bitmap(
 ) {
   let cursor = Math.round(x);
   const end = cursor + maxWidth;
+  const top = Math.round(y);
   g.fillStyle(color);
   for (const c of cleanText(value)) {
     const glyph = GLYPHS[c] ?? GLYPHS["?"],
       w = glyph[0].length * scale;
     if (cursor + w > end) break;
-    glyph.forEach((row, dy) =>
-      [...row].forEach((pixel, dx) => {
-        if (pixel === "1")
-          g.fillRect(
-            cursor + dx * scale,
-            Math.round(y) + dy * scale,
-            scale,
-            scale,
-          );
-      }),
-    );
+    for (let dy = 0; dy < glyph.length; dy++) {
+      const row = glyph[dy];
+      for (let dx = 0; dx < row.length; dx++) {
+        if (row[dx] !== "1") continue;
+        const start = dx;
+        while (row[dx + 1] === "1") dx++;
+        g.fillRect(
+          cursor + start * scale,
+          top + dy * scale,
+          (dx - start + 1) * scale,
+          scale,
+        );
+      }
+    }
     cursor += w + scale;
   }
 }
@@ -198,9 +202,10 @@ export function cadreModel(s: CadreState, routeMeters: number) {
         ":" +
         String(seconds % 60).padStart(2, "0")
       : "--:--",
-    distance: assigned || home
-      ? (meters / 1000).toFixed(2).replace(".", ",") + " KM"
-      : "",
+    distance:
+      assigned || home
+        ? (meters / 1000).toFixed(2).replace(".", ",") + " KM"
+        : "",
     urgent,
     reveal: s.phase === "receive" ? Math.max(0, Math.min(1, s.age / 3)) : 1,
   };
@@ -319,7 +324,13 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
     r(x + 2, y, 3, 1, 0x928269);
     r(x + 3, y + 1, 1, 1, 0x665e4a);
   }
-  compact(12, 187, m.home ? "DESTINATION" : m.assigned ? "AFFECTATION" : "RECEPTION", paper, 88);
+  compact(
+    12,
+    187,
+    m.home ? "DESTINATION" : m.assigned ? "AFFECTATION" : "RECEPTION",
+    paper,
+    88,
+  );
   centerSmall(120, 82, 187, m.home ? "JOURNEE" : "DELAIS");
   compact(217, 187, m.driving ? "AUTO" : "PERSONNEL", paper, 62);
   const clockColor = m.urgent ? red : m.assigned ? amber : dim;
@@ -460,10 +471,11 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
     " / SERVICE " +
     Math.min(s.mission + 1, 3) +
     "/3";
-  const line =
-    m.home
-      ? s.phase === "homeArrival" ? "MAISON / FIN DE SERVICE" : "21:30 / RETOUR A LA MAISON / FM"
-      : s.phase === "fail"
+  const line = m.home
+    ? s.phase === "homeArrival"
+      ? "MAISON / FIN DE SERVICE"
+      : "21:30 / RETOUR A LA MAISON / FM"
+    : s.phase === "fail"
       ? m.failureCause
       : s.phase === "report"
         ? "RESEAU RECTORAL - JOURNEE TERMINEE"

@@ -12,6 +12,19 @@ const art=Object.create(c.RoadArt.prototype);art.layers=[];art.images=[];art.sce
 art.layer(0);const far=currentDepth;art.layer(20);const bridge=currentDepth;art.layer(50);const near=currentDepth;
 assert(far<bridge&&bridge<near&&near<3.1);art.hide();assert.equal(art.index,0);
 console.log('PASS road atlas bounds, world anchors across segment boundaries, mixed-layer depths below player');
+// Phaser 4 geometry masks are Canvas-only. WebGL ignored this call and warned
+// on every scene creation; do not create or apply a useless mask there.
+c.Phaser={CANVAS:1};
+for(const renderer of [1,2]) {
+ let graphics=0,applied=0;
+ const road=Object.create(c.RoadArt.prototype), mask={};
+ const shape={fillStyle(){return this;},fillRect(){return this;},setVisible(){return this;},createGeometryMask(){return mask;}};
+ road.scene={game:{renderer:{type:renderer}},add:{graphics(){graphics++;return shape;}}};
+ road.world={setMask(value){assert.equal(value,mask);applied++;return this;}};
+ road.installViewportMask();
+ assert.equal(graphics,renderer===1?1:0);assert.equal(applied,renderer===1?1:0);
+}
+console.log('PASS Canvas keeps its viewport mask; WebGL creates no unsupported geometry mask');
 
 // One viewport mask on the shared world; children retain their exact depth order.
 const parented=[];let sorted=false;

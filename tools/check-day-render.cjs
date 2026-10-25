@@ -6,9 +6,11 @@ const assert = require('node:assert/strict');
 const { chromium, firefox } = require(process.argv[2] || 'playwright');
 const engine = process.argv[3] === 'firefox' ? firefox : chromium;
 if (process.argv[3] && !['chromium','firefox'].includes(process.argv[3])) throw Error('Unknown browser');
-const output = 'work/checkpoints/day-assets/' + (process.argv[3] || 'chromium');
+const reference = process.env.REFERENCE_HTML;
+const output = 'work/checkpoints/' + (reference ? 'cleanup-render/' : 'day-assets/') + (process.argv[3] || 'chromium');
 fs.mkdirSync(output, { recursive: true });
 const files = { '/full': 'Jouer-Technoprof.html', '/day': 'Jouer-Technoprof-Journee-Atelier.html' };
+if (reference) files['/full'] = reference;
 const documents = {};
 for (const [route, file] of Object.entries(files)) {
   const html = fs.readFileSync(file, 'utf8'), marker = /this\.runtime\.mark\((["'`])ready\1\)/g;
@@ -42,6 +44,8 @@ const server = http.createServer((req, res) => {
       ), 'day DOM must ignore workshop URL options and preserve player feedback');
       // Exercise the genuine entry button before deterministic visual fixtures.
       await page.getByRole('button', { name: 'Prendre le service', exact: true }).click();
+      const skip = page.getByRole('button', { name: 'Passer la cinématique', exact: true });
+      if (await skip.isVisible()) await skip.click();
       assert(await page.evaluate(() => __qaScene.phase === 'free' && __qaScene.validatedDay), 'player starts cruising');
       // Freeze simulation without opening the player pause menu, which correctly
       // hides the canvas. Native rendering continues on the normal engine loop.
@@ -129,7 +133,7 @@ const server = http.createServer((req, res) => {
     for (const key of old) assert(!keys.has(key), 'day still decodes ' + key);
     for (const key of ['prof', 'inspectrice', 'parent', 'student-34', 'guard-33', 'bruel-backgrounds', 'pro-backgrounds', 'infirmary-nurse'])
       assert(keys.has(key), 'shared texture absent: ' + key);
-    assert(report.builds.day.rgbaBytes < report.builds.full.rgbaBytes, 'decoded textures must shrink');
+    assert(reference ? report.builds.day.rgbaBytes <= report.builds.full.rgbaBytes : report.builds.day.rgbaBytes < report.builds.full.rgbaBytes, 'decoded textures must not regress');
     // Launch the unmodified deliverable directly from disk with networking off.
     const offline = await browser.newContext({ offline: true });
     const local = await offline.newPage(), localErrors = [];
@@ -142,7 +146,7 @@ const server = http.createServer((req, res) => {
     assert.deepEqual(localErrors, [], 'unmodified offline file launch');
     report.offlineFileLaunch = true;
     await offline.close();
-    fs.writeFileSync('work/reports/performance/day-assets-' + report.browser + '.json', JSON.stringify(report, null, 2));
+    fs.writeFileSync(reference ? output + '/report.json' : 'work/reports/performance/day-assets-' + report.browser + '.json', JSON.stringify(report, null, 2));
     assert.deepEqual(report.mismatches, [], 'visual differences saved in ' + output);
     console.log('PASS ' + report.identicalViews.length + ' identical native views; decoded RGBA ' + report.builds.full.rgbaBytes + ' -> ' + report.builds.day.rgbaBytes);
   } finally { await browser?.close(); await new Promise(resolve => server.close(resolve)); }

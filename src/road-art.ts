@@ -345,6 +345,19 @@ export class RoadArt {
   index = 0;
   depth = 3.01;
   mission = 0;
+  installViewportMask() {
+    // Phaser 4 ignores geometry masks in WebGL. Keep the existing Canvas
+    // clipping, without allocating a hidden shape or invoking an unsupported
+    // API on the normal WebGL path. Its rendered output is unchanged.
+    if (this.scene.game.renderer.type !== Phaser.CANVAS) return;
+    this.viewportMask = this.scene.add
+      .graphics()
+      .fillStyle(0xffffff)
+      .fillRect(7, 7, 306, 168)
+      .setVisible(false)
+      .createGeometryMask();
+    this.world?.setMask(this.viewportMask);
+  }
   constructor(private scene: Phaser.Scene) {
     const sky = scene.textures.get("sky");
     const sourceSky = sky.getSourceImage() as HTMLImageElement;
@@ -365,18 +378,10 @@ export class RoadArt {
 
       .setVisible(false);
     this.horizonLight = scene.add.graphics().setDepth(3.0015);
-    this.viewportMask = scene.add
-      .graphics()
-      .fillStyle(0xffffff)
-      .fillRect(7, 7, 306, 168)
-      .setVisible(false)
-      .createGeometryMask();
-    // Shared clipping avoids a stencil switch for every individual halo.
+    // Children retain one shared world and their exact depth order.
     // The player car and the CADRE remain outside this depth band.
-    this.world = scene.add
-      .container(0, 0)
-      .setDepth(3.01)
-      .setMask(this.viewportMask);
+    this.world = scene.add.container(0, 0).setDepth(3.01);
+    this.installViewportMask();
     for (const key of ["traffic", "district", "verge"] as const) {
       const source = scene.textures
         .get("raw-" + key)

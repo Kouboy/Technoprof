@@ -14,6 +14,20 @@ Le menu de pause et le bilan permettent d’exporter le journal d’essai.
 
 ## Jouer à la version d’atelier actuelle
 
+**Lancement conseillé : ouvrir Jouer-Technoprof-Fenetre.html**, puis **Ouvrir le jeu
+dans sa fenêtre**. `Jouer.cmd` ouvre ce lanceur sur Windows. Le cadre conserve le
+ratio 4:3 quand la fenêtre est redimensionnée ; les commandes Pause/son et les
+sous-titres restent accessibles. Le plein écran est facultatif. En cas de blocage
+des fenêtres, le lien **Jouer dans cet onglet** conserve le même affichage adapté.
+Garder `Jouer-Technoprof-Journee-Atelier.html` et le dossier `audio/` à côté du
+lanceur. Ce lanceur de moins de 2 Kio ne duplique pas les images du jeu.
+
+Depuis l’onglet de jeu normal, **Ouvrir dans une fenêtre** suspend la partie en
+cours et ouvre une nouvelle journée au titre. Un second clic réutilise la fenêtre
+existante sans la recharger ; la progression n’est pas transférée entre fenêtres.
+Le navigateur peut conserver sa barre de titre ou ouvrir un onglet selon ses
+préférences. Sur téléphone, le paysage est conseillé.
+
 Ouvrir **Jouer-Technoprof-Journee-Atelier.html**, puis **Prendre le service**.
 Ce fichier autonome fonctionne sur disque, hors connexion. Il enchaîne les trois
 trajets et les établissements validés : Ormeaux H1, Auguste-Berthelot A3 et
@@ -66,6 +80,10 @@ npm run test:rapide
 | Commande | Usage |
 | --- | --- |
 | `npm run test:rapide` | Règles principales, conduite, lumières, audio de route et voiture |
+| `npm run test:playtest` | Validation consolidée de la journée actuelle : interface, gamefeel, musiques, cinéma, SFX, assets, signalétique, textes et fenêtre |
+| `npm run test:fenetre` | Ouverture, réutilisation, blocage et repli, plein écran refusé/accepté |
+| `npm run test:lettres` | Rendu bitmap identique et réduction du nombre de rectangles |
+| `npm run audit:projet` | Inventaire en lecture seule et accessibilité des modules depuis le jeu |
 | `npm run test:journee` | Trois trajets + H1/A3/I2, commandes, soins, transitions et bilan à 30/60/120 fps simulés |
 | `npm run test:cinematiques` | Règle 3/3, échec terminal, films 10/69 s, son synchronisé, pause et cadrages validés |
 | `npm run test:assets` | Catalogue de compilation, images retenues intactes et préchargement des acteurs partagés |
@@ -102,6 +120,8 @@ les répliques. La souris et le toucher utilisent directement la scène.
 Le [bilan de nettoyage et de profilage](docs/technique/NETTOYAGE-2026-10-22.md)
 distingue les premiers gains du [chargement allégé de la journée](docs/technique/ASSETS-JOURNEE-2026-10-22.md).
 L’[historique Git](HISTORIQUE.md) décrit les sauvegardes importées.
+La [passe fenêtre et nettoyage du 25 octobre](docs/technique/FENETRE-NETTOYAGE-2026-10-25.md)
+documente les vérifications, le rangement et les limites des optimisations.
 
 GitHub Pages publie `dist/` uniquement après un envoi sur `main`, via
 [pages.yml](.github/workflows/pages.yml). Le workflow vérifie la journée, la

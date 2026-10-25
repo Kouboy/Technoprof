@@ -1,14 +1,17 @@
 TECHNOPROF - JOURNEE D'ATELIER
 
-Ouvrir Jouer-Technoprof-Journee-Atelier.html, puis Prendre le service.
-Jouer.cmd ouvre cette journee si elle est presente, sinon le moteur commun.
+Ouvrir Jouer-Technoprof-Fenetre.html, puis Ouvrir le jeu dans sa fenetre.
+Jouer.cmd ouvre ce lanceur sur Windows. Le cadre reste en 4:3 au redimensionnement.
+Si la fenetre est bloquee, utiliser Jouer dans cet onglet.
+Garder le fichier Journee-Atelier et le dossier audio/ a cote du lanceur.
 
 Trois trajets et trois etablissements : Ormeaux H1, Auguste-Berthelot A3,
 lycee professionnel des Trois-Ponts I2. Le fichier de journee est autonome
-et peut etre copie seul. Les autres ateliers sont de petits raccourcis :
+sans musique peut etre copie seul. La journee musicale utilise aussi audio/.
+Les autres ateliers sont de petits raccourcis :
 garder Jouer-Technoprof.html a cote pour les utiliser.
-La journee allegee (~100 Mo) contient les memes images utiles ; le fichier
-d'atelier complet (~135 Mo) conserve aussi les anciens essais.
+La journee allegee (~128 Mo) contient les memes images utiles ; le fichier
+d'atelier complet (~163 Mo) conserve aussi les anciens essais.
 
 Commandes : fleches ou ZQSD ; Espace = saut ; F/X = frappe ou dialogue.
 Souris et toucher directement dans la scene. L'aide en jeu explique les gestes.

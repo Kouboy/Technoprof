@@ -31,7 +31,11 @@
     "test:inshape-i2": "node work/check-inshape-i2.cjs && node work/check-inshape-i2-care.cjs && node work/check-trois-ponts-i2-art.cjs",
     "test:journee": "node work/check-validated-day.cjs",
     "test:rapide": "node work/check.cjs && npm run test:ambiance-route && node work/check-car.cjs",
-    "test:sequences": "node work/check-sequence-feedback.cjs && node work/check-art.cjs && node work/check-053.cjs"
+    "test:sequences": "node work/check-sequence-feedback.cjs && node work/check-art.cjs && node work/check-053.cjs",
+    "test:fenetre": "node work/check-game-window.cjs && node work/check-direct-layout.cjs",
+    "test:lettres": "node work/check-lettering-performance.cjs",
+    "test:playtest": "npm run test:rapide && npm run test:journee && npm run test:interface && npm run test:gamefeel && npm run test:musique && npm run test:cinematiques && npm run test:retour-maison && npm run test:sfx && npm run test:assets && npm run test:pages && npm run test:signaletique && npm run test:textes && npm run test:fenetre && npm run test:lettres",
+    "audit:projet": "node tools/audit-project.cjs work/checkpoints/inventory-current.json"
   },
   "dependencies": {
     "phaser": "4.2.1"

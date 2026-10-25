@@ -29,6 +29,7 @@ import {
 } from "./bruel-recovery";
 import { ActionInput, BINDINGS } from "./controls";
 import { DirectInput, installDirectInput } from "./direct-input";
+import { installGameWindow } from "./game-window";
 import { drawComicFX } from "./comic-fx";
 import {
   installPlayerExperience,
@@ -189,7 +190,10 @@ class Game extends Phaser.Scene {
   syncMusic() {
     if (!this.music) return;
     this.cinematicAudio?.sync(this.cinematic, {
-      paused: this.paused || this.musicFocusLost || (this.playerMenu && this.phase !== "title"),
+      paused:
+        this.paused ||
+        this.musicFocusLost ||
+        (this.playerMenu && this.phase !== "title"),
       muted: this.audio.muted,
       musicVolume: this.audio.musicVolume,
       effectsVolume: this.audio.effectsVolume,
@@ -215,8 +219,11 @@ class Game extends Phaser.Scene {
         this.encounterTime > 0 ||
         this.bossIntro > 0 ||
         this.recoveryScene.state === "dialogue",
-      volume: this.audio.musicVolume *
-        (this.phase === "homeArrival" ? homeArrivalFrame(this.age).radioGain : 1),
+      volume:
+        this.audio.musicVolume *
+        (this.phase === "homeArrival"
+          ? homeArrivalFrame(this.age).radioGain
+          : 1),
     });
   }
   groundContact?: Phaser.GameObjects.Graphics;
@@ -717,8 +724,12 @@ class Game extends Phaser.Scene {
       .setDepth(3.005)
       .setVisible(false);
     this.arrivalGate = this.add.graphics().setDepth(3.14);
-    this.homeArrivalBackdrop = this.add.image(7, 7, "arrival-home")
-      .setOrigin(0, 0).setDisplaySize(306, 168).setDepth(3.005).setVisible(false);
+    this.homeArrivalBackdrop = this.add
+      .image(7, 7, "arrival-home")
+      .setOrigin(0, 0)
+      .setDisplaySize(306, 168)
+      .setDepth(3.005)
+      .setVisible(false);
     this.sceneGraphics = this.g;
     this.carArt = new CarArt(this);
     this.roadArt = new RoadArt(this);
@@ -757,9 +768,10 @@ class Game extends Phaser.Scene {
     ) {
       this.music = new MusicKit();
       this.cinematicAudio = new CinematicSoundtrack();
-      this.events.once(Phaser.Scenes.Events.SHUTDOWN, () =>
-        { this.music?.destroy(); this.cinematicAudio?.destroy(); },
-      );
+      this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+        this.music?.destroy();
+        this.cinematicAudio?.destroy();
+      });
     }
     const preview = DAY_ONLY
       ? "journee"
@@ -1010,6 +1022,13 @@ class Game extends Phaser.Scene {
         this.pointerMode = true;
       this.phase = "title";
       this.syncPlayerUI = installPlayerExperience(this);
+      installGameWindow(
+        () => {
+          if (!["title", "report"].includes(this.phase))
+            this.setPaused(true, "AFFICHAGE");
+        },
+        () => this.refreshLayout(),
+      );
       if (preview === "accueil") {
         const bar = document.getElementById("pose-controls")!;
         bar.hidden = false;
@@ -1042,6 +1061,7 @@ class Game extends Phaser.Scene {
     this.runtime.mark("ready");
   }
   refreshLayout() {
+    this.scale?.getParentBounds();
     this.scale?.refresh();
   }
   releasePreparedSources() {
@@ -1337,7 +1357,9 @@ class Game extends Phaser.Scene {
     if (this.runPolicy === "three-required" && showIntro) {
       this.cinematic = new CinematicSequence("intro");
       this.phase = "intro";
-      this.session.record("cinematic-start",this.mission,this.room,{kind:"intro"});
+      this.session.record("cinematic-start", this.mission, this.room, {
+        kind: "intro",
+      });
     }
     this.setPlayerMenu(false);
   }
@@ -1350,7 +1372,11 @@ class Game extends Phaser.Scene {
   completeCinematic(skipped = false) {
     const sequence = this.cinematic;
     if (!sequence?.done) return;
-    this.session.record("cinematic-end",this.mission,this.room,{kind:sequence.kind,elapsed:sequence.elapsed,skipped});
+    this.session.record("cinematic-end", this.mission, this.room, {
+      kind: sequence.kind,
+      elapsed: sequence.elapsed,
+      skipped,
+    });
     this.cancelBufferedActions("cinematic");
     if (sequence.done) {
       this.direct?.cancel();
@@ -1662,7 +1688,8 @@ class Game extends Phaser.Scene {
     this.persistJournal();
   }
   next() {
-    if (this.cinematic || this.phase === "report" || isHomePhase(this.phase)) return;
+    if (this.cinematic || this.phase === "report" || isHomePhase(this.phase))
+      return;
     if (this.runPolicy === "three-required" && this.phase === "fail") {
       this.startDay(false);
       return;
@@ -1708,16 +1735,22 @@ class Game extends Phaser.Scene {
     this.speed = HOME_DRIVE.cruiseSpeed;
     this.trafficIndex = 0;
     let z = 0;
-    this.obstacles = Array.from({length: HOME_DRIVE.trafficCount}, () => {
+    this.obstacles = Array.from({ length: HOME_DRIVE.trafficCount }, () => {
       const cue = homeTrafficCue(this.trafficIndex++, this.random.next());
       z += cue.gap;
-      return {z, x: cue.x, type: cue.type, speed: cue.speed};
+      return { z, x: cue.x, type: cue.type, speed: cue.speed };
     });
-    this.session.record("home-return-start", this.mission, this.room, {meters: HOME_DRIVE.meters, vehicle: this.vehicle});
+    this.session.record("home-return-start", this.mission, this.room, {
+      meters: HOME_DRIVE.meters,
+      vehicle: this.vehicle,
+    });
   }
   completeHomeReturn() {
     if (this.phase !== "homeArrival") return;
-    this.session.record("home-return-end", this.mission, this.room, {meters: this.road, vehicle: this.vehicle});
+    this.session.record("home-return-end", this.mission, this.room, {
+      meters: this.road,
+      vehicle: this.vehicle,
+    });
     this.cancelBufferedActions("home-arrival");
     this.direct?.cancel();
     this.music?.stop();
@@ -1725,7 +1758,9 @@ class Game extends Phaser.Scene {
     this.phase = "ending";
     this.age = 0;
     this.cinematic = new CinematicSequence("ending");
-    this.session.record("cinematic-start", this.mission, this.room, {kind: "ending"});
+    this.session.record("cinematic-start", this.mission, this.room, {
+      kind: "ending",
+    });
     this.persistJournal();
   }
   handleKeyDown(event: Pick<KeyboardEvent, "key" | "repeat">) {
@@ -1764,7 +1799,8 @@ class Game extends Phaser.Scene {
     return (
       !this.paused &&
       (["free", "receive", "road", "home"].includes(this.phase) ||
-        (this.phase === "homeArrival" && this.age < HOME_ARRIVAL.parkingSeconds) ||
+        (this.phase === "homeArrival" &&
+          this.age < HOME_ARRIVAL.parkingSeconds) ||
         (this.phase === "arrival" && this.age < DRIVE.parkingSeconds))
     );
   }
@@ -1958,7 +1994,10 @@ class Game extends Phaser.Scene {
     this.cadreReview = false;
     this.arrivalStill = false;
     this.artReview = -1;
-    if (this.workshop && (name === "home-return" || name === "home-return-near")) {
+    if (
+      this.workshop &&
+      (name === "home-return" || name === "home-return-near")
+    ) {
       this.runPolicy = "three-required";
       this.validatedDay = true;
       this.mission = this.won = 3;
@@ -1970,7 +2009,10 @@ class Game extends Phaser.Scene {
         this.travel = this.road * DRIVE.motionScale;
         for (const o of this.obstacles) o.z += this.travel;
       }
-      this.session.record("scenario", this.mission, this.room, {name, preview: true});
+      this.session.record("scenario", this.mission, this.room, {
+        name,
+        preview: true,
+      });
       this.draw();
       return;
     }
@@ -2648,7 +2690,8 @@ class Game extends Phaser.Scene {
                       ? "encounter"
                       : "orientation"
           : this.phase;
-    if (!isHomePhase(this.phase)) this.session.measure(this.mission, category, dt);
+    if (!isHomePhase(this.phase))
+      this.session.measure(this.mission, category, dt);
     if (this.phase !== this.lastLoggedPhase) {
       this.session.record("phase", this.mission, this.room, {
         from: this.lastLoggedPhase,
@@ -2688,7 +2731,12 @@ class Game extends Phaser.Scene {
         if (audioTime !== null) story.seek(audioTime);
       } else story?.tick(dt, false);
       if (story && story.index !== previous)
-        this.session.record("cinematic-panel",this.mission,this.room,{kind:story.kind,id:story.panel.id,index:story.index,elapsed:story.elapsed});
+        this.session.record("cinematic-panel", this.mission, this.room, {
+          kind: story.kind,
+          id: story.panel.id,
+          index: story.index,
+          elapsed: story.elapsed,
+        });
       this.completeCinematic();
     } else if (this.phase === "title" || this.phase === "report") {
       if (enterPressed) this.startDay();
@@ -2898,11 +2946,9 @@ class Game extends Phaser.Scene {
           }
         }
         if (distance < -40) {
-          const cue = (home ? homeTrafficCue(this.trafficIndex++, this.random.next()) : trafficCue(
-            this.trafficIndex++,
-            this.mission,
-            this.random.next(),
-          ));
+          const cue = home
+            ? homeTrafficCue(this.trafficIndex++, this.random.next())
+            : trafficCue(this.trafficIndex++, this.mission, this.random.next());
           const tail = Math.max(
             this.travel + DRIVE.visibleDistance + 80,
             ...this.obstacles
@@ -2930,7 +2976,10 @@ class Game extends Phaser.Scene {
         return;
       }
       if (home) {
-        this.road = Math.min(HOME_DRIVE.meters, this.road + (this.speed / 3.6) * dt);
+        this.road = Math.min(
+          HOME_DRIVE.meters,
+          this.road + (this.speed / 3.6) * dt,
+        );
         if (this.road >= HOME_DRIVE.meters) {
           this.phase = "homeArrival";
           this.parkFrom = this.car;
@@ -3577,10 +3626,12 @@ class Game extends Phaser.Scene {
       type,
       speed: this.speed,
     });
-    this.vehicle = isHomePhase(this.phase) ? this.vehicle : Math.max(
-      0,
-      this.vehicle - (type === 1 ? DRIVE.truckDamage : DRIVE.carDamage),
-    );
+    this.vehicle = isHomePhase(this.phase)
+      ? this.vehicle
+      : Math.max(
+          0,
+          this.vehicle - (type === 1 ? DRIVE.truckDamage : DRIVE.carDamage),
+        );
     this.speed *= 0.48;
     this.trafficHit = 1.4;
     this.crashPush =
@@ -4904,7 +4955,9 @@ class Game extends Phaser.Scene {
       this.banner("DEPANNAGE EN COURS");
       this.txt(45, 120, "VOITURE DE SERVICE / DEPANNAGE", 8);
     }
-    for (const p of ["free", "receive", "road", "home", "school"].includes(this.phase)
+    for (const p of ["free", "receive", "road", "home", "school"].includes(
+      this.phase,
+    )
       ? this.particles
       : [])
       if (p.x > 8 && p.x < 308 && p.y > 8 && p.y < 173)
@@ -5326,7 +5379,13 @@ class Game extends Phaser.Scene {
     // One depth projection for road, markings, traffic and verges.
     const project = (d: number, lane = 0) =>
       roadProjection(this.travel, d, lane);
-    this.rect(7, 7, 306, 168, [0x7d9daa, 0x9cb3a5, 0x815762, 0x101c30][this.mission]);
+    this.rect(
+      7,
+      7,
+      306,
+      168,
+      [0x7d9daa, 0x9cb3a5, 0x815762, 0x101c30][this.mission],
+    );
     if (this.roadArt)
       this.roadArt.sky(
         horizon,
@@ -5464,7 +5523,10 @@ class Game extends Phaser.Scene {
     if (this.roadArt) {
       scenery.length = 0;
       scenery.push(
-        ...districtAnchors(this.travel, isHomePhase(this.phase) ? "mixed" : this.missionSpec().district),
+        ...districtAnchors(
+          this.travel,
+          isHomePhase(this.phase) ? "mixed" : this.missionSpec().district,
+        ),
       );
     }
     const renderScenery = (t: Scenery) => {
@@ -5973,8 +6035,11 @@ class Game extends Phaser.Scene {
     if (this.foreground) this.g = this.foreground;
     this.vehicleDamage(frame.carX, 146, true);
     if (frame.teacherVisible) {
-      this.art?.pose("prof", frame.teacherFrame, frame.teacherX, frame.teacherY, 1)
-        .setScale(frame.teacherScale).setDepth(3.09).setAngle(2)
+      this.art
+        ?.pose("prof", frame.teacherFrame, frame.teacherX, frame.teacherY, 1)
+        .setScale(frame.teacherScale)
+        .setDepth(3.09)
+        .setAngle(2)
         .setAlpha(frame.teacherAlpha);
     }
   }

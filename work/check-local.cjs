@@ -19,6 +19,20 @@ for (const file of files.filter(f => !['Jouer-Technoprof.html','Jouer-Technoprof
   assert(Buffer.byteLength(html) < 2048, file + ' must not duplicate the assets');
   total += Buffer.byteLength(html); count++;
   const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
+  if(file === 'Jouer-Technoprof-Fenetre.html') {
+    let destination, opens=0; const nodes={launch:{},status:{}};
+    vm.runInNewContext(script,{document:{getElementById:id=>nodes[id]},window:{open(url){destination=url;opens++;return{closed:false,focus(){}};}}});
+    assert.equal(opens,0,'popup must wait for a real click');nodes.launch.onclick();nodes.launch.onclick();assert.equal(opens,1,'reuse without reloading');
+    const url=new URL(destination,'file:///C:/jeu/'+file);
+    assert.equal(url.pathname,'/C:/jeu/Jouer-Technoprof-Journee-Atelier.html');assert.equal(url.searchParams.get('musique'),'essai');assert.equal(url.searchParams.get('fenetre'),'1');
+    assert(html.includes('Jouer dans cet onglet'));continue;
+  }
+  if(['Jouer-Technoprof-Retour-Maison.html','Jouer-Technoprof-Arrivee-Maison.html'].includes(file)) {
+    let destination;vm.runInNewContext(script,{location:{replace(url){destination=url;}}});
+    const url=new URL(destination,'file:///C:/jeu/'+file);
+    assert.equal(url.pathname,'/C:/jeu/Jouer-Technoprof.html');assert.equal(url.searchParams.get('essai'),'labo');assert.equal(url.searchParams.get('musique'),'essai');
+    assert.equal(url.searchParams.get('scenario'),file.includes('Arrivee')?'home-return-near':'home-return');continue;
+  }
   if(file === 'Jouer-Technoprof-Journee-Musique.html') {
     let destination;
     vm.runInNewContext(script,{location:{replace(url){destination=url;}}});
@@ -42,5 +56,5 @@ for (const file of files.filter(f => !['Jouer-Technoprof.html','Jouer-Technoprof
     }
   }
 }
-assert.equal(count,21);assert(total < Buffer.byteLength(main)+Buffer.byteLength(day) + 40000);
-console.log('PASS two autonomous HTMLs, 21 small local shortcuts including music and gamefeel; query/hash preservation for workshop shortcuts; ' + total + ' bytes total');
+assert.equal(count,24);assert(total < Buffer.byteLength(main)+Buffer.byteLength(day) + 40000);
+console.log('PASS two autonomous HTMLs, 24 small local shortcuts including home arrival, dedicated window, music and gamefeel; query/hash preservation for workshop shortcuts; ' + total + ' bytes total');

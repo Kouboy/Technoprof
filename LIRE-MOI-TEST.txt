@@ -2,9 +2,10 @@ TECHNOPROF — Physique appliquée
 Journée d’atelier H1 / A3 / I2
 
 1. Extraire l'archive dans un dossier.
-2. Ouvrir Jouer-Technoprof-Journee-Atelier.html dans votre navigateur habituel.
-   Sur Windows, Jouer.cmd ouvre également le jeu.
-3. Choisir « Prendre le service ».
+2. Ouvrir Jouer-Technoprof-Fenetre.html, puis « Ouvrir le jeu dans sa fenêtre ».
+   Sur Windows, Jouer.cmd ouvre ce lanceur. Garder le HTML Journée-Atelier et
+   le dossier audio/ à côté. Si la fenêtre est bloquée, choisir « Jouer dans cet onglet ».
+3. Choisir « Prendre le service ». Le cadre reste en 4:3 au redimensionnement.
 
 Le jeu se joue au clavier (ZQSD ou flèches, Espace, F ou X), à la souris ou au toucher.
 Les gestes et les réglages sont dans le menu Commandes. Sur téléphone, le paysage est conseillé.
