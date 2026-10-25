@@ -28,7 +28,7 @@ for(const seed of [1,4301,3842110648])for(const mode of ['keyboard','direct']){
 {
  const g=createGame().g;g.begin();const cars=g.obstacles,locations=cars.map(o=>o.z);g.age=14.99;g.update(0,20);assert.equal(g.phase,'receive');assert.equal(g.obstacles,cars);assert(cars.every((o,i)=>Math.abs(o.z-locations[i])<2));
  assert.equal(cars.length,audit.TRAFFIC.capacity);
- const colors=audit.DAYLIGHT.map(l=>l.background);assert.equal(new Set(colors).size,3);assert(audit.DAYLIGHT[0].name.includes('07:00'));assert(audit.DAYLIGHT[2].name.includes('18:30'));
+ const colors=audit.DAYLIGHT.map(l=>l.background);assert.equal(new Set(colors).size,4);assert(audit.DAYLIGHT[0].name.includes('07:00'));assert(audit.DAYLIGHT[2].name.includes('18:30'));assert(audit.DAYLIGHT[3].name.includes('21:30'));
  const calls=[],p=new Proxy({}, {get:(_,k)=>(...a)=>{calls.push([k,...a]);}});
  for(const id of [30,31,32,16,17,18,26,27,28])audit.drawSchoolWear(p,id,0,1);
  assert(calls.some(c=>c[0]==='fillTriangle'));assert(calls.some(c=>c[0]==='lineBetween'));
@@ -36,5 +36,5 @@ for(const seed of [1,4301,3842110648])for(const mode of ['keyboard','direct']){
 const b=fs.readFileSync('art/quiet-backgrounds-059.png');assert.equal(b.readUInt32BE(16),1672);assert.equal(b.readUInt32BE(20),941);
 const versionTag=JSON.parse(fs.readFileSync('package.json')).version.split('.').slice(0,2).join('');
 fs.writeFileSync(`work/traffic-exposure-${versionTag}.json`,JSON.stringify({method:'Normal input-only full days. Encounter counts, not entity capacity. Human difficulty and hardware touch feel require user testing.',exposures},null,2));
-console.log('PASS 059 nine quiet rooms, forward/return passages, no enemies/intros/gaps, active orientation clock, locked arenas; 6 normal days with progressive actual traffic exposure and no notification pop; three time-of-day palettes, background animation primitives and atlas size');
+console.log('PASS 059 nine quiet rooms, forward/return passages, no enemies/intros/gaps, active orientation clock, locked arenas; 6 normal days with progressive actual traffic exposure and no notification pop; four time-of-day palettes, background animation primitives and atlas size');
 

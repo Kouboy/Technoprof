@@ -1,6 +1,6 @@
 # Retour à la maison — prototype local
 
-Demande de Nicolas du 25 octobre 2026, désormais implémentée dans la branche locale de campagne. Publication inchangée.
+Demande de Nicolas du 25 octobre 2026, désormais implémentée dans la branche locale de campagne. Inclus dans la version de playtest avec les cinématiques validées.
 
 Après le troisième et dernier cours : quatrième trajet en pleine nuit, très peu de circulation, vitesse lente comparable au cruising avant affectation. Quelques kilomètres jusqu’à la destination affichée **Maison**, avec un autoradio **smooth jazz mélancolique**. Cette respiration accompagne le retour chez lui avant la correction des copies et la cinématique de fin.
 
@@ -8,7 +8,7 @@ Il s’agit d’un trajet de retour, pas d’une quatrième affectation. Nicolas
 
 ## Essai local
 
-Ouvrir `Jouer-Technoprof-Retour-Maison.html` à la racine, puis **Rejouer**. Le raccourci pointe vers l’atelier `home-return`, musique activée. La journée complète rejoint également ce retour après le troisième cours. Les maquettes récentes des cinématiques restent des auditions séparées ; ce trajet rejoint la conclusion actuellement intégrée au moteur.
+Ouvrir `Jouer-Technoprof-Retour-Maison.html` à la racine, puis **Rejouer**. Le raccourci pointe vers l’atelier `home-return`, musique activée. La journée complète rejoint également ce retour après le troisième cours. Le trajet rejoint la conclusion validée de 69 secondes, désormais intégrée au moteur avec ses musiques et repères.
 
 3 km, vitesse initiale et allure de relâchement 80 km/h, plafond 110 km/h. Z/↑ accélère, S/↓ freine jusqu’à l’arrêt, QD/←→ dirige ; souris/touch comme sur les routes précédentes. Relâcher le frein reprend progressivement l’allure. Durée autour de deux minutes selon la conduite.
 

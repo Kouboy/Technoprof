@@ -9,7 +9,7 @@
     "build:pages": "tsc && vite build --mode pages --base=./ && node work/check-pages-build.cjs",
     "test:pages": "node work/check-pages-export.cjs",
     "test:sfx": "node work/check-sfx-bank.cjs && node work/check-sfx-soundscape.cjs && node work/check-sfx-events.cjs && node work/check-053.cjs && node work/check-sequence-feedback.cjs",
-    "test:cinematiques": "node work/check-campaign-cinematics.cjs && node work/check-cinematic-audio.cjs && node work/check-cinematic-art.cjs",
+    "test:cinematiques": "node work/check-campaign-cinematics.cjs && node work/check-cinematic-audio.cjs && node work/check-cinematic-art.cjs && node work/check-cinematic-soundtrack.cjs",
     "build:atelier": "npm run build && npm run build:journee && node work/export-navigation-atelier.cjs",
     "build:journee": "tsc && vite build --mode day --outDir dist-day && node tools/export-day.cjs",
     "test:assets": "node work/check-asset-catalog.cjs && node work/check-day-preload.cjs",

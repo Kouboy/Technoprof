@@ -11,7 +11,7 @@ a.tone = (...args) => {
 a.play = (...args) => {
   if (!a.muted && !a.paused) events.push(["sample", ...args]);
 };
-const cue = (kind, index) => kind === "intro" ? (index === 0 ? "alarm" : undefined) : ({2:"doorbell",10:"bell",11:"alarm"})[index];
+const cue = (kind, index) => kind === "intro" ? (index === 0 ? "alarm" : undefined) : ({2:"doorbell",12:"bell",13:"alarm"})[index];
 const scene = (kind, index, age) =>
   a.scene(kind, false, 180, 0.02, 200, false, {
     cinematic: { kind, index, age, cue: cue(kind, index) },
@@ -32,13 +32,13 @@ scene("intro", 1, 2);
 assert.equal(events.length, quiet);
 scene("ending", 2, 0);
 assert(events.length > quiet, "doorbell");
-for (const index of [5, 6, 7, 8, 9]) { const before = events.length; scene("ending", index, 0); assert.equal(events.length, before, "campus has no premature bell/alarm"); }
-scene("ending", 10, 0);
+for (const index of [5, 6, 7, 8, 9, 10, 11]) { const before = events.length; scene("ending", index, 0); assert.equal(events.length, before, "campus has no premature bell/alarm"); }
+scene("ending", 12, 0);
 assert(events.some((e) => e[0] === "sample" && e[1] === "bell-start"));
 const bell = events.length;
-scene("ending", 10, 0.02);
+scene("ending", 12, 0.02);
 assert.equal(events.length, bell);
-scene("ending", 11, 0);
+scene("ending", 13, 0);
 assert(events.length > bell, "bell switches to the same phone motif");
 const mute = events.length;
 a.muted = true;
@@ -49,3 +49,7 @@ assert.equal(events.length, mute, "no backlog on unmute");
 console.log(
   "PASS silent-story cues: phone alarm, quiet page, doorbell, school bell, wake-up and pause/mute consumption",
 );
+
+const noDouble=events.length;
+a.scene("ending",false,180,.02,200,false,{cinematicSoundtrack:true,cinematic:{kind:"ending",index:12,age:0,cue:"bell"}});
+assert.equal(events.length,noDouble,"approved stems suppress legacy duplicate cues");

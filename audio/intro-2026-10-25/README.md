@@ -24,3 +24,7 @@ Livrables : musique seule, repères seuls et montage complet, chacun de dix seco
 ## Vérifications
 
 Chrome et Firefox, lecture locale hors connexion : durée, changement automatique à 5,5 s, pause, déplacement dans la piste, fin et relance. Lecture tactile et absence de débordement vérifiées dans une fenêtre 390 × 844. Les deux cadrages ont été relus sur captures. Trois WAV de 220 500 frames, sources exportées en 8 bits, aucun écrêtage ; rapports dans `verification.json` et `browser-verification.json`. L'intention musicale est proposée à l'écoute, pas évaluée par ces tests techniques.
+
+## Intégration au jeu
+
+Cette audition validée est désormais intégrée au profil musical local et à la version de playtest Pages. Les fichiers sources et les WAV ci-dessus restent inchangés. Voir `docs/cinematiques/INTEGRATION.md` depuis la racine pour le montage et les contrôles actuels. Les mentions de non-intégration dans les premiers comptes rendus décrivent l’étape d’audition historique.

@@ -92,6 +92,7 @@ type Host = PlayerContext & {
   pauseReason: string;
   audio: AudioKit;
   music?: { blocked: boolean; retry(): void };
+  cinematicAudio?: { blocked: boolean; retry(): void };
   radioLines: string[];
   remaining: number;
   enemies?: { female?: boolean }[];
@@ -223,7 +224,7 @@ export function installPlayerExperience(s: Host) {
   storySkip.hidden = true;
   toolbar.append(storySkip);
   const musicRetry = s.music
-    ? button("Relancer la musique", () => s.music?.retry())
+    ? button("Relancer la musique", () => { s.music?.retry(); s.cinematicAudio?.retry(); })
     : undefined;
   if (musicRetry) {
     musicRetry.hidden = true;
@@ -276,7 +277,7 @@ export function installPlayerExperience(s: Host) {
   };
   function sync() {
     if (musicRetry) {
-      musicRetry.hidden = !s.music?.blocked;
+      musicRetry.hidden = !s.music?.blocked && !s.cinematicAudio?.blocked;
       const retryLabel =
         s.phase === "title" ? "Écouter le titre" : "Relancer la musique";
       if (musicRetry.textContent !== retryLabel)

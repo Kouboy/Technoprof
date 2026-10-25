@@ -131,6 +131,7 @@ import { MusicKit } from "./music";
 import { campaignWon, requiredAssignments, type RunPolicy } from "./campaign";
 import { CinematicSequence } from "./cinematic";
 import { CinematicArt } from "./cinematic-art";
+import { CinematicSoundtrack } from "./cinematic-audio";
 import {
   floorSound,
   passageSound,
@@ -183,9 +184,16 @@ class Game extends Phaser.Scene {
   reducedShake = false;
   comicWords = true;
   music?: MusicKit;
+  cinematicAudio?: CinematicSoundtrack;
   musicFocusLost = false;
   syncMusic() {
     if (!this.music) return;
+    this.cinematicAudio?.sync(this.cinematic, {
+      paused: this.paused || this.musicFocusLost || (this.playerMenu && this.phase !== "title"),
+      muted: this.audio.muted,
+      musicVolume: this.audio.musicVolume,
+      effectsVolume: this.audio.effectsVolume,
+    });
     this.music.sync({
       phase: this.phase,
       mission: this.mission,
@@ -748,8 +756,9 @@ class Game extends Phaser.Scene {
       new URLSearchParams(location.search).get("musique") === "essai"
     ) {
       this.music = new MusicKit();
+      this.cinematicAudio = new CinematicSoundtrack();
       this.events.once(Phaser.Scenes.Events.SHUTDOWN, () =>
-        this.music?.destroy(),
+        { this.music?.destroy(); this.cinematicAudio?.destroy(); },
       );
     }
     const preview = DAY_ONLY
@@ -1748,6 +1757,7 @@ class Game extends Phaser.Scene {
       arrivalEntry: this.mission === 0 ? ("gate" as const) : ("door" as const),
       transition: this.roomTransition,
       cinematic: this.cinematic,
+      cinematicSoundtrack: !!this.cinematicAudio,
     };
   }
   motorRunning() {
@@ -2673,7 +2683,10 @@ class Game extends Phaser.Scene {
     if (this.phase === "intro" || this.phase === "ending") {
       const story = this.cinematic;
       const previous = story?.index;
-      story?.tick(dt, false);
+      if (story && this.cinematicAudio) {
+        const audioTime = this.cinematicAudio.time();
+        if (audioTime !== null) story.seek(audioTime);
+      } else story?.tick(dt, false);
       if (story && story.index !== previous)
         this.session.record("cinematic-panel",this.mission,this.room,{kind:story.kind,id:story.panel.id,index:story.index,elapsed:story.elapsed});
       this.completeCinematic();
@@ -4338,6 +4351,7 @@ class Game extends Phaser.Scene {
   unlockAudio() {
     this.audio.unlock();
     this.music?.retry();
+    this.cinematicAudio?.retry();
   }
   hurt(direction = -this.face) {
     if (this.inv > 0) return;

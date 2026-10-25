@@ -10,18 +10,24 @@ async function main(){
   const browser=await engine.launch({headless:true});
   try{
    const context=await browser.newContext({offline:true,viewport:{width:1100,height:1000}}),errors=[];
+   await context.addInitScript(()=>{window.__filmAudio=[];const create=document.createElement;document.createElement=function(tag,...args){const el=create.call(this,tag,...args);if(String(tag).toLowerCase()==='audio')window.__filmAudio.push(el);return el}});
    let page=await context.newPage();page.setDefaultTimeout(45000);page.on('pageerror',e=>errors.push(e.message));
    await page.goto(file('Jouer-Technoprof-Journee-Musique.html'));
    await page.getByRole('button',{name:'Prendre le service',exact:true}).click();
    const seq=()=>page.locator('#game').getAttribute('data-sequence');
    await page.waitForFunction(()=>document.querySelector('#game').getAttribute('data-sequence')==='intro:0');
    const skip=page.getByRole('button',{name:'Passer la cinématique',exact:true});await skip.waitFor();
+   await page.waitForFunction(()=>window.__filmAudio.some(a=>a.src.endsWith('Intro-Reperes.wav')&&!a.paused&&a.currentTime>.1));
    assert.equal(await page.getByRole('button',{name:'Continuer',exact:true}).count(),0);
    await page.waitForTimeout(600);
    if(await page.getByRole('button',{name:'Reprendre',exact:true}).isVisible())await page.getByRole('button',{name:'Reprendre',exact:true}).click();
    await page.locator('#game canvas').screenshot({path:path.join(out,`cinematic-${name}-intro-0.png`)});
    assert(await page.locator('#radio-caption').isHidden());assert(await page.locator('#dialogue-caption').isHidden());
-   await page.getByRole('button',{name:'Pause / aide',exact:true}).click();await page.waitForTimeout(7000);assert.equal(await seq(),'intro:0');
+   await page.getByRole('button',{name:'Pause / aide',exact:true}).click();
+   const pausedAudio=await page.evaluate(()=>window.__filmAudio.filter(a=>/Intro-(Musique|Reperes)\.wav$/.test(a.src)).map(a=>({time:a.currentTime,paused:a.paused})));
+   assert.equal(pausedAudio.length,2);assert(pausedAudio.every(a=>a.paused));
+   await page.waitForTimeout(7000);assert.equal(await seq(),'intro:0');
+   assert.deepEqual(await page.evaluate(()=>window.__filmAudio.filter(a=>/Intro-(Musique|Reperes)\.wav$/.test(a.src)).map(a=>({time:a.currentTime,paused:a.paused}))),pausedAudio);
    await page.getByRole('button',{name:'Reprendre',exact:true}).click();
    await page.locator('#game').focus();await page.keyboard.down('f');await page.waitForTimeout(650);await page.keyboard.down('f');await page.waitForTimeout(200);
    assert.equal(await seq(),'intro:0','held/repeated F cannot advance automatic montage');await page.keyboard.up('f');
@@ -34,19 +40,23 @@ async function main(){
    page=await context.newPage();page.setDefaultTimeout(45000);page.on('pageerror',e=>errors.push(e.message));
    await page.goto(file('Jouer-Technoprof.html')+'?essai=labo&scenario=cinematic-ending&musique=essai');
    await page.getByRole('button',{name:'Rejouer',exact:true}).click();await page.locator('#game').focus();
+   await page.waitForFunction(()=>window.__filmAudio.some(a=>a.src.endsWith('Fin-Reperes.wav')&&!a.paused&&a.currentTime>.1));
    const status=page.getByRole('generic',{name:'État de la simulation',exact:true});
    const state=()=>page.locator('[aria-label="État de la simulation"]').innerText();
-   await page.waitForFunction(()=>document.querySelector('[aria-label="État de la simulation"]').textContent.includes('image 1/12'));
+   await page.waitForFunction(()=>document.querySelector('[aria-label="État de la simulation"]').textContent.includes('image 1/14'));
    await page.waitForTimeout(600);
    if((await state()).startsWith('PAUSE'))await page.getByRole('button',{name:'Pause / reprendre',exact:true}).click();
-   for(let i=0;i<12;i++){
-    assert((await state()).includes(`image ${i+1}/12`));await page.waitForTimeout(250);
+   for(let i=0;i<14;i++){
+    assert((await state()).includes(`image ${i+1}/14`));await page.waitForTimeout(250);
     await page.locator('#game canvas').screenshot({path:path.join(out,`cinematic-${name}-ending-${i}.png`)});
-    await page.waitForFunction(index=>{const t=document.querySelector('[aria-label="État de la simulation"]').textContent;return index===11?t.includes('report /'):t.includes(`image ${index+2}/12`);},i);
+    const stems=await page.evaluate(()=>window.__filmAudio.filter(a=>/Fin-(Musique|Reperes)\.wav$/.test(a.src)).map(a=>({src:a.src,time:a.currentTime,error:a.error?.code})));
+    assert.equal(stems.length,2);assert(stems.every(s=>!s.error));assert(Math.abs(stems[0].time-stems[1].time)<.15,'native stems remain synchronized');
+    if(i===12)assert(stems[1].time>=62&&stems[1].time<62.8,'bell image follows the cue master');
+    await page.waitForFunction(index=>{const t=document.querySelector('[aria-label="État de la simulation"]').textContent;return index===13?t.includes('report /'):t.includes(`image ${index+2}/14`);},i);
    }
    assert((await state()).includes('report /'));assert.deepEqual(errors,[]);
-   reports.push({browser:name,offline:true,intro:2,ending:12,automatic:true,pausedStable:true,inertActionInput:true,readableScreenshots:true,noCaptions:true,errors});
-   console.log('PASS automatic silent montage '+name+': 10/57s sequences, seven-second pause, inert inputs and clean report');
+   reports.push({browser:name,offline:true,intro:2,ending:14,seconds:[10,69],nativeStems:true,cueMaster:true,automatic:true,pausedStable:true,inertActionInput:true,readableScreenshots:true,noCaptions:true,errors});
+   console.log('PASS automatic silent montage '+name+': 10/69s sequences, seven-second pause, inert inputs and clean report');
    await context.close();
    if(name==='chromium'){
     const mobile=await browser.newContext({offline:true,viewport:{width:390,height:844},isMobile:true,hasTouch:true});

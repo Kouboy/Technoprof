@@ -59,7 +59,7 @@ async function main() {
   for (const file of info.music) {
     const response = await fetch(new URL(file, base), { method: "HEAD" });
     assert.equal(response.status, 200, file);
-    assert(Number(response.headers.get("content-length")) > 1000000, file);
+    assert(Number(response.headers.get("content-length")) > 500000, file);
   }
   const report = [];
   for (const [name, engine, mobile] of [

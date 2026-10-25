@@ -13,3 +13,7 @@ Trois WAV : musique seule, repères seuls, montage complet. Instruments sources 
 Reproduction : Python + NumPy, `tools/compose-cinematic-dream-v3.py`. Le script réutilise les outils V1/V2 sans écrire dans leurs dossiers. Les deux auditions précédentes restent disponibles. Guide du montage : **MONTAGE-V3.md**.
 
 Cette V3 est une maquette isolée ; le jeu et GitHub Pages sont inchangés. Le trajet illustré du rêve n’est pas le quatrième trajet jouable vers Maison, toujours prévu pour plus tard.
+
+## Intégration au jeu
+
+Cette audition validée est désormais intégrée au profil musical local et à la version de playtest Pages. Les fichiers sources et les WAV ci-dessus restent inchangés. Voir `docs/cinematiques/INTEGRATION.md` depuis la racine pour le montage et les contrôles actuels. Les mentions de non-intégration dans les premiers comptes rendus décrivent l’étape d’audition historique.

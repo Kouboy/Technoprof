@@ -6,7 +6,7 @@ traverser un établissement dégradé, puis faire cours avant la fin du délai.
 ## Lien de playtest
 
 **[Jouer à Technoprof](https://kouboy.github.io/Technoprof/)** — journée complète
-Ormeaux H1 / Auguste-Berthelot A3 / Trois-Ponts I2, avec les douze morceaux.
+Ormeaux H1 / Auguste-Berthelot A3 / Trois-Ponts I2, retour nocturne à Maison et cinématiques sonorisées.
 Le lien s’ouvre directement dans un navigateur, sans installation ni compte.
 Clavier, souris et toucher sont disponibles ; les commandes et quatre volumes
 séparés sont accessibles depuis le menu. Le son démarre après une interaction.
@@ -18,16 +18,17 @@ Ouvrir **Jouer-Technoprof-Journee-Atelier.html**, puis **Prendre le service**.
 Ce fichier autonome fonctionne sur disque, hors connexion. Il enchaîne les trois
 trajets et les établissements validés : Ormeaux H1, Auguste-Berthelot A3 et
 Trois-Ponts I2. Le journal d’essai réunit toute la journée.
-Sur la branche `codex/three-assignments-cinematics`, les trois affectations doivent
-réussir : le premier échec interrompt la journée, et recommencer repart du début.
-Cette passe locale ajoute une introduction et une conclusion illustrées muettes,
-encore provisoires : deux images d’introduction, douze de conclusion, dont trois
-étapes de découverte du campus idéal (cour, préparation, accompagnement AESH).
-La lecture est automatique : introduction 10 secondes, conclusion 57 secondes.
-Pause suspend le montage ; le bouton « Passer la cinématique » passe la séquence
-entière. Les touches de jeu et le toucher sur l’image ne changent pas son rythme.
-Les deux musiques restent à composer sur les [timecodes du montage](docs/cinematiques/MONTAGE.md).
-GitHub Pages conserve la version publiée pendant cette validation.
+Les trois affectations doivent réussir : le premier échec interrompt la journée,
+et recommencer repart du début. Après le dernier cours, retour protégé de 3 km à
+Maison, stationnement, portière et marche lente jusqu'à l'appartement, puis fondu
+noir de deux secondes avant la conclusion.
+
+Les cinématiques validées sont automatiques et sans dialogue : introduction
+nocturne de 10 secondes avec ouverture depuis le noir, conclusion de 69 secondes
+et quatorze images, jusqu'à la cloche qui brise le rêve. Musique et bruitages
+conservent leurs volumes séparés ; les images suivent l'horloge sonore. Pause
+suspend le film ; « Passer la cinématique » passe la séquence entière.
+[Montage et synchronisation](docs/cinematiques/INTEGRATION.md).
 Pour jouer avec la musique sur disque, ouvrir **Jouer-Technoprof-Journee-Musique.html**
 et conserver le dossier `audio/` ainsi que le HTML journée à côté du lanceur.
 
@@ -43,8 +44,8 @@ npm run build:atelier
 
 Le build produit deux fichiers autonomes : `Jouer-Technoprof.html` (moteur commun
 et anciens essais) et `Jouer-Technoprof-Journee-Atelier.html` (journée actuelle).
-La journée utilise un profil de compilation dédié : environ 100 Mo contre
-135 Mo pour l'atelier complet, avec les mêmes images utiles et sans les anciens
+La journée utilise un profil de compilation dédié : environ 128 Mo contre
+163 Mo pour l'atelier complet, avec les mêmes images utiles et sans les anciens
 arrière-plans. `npm run build:journee` régénère uniquement ce fichier ;
 `npx vite --mode day` permet de vérifier ce profil en développement.
 Les dix-neuf autres lanceurs sont de petits raccourcis ; conserver
@@ -66,11 +67,11 @@ npm run test:rapide
 | --- | --- |
 | `npm run test:rapide` | Règles principales, conduite, lumières, audio de route et voiture |
 | `npm run test:journee` | Trois trajets + H1/A3/I2, commandes, soins, transitions et bilan à 30/60/120 fps simulés |
-| `npm run test:cinematiques` | Règle 3/3, échec terminal, onze vignettes, pause, cadrage et bruitages |
+| `npm run test:cinematiques` | Règle 3/3, échec terminal, films 10/69 s, son synchronisé, pause et cadrages validés |
 | `npm run test:assets` | Catalogue de compilation, images retenues intactes et préchargement des acteurs partagés |
-| `npm run test:musique` | Douze thèmes, priorités, pauses et reprises |
+| `npm run test:musique` | Treize thèmes, priorités, pauses et reprises |
 | `npm run test:sfx` | Samples low-fi, variantes, sols, pas/cinématiques, portes/escaliers et interruptions |
-| `npm run test:pages` | Export web : images inchangées et douze WAV |
+| `npm run test:pages` | Export web : images inchangées, treize thèmes et quatre stems cinéma |
 | `npm run build:pages` | Journée musicale pour Pages, puis vérification du contenu de `dist/` |
 | `npm run test:retouches` | Nouveaux délais/dégâts, radio et claquement de portière |
 | `npm run test:signaletique` | Panneaux et rendu des trois établissements |

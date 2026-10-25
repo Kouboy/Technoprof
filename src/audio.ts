@@ -46,6 +46,7 @@ export type SceneSoundContext = {
     token?: number;
     cue?: CinematicCue;
   } | null;
+  cinematicSoundtrack?: boolean;
 };
 type SceneCue = [Material, number, number, string?];
 export const OPENING_CUES: SceneCue[] = [
@@ -625,7 +626,7 @@ export class AudioKit {
       this.storyKey = storyKey;
       this.storyPulse = -1;
     }
-    if (story && (phase === "intro" || phase === "ending")) {
+    if (story && !context.cinematicSoundtrack && (phase === "intro" || phase === "ending")) {
       const alarm = story.cue === "alarm";
       const pulse = alarm ? Math.floor(story.age / 1.6) : 0;
       if (pulse !== this.storyPulse) {

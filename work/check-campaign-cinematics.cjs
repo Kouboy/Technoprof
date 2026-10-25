@@ -31,7 +31,7 @@ for (const kind of ["intro", "ending"]) {
 }
 for (const [kind, count] of [
   ["intro", 2],
-  ["ending", 12],
+  ["ending", 14],
 ]) {
   const s = new c.api.CinematicSequence(kind);
   assert.equal(s.index, 0);
@@ -40,11 +40,11 @@ for (const [kind, count] of [
     const ids = [];
     const cues = [];
     for (let i = 0; i < count; i++) { s.index = i; ids.push(s.panel.id); if (s.cue) cues.push([i, s.cue]); }
-    assert.deepEqual(Array.from(ids), ["grading", "fatigue", "doorbell", "visitor", "invitation", "courtyard", "corridor", "preparation", "classroom", "aesh", "bell", "wake"]);
-    assert.deepEqual(JSON.parse(JSON.stringify(cues)), [[2, "doorbell"], [10, "bell"], [11, "alarm"]]);
+    assert.deepEqual(Array.from(ids), ["grading", "fatigue", "doorbell", "visitor", "invitation", "car-ride", "courtyard", "corridor", "preparation", "classroom", "aesh", "exterior", "bell", "wake"]);
+    assert.deepEqual(JSON.parse(JSON.stringify(cues)), [[2, "doorbell"], [12, "bell"], [13, "alarm"]]);
     s.index = 0;
   }
-  assert.equal(s.totalSeconds, kind === "intro" ? 10 : 57);
+  assert.equal(s.totalSeconds, kind === "intro" ? 10 : 69);
   s.tick(0.5, false);
   assert.equal(s.age, 0.5);
   s.tick(5, true);
@@ -67,10 +67,10 @@ for (const [kind, count] of [
 }
 for (const fps of [30, 60, 120]) {
   const s = new c.api.CinematicSequence("ending"), seen = [];
-  for (let i = 0; i < fps * 58; i++) { if (seen.at(-1) !== s.index) seen.push(s.index); s.tick(1 / fps, false); }
+  for (let i = 0; i < fps * 70; i++) { if (seen.at(-1) !== s.index) seen.push(s.index); s.tick(1 / fps, false); }
   assert(s.done);
-  assert.equal(s.elapsed, 57);
-  assert.deepEqual(seen, Array.from({ length: 12 }, (_, i) => i));
+  assert.equal(s.elapsed, 69);
+  assert.deepEqual(seen, Array.from({ length: 14 }, (_, i) => i));
 }
 for (const kind of ["intro", "ending"]) {
   const s = new c.api.CinematicSequence(kind);
@@ -142,7 +142,7 @@ for (const mission of [0, 1, 2])
   t.advance(12.4);
   assert.equal(g.phase, "ending");
   const before = g.remaining;
-  t.advance(58);
+  t.advance(70);
   assert.equal(g.phase, "report");
   assert.equal(g.remaining, before);
 }
@@ -159,5 +159,5 @@ for (const kind of ["intro", "ending"]) {
   assert.equal(g.cinematic, null);
 }
 console.log(
-  "PASS strict campaign, automatic 10/57s montage, remainder and pause stability, 30/60/120fps and inert action inputs",
+  "PASS strict campaign, automatic 10/69s montage, remainder and pause stability, 30/60/120fps and inert action inputs",
 );
