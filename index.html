@@ -534,6 +534,10 @@
     body.player-screen .title-home > p {
       display: none;
     }
+      /* Reserve two 44px touch targets and their gap on short title frames. */
+      body.player-screen #player-panel.title-home .title-start {
+        top: min(73%, calc(93% - 96px));
+      }
     body.player-screen .title-home .player-actions {
       position: absolute;
       left: 0;

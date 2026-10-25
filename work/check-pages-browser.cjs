@@ -67,6 +67,7 @@ async function main() {
     ["firefox", firefox, false],
     ["chromium-touch", chromium, true],
   ]) {
+    if (process.env.PAGES_BROWSER && process.env.PAGES_BROWSER !== name) continue;
     const browser = await engine.launch({ headless: true });
     try {
       const context = await browser.newContext({
@@ -142,6 +143,22 @@ async function main() {
         { timeout: 30000 },
       );
       await activate("Retour");
+      const checkTitleHitAreas = async () => {
+        const start = await page.getByRole('button',{name:'Prendre le service',exact:true}).boundingBox();
+        const actions = await page.locator('#player-panel.title-home .player-actions').boundingBox();
+        assert(start && actions && start.y+start.height+4<=actions.y,'title start hit area must not overlap the menu row: '+JSON.stringify({start,actions}));
+      };
+      await checkTitleHitAreas();
+      if (mobile) {
+        for (const viewport of [{width:844,height:390},{width:390,height:844}]) {
+          await page.setViewportSize(viewport);
+          await page.waitForFunction(() => {
+            const pane=document.querySelector('#player-panel.title-home').getBoundingClientRect();
+            return Math.abs(pane.width-Math.min(document.documentElement.clientWidth,innerHeight*4/3))<1;
+          });
+          await checkTitleHitAreas();
+        }
+      }
       await activate("Prendre le service");
       if (await page.getByRole('button',{name:'Pause / aide',exact:true}).isVisible())
         await activate('Pause / aide');
