@@ -9,12 +9,16 @@
   "postCutMusic": "digital silence",
   "rmsDbFS": {
     "fatigue": -30.17,
-    "exterieur": -20.74,
-    "cour": -20.47,
-    "preparation": -18.95,
-    "classe": -19.67,
-    "apaisement": -17.55
+    "cour": -20.66,
+    "couloir": -20.2,
+    "preparation": -20.27,
+    "classe": -19.07,
+    "aesh": -19.65,
+    "panorama": -17.55
   },
   "peak": 0.507476806640625,
-  "originalArtworkBytes": true
+  "originalArtworkBytes": true,
+  "audioUnchangedAfterPictureEdit": true,
+  "exteriorImmediatelyBeforeBell": true,
+  "visitorIsolatedCoatCorrection": true
 }

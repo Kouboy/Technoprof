@@ -12,6 +12,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "audio/cinematiques-2026-10-25-v2"
 ART = ROOT / "art/cinematics-2026-10-25-v2/storyboard-v2.png"
+VISITOR_ART = ART.parent / "visitor-coat.png"
 sys.dont_write_bytecode = True
 spec = importlib.util.spec_from_file_location("dream_v1", ROOT / "tools/compose-cinematic-dream.py")
 base = importlib.util.module_from_spec(spec)
@@ -94,14 +95,14 @@ def scenes():
         ("grading", "Correction nocturne", 5, 0, 2),
         ("fatigue", "Fatigue", 3.5, 0, 3),
         ("doorbell", "La sonnette", 2.5, 0, 4),
-        ("visitor", "Le visiteur", 4, 1, 0),
+        ("visitor", "Le visiteur", 4, 2, 0),
         ("invitation", "L’invitation", 4, 1, 1),
-        ("exterior", "Le campus, dehors", 6, 1, 2),
         ("courtyard", "La cour", 7, 1, 3),
         ("corridor", "Le couloir", 5, 0, 7),
         ("preparation", "Préparer les cours", 6, 1, 4),
         ("classroom", "La classe", 7, 1, 5),
         ("aesh", "L’accompagnement AESH", 6, 1, 6),
+        ("exterior", "Le campus, vue d’ensemble", 6, 1, 2),
         ("bell", "La cloche", 1.2, 0, 9),
         ("wake", "6h10, encore la nuit", 5.8, 1, 7),
     ]
@@ -120,14 +121,16 @@ def player(timeline):
     page = old.replace("Premier essai musical", "Deuxième essai musical et visuel").replace("57 secondes", "63 secondes")
     page = page.replace("Une école possible", "Une école possible · V2")
     page = page.replace('data-time="44"', 'data-time="50"').replace('44 s</button>', '50 s</button>')
+    page = page.replace('L’apaisement · 50 s', 'Le panorama · 50 s')
     page = page.replace('data-time="48"', 'data-time="54"').replace('48 s</button>', '54 s</button>')
     page = re.sub(r"const scenes=\[[\s\S]*?\];", "const scenes=" + json.dumps(timeline, ensure_ascii=False) + ";", page, count=1)
-    page = page.replace("../../art/cinematics-2026-10-24/campus-v3-ramp.png", "../../art/cinematics-2026-10-25-v2/storyboard-v2.png")
+    urls = ["../../art/cinematics-2026-10-24/storyboard-atlas.png", "../../art/cinematics-2026-10-25-v2/storyboard-v2.png", "../../art/cinematics-2026-10-25-v2/visitor-coat.png"]
+    page = re.sub(r"const urls=\[[^\n]*\];", "const urls=" + json.dumps(urls) + ";", page, count=1)
     page = page.replace("cols=scene.atlas===0?4:3,rows=scene.atlas===0?3:1", "cols=scene.atlas===0?4:2,rows=scene.atlas===0?3:4")
     layout = json.loads((ART.parent / "layout.json").read_text(encoding="utf-8"))
     page = page.replace("let ready=false", "const atlasFrames=" + json.dumps(layout["frames"]) + ";\nconst atlasFocus=" + json.dumps(layout["focusY"]) + ";\nlet ready=false")
     page = page.replace("const x=Math.round", "let x=Math.round").replace("const w=Math.round", "let w=Math.round")
-    page = page.replace("const scale=Math.min(212/w,158/h);", "if(scene.atlas===1){[x,y,w,h]=atlasFrames[scene.frame]}\n  const scale=Math.max(212/w,158/h);")
+    page = page.replace("const scale=Math.min(212/w,158/h);", "if(scene.atlas===1){[x,y,w,h]=atlasFrames[scene.frame]}\n  if(scene.atlas===2){x=4;y=4;w=img.width-8;h=img.height-8}\n  const scale=Math.max(212/w,158/h);")
     page = page.replace("ctx.drawImage(img,x,y,w,h,160-w*scale/2,112-h*scale/2,w*scale,h*scale);ctx.globalAlpha=1;", "const focusY=scene.atlas===1?atlasFocus[scene.frame]:.5;ctx.save();ctx.beginPath();ctx.rect(54,33,212,158);ctx.clip();ctx.drawImage(img,x,y,w,h,160-w*scale/2,33-(h*scale-158)*focusY,w*scale,h*scale);ctx.restore();ctx.globalAlpha=1;")
     page = page.replace(" / 57.0 s", " / 63.0 s")
     page = page.replace("../../docs/cinematiques/MONTAGE.md", "MONTAGE-V2.md")
@@ -143,6 +146,7 @@ def player(timeline):
 
 def main():
     assert ART.exists(), "Generate and review the corrected 2x4 atlas first"
+    assert VISITOR_ART.exists(), "Generate and review the isolated coat continuity correction first"
     OUT.mkdir(parents=True, exist_ok=True); (OUT / "samples").mkdir(exist_ok=True)
     samples, events, timeline = palette(), score(), scenes()
     music = base.render(samples, events)
@@ -163,7 +167,9 @@ def main():
     manifest = dict(status="audition-v2-not-integrated", seconds=base.SECONDS, musicCut=base.CUT,
                     alarmStarts=base.WAKE, sourceBits=8, sampleRate=SR, voices=4, usedSamples=used,
                     timeline=timeline, files=files, artwork=str(ART.relative_to(ROOT)).replace("\\", "/"),
-                    artworkSha256=hashlib.sha256(ART.read_bytes()).hexdigest())
+                    artworkSha256=hashlib.sha256(ART.read_bytes()).hexdigest(),
+                    visitorArtwork=str(VISITOR_ART.relative_to(ROOT)).replace("\\", "/"),
+                    visitorArtworkSha256=hashlib.sha256(VISITOR_ART.read_bytes()).hexdigest())
     (OUT / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (OUT / "partition.json").write_text(json.dumps(dict(seconds=63, voices=4, events=events), indent=2) + "\n", encoding="utf-8")
     player(timeline)

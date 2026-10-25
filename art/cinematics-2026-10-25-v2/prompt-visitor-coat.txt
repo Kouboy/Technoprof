@@ -1,0 +1,10 @@
+Use case: precise-object-edit.
+INPUT IMAGE: edit target and continuity reference. This is an eight-panel atlas. Output ONLY a corrected standalone version of the TOP LEFT panel, NOT the atlas.
+Output one LANDSCAPE 4:3 full-bleed pixel-art illustration, ideally 1536x1152, no borders, no text, no split panels. Preserve the same over-the-shoulder camera view of the old professor seated in his night apartment seeing the young suited man standing in one open entrance doorway.
+
+ONE CONTINUITY CORRECTION: The old gray-haired professor in the LEFT foreground MUST WEAR HIS WORN BROWN OVERCOAT over his gray shirt, exactly the same brown coat with the same worn texture/collar/shoulder shape that he wears in the adjacent TOP RIGHT panel. Cover the large visible shirt back and shoulder with that brown overcoat. His face in profile, gray messy hair, glasses, position and silhouette stay recognizable and in the same pose. This is the same moment between two images where he already wears that coat, not a dressing scene.
+
+REMOVE THE DUPLICATE COAT FROM THE WALL COAT RACK behind him: bare wooden hooks are fine, and at most one burgundy scarf can remain. No brown jacket or coat hanging on any hook. No second copy draped on his chair in this scene: show the chair's own dark red upholstery. Exactly one professor's brown coat, worn on his body.
+
+Everything else stays faithful to the TOP LEFT panel: young dark-haired guide in navy suit and burgundy tie, warm light behind him, one physically coherent SINGLE-LEAF gray door with one hinge side, one door slab, one handle; dim shabby apartment, bookshelves, small lamp, framed pictures, stacks of school papers. Keep French social-pulp comic pixel art, strong black outlines, precise deliberate pixels, adult proportions, worn materials and the same colors. No additional doors or nested duplicate doorway, no cloned garments, no new people, no captions, no speech, no lettering.
+The entire standalone scene fills the 4:3 image, no painted picture frame or letterboxing.

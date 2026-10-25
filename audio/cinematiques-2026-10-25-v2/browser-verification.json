@@ -5,8 +5,8 @@
     "seconds": 63,
     "allScenes": 13,
     "pausedStable": true,
-    "bell": 56.003692,
-    "wake": 57.224064,
+    "bell": 56.003699,
+    "wake": 57.224412,
     "ended": true,
     "errors": []
   },
@@ -21,8 +21,8 @@
     "seconds": 63,
     "allScenes": 13,
     "pausedStable": true,
-    "bell": 56.015416,
-    "wake": 57.235,
+    "bell": 56.011812,
+    "wake": 57.232229,
     "ended": true,
     "errors": []
   }

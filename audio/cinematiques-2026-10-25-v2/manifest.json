@@ -54,7 +54,7 @@
       "at": 11.0,
       "end": 15.0,
       "seconds": 4,
-      "atlas": 1,
+      "atlas": 2,
       "frame": 0,
       "cut": false
     },
@@ -69,20 +69,10 @@
       "cut": false
     },
     {
-      "id": "exterior",
-      "label": "Le campus, dehors",
-      "at": 19.0,
-      "end": 25.0,
-      "seconds": 6,
-      "atlas": 1,
-      "frame": 2,
-      "cut": false
-    },
-    {
       "id": "courtyard",
       "label": "La cour",
-      "at": 25.0,
-      "end": 32.0,
+      "at": 19.0,
+      "end": 26.0,
       "seconds": 7,
       "atlas": 1,
       "frame": 3,
@@ -91,8 +81,8 @@
     {
       "id": "corridor",
       "label": "Le couloir",
-      "at": 32.0,
-      "end": 37.0,
+      "at": 26.0,
+      "end": 31.0,
       "seconds": 5,
       "atlas": 0,
       "frame": 7,
@@ -101,8 +91,8 @@
     {
       "id": "preparation",
       "label": "Préparer les cours",
-      "at": 37.0,
-      "end": 43.0,
+      "at": 31.0,
+      "end": 37.0,
       "seconds": 6,
       "atlas": 1,
       "frame": 4,
@@ -111,8 +101,8 @@
     {
       "id": "classroom",
       "label": "La classe",
-      "at": 43.0,
-      "end": 50.0,
+      "at": 37.0,
+      "end": 44.0,
       "seconds": 7,
       "atlas": 1,
       "frame": 5,
@@ -121,11 +111,21 @@
     {
       "id": "aesh",
       "label": "L’accompagnement AESH",
+      "at": 44.0,
+      "end": 50.0,
+      "seconds": 6,
+      "atlas": 1,
+      "frame": 6,
+      "cut": false
+    },
+    {
+      "id": "exterior",
+      "label": "Le campus, vue d’ensemble",
       "at": 50.0,
       "end": 56.0,
       "seconds": 6,
       "atlas": 1,
-      "frame": 6,
+      "frame": 2,
       "cut": false
     },
     {
@@ -167,5 +167,7 @@
     }
   ],
   "artwork": "art/cinematics-2026-10-25-v2/storyboard-v2.png",
-  "artworkSha256": "0f4183f1080cc80cb2a59de9795f8a54410c41a7f2b5a0c7998317902235727b"
+  "artworkSha256": "0f4183f1080cc80cb2a59de9795f8a54410c41a7f2b5a0c7998317902235727b",
+  "visitorArtwork": "art/cinematics-2026-10-25-v2/visitor-coat.png",
+  "visitorArtworkSha256": "32174ed0222bb84f6c9cd732160c90aa85b6ca2f801087272d746f0245404678"
 }

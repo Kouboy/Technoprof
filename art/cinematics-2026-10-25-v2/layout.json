@@ -89,5 +89,15 @@
     0.5,
     0,
     0.5
-  ]
+  ],
+  "visitorOverride": {
+    "asset": "visitor-coat.png",
+    "prompt": "prompt-visitor-coat.txt",
+    "generatedWith": "built-in image_gen",
+    "originalBytesUnchanged": true,
+    "sha256": "32174ed0222bb84f6c9cd732160c90aa85b6ca2f801087272d746f0245404678",
+    "width": 1448,
+    "height": 1086,
+    "continuity": "Professor wears his brown coat; no duplicate coat on the wall rack or chair"
+  }
 }
