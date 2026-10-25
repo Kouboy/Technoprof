@@ -1,0 +1,222 @@
+{
+  "seconds": 10,
+  "voices": 4,
+  "events": [
+    {
+      "at": 0.05,
+      "lane": 0,
+      "sample": "office-pedal",
+      "pitch": 41,
+      "duration": 5.5,
+      "gain": 0.17
+    },
+    {
+      "at": 0.25,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 53,
+      "duration": 1.8,
+      "gain": 0.3
+    },
+    {
+      "at": 0.4,
+      "lane": 2,
+      "sample": "strings-minor",
+      "pitch": 41,
+      "duration": 5.2,
+      "gain": 0.1
+    },
+    {
+      "at": 0.55,
+      "lane": 3,
+      "sample": "dry-pulse",
+      "pitch": 48,
+      "duration": 0.22,
+      "gain": 0.13
+    },
+    {
+      "at": 2.05,
+      "lane": 3,
+      "sample": "dry-pulse",
+      "pitch": 48,
+      "duration": 0.22,
+      "gain": 0.13
+    },
+    {
+      "at": 2.25,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 51,
+      "duration": 1.4,
+      "gain": 0.3
+    },
+    {
+      "at": 3.55,
+      "lane": 3,
+      "sample": "dry-pulse",
+      "pitch": 48,
+      "duration": 0.22,
+      "gain": 0.13
+    },
+    {
+      "at": 3.9,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 50,
+      "duration": 1.4,
+      "gain": 0.3
+    },
+    {
+      "at": 5.5,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 41,
+      "duration": 0.57,
+      "gain": 0.24
+    },
+    {
+      "at": 5.5,
+      "lane": 2,
+      "sample": "strings-minor",
+      "pitch": 41,
+      "duration": 5.1,
+      "gain": 0.15
+    },
+    {
+      "at": 5.5,
+      "lane": 3,
+      "sample": "dry-pulse",
+      "pitch": 48,
+      "duration": 0.22,
+      "gain": 0.16
+    },
+    {
+      "at": 5.55,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 53,
+      "duration": 0.57,
+      "gain": 0.33
+    },
+    {
+      "at": 6.25,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 41,
+      "duration": 0.57,
+      "gain": 0.24
+    },
+    {
+      "at": 6.25,
+      "lane": 3,
+      "sample": "dry-pulse",
+      "pitch": 48,
+      "duration": 0.22,
+      "gain": 0.16
+    },
+    {
+      "at": 6.3,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 55,
+      "duration": 0.57,
+      "gain": 0.33
+    },
+    {
+      "at": 7.0,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 39,
+      "duration": 0.57,
+      "gain": 0.24
+    },
+    {
+      "at": 7.0,
+      "lane": 3,
+      "sample": "dry-pulse",
+      "pitch": 48,
+      "duration": 0.22,
+      "gain": 0.16
+    },
+    {
+      "at": 7.05,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 56,
+      "duration": 0.57,
+      "gain": 0.33
+    },
+    {
+      "at": 7.75,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 39,
+      "duration": 0.57,
+      "gain": 0.24
+    },
+    {
+      "at": 7.75,
+      "lane": 3,
+      "sample": "dry-pulse",
+      "pitch": 48,
+      "duration": 0.22,
+      "gain": 0.16
+    },
+    {
+      "at": 7.8,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 53,
+      "duration": 0.57,
+      "gain": 0.33
+    },
+    {
+      "at": 8.5,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 38,
+      "duration": 0.57,
+      "gain": 0.24
+    },
+    {
+      "at": 8.5,
+      "lane": 3,
+      "sample": "dry-pulse",
+      "pitch": 48,
+      "duration": 0.22,
+      "gain": 0.16
+    },
+    {
+      "at": 8.55,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 51,
+      "duration": 0.57,
+      "gain": 0.33
+    },
+    {
+      "at": 9.25,
+      "lane": 0,
+      "sample": "bass",
+      "pitch": 44,
+      "duration": 0.57,
+      "gain": 0.24
+    },
+    {
+      "at": 9.25,
+      "lane": 3,
+      "sample": "dry-pulse",
+      "pitch": 48,
+      "duration": 0.22,
+      "gain": 0.16
+    },
+    {
+      "at": 9.3,
+      "lane": 1,
+      "sample": "piano",
+      "pitch": 50,
+      "duration": 0.57,
+      "gain": 0.33
+    }
+  ]
+}

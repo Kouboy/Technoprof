@@ -1,0 +1,9 @@
+{
+  "source": "intro-night.png",
+  "sourceSize": [2048, 768],
+  "frames": [[4, 4, 968, 760], [990, 4, 1054, 760]],
+  "focusY": [0.5, 0.5],
+  "provenance": "Built-in image_gen lighting edit; generated PNG copied unchanged. Original: exec-d78490be-4780-4ff5-80b0-372fb54f6570.png",
+  "prompt": "prompt-night.txt",
+  "note": "Unequal source panels; exclude the black separator at x976-988. Runtime cover/clipping only, no bitmap editing."
+}

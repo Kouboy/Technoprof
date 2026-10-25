@@ -1,0 +1,155 @@
+{
+  "status": "intro-audition-v1-not-integrated",
+  "seconds": 10,
+  "sampleRate": 22050,
+  "sourceBits": 8,
+  "voices": 4,
+  "departureBpm": 80,
+  "usedSamples": [
+    "bass",
+    "dry-pulse",
+    "office-pedal",
+    "piano",
+    "strings-minor"
+  ],
+  "timeline": [
+    {
+      "id": "wake-in-bed",
+      "label": "6h10 — Le réveil",
+      "at": 0,
+      "end": 5.5,
+      "seconds": 5.5,
+      "frame": 0
+    },
+    {
+      "id": "departure",
+      "label": "Le départ",
+      "at": 5.5,
+      "end": 10,
+      "seconds": 4.5,
+      "frame": 1
+    }
+  ],
+  "files": [
+    {
+      "file": "Intro-Musique.wav",
+      "sha256": "ad35ae3dfc1db3ffe808d7af0fbdcbab8ae501ba6e54cac5438d001e0deec0bb",
+      "peakDbFS": -9.5
+    },
+    {
+      "file": "Intro-Reperes.wav",
+      "sha256": "20fdccd047b5779d0276bc64eb6bb481ee55afecc9900b9a7f274b044299aa35",
+      "peakDbFS": -13.62
+    },
+    {
+      "file": "Intro-Montage.wav",
+      "sha256": "0f673c38e076970efb749b794b8c7a756017811326396ea53a69330eed9dc8fe",
+      "peakDbFS": -8.21
+    }
+  ],
+  "artwork": "art/intro-2026-10-25/intro-night.png",
+  "artworkSha256": "9e2e066d2f935a79a8c96098762640f4889e7b0719058fdded1017bdd53280f2",
+  "alarmSource": "audio/cinematiques-2026-10-25-v3/samples/alarm-dry.wav",
+  "effectEvents": [
+    {
+      "at": 0.0,
+      "kind": "phone-alarm",
+      "gain": 0.82
+    },
+    {
+      "at": 0.16,
+      "kind": "phone-alarm",
+      "gain": 0.82
+    },
+    {
+      "at": 0.32,
+      "kind": "phone-alarm",
+      "gain": 0.82
+    },
+    {
+      "at": 1.6,
+      "kind": "phone-alarm",
+      "gain": 0.82
+    },
+    {
+      "at": 1.76,
+      "kind": "phone-alarm",
+      "gain": 0.82
+    },
+    {
+      "at": 1.9200000000000002,
+      "kind": "phone-alarm",
+      "gain": 0.82
+    },
+    {
+      "at": 3.2,
+      "kind": "phone-alarm",
+      "gain": 0.82
+    },
+    {
+      "at": 3.3600000000000003,
+      "kind": "phone-alarm",
+      "gain": 0.82
+    },
+    {
+      "at": 3.52,
+      "kind": "phone-alarm",
+      "gain": 0.82
+    },
+    {
+      "at": 4.800000000000001,
+      "kind": "phone-alarm",
+      "gain": 0.82
+    },
+    {
+      "at": 4.960000000000001,
+      "kind": "phone-alarm",
+      "gain": 0.82
+    },
+    {
+      "at": 5.120000000000001,
+      "kind": "phone-alarm",
+      "gain": 0.82
+    },
+    {
+      "at": 0.7,
+      "kind": "bedding",
+      "gain": 0.055
+    },
+    {
+      "at": 3.15,
+      "kind": "bedding",
+      "gain": 0.04
+    },
+    {
+      "at": 5.55,
+      "kind": "coat",
+      "gain": 0.1
+    },
+    {
+      "at": 5.5,
+      "kind": "door-handle",
+      "gain": 0.08
+    },
+    {
+      "at": 6.25,
+      "kind": "keys",
+      "gain": 1
+    },
+    {
+      "at": 7.2,
+      "kind": "step-wood",
+      "gain": 0.13
+    },
+    {
+      "at": 7.85,
+      "kind": "step-wood",
+      "gain": 0.12
+    },
+    {
+      "at": 8.55,
+      "kind": "step-outside",
+      "gain": 0.12
+    }
+  ]
+}

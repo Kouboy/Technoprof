@@ -1,0 +1,27 @@
+[
+  {
+    "browser": "chromium",
+    "offline": true,
+    "seconds": 10,
+    "scenes": 2,
+    "pauseSeekRestart": true,
+    "switchAt": 5.507755,
+    "ended": true,
+    "errors": []
+  },
+  {
+    "browser": "chromium-touch",
+    "departureShortcut": true,
+    "noOverflow": true
+  },
+  {
+    "browser": "firefox",
+    "offline": true,
+    "seconds": 10,
+    "scenes": 2,
+    "pauseSeekRestart": true,
+    "switchAt": 5.507979,
+    "ended": true,
+    "errors": []
+  }
+]
