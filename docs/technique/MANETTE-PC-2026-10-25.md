@@ -47,4 +47,5 @@ Nicolas a choisi Chrome après ses essais. `Jouer.cmd` ouvre le HTML journée av
 musique dans Chrome en mode application, avec les boutons système et sans
 onglets. Il cherche les installations Windows habituelles ; sans Chrome, il
 conserve le lanceur HTML dans le navigateur par défaut. Aucun changement de
-navigateur par défaut ni installation. La publication reste suspendue.
+navigateur par défaut ni installation. La publication a été autorisée par
+Nicolas le 25 octobre 2026.

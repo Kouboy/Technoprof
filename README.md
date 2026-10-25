@@ -8,9 +8,8 @@ traverser un établissement dégradé, puis faire cours avant la fin du délai.
 **[▶ Jouer à la version actuellement publiée](https://kouboy.github.io/Technoprof/)** ·
 [Versions déjà publiées](https://github.com/Kouboy/Technoprof/releases)
 
-La nouvelle publication et son ZIP sont préparés, **en attente de validation
-humaine**. Le futur lien stable sera
-`https://github.com/Kouboy/Technoprof/releases/latest/download/Technoprof-local.zip`.
+**[⬇ Télécharger la version locale](https://github.com/Kouboy/Technoprof/releases/latest/download/Technoprof-local.zip)**
+— journée complète, musiques et cinématiques incluses.
 
 Pour la version locale : télécharger le ZIP, **extraire tout le dossier**, puis
 ouvrir `Technoprof/Jouer-Technoprof-Fenetre.html` et cliquer sur **Ouvrir le jeu
@@ -61,7 +60,7 @@ nocturne de 10 secondes avec ouverture depuis le noir, conclusion de 69 secondes
 et quatorze images, jusqu'à la cloche qui brise le rêve. Musique et bruitages
 conservent leurs volumes séparés ; les images suivent l'horloge sonore. Pause
 suspend le film ; « Passer la cinématique » passe la séquence entière.
-Dans la version locale actuelle, la dernière image de conclusion reste après
+Dans le playtest actuel, la dernière image de conclusion reste après
 les 69 secondes du morceau, puis tout le cadre fond au noir pendant trois secondes.
 Le titre et sa musique reviennent automatiquement. Le Game Over conserve sa
 vignette et son thème, puis revient au titre ; Action permet d’écourter après
@@ -135,7 +134,7 @@ pour le gamefeel, l’écoute et le téléphone physique.
 Commandes : flèches ou ZQSD ; Espace pour sauter ; F/X pour frapper et avancer
 les répliques. La souris et le toucher utilisent directement la scène.
 
-La version locale actuelle accepte aussi les manettes reconnues par le navigateur
+Le jeu accepte aussi les manettes reconnues par le navigateur
 avec le mapping standard Xbox (dont les manettes XInput compatibles). Appuyer sur
 un bouton pour les détecter. Stick gauche ou croix : diriger ; RT : accélérer ;
 LT : freiner. À pied, A saute, B frappe ou avance une réplique, haut/bas emprunte
@@ -143,7 +142,7 @@ les accès. Start commence au titre, passe la cinématique ou ouvre/reprend la p
 Dans les menus : A valide, B revient, gauche/droite ajuste les volumes. La perte
 de connexion pendant une partie à la manette suspend le jeu. Ces commandes ont
 été vérifiées avec une manette simulée dans Chrome et Firefox ; l’essai sur
-matériel réel reste à faire. Elles attendent la prochaine publication pour Pages.
+matériel réel complète ces vérifications, sur navigateur comme sur la version locale.
 
 ## Se repérer dans le projet
 

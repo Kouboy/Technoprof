@@ -5,11 +5,17 @@ Deux liens permanents à communiquer :
 - Navigateur : https://kouboy.github.io/Technoprof/
 - ZIP local : https://github.com/Kouboy/Technoprof/releases/latest/download/Technoprof-local.zip
 
+Publication du playtest autorisée par Nicolas le 25 octobre 2026 : journée
+complète, fenêtre Chrome, manette, CADRE harmonisé, nouvelles jauges et retour
+au titre après la fin ou le Game Over. Tag de livraison : `playtest-2026-10-25`.
+
 ## Version locale
 
 Le téléchargement est l'asset **Technoprof-local.zip** d'une GitHub Release.
-Extraire le ZIP entier, puis ouvrir `Technoprof/Jouer-Technoprof-Fenetre.html`.
-Sur Windows, `Jouer.cmd` ouvre ce lanceur. Le navigateur et les fichiers locaux
+Extraire le ZIP entier, puis lancer `Technoprof/Jouer.cmd` sur Windows : Chrome
+ouvre le jeu en fenêtre d’application. Le lanceur HTML
+`Technoprof/Jouer-Technoprof-Fenetre.html` permet d’utiliser un autre navigateur.
+Le navigateur et les fichiers locaux
 suffisent ; aucune installation du moteur ni serveur ne sont nécessaires.
 
 L'archive contient uniquement la journée jouable, le lanceur, Jouer.cmd, les
