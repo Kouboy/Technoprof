@@ -33,6 +33,7 @@ type Host = {
   enemies: Enemy[];
   controls?: ActionInput;
   pointerMode: boolean;
+  gamepadMode?: boolean;
   workshop?: boolean;
   traceControl?(action: string, outcome: string, reason?: string): void;
   pointerExits(): Exit[];
@@ -95,6 +96,7 @@ export class DirectInput {
     if (this.blocked() || this.gesture) return false;
     const s = this.host;
     s.pointerMode = true;
+    s.gamepadMode = false;
     const road = ["free", "receive", "road", "home"].includes(s.phase);
     if (
       !road &&
@@ -251,7 +253,7 @@ export class DirectInput {
       if (this.feedback.life <= 0) this.feedback = null;
     }
     // A physical gameplay key takes over immediately from an automatic destination.
-    if (s.controls?.keyboardActive) {
+    if (s.controls?.keyboardActive || s.controls?.gamepadActive) {
       this.cancel();
       s.pointerMode = false;
       return;

@@ -28,6 +28,7 @@ import {
   parentCycle,
 } from "./bruel-recovery";
 import { ActionInput, BINDINGS } from "./controls";
+import { GamepadInput, type PadUIAction } from "./gamepad-input";
 import { DirectInput, installDirectInput } from "./direct-input";
 import { installGameWindow } from "./game-window";
 import { drawComicFX } from "./comic-fx";
@@ -172,7 +173,11 @@ class Game extends Phaser.Scene {
       action,
       outcome,
       reason,
-      source: this.pointerMode ? "pointer" : "keyboard",
+      source: this.gamepadMode
+        ? "gamepad"
+        : this.pointerMode
+          ? "pointer"
+          : "keyboard",
       attack: +this.attack.toFixed(3),
       y: +this.py.toFixed(2),
     });
@@ -234,6 +239,10 @@ class Game extends Phaser.Scene {
   syncPlayerUI?: () => void;
   direct?: DirectInput;
   controls?: ActionInput;
+  gamepad?: GamepadInput;
+  gamepadMode = false;
+  gamepadConnected = false;
+  gamepadMenu?: (action: PadUIAction) => void;
   pointerMode = false;
   physicalKeys?: Record<string, Phaser.Input.Keyboard.Key>;
   playerMenu = false;
@@ -747,6 +756,7 @@ class Game extends Phaser.Scene {
       Object.values(BINDINGS).flat().join(","),
     ) as typeof this.keys;
     this.controls = new ActionInput();
+    this.gamepad = new GamepadInput();
     this.keys = this.controls.keys as unknown as typeof this.keys;
     this.input.keyboard!.addCapture(["SPACE", "UP", "DOWN", "LEFT", "RIGHT"]);
     this.input.keyboard!.on("keydown", this.handleKeyDown, this);
@@ -1837,6 +1847,8 @@ class Game extends Phaser.Scene {
     this.syncPlayerUI?.();
   }
   pauseForFocusLoss() {
+    this.gamepad?.suspend();
+    this.controls?.clearGamepad();
     this.musicFocusLost = true;
     this.syncMusic();
     if (
@@ -2511,6 +2523,61 @@ class Game extends Phaser.Scene {
     this.input.keyboard.enabled = !focused;
     if (focused) this.setPaused(true);
   }
+  sampleGamepad(dt: number) {
+    if (!this.gamepad || !this.controls) return;
+    let pads: (Gamepad | null)[] = [];
+    try {
+      if (typeof navigator !== "undefined" && navigator.getGamepads)
+        pads = [...navigator.getGamepads()];
+    } catch {
+      /* A blocked API must not disable keyboard or touch controls. */
+    }
+    const wasUsingPad = this.gamepadMode;
+    const frame = this.gamepad.sample(
+      pads,
+      {
+        phase: this.phase,
+        menu:
+          this.paused ||
+          this.playerMenu ||
+          ["title", "report"].includes(this.phase),
+        focused: typeof document === "undefined" || document.hasFocus(),
+      },
+      dt,
+    );
+    this.gamepadConnected = frame.connected;
+    const ownsGameplay = frame.used && !this.controls.keyboardActive;
+    this.controls.gamepadActive = ownsGameplay;
+    this.controls.gamepadDrive = ownsGameplay ? frame.drive : null;
+    this.controls.setSource(
+      "gamepad",
+      this.controls.keyboardActive ? [] : frame.actions,
+    );
+    if (this.controls.keyboardActive) this.gamepadMode = false;
+    else if (frame.used) {
+      this.gamepadMode = true;
+      this.pointerMode = false;
+    }
+    if (frame.lost) {
+      this.controls.clearGamepad();
+      this.gamepadMode = false;
+      if (wasUsingPad && !["title", "report"].includes(this.phase))
+        this.setPaused(true, "MANETTE DECONNECTEE");
+    }
+    for (const action of frame.ui) {
+      if (action === "continue") {
+        if (this.phase === "course" && this.age > 0.3) this.freshKey = true;
+      } else if (this.gamepadMenu) this.gamepadMenu(action);
+      else if (action === "start") {
+        if (["intro", "ending"].includes(this.phase)) {
+          this.setPaused(false);
+          this.setPlayerMenu(false);
+          this.skipCinematic();
+        } else if (["title", "report"].includes(this.phase)) this.startDay();
+        else this.setPaused(!this.paused);
+      }
+    }
+  }
   update(_t: number, ms: number) {
     if (
       !this.paused &&
@@ -2526,6 +2593,7 @@ class Game extends Phaser.Scene {
       this.controls.sampleKeyboard(this.physicalKeys, (k) =>
         Phaser.Input.Keyboard.JustDown(this.physicalKeys![k]),
       );
+    this.sampleGamepad(ms / 1000);
     if (
       ms > PLAY.maxFrameMs &&
       !this.paused &&
@@ -2801,12 +2869,15 @@ class Game extends Phaser.Scene {
     } else if (["free", "receive", "road", "home"].includes(this.phase)) {
       const home = this.phase === "home";
       const cruising = this.phase === "free";
-      const throttle = this.keys.UP.isDown,
-        brake = this.keys.DOWN.isDown;
+      const padDrive = this.controls?.gamepadDrive;
+      const throttle = padDrive
+          ? padDrive.throttle
+          : Number(this.keys.UP.isDown),
+        brake = padDrive ? padDrive.brake : Number(this.keys.DOWN.isDown);
       const acceleration = brake
-        ? -DRIVE.braking
+        ? -DRIVE.braking * brake
         : throttle
-          ? DRIVE.acceleration * (1 - this.speed / 340)
+          ? DRIVE.acceleration * (1 - this.speed / 340) * throttle
           : home
             ? (HOME_DRIVE.cruiseSpeed - this.speed) / HOME_DRIVE.cruiseResponse
             : -1.5 - this.speed * 0.012;
@@ -2815,8 +2886,9 @@ class Game extends Phaser.Scene {
         0,
         home ? HOME_DRIVE.maxSpeed : this.notified ? TUNING.maxSpeed : 110,
       );
-      const steer =
-        (this.keys.RIGHT.isDown ? 1 : 0) - (this.keys.LEFT.isDown ? 1 : 0);
+      const steer = padDrive
+        ? padDrive.steer
+        : (this.keys.RIGHT.isDown ? 1 : 0) - (this.keys.LEFT.isDown ? 1 : 0);
       const target =
         steer *
         Math.min(1, this.speed / 20) *
@@ -2863,7 +2935,8 @@ class Game extends Phaser.Scene {
       this.travel += this.visualSpeed() * dt;
       this.skidClock = Math.max(0, this.skidClock - dt);
       const skidding =
-        this.speed > 65 && (brake || Math.abs(this.steerVelocity) > 1.05);
+        this.speed > 65 &&
+        (brake >= 0.6 || Math.abs(this.steerVelocity) > 1.05);
       if (skidding) {
         const x = 160 + this.car * 105;
         this.tireMarks.push(
@@ -3551,7 +3624,7 @@ class Game extends Phaser.Scene {
     if (care && Math.abs(this.px - care.x) <= care.reach)
       return this.navigationCare.used
         ? "SOINS UTILISES"
-        : `${this.pointerMode ? "TOUCHER" : "F/X"} : SOINS +${this.navigationGain} PV`;
+        : `${this.gamepadMode ? "B" : this.pointerMode ? "TOUCHER" : "F/X"} : SOINS +${this.navigationGain} PV`;
     const hint = this.interaction();
     if (hint) return hint.label;
     const edges = this.roomSpec()?.blocked ?? [];
@@ -4931,7 +5004,7 @@ class Game extends Phaser.Scene {
         INFIRMARY.nurseX,
         true,
         this.recoveryScene.dialogue,
-        this.pointerMode ? "TOUCHER" : "X/F",
+        this.gamepadMode ? "B" : this.pointerMode ? "TOUCHER" : "X/F",
         INFIRMARY.encounter,
       );
     if (
@@ -4946,7 +5019,7 @@ class Game extends Phaser.Scene {
         this.enemies[0].x,
         this.enemies[0].female,
         this.dialogue,
-        this.pointerMode ? "TOUCHER" : "X/F",
+        this.gamepadMode ? "B" : this.pointerMode ? "TOUCHER" : "X/F",
         this.encounter(),
       );
     this.drawingEncounter = false;
@@ -5185,7 +5258,7 @@ class Game extends Phaser.Scene {
     if (this.age >= PLAY.failContinueSeconds) {
       panel.fillStyle(0x080d13, 0.95);
       panel.fillRect(14, 153, 292, 16);
-      const command = `${this.pointerMode ? "TOUCHER" : "ENTREE"} : ${notice.next}`;
+      const command = `${this.gamepadMode ? "A/B" : this.pointerMode ? "TOUCHER" : "ENTREE"} : ${notice.next}`;
       bitmap(
         panel,
         Math.round(160 - bitmapWidth(command) / 2),

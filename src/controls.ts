@@ -1,3 +1,4 @@
+import type { PadDrive } from "./gamepad-input";
 // All devices feed the same logical keys read by gameplay and character poses.
 export const BINDINGS: Record<string, string[]> = {
   LEFT: ["LEFT", "Q"],
@@ -16,6 +17,8 @@ export const BINDINGS: Record<string, string[]> = {
 export type ActionKey = { isDown: boolean; _justDown: boolean };
 export class ActionInput {
   keyboardActive = false;
+  gamepadActive = false;
+  gamepadDrive: PadDrive | null = null;
   keys: Record<string, ActionKey> = Object.fromEntries(
     Object.keys(BINDINGS).map((k) => [k, { isDown: false, _justDown: false }]),
   );
@@ -53,8 +56,15 @@ export class ActionInput {
   }
   reset() {
     this.keyboardActive = false;
+    this.gamepadActive = false;
+    this.gamepadDrive = null;
     this.sources.clear();
     for (const key of Object.values(this.keys))
       key.isDown = key._justDown = false;
+  }
+  clearGamepad() {
+    this.gamepadActive = false;
+    this.gamepadDrive = null;
+    this.setSource("gamepad", []);
   }
 }

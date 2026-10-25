@@ -98,6 +98,7 @@ npm run test:rapide
 | `npm run test:playtest` | Validation consolidée de la journée actuelle : interface, gamefeel, musiques, cinéma, SFX, assets, signalétique, textes et fenêtre |
 | `npm run test:fenetre` | Ouverture, réutilisation, blocage et repli, plein écran refusé/accepté |
 | `npm run test:cadre` | Cadre après intro, dessin des jauges et cinq barres auto/professeur |
+| `npm run test:gamepad` | Mapping standard Xbox, gâchettes analogiques, appuis uniques, pause et déconnexion |
 | `npm run test:lettres` | Rendu bitmap identique et réduction du nombre de rectangles |
 | `npm run audit:projet` | Inventaire en lecture seule et accessibilité des modules depuis le jeu |
 | `npm run test:journee` | Trois trajets + H1/A3/I2, commandes, soins, transitions et bilan à 30/60/120 fps simulés |
@@ -122,6 +123,16 @@ pour le gamefeel, l’écoute et le téléphone physique.
 
 Commandes : flèches ou ZQSD ; Espace pour sauter ; F/X pour frapper et avancer
 les répliques. La souris et le toucher utilisent directement la scène.
+
+La version locale actuelle accepte aussi les manettes reconnues par le navigateur
+avec le mapping standard Xbox (dont les manettes XInput compatibles). Appuyer sur
+un bouton pour les détecter. Stick gauche ou croix : diriger ; RT : accélérer ;
+LT : freiner. À pied, A saute, B frappe ou avance une réplique, haut/bas emprunte
+les accès. Start commence au titre, passe la cinématique ou ouvre/reprend la pause.
+Dans les menus : A valide, B revient, gauche/droite ajuste les volumes. La perte
+de connexion pendant une partie à la manette suspend le jeu. Ces commandes ont
+été vérifiées avec une manette simulée dans Chrome et Firefox ; l’essai sur
+matériel réel reste à faire. Elles attendent la prochaine publication pour Pages.
 
 ## Se repérer dans le projet
 
