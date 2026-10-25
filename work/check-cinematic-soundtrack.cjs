@@ -13,6 +13,13 @@ const flush=async()=>{await Promise.resolve();await Promise.resolve();await Prom
  players[1].currentTime=8;players[0].currentTime=7;kit.sync(seq,s);assert.equal(players[0].currentTime,8,'music follows cue master');assert.equal(kit.time(),8);
  players[1].ended=true;players[1].currentTime=10;const n=players[1].calls;kit.sync(seq,s);assert.equal(players[1].calls,n);assert.equal(kit.time(),10);kit.sync(null,s);assert(players.every(p=>p.paused));assert.equal(kit.time(),null);
  kit.sync({token:2,kind:'ending'},s);await flush();assert(players[2].src.endsWith('Fin-Musique.wav'));assert(players[3].src.endsWith('Fin-Reperes.wav'));kit.destroy();assert(players.every(p=>p.paused));
+ const tailPlayers=[],tail=new c.Kit(()=>{const p=new Player();tailPlayers.push(p);return p});
+ tail.sync({token:77,kind:'ending',totalSeconds:69},state());await flush();
+ tailPlayers[1].currentTime=69;tailPlayers[1].ended=true;
+ assert(tail.time()<69,'wait for the music to end too');
+ tailPlayers.forEach(p=>{p.currentTime=68.963265;p.ended=true;p.paused=true});
+ assert.equal(tail.time(),69,'native ended media finalizes the authored timeline even when currentTime stops short');
+ tail.destroy();
  const bad=[],b=new c.Kit(()=>{const p=new Player();p.play=()=>Promise.reject(Error('blocked'));bad.push(p);return p});b.sync(seq,state());await flush();assert(b.blocked);assert.equal(b.time(),null);assert(bad.every(p=>p.paused));bad.forEach(p=>p.play=Player.prototype.play);b.retry();await flush();assert(!b.blocked);assert.equal(b.time(),0);
  let reject;const delayed=[],d=new c.Kit(()=>{const p=new Player();p.play=()=>new Promise((_r,r)=>reject=r);delayed.push(p);return p});d.sync(seq,state());d.stop();reject(Error('old failure'));await flush();assert(!d.blocked,'stale failure cannot poison next film');
  console.log('PASS cinematic stems: independent gains, cue-master clock, pause/mute/zero music, source replacement, natural end, blocked retry and stale-play cleanup');

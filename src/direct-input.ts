@@ -33,6 +33,7 @@ type Host = {
   enemies: Enemy[];
   controls?: ActionInput;
   pointerMode: boolean;
+  gamepadMode?: boolean;
   workshop?: boolean;
   traceControl?(action: string, outcome: string, reason?: string): void;
   pointerExits(): Exit[];
@@ -95,6 +96,7 @@ export class DirectInput {
     if (this.blocked() || this.gesture) return false;
     const s = this.host;
     s.pointerMode = true;
+    s.gamepadMode = false;
     const road = ["free", "receive", "road", "home"].includes(s.phase);
     if (
       !road &&
@@ -228,7 +230,9 @@ export class DirectInput {
     const context =
       s.room +
       ":" +
-      (["free", "receive", "road", "home"].includes(s.phase) ? "drive" : s.phase) +
+      (["free", "receive", "road", "home"].includes(s.phase)
+        ? "drive"
+        : s.phase) +
       ":" +
       (s.encounterTime > 0) +
       ":" +
@@ -249,7 +253,7 @@ export class DirectInput {
       if (this.feedback.life <= 0) this.feedback = null;
     }
     // A physical gameplay key takes over immediately from an automatic destination.
-    if (s.controls?.keyboardActive) {
+    if (s.controls?.keyboardActive || s.controls?.gamepadActive) {
       this.cancel();
       s.pointerMode = false;
       return;
@@ -354,9 +358,38 @@ export function installDirectInput(
 ) {
   const input = new DirectInput(s),
     game = document.getElementById("game")!;
+  let previousBox: DOMRect | undefined;
   const point = (event: PointerEvent) => {
     const canvas = game.querySelector("canvas")!;
     const box = canvas.getBoundingClientRect();
+    const g = input.gesture;
+    if (
+      g &&
+      previousBox &&
+      box.width > 0 &&
+      box.height > 0 &&
+      (box.left !== previousBox.left ||
+        box.top !== previousBox.top ||
+        box.width !== previousBox.width ||
+        box.height !== previousBox.height)
+    ) {
+      // Captions can resize or move the frame while a finger is held. Reproject
+      // the last physical position and shift the origin by the same amount:
+      // the acquired steering/braking/swipe displacement stays unchanged.
+      const nx =
+        ((previousBox.left + (g.nx * previousBox.width) / 320 - box.left) *
+          320) /
+        box.width;
+      const ny =
+        ((previousBox.top + (g.ny * previousBox.height) / 240 - box.top) *
+          240) /
+        box.height;
+      g.x += nx - g.nx;
+      g.y += ny - g.ny;
+      g.nx = nx;
+      g.ny = ny;
+    }
+    previousBox = box;
     return {
       x: ((event.clientX - box.left) * 320) / box.width,
       y: ((event.clientY - box.top) * 240) / box.height,

@@ -84,26 +84,31 @@ export function bitmap(
 ) {
   let cursor = Math.round(x);
   const end = cursor + maxWidth;
+  const top = Math.round(y);
   g.fillStyle(color);
   for (const c of cleanText(value)) {
     const glyph = GLYPHS[c] ?? GLYPHS["?"],
       w = glyph[0].length * scale;
     if (cursor + w > end) break;
-    glyph.forEach((row, dy) =>
-      [...row].forEach((pixel, dx) => {
-        if (pixel === "1")
-          g.fillRect(
-            cursor + dx * scale,
-            Math.round(y) + dy * scale,
-            scale,
-            scale,
-          );
-      }),
-    );
+    for (let dy = 0; dy < glyph.length; dy++) {
+      const row = glyph[dy];
+      for (let dx = 0; dx < row.length; dx++) {
+        if (row[dx] !== "1") continue;
+        const start = dx;
+        while (row[dx + 1] === "1") dx++;
+        g.fillRect(
+          cursor + start * scale,
+          top + dy * scale,
+          (dx - start + 1) * scale,
+          scale,
+        );
+      }
+    }
     cursor += w + scale;
   }
 }
 export type CadreState = {
+  pauseControl?: boolean;
   destinationHUD?: [string, string];
   classroom?: string;
   paused: boolean;
@@ -198,9 +203,10 @@ export function cadreModel(s: CadreState, routeMeters: number) {
         ":" +
         String(seconds % 60).padStart(2, "0")
       : "--:--",
-    distance: assigned || home
-      ? (meters / 1000).toFixed(2).replace(".", ",") + " KM"
-      : "",
+    distance:
+      assigned || home
+        ? (meters / 1000).toFixed(2).replace(".", ",") + " KM"
+        : "",
     urgent,
     reveal: s.phase === "receive" ? Math.max(0, Math.min(1, s.age / 3)) : 1,
   };
@@ -227,6 +233,30 @@ export function clockWidth(value: string) {
     (width, c) => width + (CADRE_DIGITS[c][0].length + 1) * 2,
     -2,
   );
+}
+export function drawConditionBars(
+  g: Graphics,
+  value: number,
+  maximum: number,
+  y: number,
+) {
+  const fraction = Math.max(0, Math.min(1, value / maximum));
+  const low = fraction <= 0.4;
+  for (let i = 0; i < 5; i++) {
+    const x = 218 + i * 18;
+    g.fillStyle(0x38494c);
+    g.fillRect(x, y, 14, 8);
+    g.fillStyle(0x141e27);
+    g.fillRect(x + 1, y + 1, 12, 6);
+    const fill = Math.ceil(
+      Math.max(0, Math.min(1, fraction * 5 - i)) * 10 - 1e-9,
+    );
+    if (fill <= 0) continue;
+    g.fillStyle(low ? 0xd97561 : 0xb9aa89);
+    g.fillRect(x + 2, y + 1, fill, 5);
+    g.fillStyle(low ? 0xe5ae60 : 0xe3d4b3);
+    g.fillRect(x + 2, y + 1, fill, 1);
+  }
 }
 export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
   const m = cadreModel(s, routeMeters);
@@ -319,7 +349,13 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
     r(x + 2, y, 3, 1, 0x928269);
     r(x + 3, y + 1, 1, 1, 0x665e4a);
   }
-  compact(12, 187, m.home ? "DESTINATION" : m.assigned ? "AFFECTATION" : "RECEPTION", paper, 88);
+  compact(
+    12,
+    187,
+    m.home ? "DESTINATION" : m.assigned ? "AFFECTATION" : "RECEPTION",
+    paper,
+    88,
+  );
   centerSmall(120, 82, 187, m.home ? "JOURNEE" : "DELAIS");
   compact(217, 187, m.driving ? "AUTO" : "PERSONNEL", paper, 62);
   const clockColor = m.urgent ? red : m.assigned ? amber : dim;
@@ -421,17 +457,14 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
     const healthColor = s.vehicle <= 40 ? red : dim;
     const health = Math.max(0, Math.min(100, s.vehicle));
     compact(281, 187, Math.round(health) + "%", healthColor, 28);
-    for (let i = 0; i < 10; i++) {
-      r(218 + i * 9, 227, 7, 2, 0x24333b);
-      if (health > i * 10) r(218 + i * 9, 227, 7, 2, healthColor);
-    }
+    drawConditionBars(g, health, 100, 222);
     if (m.assigned || m.home) {
       t(218, 198, Math.round(s.speed) + " KM/H", paper, 1, 88);
-      compact(218, 206, "RESTE", dim, 30);
+      compact(280, 200, "RESTE", dim, 30);
       const digits = m.distance.replace(" KM", "");
       const distanceColor = m.veryNear ? red : m.near ? amber : paper;
-      t(218, 212, digits, distanceColor, 2, 75);
-      compact(222 + bitmapWidth(digits, 2), 221, "KM", distanceColor, 20);
+      t(218, 207, digits, distanceColor, 2, 75);
+      compact(222 + bitmapWidth(digits, 2), 216, "KM", distanceColor, 20);
       if (m.near) {
         r(213, 195, 2, 31, m.veryNear ? red : amber);
         r(310, 195, 2, 31, m.veryNear ? red : amber);
@@ -439,19 +472,12 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
     } else {
       compact(218, 199, "VITESSE", dim, 89);
       const digits = String(Math.round(s.speed));
-      t(218, 210, digits, paper, 2, 75);
-      compact(222 + bitmapWidth(digits, 2), 219, "KM/H", paper, 27);
+      t(218, 207, digits, paper, 2, 75);
+      compact(222 + bitmapWidth(digits, 2), 216, "KM/H", paper, 27);
     }
   } else {
     compact(218, 199, "ETAT DU PROF", dim, 89);
-    for (let i = 0; i < 5; i++) {
-      r(218 + i * 18, 210, 14, 8, 0x38494c);
-      r(219 + i * 18, 211, 12, 6, 0x141e27);
-      if (i < s.hp) {
-        r(220 + i * 18, 211, 10, 5, s.hp <= 2 ? red : 0xb9aa89);
-        r(220 + i * 18, 211, 10, 1, s.hp <= 2 ? amber : paper);
-      }
-    }
+    drawConditionBars(g, s.hp, 5, 210);
     t(218, 222, Math.max(0, s.hp) + "/5", s.hp <= 2 ? red : paper, 1, 24);
     compact(251, 224, "SERVICE " + Math.min(3, s.mission + 1) + "/3", dim, 58);
   }
@@ -460,10 +486,11 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
     " / SERVICE " +
     Math.min(s.mission + 1, 3) +
     "/3";
-  const line =
-    m.home
-      ? s.phase === "homeArrival" ? "MAISON / FIN DE SERVICE" : "21:30 / RETOUR A LA MAISON / FM"
-      : s.phase === "fail"
+  const line = m.home
+    ? s.phase === "homeArrival"
+      ? "MAISON / FIN DE SERVICE"
+      : "21:30 / RETOUR A LA MAISON / FM"
+    : s.phase === "fail"
       ? m.failureCause
       : s.phase === "report"
         ? "RESEAU RECTORAL - JOURNEE TERMINEE"
@@ -491,7 +518,7 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
       : m.near || s.phase === "receive"
         ? amber
         : dim,
-    298,
+    s.pauseControl ? 282 : 298,
   );
   if (s.phase === "receive") {
     r(8, 193, Math.round(101 * m.reveal), 1, amber);

@@ -29,6 +29,7 @@ export const TRAFFIC = {
   densityGrowth: 2,
   // Small lift on early journeys; the final stream keeps its validated spacing.
   journeyGain: [1.12, 1.12, 1],
+  densityLift: 1.125,
   // Dense streams keep their authored stagger instead of converging into walls.
   convoySpeed: 74,
 };
@@ -109,7 +110,9 @@ export function trafficCue(index: number, mission: number, random: number) {
   const cue = CUES[index % CUES.length];
   const journey = Math.max(0, Math.min(2, Math.floor(mission)));
   const density =
-    TRAFFIC.densityGrowth ** journey * TRAFFIC.journeyGain[journey];
+    TRAFFIC.densityLift *
+    TRAFFIC.densityGrowth ** journey *
+    TRAFFIC.journeyGain[journey];
   return {
     ...cue,
     x: mission <= 0 ? cue.x : DENSE_LANES[index % DENSE_LANES.length],

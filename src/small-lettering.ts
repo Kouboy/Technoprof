@@ -55,10 +55,15 @@ const clean = (s: string) =>
     .replace(/[\u0300-\u036f]/g, "")
     .toUpperCase()
     .replaceAll("’", "'");
+// Decode this fixed font once. The HUD and speech used to split every glyph
+// into arrays for every width query and every rendered frame.
+const smallGlyphs = Object.fromEntries(
+  Object.entries(rows).map(([key, value]) => [key, value.split("/")]),
+);
 export function smallWidth(s: string) {
   return (
     [...clean(s)].reduce(
-      (n, c) => n + (rows[c] ?? rows["?"]).split("/")[0].length + 1,
+      (n, c) => n + (smallGlyphs[c] ?? smallGlyphs["?"])[0].length + 1,
       0,
     ) - 1
   );
@@ -75,13 +80,18 @@ export function smallPrint(
 ) {
   g.fillStyle(c);
   let dx = Math.round(x);
+  const top = Math.round(y);
   for (const ch of clean(s)) {
-    const glyph = (rows[ch] ?? rows["?"]).split("/");
-    glyph.forEach((r, j) =>
-      [...r].forEach((v, i) => {
-        if (v === "1") g.fillRect(dx + i, Math.round(y) + j, 1, 1);
-      }),
-    );
+    const glyph = smallGlyphs[ch] ?? smallGlyphs["?"];
+    for (let j = 0; j < glyph.length; j++) {
+      const row = glyph[j];
+      for (let i = 0; i < row.length; i++) {
+        if (row[i] !== "1") continue;
+        const start = i;
+        while (row[i + 1] === "1") i++;
+        g.fillRect(dx + start, top + j, i - start + 1, 1);
+      }
+    }
     dx += glyph[0].length + 1;
   }
 }

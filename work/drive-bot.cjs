@@ -2,7 +2,9 @@
 exports.driveInput=(g,preference=-1)=>{
  const traffic=g.obstacles.filter(o=>o.z-g.travel>-6&&o.z-g.travel<280);
  const half=o=>(42+[52,68,46][o.type])/210+.08;
- const lanes=[-.68,0,.68];
+ // Use the actual safe road width; the old +/-0.68 targets falsely treated
+ // a centre truck as blocking every lane in the denser stream.
+ const lanes=[-.94,0,.94];
  const free=lanes.filter(x=>traffic.every(o=>Math.abs(o.x-x)>half(o)));
  let target=g.botTarget??0;
  if(!free.includes(target)&&free.length)target=free.sort((a,b)=>(Math.abs(a-g.car)-preference*a*.8)-(Math.abs(b-g.car)-preference*b*.8))[0];

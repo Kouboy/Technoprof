@@ -143,6 +143,8 @@ async function main() {
       );
       await activate("Retour");
       await activate("Prendre le service");
+      if (await page.getByRole('button',{name:'Pause / aide',exact:true}).isVisible())
+        await activate('Pause / aide');
       if (
         await page
           .getByRole("button", { name: "Passer la cinématique", exact: true })

@@ -1,5 +1,42 @@
 import type Phaser from "phaser";
 
+// Recessed metal instrument, shared by every boss presentation.
+export function drawBossHealth(
+  g: Phaser.GameObjects.Graphics,
+  hp: number,
+  maximum: number,
+) {
+  const box = (x: number, y: number, w: number, h: number, color: number) => {
+    g.fillStyle(color);
+    g.fillRect(x, y, w, h);
+  };
+  box(99, 14, 122, 12, 0x080d13);
+  box(100, 15, 120, 10, 0x38494c);
+  box(101, 15, 118, 1, 0x758080);
+  box(101, 24, 118, 1, 0x17242c);
+  box(105, 17, 110, 6, 0x080d13);
+  const capacity = Math.max(1, Math.floor(maximum));
+  const width = Math.floor((104 - (capacity - 1) * 2) / capacity);
+  const start = Math.floor(160 - (capacity * width + (capacity - 1) * 2) / 2);
+  for (let i = 0; i < capacity; i++) {
+    const x = start + i * (width + 2);
+    box(x, 18, width, 4, 0x24333b);
+    box(x, 22, width, 1, 0x526064);
+    if (i < Math.max(0, Math.min(capacity, hp))) {
+      box(x, 18, width, 4, 0x9c4c3e);
+      box(x, 18, width, 1, 0xd78a67);
+      box(x, 21, width, 1, 0x61382f);
+    }
+  }
+  for (const x of [101, 217]) {
+    box(x, 18, 2, 3, 0x080d13);
+    box(x, 18, 2, 1, 0x929f9a);
+    box(x, 19, 1, 1, 0x38494c);
+  }
+  box(133, 15, 3, 1, 0x9d8b68);
+  box(188, 24, 2, 1, 0x725538);
+}
+
 // Shared presentation contract. Coordinates are logical pixels (output is ×2).
 export const VIEW = {
   x: 7,

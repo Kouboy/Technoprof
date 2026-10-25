@@ -26,6 +26,7 @@ export const PLAY = {
   roomFadeIn: 0.18,
   openingSeconds: 3.4,
   failContinueSeconds: 2,
+  failAutoReturnSeconds: 12.45, // 0.45s musical entrance + the 12s Game Over theme.
   failCoastSeconds: 1.25,
   failCardAt: 0.85,
   failSlumpSeconds: 0.65,

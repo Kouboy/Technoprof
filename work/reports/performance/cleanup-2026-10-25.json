@@ -1,0 +1,657 @@
+{
+  "date": "2026-10-25",
+  "base": "8da180cd256ae4b5ec8bf2a9dd33ff71054e04c4",
+  "method": "Isolated headless native browsers. CPU = RAF callback time, not total GPU/frame time. Initial measurements are single passes; controlled font A/B replaces only cadre.ts and small-lettering.ts through Playwright routing in the same current app. Different runs can have different RAF frequencies. No systematic FPS gain claimed.",
+  "initialBefore": {
+    "method": "Headless isolated browsers; same native game renderer, real inputs, no state skips. Browser/GPU configuration can differ from personal browsers. CPU is RAF callback time, not total GPU time.",
+    "results": [
+      {
+        "name": "chromium",
+        "version": "151.0.7922.34",
+        "scenario": "road-fast",
+        "readyMs": 12619,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "motionObserved": true,
+        "cpu": {
+          "count": 299,
+          "mean": 2.4906354502690675,
+          "p50": 2.399999976158142,
+          "p95": 3.699999988079071,
+          "max": 6.5
+        },
+        "interval": {
+          "count": 298,
+          "mean": 16.774496644335304,
+          "p50": 16.69999998807907,
+          "p95": 17.69999998807907,
+          "max": 47.5
+        },
+        "glPerFrame": {
+          "bufferSubData": 14.010033444816054,
+          "drawElements": 9.006688963210703
+        },
+        "stateBefore": "road / pièce 0 / joueur LIBRE / délai 239.23s\n\nTemps simulé 0.8s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.8s\nDernier événement : long-frame-pause (2500 ms)",
+        "stateAfter": "road / pièce 0 / joueur LIBRE / délai 234.22s\n\nTemps simulé 5.8s / 1 chocs / 0 chutes / 0 coups réussis\nroad 5.8s\nDernier événement : crash",
+        "errors": []
+      },
+      {
+        "name": "chromium",
+        "version": "151.0.7922.34",
+        "scenario": "road-dusk-fast",
+        "readyMs": 9101,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "motionObserved": true,
+        "cpu": {
+          "count": 298,
+          "mean": 2.7798657711320276,
+          "p50": 2.599999964237213,
+          "p95": 4.5,
+          "max": 7.5
+        },
+        "interval": {
+          "count": 297,
+          "mean": 16.83097643081588,
+          "p50": 16.69999998807907,
+          "p95": 17.69999998807907,
+          "max": 47.19999998807907
+        },
+        "glPerFrame": {
+          "bufferSubData": 14,
+          "drawElements": 9
+        },
+        "stateBefore": "road / pièce 20 / joueur LIBRE / délai 209.42s\n\nTemps simulé 0.6s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.6s\nDernier événement : pass",
+        "stateAfter": "road / pièce 20 / joueur LIBRE / délai 204.40s\n\nTemps simulé 5.6s / 2 chocs / 0 chutes / 0 coups réussis\nroad 5.6s\nDernier événement : crash",
+        "errors": []
+      },
+      {
+        "name": "firefox",
+        "version": "153.0",
+        "scenario": "road-fast",
+        "readyMs": 9715,
+        "renderer": "ANGLE (Intel, Intel(R) HD Graphics Direct3D11 vs_5_0 ps_5_0), or similar",
+        "motionObserved": true,
+        "cpu": {
+          "count": 321,
+          "mean": 4.280373831775701,
+          "p50": 4,
+          "p95": 5,
+          "max": 35
+        },
+        "interval": {
+          "count": 320,
+          "mean": 15.675,
+          "p50": 16,
+          "p95": 17,
+          "max": 36
+        },
+        "glPerFrame": {
+          "bufferSubData": 14.018691588785046,
+          "drawElements": 9.01246105919003
+        },
+        "stateBefore": "road / pièce 0 / joueur LIBRE / délai 239.47s\n\nTemps simulé 0.5s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.5s\nDernier événement : phase",
+        "stateAfter": "road / pièce 0 / joueur LIBRE / délai 234.46s\n\nTemps simulé 5.5s / 1 chocs / 0 chutes / 0 coups réussis\nroad 5.5s\nDernier événement : crash",
+        "errors": []
+      },
+      {
+        "name": "firefox",
+        "version": "153.0",
+        "scenario": "road-dusk-fast",
+        "readyMs": 9545,
+        "renderer": "ANGLE (Intel, Intel(R) HD Graphics Direct3D11 vs_5_0 ps_5_0), or similar",
+        "motionObserved": true,
+        "cpu": {
+          "count": 391,
+          "mean": 4.053708439897698,
+          "p50": 4,
+          "p95": 6,
+          "max": 32
+        },
+        "interval": {
+          "count": 390,
+          "mean": 12.835897435897436,
+          "p50": 14,
+          "p95": 17,
+          "max": 33
+        },
+        "glPerFrame": {
+          "bufferSubData": 14,
+          "drawElements": 9
+        },
+        "stateBefore": "road / pièce 20 / joueur LIBRE / délai 209.47s\n\nTemps simulé 0.5s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.5s\nDernier événement : pass",
+        "stateAfter": "road / pièce 20 / joueur LIBRE / délai 204.47s\n\nTemps simulé 5.5s / 2 chocs / 0 chutes / 0 coups réussis\nroad 5.5s\nDernier événement : crash",
+        "errors": []
+      }
+    ]
+  },
+  "initialAfter": {
+    "method": "Headless isolated browsers; same native game renderer, real inputs, no state skips. Browser/GPU configuration can differ from personal browsers. CPU is RAF callback time, not total GPU time.",
+    "results": [
+      {
+        "name": "chromium",
+        "version": "151.0.7922.34",
+        "scenario": "road-fast",
+        "readyMs": 29023,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "motionObserved": true,
+        "cpu": {
+          "count": 299,
+          "mean": 3.4685618725907443,
+          "p50": 3.399999976158142,
+          "p95": 4.299999952316284,
+          "max": 9.699999988079071
+        },
+        "interval": {
+          "count": 298,
+          "mean": 16.849328858940392,
+          "p50": 16.69999998807907,
+          "p95": 17.900000035762787,
+          "max": 77.19999998807907
+        },
+        "glPerFrame": {
+          "bufferSubData": 14,
+          "drawElements": 9
+        },
+        "stateBefore": "road / pièce 0 / joueur LIBRE / délai 239.02s\n\nTemps simulé 1.0s / 0 chocs / 0 chutes / 0 coups réussis\nroad 1.0s\nDernier événement : pass-approach",
+        "stateAfter": "road / pièce 0 / joueur LIBRE / délai 233.92s\n\nTemps simulé 6.1s / 1 chocs / 0 chutes / 0 coups réussis\nroad 6.1s\nDernier événement : crash",
+        "errors": []
+      },
+      {
+        "name": "chromium",
+        "version": "151.0.7922.34",
+        "scenario": "road-dusk-fast",
+        "readyMs": 22376,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "motionObserved": true,
+        "cpu": {
+          "count": 291,
+          "mean": 4.123024056047918,
+          "p50": 4.099999964237213,
+          "p95": 5,
+          "max": 9.100000023841858
+        },
+        "interval": {
+          "count": 290,
+          "mean": 17.34068965521352,
+          "p50": 16.80000001192093,
+          "p95": 19,
+          "max": 75.5
+        },
+        "glPerFrame": {
+          "bufferSubData": 14,
+          "drawElements": 9
+        },
+        "stateBefore": "road / pièce 20 / joueur LIBRE / délai 209.05s\n\nTemps simulé 1.0s / 1 chocs / 0 chutes / 0 coups réussis\nroad 1.0s\nDernier événement : crash",
+        "stateAfter": "road / pièce 20 / joueur LIBRE / délai 203.95s\n\nTemps simulé 6.0s / 2 chocs / 0 chutes / 0 coups réussis\nroad 6.0s\nDernier événement : crash",
+        "errors": []
+      },
+      {
+        "name": "firefox",
+        "version": "153.0",
+        "scenario": "road-fast",
+        "readyMs": 12024,
+        "renderer": "ANGLE (Intel, Intel(R) HD Graphics Direct3D11 vs_5_0 ps_5_0), or similar",
+        "motionObserved": true,
+        "cpu": {
+          "count": 603,
+          "mean": 2.943615257048093,
+          "p50": 3,
+          "p95": 4,
+          "max": 24
+        },
+        "interval": {
+          "count": 602,
+          "mean": 8.382059800664452,
+          "p50": 8,
+          "p95": 9,
+          "max": 25
+        },
+        "glPerFrame": {
+          "bufferSubData": 14.009950248756219,
+          "drawElements": 9.006633499170812
+        },
+        "stateBefore": "road / pièce 0 / joueur LIBRE / délai 239.50s\n\nTemps simulé 0.5s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.5s\nDernier événement : phase",
+        "stateAfter": "road / pièce 0 / joueur LIBRE / délai 234.42s\n\nTemps simulé 5.6s / 1 chocs / 0 chutes / 0 coups réussis\nroad 5.6s\nDernier événement : crash",
+        "errors": []
+      },
+      {
+        "name": "firefox",
+        "version": "153.0",
+        "scenario": "road-dusk-fast",
+        "readyMs": 12706,
+        "renderer": "ANGLE (Intel, Intel(R) HD Graphics Direct3D11 vs_5_0 ps_5_0), or similar",
+        "motionObserved": true,
+        "cpu": {
+          "count": 595,
+          "mean": 3.100840336134454,
+          "p50": 3,
+          "p95": 4,
+          "max": 25
+        },
+        "interval": {
+          "count": 594,
+          "mean": 8.447811447811448,
+          "p50": 8,
+          "p95": 9,
+          "max": 26
+        },
+        "glPerFrame": {
+          "bufferSubData": 14.010084033613445,
+          "drawElements": 9.00672268907563
+        },
+        "stateBefore": "road / pièce 20 / joueur LIBRE / délai 209.50s\n\nTemps simulé 0.5s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.5s\nDernier événement : pass",
+        "stateAfter": "road / pièce 20 / joueur LIBRE / délai 204.48s\n\nTemps simulé 5.5s / 2 chocs / 0 chutes / 0 coups réussis\nroad 5.5s\nDernier événement : crash",
+        "errors": []
+      }
+    ]
+  },
+  "controlledFontReference": {
+    "method": "Headless isolated browsers; same native game renderer, real inputs, no state skips. Browser/GPU configuration can differ from personal browsers. CPU is RAF callback time, not total GPU time.",
+    "results": [
+      {
+        "name": "chromium",
+        "lettering": "reference",
+        "version": "151.0.7922.34",
+        "scenario": "road-fast",
+        "readyMs": 10295,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "motionObserved": true,
+        "cpu": {
+          "count": 300,
+          "mean": 1.5660000006357828,
+          "p50": 1.4000000357627869,
+          "p95": 2.300000011920929,
+          "max": 6.199999988079071
+        },
+        "interval": {
+          "count": 299,
+          "mean": 16.72809364544508,
+          "p50": 16.69999998807907,
+          "p95": 17.80000001192093,
+          "max": 34.39999997615814
+        },
+        "glPerFrame": {
+          "bufferSubData": 14,
+          "drawElements": 9
+        },
+        "stateBefore": "road / pièce 0 / joueur LIBRE / délai 239.38s\n\nTemps simulé 0.6s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.6s\nDernier événement : long-frame-pause (2650 ms)",
+        "stateAfter": "road / pièce 0 / joueur LIBRE / délai 234.38s\n\nTemps simulé 5.6s / 1 chocs / 0 chutes / 0 coups réussis\nroad 5.6s\nDernier événement : crash",
+        "errors": []
+      },
+      {
+        "name": "chromium",
+        "lettering": "reference",
+        "version": "151.0.7922.34",
+        "scenario": "road-dusk-fast",
+        "readyMs": 10270,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "motionObserved": true,
+        "cpu": {
+          "count": 298,
+          "mean": 2.2630872472420633,
+          "p50": 2.099999964237213,
+          "p95": 3.5,
+          "max": 6.899999976158142
+        },
+        "interval": {
+          "count": 297,
+          "mean": 16.835016835016834,
+          "p50": 16.69999998807907,
+          "p95": 17.69999998807907,
+          "max": 40.69999998807907
+        },
+        "glPerFrame": {
+          "bufferSubData": 14,
+          "drawElements": 9
+        },
+        "stateBefore": "road / pièce 20 / joueur LIBRE / délai 209.38s\n\nTemps simulé 0.6s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.6s\nDernier événement : pass",
+        "stateAfter": "road / pièce 20 / joueur LIBRE / délai 204.35s\n\nTemps simulé 5.6s / 2 chocs / 0 chutes / 0 coups réussis\nroad 5.6s\nDernier événement : crash",
+        "errors": []
+      }
+    ]
+  },
+  "controlledFontCurrent": {
+    "method": "Headless isolated browsers; same native game renderer, real inputs, no state skips. Browser/GPU configuration can differ from personal browsers. CPU is RAF callback time, not total GPU time.",
+    "results": [
+      {
+        "name": "chromium",
+        "lettering": "current",
+        "version": "151.0.7922.34",
+        "scenario": "road-fast",
+        "readyMs": 10064,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "motionObserved": true,
+        "cpu": {
+          "count": 299,
+          "mean": 1.677591973722579,
+          "p50": 1.5,
+          "p95": 2.800000011920929,
+          "max": 5.699999988079071
+        },
+        "interval": {
+          "count": 298,
+          "mean": 16.773825503235695,
+          "p50": 16.600000023841858,
+          "p95": 17.5,
+          "max": 40.89999997615814
+        },
+        "glPerFrame": {
+          "bufferSubData": 14,
+          "drawElements": 9
+        },
+        "stateBefore": "road / pièce 0 / joueur LIBRE / délai 239.37s\n\nTemps simulé 0.6s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.6s\nDernier événement : long-frame-pause (2650 ms)",
+        "stateAfter": "road / pièce 0 / joueur LIBRE / délai 234.35s\n\nTemps simulé 5.6s / 1 chocs / 0 chutes / 0 coups réussis\nroad 5.6s\nDernier événement : crash",
+        "errors": []
+      },
+      {
+        "name": "chromium",
+        "lettering": "current",
+        "version": "151.0.7922.34",
+        "scenario": "road-dusk-fast",
+        "readyMs": 10590,
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "motionObserved": true,
+        "cpu": {
+          "count": 297,
+          "mean": 1.962626262746676,
+          "p50": 1.699999988079071,
+          "p95": 3.199999988079071,
+          "max": 5.399999976158142
+        },
+        "interval": {
+          "count": 296,
+          "mean": 16.885135135135137,
+          "p50": 16.600000023841858,
+          "p95": 18,
+          "max": 49.40000003576279
+        },
+        "glPerFrame": {
+          "bufferSubData": 14.01010101010101,
+          "drawElements": 9.006734006734007
+        },
+        "stateBefore": "road / pièce 20 / joueur LIBRE / délai 209.33s\n\nTemps simulé 0.7s / 0 chocs / 0 chutes / 0 coups réussis\nroad 0.7s\nDernier événement : pass",
+        "stateAfter": "road / pièce 20 / joueur LIBRE / délai 204.32s\n\nTemps simulé 5.7s / 2 chocs / 0 chutes / 0 coups réussis\nroad 5.7s\nDernier événement : crash",
+        "errors": []
+      }
+    ]
+  },
+  "letteringCorpus": {
+    "rectanglesBefore": 15534,
+    "rectanglesAfter": 10119,
+    "identicalPixels": true,
+    "additionalTextures": 0
+  },
+  "nativeRendering": [
+    {
+      "browser": "chromium",
+      "identicalViews": [
+        "room-200",
+        "room-201",
+        "room-202",
+        "room-203",
+        "room-204",
+        "room-205",
+        "room-206",
+        "room-207",
+        "room-208",
+        "class-0",
+        "road-0",
+        "arrival-0",
+        "room-100",
+        "room-101",
+        "room-102",
+        "room-103",
+        "room-104",
+        "room-105",
+        "room-106",
+        "room-107",
+        "room-108",
+        "room-109",
+        "room-110",
+        "room-111",
+        "class-1",
+        "road-1",
+        "arrival-1",
+        "room-300",
+        "room-301",
+        "room-302",
+        "room-303",
+        "room-304",
+        "room-305",
+        "room-306",
+        "room-307",
+        "room-308",
+        "room-309",
+        "room-310",
+        "room-311",
+        "room-312",
+        "room-313",
+        "room-314",
+        "room-315",
+        "room-316",
+        "room-317",
+        "class-2",
+        "road-2",
+        "arrival-2"
+      ],
+      "mismatches": [],
+      "rgbaBefore": 256790124,
+      "rgbaAfter": 256790124,
+      "offlineFileLaunch": true
+    },
+    {
+      "browser": "firefox",
+      "identicalViews": [
+        "room-200",
+        "room-201",
+        "room-202",
+        "room-203",
+        "room-204",
+        "room-205",
+        "room-206",
+        "room-207",
+        "room-208",
+        "class-0",
+        "road-0",
+        "arrival-0",
+        "room-100",
+        "room-101",
+        "room-102",
+        "room-103",
+        "room-104",
+        "room-105",
+        "room-106",
+        "room-107",
+        "room-108",
+        "room-109",
+        "room-110",
+        "room-111",
+        "class-1",
+        "road-1",
+        "arrival-1",
+        "room-300",
+        "room-301",
+        "room-302",
+        "room-303",
+        "room-304",
+        "room-305",
+        "room-306",
+        "room-307",
+        "room-308",
+        "room-309",
+        "room-310",
+        "room-311",
+        "room-312",
+        "room-313",
+        "room-314",
+        "room-315",
+        "room-316",
+        "room-317",
+        "class-2",
+        "road-2",
+        "arrival-2"
+      ],
+      "mismatches": [],
+      "rgbaBefore": 256790124,
+      "rgbaAfter": 256790124,
+      "offlineFileLaunch": true
+    }
+  ],
+  "windows": [
+    {
+      "browser": "chromium",
+      "dimensions": [
+        {
+          "width": 960,
+          "height": 720,
+          "bottom": 741,
+          "toolbarBottom": 779,
+          "viewport": 800,
+          "scroll": 800,
+          "scrollWidth": 960,
+          "viewportWidth": 960,
+          "parentStyle": "",
+          "parentHeight": "720px",
+          "variable": "960px"
+        },
+        {
+          "width": 909,
+          "height": 681.75,
+          "bottom": 681.875,
+          "toolbarBottom": 719.875,
+          "viewport": 720,
+          "scroll": 720,
+          "scrollWidth": 1280,
+          "viewportWidth": 1280,
+          "parentStyle": "",
+          "parentHeight": "681.75px",
+          "variable": "909px"
+        },
+        {
+          "width": 640,
+          "height": 480,
+          "bottom": 571,
+          "toolbarBottom": 609,
+          "viewport": 700,
+          "scroll": 700,
+          "scrollWidth": 640,
+          "viewportWidth": 640,
+          "parentStyle": "",
+          "parentHeight": "480px",
+          "variable": "640px"
+        }
+      ],
+      "errors": [],
+      "offlineLauncher": true
+    },
+    {
+      "browser": "firefox",
+      "dimensions": [
+        {
+          "width": 960,
+          "height": 720,
+          "bottom": 741,
+          "toolbarBottom": 779,
+          "viewport": 800,
+          "scroll": 800,
+          "scrollWidth": 960,
+          "viewportWidth": 960,
+          "parentStyle": "",
+          "parentHeight": "720px",
+          "variable": "960px"
+        },
+        {
+          "width": 909,
+          "height": 681.75,
+          "bottom": 681.8666687011719,
+          "toolbarBottom": 719.86669921875,
+          "viewport": 720,
+          "scroll": 720,
+          "scrollWidth": 1280,
+          "viewportWidth": 1280,
+          "parentStyle": "",
+          "parentHeight": "681.75px",
+          "variable": "909px"
+        },
+        {
+          "width": 640,
+          "height": 480,
+          "bottom": 571,
+          "toolbarBottom": 609,
+          "viewport": 700,
+          "scroll": 700,
+          "scrollWidth": 640,
+          "viewportWidth": 640,
+          "parentStyle": "",
+          "parentHeight": "480px",
+          "variable": "640px"
+        }
+      ],
+      "errors": [],
+      "offlineLauncher": true
+    },
+    {
+      "browser": "touch",
+      "dimensions": [
+        {
+          "width": 390,
+          "height": 292.5,
+          "bottom": 549.25,
+          "toolbarBottom": 587.25,
+          "viewport": 844,
+          "scroll": 844,
+          "scrollWidth": 390,
+          "viewportWidth": 390,
+          "parentStyle": "",
+          "parentHeight": "292.5px",
+          "variable": "390px"
+        },
+        {
+          "width": 469,
+          "height": 351.75,
+          "bottom": 351.875,
+          "toolbarBottom": 389.875,
+          "viewport": 390,
+          "scroll": 390,
+          "scrollWidth": 844,
+          "viewportWidth": 844,
+          "parentStyle": "",
+          "parentHeight": "351.75px",
+          "variable": "469px"
+        }
+      ],
+      "errors": [],
+      "offlineLauncher": false
+    }
+  ],
+  "rendererCompatibility": {
+    "canvasGeometryMaskPreserved": true,
+    "webGLUnsupportedMaskRemoved": true,
+    "nativeUnsupportedMaskWarnings": 0,
+    "timingRunsPrecedeThisNoOpGuard": true
+  },
+  "heldTouchReflow": {
+    "independentNativeVerification": true,
+    "widthBefore": 394,
+    "widthAfter": 469,
+    "physicalMoveX": 1,
+    "logicalDeltaX": 0.6823,
+    "logicalDeltaY": 0,
+    "method": "Actual caption/help reflow on current Vite renderer, held touch and genuine PointerEvent; expected horizontal delta 320/469, no artificial left steer/brake."
+  },
+  "cleanup": {
+    "workingCopyFolders": 21,
+    "workingCopyFiles": 774,
+    "workingCopyBytes": 1010883880,
+    "workingCopiesMovedNotDeleted": true,
+    "historicalScriptsMoved": 24,
+    "unusedSourceModuleBytesRemoved": 3685340,
+    "originalPNGPreserved": true,
+    "published061SHA256": "05713E027D7DCB4B5CD8AAA6E2E74B53D1EA45526215E33CC8FE4E905B94DD65"
+  },
+  "limitations": [
+    "No physical smartphone test",
+    "No personal Firefox profile or prolonged-session benchmark",
+    "Artwork and WAV delivery weight deliberately preserved",
+    "Historical module removal did not reduce bundle size: it was already unreachable"
+  ]
+}

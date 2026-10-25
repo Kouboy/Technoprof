@@ -4,7 +4,7 @@ const strip=s=>s.replace(/^import[\s\S]*?from\s+['"][^'"]+['"];?\r?\n/gm,'').rep
 const scope={roomSpec:()=>scope.room,smallPrint:(...a)=>scope.labels.push(a[3]),smallWidth:s=>s.length*4};
 vm.createContext(scope);
 const frameSource=['wing-art','bridge-art'].map(n=>strip(fs.readFileSync('src/'+n+'.ts','utf8').split('export const '+(n==='wing-art'?'STUDENT_OUTLINES':'GUARD_OUTLINES'))[0])).join('\n');
-const source=frameSource+'\n'+['gameplay','combat-poses','new-school-art'].map(n=>strip(fs.readFileSync('src/'+n+'.ts','utf8'))).join('\n');
+const source=frameSource+'\n'+['presentation','gameplay','combat-poses','new-school-art'].map(n=>strip(fs.readFileSync('src/'+n+'.ts','utf8'))).join('\n');
 vm.runInContext(require('node:module').stripTypeScriptTypes(source,{mode:'transform'})+';this.api={NewSchoolArt,newEnemyFrame,enemyPhase,SECURITY,THROWER,FILMER,poseExclusions};',scope);
 function sprite(){const s={};for(const k of ['setDepth','setTexture','setOrigin','setPosition','setScale','setAngle','setAlpha','setVisible','setDisplaySize','setFlipX'])s[k]=(...a)=>{s[k+'Args']=a;return s;};return s;}
 const art=Object.create(scope.api.NewSchoolArt.prototype);art.background=sprite();art.enemy=sprite();
@@ -47,9 +47,9 @@ for(const [mission,id,role] of [[1,11,'filmer'],[1,14,'influential'],[2,21,'thro
 {
  const h=ready(2,24),g=h.g,e=g.enemies[0];g.px=e.x+45;e.facing=-1;e.cool=5;
  h.step();assert.equal(scope.api.enemyPhase(e),'turn');assert.equal(scope.api.newEnemyFrame(e),3);
- render(g);assert(scope.labels.includes('RETOURNEMENT'));assert.equal(e.facing,-1);
+ render(g);assert.equal(scope.labels.length,0,'pose carries the turn without tactical text');assert.equal(e.facing,-1);
  h.advance(.4);assert.equal(e.facing,-1);h.advance(.5);assert.equal(e.facing,1);
- render(g);assert(scope.labels.includes('GARDE DE FACE'));
+ render(g);assert.equal(scope.labels.length,0,'no tactical label over the boss');
 }
 {
  const {load}=require('./audio-harness.cjs'),{AudioKit}=load();const kit=new AudioKit(),calls=[];kit.play=(...args)=>calls.push(args);

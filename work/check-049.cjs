@@ -80,7 +80,7 @@ console.log('PASS real pointer adapter for mouse/touch: canvas scaling, capture 
  advance(1);assert.equal(g.dialogue.page,0);
 }
 {
- const {g,step}=direct('road');const {driveInput}=require('./drive-bot.cjs');g.obstacles=[];g.begin();g.phase='road';g.notified=true;g.direct.tick(0);g.direct.down(1,160,140);
+ const {g,step}=direct('road');const {driveInput}=require('./fair-drive-bot-060.cjs');g.obstacles=[];g.begin();g.phase='road';g.notified=true;g.direct.tick(0);g.direct.down(1,160,140);
  for(let i=0;i<10000&&g.phase==='road';i++){driveInput(g,1);g.direct.move(1,160+g.botTarget*105,g.keys.DOWN.isDown?160:140);step();}
  assert.equal(g.phase,'arrival','first mission must be reachable using direct gesture controls');assert(g.vehicle>=56);assert(g.remaining>90);
  console.log('PASS gesture-driven first route',JSON.stringify({vehicle:g.vehicle,collisions:g.collisions,remaining:g.remaining}));

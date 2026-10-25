@@ -136,6 +136,24 @@ music.destroy();assert(player.paused);assert.equal(player.src,'');
  g.age=2.25;g.draw();assert.equal(p.volume,0);g.completeHomeReturn();g.draw();assert(p.paused);assert.equal(g.music.current,null);
  console.log('PASS home radio: dedicated loop, pause offset, parking fade, silence before ending');
 }
+// Completion returns to the title without waiting for another audio gesture.
+{
+ const {createGame}=require('./test-harness.cjs'),t=createGame({policy:'three-required'}),g=t.g,p=new Player();
+ g.music=new scope.MusicKit(()=>p);g.audio.musicVolume=.5;g.workshop=true;
+ g.loadScenario('cinematic-ending');t.advance(72.1);
+ assert.equal(g.phase,'title');assert.equal(g.music.current,'title');assert(!p.paused&&p.loop);
+ g.startDay(false);g.phase='road';g.finish(false,'breakdown');g.age=3;g.syncMusic();
+ assert.equal(g.music.current,'gameOver');assert(!g.music.finished('gameOver'));
+ p.ended=true;p.paused=true;t.step();
+ assert.equal(g.phase,'title');assert.equal(g.music.current,'title');assert(!p.paused&&p.loop);
+ console.log('PASS natural ending and completed Game Over automatically restore title music');
+ for(const option of ['muted','zero']) {
+  const t=createGame({policy:'three-required'}),g=t.g,q=new Player();
+  g.music=new scope.MusicKit(()=>q);g.audio.musicVolume=option==='zero'?0:.5;
+  g.audio.muted=option==='muted';g.startDay(false);g.phase='road';g.finish(false,'breakdown');
+  t.advance(12.6);assert.equal(g.phase,'title',option+' cannot trap Game Over');
+ }
+}
 (async()=>{
  let reject;
  const delayed=new Player();delayed.play=function(){this.playCalls++;return new Promise((resolve,rejectFn)=>reject=rejectFn);};

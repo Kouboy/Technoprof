@@ -16,7 +16,7 @@ async function main(){
    await page.getByRole('button',{name:'Prendre le service',exact:true}).click();
    const seq=()=>page.locator('#game').getAttribute('data-sequence');
    await page.waitForFunction(()=>document.querySelector('#game').getAttribute('data-sequence')==='intro:0');
-   const skip=page.getByRole('button',{name:'Passer la cinématique',exact:true});await skip.waitFor();
+   const skip=page.getByRole('button',{name:'Passer la cinématique',exact:true});
    await page.waitForFunction(()=>window.__filmAudio.some(a=>a.src.endsWith('Intro-Reperes.wav')&&!a.paused&&a.currentTime>.1));
    assert.equal(await page.getByRole('button',{name:'Continuer',exact:true}).count(),0);
    await page.waitForTimeout(600);
@@ -52,20 +52,20 @@ async function main(){
     const stems=await page.evaluate(()=>window.__filmAudio.filter(a=>/Fin-(Musique|Reperes)\.wav$/.test(a.src)).map(a=>({src:a.src,time:a.currentTime,error:a.error?.code})));
     assert.equal(stems.length,2);assert(stems.every(s=>!s.error));assert(Math.abs(stems[0].time-stems[1].time)<.15,'native stems remain synchronized');
     if(i===12)assert(stems[1].time>=62&&stems[1].time<62.8,'bell image follows the cue master');
-    await page.waitForFunction(index=>{const t=document.querySelector('[aria-label="État de la simulation"]').textContent;return index===13?t.includes('report /'):t.includes(`image ${index+2}/14`);},i);
+    await page.waitForFunction(index=>{const t=document.querySelector('[aria-label="État de la simulation"]').textContent;return index===13?t.includes('title /'):t.includes(`image ${index+2}/14`);},i);
    }
-   assert((await state()).includes('report /'));assert.deepEqual(errors,[]);
+   assert((await state()).includes('title /'));assert.deepEqual(errors,[]);
    reports.push({browser:name,offline:true,intro:2,ending:14,seconds:[10,69],nativeStems:true,cueMaster:true,automatic:true,pausedStable:true,inertActionInput:true,readableScreenshots:true,noCaptions:true,errors});
-   console.log('PASS automatic silent montage '+name+': 10/69s sequences, seven-second pause, inert inputs and clean report');
+   console.log('PASS automatic silent montage '+name+': 10/69s soundtracks, final 3s fade, seven-second pause, inert inputs and title return');
    await context.close();
    if(name==='chromium'){
     const mobile=await browser.newContext({offline:true,viewport:{width:390,height:844},isMobile:true,hasTouch:true});
     const p=await mobile.newPage();p.setDefaultTimeout(45000);p.on('pageerror',e=>errors.push(e.message));
     await p.goto(file('Jouer-Technoprof-Journee-Musique.html'));await p.getByRole('button',{name:'Prendre le service',exact:true}).tap();
-    await p.getByRole('button',{name:'Passer la cinématique',exact:true}).waitFor();await p.waitForTimeout(650);
+    await p.waitForFunction(()=>document.querySelector('#game').getAttribute('data-sequence')==='intro:0');await p.waitForTimeout(650);
     const box=await p.locator('#game canvas').boundingBox(),tap=()=>p.touchscreen.tap(box.x+box.width/2,box.y+box.height*.45);
     await tap();await tap();assert.equal(await p.locator('#game').getAttribute('data-sequence'),'intro:0','touches do not change timing');
-    await p.getByRole('button',{name:'Passer la cinématique',exact:true}).tap();
+    await p.getByRole('button',{name:'Pause / aide',exact:true}).tap();await p.getByRole('button',{name:'Passer la cinématique',exact:true}).tap();
     await p.waitForFunction(()=>document.querySelector('#game').getAttribute('data-sequence')==='');
     assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
     assert.deepEqual(errors,[]);

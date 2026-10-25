@@ -4,6 +4,7 @@ import { QUIET_SCHOOL_DATA } from "./quiet-school-data";
 import { NEW_SCHOOL_DATA } from "./new-school-data";
 import { roomSpec, type RoomSpec } from "./missions";
 import { smallPrint, smallWidth } from "./small-lettering";
+import { drawBossHealth } from "./presentation";
 import type { SliceArt } from "./slice-art";
 import { STUDENT_FRAMES } from "./wing-art";
 import { GUARD_FRAMES } from "./bridge-art";
@@ -304,49 +305,7 @@ export class NewSchoolArt {
     }
     const g = this.combat;
     if (r.boss && e && !s.encounterTime && s.phase === "school") {
-      g.fillStyle(0x080d13, 0.9);
-      g.fillRect(108, 14, 104, 15);
-      g.fillStyle(0x526064);
-      g.fillRect(110, 16, 100, 3);
-      g.fillStyle(0xb9aa89);
-      g.fillRect(110, 16, (100 * Math.max(0, e.hp)) / (r.hp ?? 6), 3);
-      const securityPhase = e.securityCycle?.phase;
-      const securityCue = securityPhase
-        ? {
-            approach: "GARDE",
-            "push-windup": "POUSSEE !",
-            push: "POUSSEE !",
-            "advance-windup": "AVANCEE !",
-            advance: "AVANCEE !",
-            opening: "OUVERTURE",
-            reset: "REPRISE D'APPUI",
-          }[securityPhase]
-        : undefined;
-      const cue =
-        securityCue ??
-        (e.parentCycle?.phase === "breakaway"
-          ? "REPRISE D'APPUI"
-          : e.wind > 0
-            ? e.parent
-              ? "RUEE !"
-              : "POUSSEE !"
-            : e.parentCycle?.phase === "opening" || e.recovery > 0 || e.stun > 0
-              ? "OUVERTURE"
-              : e.role === "security"
-                ? e.turnTime
-                  ? "RETOURNEMENT"
-                  : "GARDE DE FACE"
-                : "");
-      if (cue)
-        smallPrint(
-          g,
-          160 - smallWidth(cue) / 2,
-          22,
-          cue,
-          e.wind > 0 || securityPhase === "advance" || securityPhase === "push"
-            ? 0xe5ae60
-            : 0xe3d4b3,
-        );
+      drawBossHealth(g, e.hp, e.maxHp ?? r.hp ?? 6);
     }
     for (const p of s.projectiles) {
       if (p.kind === "book") {

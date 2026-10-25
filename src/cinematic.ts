@@ -1,30 +1,89 @@
 export type CinematicKind = "intro" | "ending";
 export type CinematicCue = "alarm" | "doorbell" | "bell";
-export type CinematicTexture = "cinematic-storyboard" | "cinematic-intro-v2" | "cinematic-campus-approved" | "cinematic-visitor" | "cinematic-car";
-type CinematicPanel = { id: string; texture: CinematicTexture; frame: number; seconds: number; cue?: CinematicCue; cut?: boolean };
-const original = (id: string, frame: number, seconds: number, cue?: CinematicCue, cut = false): CinematicPanel =>
-  ({ id, texture: "cinematic-storyboard", frame, seconds, cue, cut });
-const campus = (id: string, frame: number, seconds: number): CinematicPanel =>
-  ({ id, texture: "cinematic-campus-approved", frame, seconds });
-export const CINEMATIC_PANELS: Record<CinematicKind, readonly CinematicPanel[]> = {
+export type CinematicTexture =
+  | "cinematic-storyboard"
+  | "cinematic-intro-v2"
+  | "cinematic-campus-approved"
+  | "cinematic-visitor"
+  | "cinematic-car";
+type CinematicPanel = {
+  id: string;
+  texture: CinematicTexture;
+  frame: number;
+  seconds: number;
+  cue?: CinematicCue;
+  cut?: boolean;
+};
+const original = (
+  id: string,
+  frame: number,
+  seconds: number,
+  cue?: CinematicCue,
+  cut = false,
+): CinematicPanel => ({
+  id,
+  texture: "cinematic-storyboard",
+  frame,
+  seconds,
+  cue,
+  cut,
+});
+const campus = (
+  id: string,
+  frame: number,
+  seconds: number,
+): CinematicPanel => ({
+  id,
+  texture: "cinematic-campus-approved",
+  frame,
+  seconds,
+});
+export const CINEMATIC_PANELS: Record<
+  CinematicKind,
+  readonly CinematicPanel[]
+> = {
   intro: [
-    { id: "wake-in-bed", texture: "cinematic-intro-v2", frame: 0, seconds: 5.5, cue: "alarm" },
+    {
+      id: "wake-in-bed",
+      texture: "cinematic-intro-v2",
+      frame: 0,
+      seconds: 5.5,
+      cue: "alarm",
+    },
     { id: "departure", texture: "cinematic-intro-v2", frame: 1, seconds: 4.5 },
   ],
   ending: [
-    original("grading", 2, 5), original("fatigue", 3, 3.5), original("doorbell", 4, 2.5, "doorbell"),
-    {id:"visitor",texture:"cinematic-visitor",frame:0,seconds:4}, campus("invitation", 1, 4),
-    {id:"car-ride",texture:"cinematic-car",frame:0,seconds:6}, campus("courtyard", 3, 7),
-    original("corridor", 7, 5), campus("preparation", 4, 6), campus("classroom", 5, 7),
-    campus("aesh", 6, 6), campus("exterior", 2, 6), original("bell", 9, 1.2, "bell", true),
-    {...campus("wake", 7, 5.8),cue:"alarm",cut:true},
+    original("grading", 2, 5),
+    original("fatigue", 3, 3.5),
+    original("doorbell", 4, 2.5, "doorbell"),
+    { id: "visitor", texture: "cinematic-visitor", frame: 0, seconds: 4 },
+    campus("invitation", 1, 4),
+    { id: "car-ride", texture: "cinematic-car", frame: 0, seconds: 6 },
+    campus("courtyard", 3, 7),
+    original("corridor", 7, 5),
+    campus("preparation", 4, 6),
+    campus("classroom", 5, 7),
+    campus("aesh", 6, 6),
+    campus("exterior", 2, 6),
+    original("bell", 9, 1.2, "bell", true),
+    { ...campus("wake", 7, 5.8), cue: "alarm", cut: true },
   ],
 };
-export const CINEMATIC = { fadeSeconds: 0.18, openingFadeSeconds: 1 };
+export const CINEMATIC = {
+  fadeSeconds: 0.18,
+  openingFadeSeconds: 1,
+  endingFadeSeconds: 3,
+};
 export function cinematicTimecodes(kind: CinematicKind) {
   let start = 0;
-  return CINEMATIC_PANELS[kind].map(panel => {
-    const entry = { id: panel.id, start, end: start + panel.seconds, seconds: panel.seconds, cue: panel.cue ?? "" };
+  return CINEMATIC_PANELS[kind].map((panel) => {
+    const entry = {
+      id: panel.id,
+      start,
+      end: start + panel.seconds,
+      seconds: panel.seconds,
+      cue: panel.cue ?? "",
+    };
     start = entry.end;
     return entry;
   });

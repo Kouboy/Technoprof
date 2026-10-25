@@ -2,6 +2,7 @@ import type { AudioKit, SceneSoundContext } from "./audio";
 import { campaignWon, type RunPolicy } from "./campaign";
 import { mountTitleArt } from "./title-screen";
 import { ENCOUNTERS, type Encounter, type DialogueState } from "./dialogue";
+import type { PadUIAction } from "./gamepad-input";
 export const RADIO_NAME = "Radio Educa France";
 // Explicit pronunciation supplied with the approved dialogue rewrite.
 export const RADIO_SPOKEN_NAME = "Radio Éduca-France";
@@ -37,6 +38,7 @@ export type PlayerContext = {
   roomEnteredAt: number;
   session: { elapsed: number };
   pointerMode?: boolean;
+  gamepadMode?: boolean;
   dialogue?: DialogueState;
 };
 export function contextualHelp(s: PlayerContext) {
@@ -45,17 +47,23 @@ export function contextualHelp(s: PlayerContext) {
     return "La journée est assurée. Rentrez tranquillement : aucun délai. Freinez pour ralentir ; relâchez pour reprendre votre allure.";
   if (s.phase === "homeArrival") return "Vous êtes arrivé. Fin de service.";
   if (s.phase === "intro" || s.phase === "ending")
-    return "Lecture automatique · Pause pour interrompre · Passer la cinématique pour poursuivre.";
+    return s.gamepadMode
+      ? "Lecture automatique · Start pour passer la cinématique."
+      : "Lecture automatique · Pause pour interrompre · Passer la cinématique pour poursuivre.";
   if (s.phase === "course" && s.age > 1)
-    return "Une touche ou un toucher pour poursuivre après le cours.";
+    return s.gamepadMode
+      ? "A/B pour poursuivre après le cours."
+      : "Une touche ou un toucher pour poursuivre après le cours.";
   if (s.mission !== 0)
     return s.phase === "free" && s.age < 10
       ? DAY_BRIEFS[Math.min(2, s.mission)]
       : "";
   if (s.phase === "free" && s.age < 10)
-    return s.pointerMode
-      ? "Maintenez dans la scène pour accélérer. Glissez pour diriger ; vers le bas pour freiner. Relâchez pour laisser rouler."
-      : "Z/↑ accélérer · S/↓ freiner · Q D/← → diriger. Souris/tactile : maintenir puis glisser dans la scène.";
+    return s.gamepadMode
+      ? "RT accélérer · LT freiner · stick gauche ou croix pour diriger."
+      : s.pointerMode
+        ? "Maintenez dans la scène pour accélérer. Glissez pour diriger ; vers le bas pour freiner. Relâchez pour laisser rouler."
+        : "Z/↑ accélérer · S/↓ freiner · Q D/← → diriger. Souris/tactile : maintenir puis glisser dans la scène.";
   if (s.phase === "receive" || (s.phase === "road" && s.age < 8))
     return "Le délai a commencé : route et recherche de la salle partagent le même chronomètre.";
   if (s.phase === "arrival" || s.phase === "arrivalFade")
@@ -65,18 +73,25 @@ export function contextualHelp(s: PlayerContext) {
   const elapsed = s.session.elapsed - s.roomEnteredAt;
   // Legacy workshop rooms and the delivered Ormeaux H1 topology.
   if ([0, 200].includes(s.room) && elapsed < 10)
-    return s.pointerMode
-      ? "Touchez le sol pour marcher, une porte pour la rejoindre. Glissez vers le haut pour sauter, en diagonale pour sauter dans cette direction."
-      : "Q D/← → marcher. Suivez les plaques ; les accès indiquent leur touche à proximité.";
+    return s.gamepadMode
+      ? "Stick gauche ou croix pour marcher. Haut/bas pour les portes et les escaliers indiqués."
+      : s.pointerMode
+        ? "Touchez le sol pour marcher, une porte pour la rejoindre. Glissez vers le haut pour sauter, en diagonale pour sauter dans cette direction."
+        : "Q D/← → marcher. Suivez les plaques ; les accès indiquent leur touche à proximité.";
   if ([1, 201].includes(s.room) && elapsed < 20)
-    return s.pointerMode
-      ? "Touchez l’adversaire pour aller le frapper. Touchez le sol pour vous placer ; glissez vers le haut pour sauter."
-      : "F/X : se défendre avec le livre. ESPACE : sauter les trous ou une charge. Vous pouvez aussi éviter l’adversaire.";
+    return s.gamepadMode
+      ? "B : se défendre avec le livre. A : sauter les trous ou une charge. Vous pouvez aussi éviter l’adversaire."
+      : s.pointerMode
+        ? "Touchez l’adversaire pour aller le frapper. Touchez le sol pour vous placer ; glissez vers le haut pour sauter."
+        : "F/X : se défendre avec le livre. ESPACE : sauter les trous ou une charge. Vous pouvez aussi éviter l’adversaire.";
   if ([4, 207].includes(s.room) && elapsed < 22)
     return "L’inspection bloque le livre. Évitez son attaque, puis frappez pendant son ouverture.";
   return "";
 }
 type Host = PlayerContext & {
+  gamepadConnected?: boolean;
+  gamepadMenu?: (action: PadUIAction) => void;
+  pauseControl?: boolean;
   runPolicy?: RunPolicy;
   cinematic?: {
     index: number;
@@ -114,6 +129,7 @@ export function installPlayerExperience(s: Host) {
   const loading = document.getElementById("loading");
   if (loading) loading.hidden = true;
   toolbar.hidden = false;
+  s.pauseControl = true;
   let hints = true,
     menuPage = "home",
     previous = "",
@@ -187,6 +203,11 @@ export function installPlayerExperience(s: Host) {
     sync();
   };
   const pauseButton = button("Pause / aide", () => open("home"));
+  const pauseControl = button("Pause", () => open("home"));
+  pauseControl.id = "cadre-pause";
+  pauseControl.setAttribute("aria-label", "Pause / aide");
+  pauseControl.title = "Pause / menu (P ou Échap)";
+  document.getElementById("game-shell")?.append(pauseControl);
   const toggleMute = () => {
     s.audio.muted = !s.audio.muted;
     save();
@@ -210,10 +231,13 @@ export function installPlayerExperience(s: Host) {
   const muteButton = button("Couper le son", toggleMute);
   toolbar.append(pauseButton, muteButton);
   const storySkip = button("Passer la cinématique", () => {
+    if (s.paused) s.setPaused(false);
+    s.setPlayerMenu(false);
     s.skipCinematic?.();
+    sync();
     game.focus();
   });
-  for (const b of [storySkip])
+  for (const b of [storySkip, pauseControl])
     b.onkeydown = (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
@@ -224,7 +248,10 @@ export function installPlayerExperience(s: Host) {
   storySkip.hidden = true;
   toolbar.append(storySkip);
   const musicRetry = s.music
-    ? button("Relancer la musique", () => { s.music?.retry(); s.cinematicAudio?.retry(); })
+    ? button("Relancer la musique", () => {
+        s.music?.retry();
+        s.cinematicAudio?.retry();
+      })
     : undefined;
   if (musicRetry) {
     musicRetry.hidden = true;
@@ -266,6 +293,22 @@ export function installPlayerExperience(s: Host) {
         "Un clic ou toucher révèle la réplique puis la poursuit. Après le cours ou un échec, touchez pour continuer.",
       ],
       ["À tout moment", "P ou Échap : pause / reprise · M : son"],
+      [
+        "Manette — route",
+        "Stick gauche ou croix : diriger · RT : accélérer · LT : freiner",
+      ],
+      [
+        "Manette — à pied",
+        "Stick/croix : se déplacer et emprunter les accès · A : sauter · B : frapper / réplique",
+      ],
+      [
+        "Manette — menus",
+        "Croix/stick : naviguer · A : valider · B : retour · gauche/droite : ajuster un réglage",
+      ],
+      [
+        "Start",
+        "Commencer au titre · passer une cinématique · pause/reprise en jeu",
+      ],
     ]) {
       const dt = document.createElement("dt"),
         dd = document.createElement("dd");
@@ -300,6 +343,7 @@ export function installPlayerExperience(s: Host) {
       currentMode = mode;
     }
     pauseButton.hidden = !mode ? false : true;
+    pauseControl.hidden = !!mode;
     const inStory = s.phase === "intro" || s.phase === "ending";
     const storyKey = s.cinematic
       ? s.cinematic.kind + ":" + s.cinematic.index
@@ -308,7 +352,7 @@ export function installPlayerExperience(s: Host) {
       previousStory = storyKey;
       game.setAttribute("data-sequence", storyKey);
     }
-    storySkip.hidden = !inStory || !!mode;
+    storySkip.hidden = !inStory;
     const muteText = s.audio.muted ? "Activer le son (M)" : "Couper le son (M)";
     if (muteButton.textContent !== muteText) muteButton.textContent = muteText;
     const hint = hints ? contextualHelp(s) : "";
@@ -354,12 +398,20 @@ export function installPlayerExperience(s: Host) {
               ? "result-maintained"
               : "result-radiated")
           : "";
-    const key = mode + ":" + menuPage + ":" + s.results.join("|");
+    const key =
+      mode +
+      ":" +
+      menuPage +
+      ":" +
+      s.results.join("|") +
+      ":" +
+      !!s.gamepadConnected;
     if (key === previous) return;
     previous = key;
     s.setPlayerMenu(!!mode);
     if (!mode) return;
     root.replaceChildren();
+    root.scrollTop = 0;
     const eyebrow = document.createElement("small");
     eyebrow.textContent = "CADRE / PERSONNEL REMPLAÇANT";
     const heading = document.createElement("h1");
@@ -377,11 +429,13 @@ export function installPlayerExperience(s: Host) {
                 : "Radiation prononcée"
               : "Service suspendu";
     root.append(eyebrow, heading);
+    if (menuPage !== "home" || mode !== "title") root.append(toolbar);
     if (menuPage === "controls") {
       paragraph(
         "Trois affectations à réussir. Au premier échec, la tentative se termine et vous repartez à la première affectation. Attendez l’ordre en voiture, rejoignez l’établissement puis trouvez la salle. Le délai est commun à la route et à la recherche ; l’arrivée automatique est gratuite.",
       );
       controls();
+      if (s.gamepadConnected) paragraph("Manette standard détectée.");
       paragraph(
         "Les dégâts de la voiture restent entre les affectations réussies ; le professeur récupère. Recommencer restaure toute la journée.",
       );
@@ -434,7 +488,11 @@ export function installPlayerExperience(s: Host) {
           s.reducedShake,
           (v: boolean) => (s.reducedShake = v),
         ],
-        ["Rappels contextuels", hints, (v: boolean) => (hints = v)],
+        [
+          "Aide contextuelle dans le menu pause",
+          hints,
+          (v: boolean) => (hints = v),
+        ],
       ] as [string, boolean, (v: boolean) => void][]) {
         const wrap = document.createElement("label"),
           input = document.createElement("input");
@@ -449,7 +507,7 @@ export function installPlayerExperience(s: Host) {
         root.append(wrap);
       }
       paragraph(
-        "La radio reste sous-titrée. Une voix française locale est utilisée si elle est disponible ; sinon le bulletin est présenté en texte.",
+        "Le bulletin radio est consultable dans le menu pause pendant la croisière. Une voix française locale est utilisée si elle est disponible.",
       );
     } else if (mode === "title") {
       root.append(
@@ -480,12 +538,22 @@ export function installPlayerExperience(s: Host) {
           : "Les contraintes matérielles ne sauraient, selon le rapport, excuser les carences.",
       );
     } else {
+      if (s.pauseReason === "MANETTE DECONNECTEE")
+        paragraph(
+          "Manette déconnectée. Rebranchez-la, puis reprenez avec Start, ou utilisez le clavier.",
+        );
       paragraph(
         s.pauseReason
           ? "La partie est suspendue. Reprenez quand vous êtes prêt."
           : "Le délai est arrêté. Soufflez un instant.",
       );
       paragraph(DAY_BRIEFS[Math.min(2, s.mission)]);
+      if (hints) {
+        const hint = contextualHelp({ ...s, paused: false });
+        if (hint) paragraph(hint);
+      }
+      if (s.phase === "free")
+        paragraph(RADIO_NAME + " — " + RADIO_BULLETINS[Math.min(2, s.mission)]);
     }
     const actions = document.createElement("div");
     actions.className = "player-actions";
@@ -518,8 +586,77 @@ export function installPlayerExperience(s: Host) {
       );
     }
     root.append(actions);
-    heading.focus({ preventScroll: true });
+    const preferred =
+      s.gamepadMode && root.querySelector
+        ? root.querySelector<HTMLElement>(
+            menuPage === "settings"
+              ? 'input[type="range"]'
+              : "button.primary, .title-start",
+          )
+        : null;
+    (preferred ?? heading).focus({ preventScroll: true });
+    preferred?.scrollIntoView?.({ block: "nearest" });
   }
+  s.gamepadMenu = (action) => {
+    if (action === "start") {
+      if (["intro", "ending"].includes(s.phase)) {
+        if (s.paused) s.setPaused(false);
+        s.setPlayerMenu(false);
+        s.skipCinematic?.();
+        sync();
+        game.focus();
+      } else if (["title", "report"].includes(s.phase) || s.paused)
+        returnToGame();
+      else open("home");
+      return;
+    }
+    if (!currentMode) return;
+    if (action === "back") {
+      if (menuPage !== "home") {
+        menuPage = "home";
+        previous = "";
+        sync();
+      } else if (s.paused) returnToGame();
+      return;
+    }
+    const items = [
+      ...root.querySelectorAll<HTMLElement>("button,input,select"),
+    ].filter(
+      (node) =>
+        !node.hidden &&
+        !(node as HTMLInputElement).disabled &&
+        node.getClientRects().length > 0,
+    );
+    if (!items.length) return;
+    const active = document.activeElement as HTMLInputElement;
+    let index = items.indexOf(active);
+    if (index < 0)
+      index = items.findIndex((node) =>
+        node.matches("button.primary,.title-start,input[type=range]"),
+      );
+    if (index < 0) index = 0;
+    if (action === "accept") {
+      items[index].click();
+      return;
+    }
+    if ((action === "left" || action === "right") && active?.type === "range") {
+      active.value = String(
+        Math.max(
+          Number(active.min),
+          Math.min(
+            Number(active.max),
+            Number(active.value) + (action === "right" ? 5 : -5),
+          ),
+        ),
+      );
+      active.dispatchEvent(new Event("input", { bubbles: true }));
+      return;
+    }
+    const delta = action === "up" || action === "left" ? -1 : 1;
+    const next = items[(index + delta + items.length) % items.length];
+    next.focus({ preventScroll: true });
+    next.scrollIntoView({ block: "nearest" });
+  };
   document.addEventListener(
     "keydown",
     (event) => {

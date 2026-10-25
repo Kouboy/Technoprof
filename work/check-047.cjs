@@ -69,6 +69,16 @@ assert.equal(all(nodes['player-panel']).filter(n=>n.tagName==='LI').length,3);
 find('Nouvelle journée').onclick();assert.equal(g.mission,0);assert.equal(g.results.length,0);
 g.phase='school';g.room=1;g.encounterTime=8;g.roomEnteredAt=g.session.elapsed;assert.equal(ctx.api.contextualHelp(g),'','do not compete with first dialogue');
 g.phase='course';g.age=1.5;assert(ctx.api.contextualHelp(g).includes('Une touche'));
+g.gamepadMode=true;assert(ctx.api.contextualHelp(g).includes('A/B'));
+g.phase='free';g.age=1;g.mission=0;assert(ctx.api.contextualHelp(g).includes('RT'));
+g.phase='school';g.encounterTime=0;g.room=201;
+assert(ctx.api.contextualHelp(g).includes('B :'));
+assert(!ctx.api.contextualHelp(g).includes('F/X'));
+g.gamepadMode=false;
+g.runPolicy='three-required';g.phase='school';g.finish(false,'exhausted');g.next();
+assert(find('Prendre le service'),'terminal gameplay restores the actual title menu');
+assert.equal(nodes['player-panel'].className,'title-home');
+assert(!find('Nouvelle journée'),'no report menu between failure and title');
 console.log('PASS real menu actions, persisted separate volumes, captions, help priority, Escape/back, pause/resume and report relaunch');
 // No remote voice is selected; audio gain applies the user's effects volume.
 const speech=[],gain=[],audioCtx={speechSynthesis:{getVoices:()=>[{lang:'fr-FR',localService:false}],speak:u=>speech.push(u),cancel(){},pause(){},resume(){}},SpeechSynthesisUtterance:class{constructor(text){this.text=text;}}};
