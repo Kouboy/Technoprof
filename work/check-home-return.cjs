@@ -22,7 +22,7 @@ function lastClass(){const t=createGame({policy:'three-required'}),g=t.g;g.valid
  t.advance(.3);assert.equal(g.phase,'homeArrival','the teacher must still be walking, not already inside the final montage');
  t.advance(9.1);assert.equal(g.phase,'ending');assert.equal(g.cinematic.index,0);assert.equal(g.remaining,timer);assert.equal(JSON.stringify(g.results),results);
  assert(g.session.events.some(e=>e.kind==='home-return-start'));assert(g.session.events.some(e=>e.kind==='home-return-end'));
- g.skipCinematic();assert.equal(g.phase,'report');g.startDay(false);assert.equal(g.phase,'free');assert.equal(g.mission,0);assert.equal(g.vehicle,100);
+ g.skipCinematic();assert.equal(g.phase,'title');g.startDay(false);assert.equal(g.phase,'free');assert.equal(g.mission,0);assert.equal(g.vehicle,100);
 }
 for(const fps of [30,60,120]){
  const t=lastClass(),g=t.g;g.obstacles=[];g.car=0;g.keys.UP.isDown=true;

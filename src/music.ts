@@ -183,6 +183,10 @@ export class MusicKit {
     }
   }
 
+  finished(track: Track) {
+    return this.current === track && !!this.player?.ended;
+  }
+
   retry() {
     // Called by a real click if browser policy rejected delayed playback.
     this.blocked = false;

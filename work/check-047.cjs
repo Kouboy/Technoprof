@@ -75,6 +75,10 @@ g.phase='school';g.encounterTime=0;g.room=201;
 assert(ctx.api.contextualHelp(g).includes('B :'));
 assert(!ctx.api.contextualHelp(g).includes('F/X'));
 g.gamepadMode=false;
+g.runPolicy='three-required';g.phase='school';g.finish(false,'exhausted');g.next();
+assert(find('Prendre le service'),'terminal gameplay restores the actual title menu');
+assert.equal(nodes['player-panel'].className,'title-home');
+assert(!find('Nouvelle journée'),'no report menu between failure and title');
 console.log('PASS real menu actions, persisted separate volumes, captions, help priority, Escape/back, pause/resume and report relaunch');
 // No remote voice is selected; audio gain applies the user's effects volume.
 const speech=[],gain=[],audioCtx={speechSynthesis:{getVoices:()=>[{lang:'fr-FR',localService:false}],speak:u=>speech.push(u),cancel(){},pause(){},resume(){}},SpeechSynthesisUtterance:class{constructor(text){this.text=text;}}};

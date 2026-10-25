@@ -32,7 +32,7 @@ export function failureNotice(s: {
         ? s.mission === 2
           ? "VOIR LE BILAN"
           : "AFFECTATION SUIVANTE"
-        : "RECOMMENCER LA JOURNEE",
+        : "RETOUR AU TITRE",
   };
 }
 

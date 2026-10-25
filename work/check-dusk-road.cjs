@@ -19,11 +19,11 @@ for (let i = 0; i < 64; i++)
   for (const random of [0, 0.25, 0.99]) {
     const cue = [300, 550, 750, 260, 900, 560, 620, 900][i % 8];
     const old = a.DRIVE.motionScale * (cue * 0.36 + (i ? random * 35 : 0));
-    assert(Math.abs(a.trafficCue(i, 0, random).gap * 1.12 - old) < 1e-8);
-    assert(Math.abs(a.trafficCue(i, 1, random).gap * 2.24 - old) < 1e-8);
+    assert(Math.abs(a.trafficCue(i, 0, random).gap * 1.12 * 1.125 - old) < 1e-8);
+    assert(Math.abs(a.trafficCue(i, 1, random).gap * 2.24 * 1.125 - old) < 1e-8);
     assert(
-      Math.abs(a.trafficCue(i, 2, random).gap * 4 - old) < 1e-8,
-      "last journey unchanged",
+      Math.abs(a.trafficCue(i, 2, random).gap * 4 * 1.125 - old) < 1e-8,
+      "same lift on the last journey",
     );
   }
 for (const key of ["traffic", "district"])

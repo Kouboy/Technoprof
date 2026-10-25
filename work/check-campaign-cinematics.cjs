@@ -99,6 +99,9 @@ for (const mission of [0, 1, 2])
     g.finish(false, reason);
     t.advance(2.1);
     t.press("ENTER");
+    assert.equal(g.phase, "title");
+    assert.equal(g.results.length, 1, "the last attempt remains available at the title");
+    g.startDay(false);
     assert.equal(g.mission, 0);
     assert.equal(g.phase, "free");
     assert.equal(g.won, 0);
@@ -142,8 +145,8 @@ for (const mission of [0, 1, 2])
   t.advance(12.4);
   assert.equal(g.phase, "ending");
   const before = g.remaining;
-  t.advance(70);
-  assert.equal(g.phase, "report");
+  t.advance(72.1);
+  assert.equal(g.phase, "title");
   assert.equal(g.remaining, before);
 }
 for (const kind of ["intro", "ending"]) {
@@ -155,7 +158,7 @@ for (const kind of ["intro", "ending"]) {
   assert.equal(g.cinematic.elapsed, elapsed, "runtime pause freezes all montage time");
   g.skipCinematic(); assert(g.cinematic, "cannot skip through pause menu");
   g.setPaused(false); g.skipCinematic();
-  assert.equal(g.phase, kind === "intro" ? "free" : "report");
+  assert.equal(g.phase, kind === "intro" ? "free" : "title");
   assert.equal(g.cinematic, null);
 }
 console.log(

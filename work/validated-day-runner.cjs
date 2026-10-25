@@ -151,7 +151,7 @@ exports.runDay = ({
   let mission = -1,
     ri = 0,
     lastRoom = -1;
-  for (let n = 0; n < fps * 1400 && g.phase !== "report"; n++) {
+  for (let n = 0; n < fps * 1400 && g.phase !== "title" && g.phase !== "report"; n++) {
     for (const k of Object.values(g.physicalKeys)) k.isDown = false;
     const cinematicClock = g.cinematic ? chargedClocks() : null;
     if (g.mission !== mission) {

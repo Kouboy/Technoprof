@@ -45,6 +45,7 @@ import {
   drawContactShadow,
   drawRoadWear,
   drawSchoolWear,
+  drawBossHealth,
   installPresentation,
 } from "./presentation";
 import {
@@ -131,7 +132,7 @@ import { DAY_ONLY, PUBLIC_PLAYTEST } from "./asset-profile";
 import { FailureArt, failureNotice } from "./interface-presentation";
 import { MusicKit } from "./music";
 import { campaignWon, requiredAssignments, type RunPolicy } from "./campaign";
-import { CinematicSequence } from "./cinematic";
+import { CINEMATIC, CinematicSequence } from "./cinematic";
 import { CinematicArt } from "./cinematic-art";
 import { CinematicSoundtrack } from "./cinematic-audio";
 import {
@@ -1339,9 +1340,11 @@ class Game extends Phaser.Scene {
   }
   runPolicy: RunPolicy = "three-required";
   cinematic: CinematicSequence | null = null;
+  endingFade: number | null = null;
   introSeen = false;
   startDay(showIntro = !this.introSeen) {
     this.cinematic = null;
+    this.endingFade = null;
     this.music?.stop();
     this.gamefeelLab = false;
     this.gamefeelVariant = DEFAULT_GAMEFEEL;
@@ -1383,6 +1386,10 @@ class Game extends Phaser.Scene {
   completeCinematic(skipped = false) {
     const sequence = this.cinematic;
     if (!sequence?.done) return;
+    if (sequence.kind === "ending" && !skipped) {
+      if (this.endingFade === null) this.endingFade = 0;
+      if (this.endingFade < CINEMATIC.endingFadeSeconds) return;
+    }
     this.session.record("cinematic-end", this.mission, this.room, {
       kind: sequence.kind,
       elapsed: sequence.elapsed,
@@ -1397,11 +1404,33 @@ class Game extends Phaser.Scene {
         this.introSeen = true;
         this.phase = "free";
       } else {
-        this.phase = "report";
-        this.persistJournal();
+        this.returnToTitle();
       }
     }
     this.draw();
+  }
+  returnToTitle() {
+    this.persistJournal();
+    this.cancelBufferedActions("title");
+    this.direct?.cancel();
+    this.controls?.reset();
+    this.input?.keyboard?.resetKeys();
+    this.gamepad?.suspend();
+    this.cinematic = null;
+    this.endingFade = null;
+    this.roomTransition = null;
+    this.recoveryScene.reset();
+    this.encounterTime = this.bossIntro = this.hitStop = 0;
+    this.speed = 0;
+    this.audio.radio("", false);
+    this.audio.motor(0, false, false);
+    this.paused = false;
+    this.pauseReason = "";
+    this.phase = "title";
+    this.age = 0;
+    this.setPlayerMenu(false);
+    this.syncMusic();
+    this.syncPlayerUI?.();
   }
   begin() {
     this.music?.stop();
@@ -1548,6 +1577,7 @@ class Game extends Phaser.Scene {
         }
     }
     this.enemies = this.roomEnemies.get(room)!;
+    for (const e of this.enemies) e.maxHp ??= e.hp;
     const nav = this.roomSpec()?.navigation;
     if (nav) {
       this.navigationMetrics.start(nav.id, this.hp, this.remaining);
@@ -1702,7 +1732,7 @@ class Game extends Phaser.Scene {
     if (this.cinematic || this.phase === "report" || isHomePhase(this.phase))
       return;
     if (this.runPolicy === "three-required" && this.phase === "fail") {
-      this.startDay(false);
+      this.returnToTitle();
       return;
     }
     this.navigationProfile = false;
@@ -1768,6 +1798,7 @@ class Game extends Phaser.Scene {
     this.audio.motor(0, false, false);
     this.phase = "ending";
     this.age = 0;
+    this.endingFade = null;
     this.cinematic = new CinematicSequence("ending");
     this.session.record("cinematic-start", this.mission, this.room, {
       kind: "ending",
@@ -2795,7 +2826,12 @@ class Game extends Phaser.Scene {
     if (this.phase === "intro" || this.phase === "ending") {
       const story = this.cinematic;
       const previous = story?.index;
-      if (story && this.cinematicAudio) {
+      if (this.endingFade !== null) {
+        this.endingFade = Math.min(
+          CINEMATIC.endingFadeSeconds,
+          this.endingFade + dt,
+        );
+      } else if (story && this.cinematicAudio) {
         const audioTime = this.cinematicAudio.time();
         if (audioTime !== null) story.seek(audioTime);
       } else story?.tick(dt, false);
@@ -2848,6 +2884,16 @@ class Game extends Phaser.Scene {
             (attackPressed || jumpPressed)))
       )
         this.next();
+      else if (
+        this.runPolicy === "three-required" &&
+        (this.music?.finished("gameOver") ||
+          ((!this.music ||
+            this.music.blocked ||
+            this.audio.muted ||
+            this.audio.musicVolume <= 0) &&
+            this.age >= PLAY.failAutoReturnSeconds))
+      )
+        this.returnToTitle();
     } else if (this.phase === "tow") {
       if (this.age > 3) {
         this.vehicle = 65;
@@ -4777,7 +4823,10 @@ class Game extends Phaser.Scene {
       this.roadWash?.clear();
       this.schoolWear?.clear();
       this.rect(0, 0, 320, 240, 0x10191f);
-      this.cinematicArt?.render(this.cinematic);
+      this.cinematicArt?.render(
+        this.cinematic,
+        (this.endingFade ?? 0) / CINEMATIC.endingFadeSeconds,
+      );
       if (this.workshop) drawWorkshop(this);
       this.syncPlayerUI?.();
       return;
@@ -6291,23 +6340,11 @@ class Game extends Phaser.Scene {
 
     const e = this.enemies.find((e) => e.boss && e.hp > 0);
     if (e) {
-      this.rect(108, 27, 104, 3, 0x141e27);
-      this.rect(108, 27, (104 * e.hp) / (6 + this.mission), 3, 0xb9aa89);
-      if (this.phase === "school" && e.wind > 0)
-        this.txt(
-          107,
-          33,
-          e.pattern % 2 === 0 ? "BALAYAGE !" : "TAMPON !",
-          9,
-          "#e5ae60",
-          true,
-        );
-      else if (
-        this.phase === "school" &&
-        e.recovery > 0 &&
-        (!this.isHanounaProfile() || (e.strikeTime ?? 0) <= 0)
-      )
-        this.txt(111, 33, "OUVERTURE", 9, "#e3d4b3", true);
+      drawBossHealth(
+        this.g,
+        e.hp,
+        e.maxHp ?? this.roomSpec()?.hp ?? 6 + this.mission,
+      );
     }
   }
   drawSchool() {
@@ -6633,20 +6670,9 @@ class Game extends Phaser.Scene {
         if (e.stun > 0) this.txt(e.x - 8, 100, "***", 9, "#e3d4b3");
         if (e.wind > 0) {
           this.txt(e.x - 5, 111, "!", 14, "#ffdc72");
-          if (e.boss)
-            this.txt(
-              72,
-              78,
-              e.pattern % 2 === 0 ? "BALAYAGE : SAUTEZ" : "TAMPON : RECULEZ",
-              9,
-              "#f0bc7b",
-            );
         }
-        if (e.recovery > 0 && e.boss)
-          this.txt(107, 78, "OUVERTURE !", 10, "#bdd99b");
         if (e.boss) {
-          this.rect(106, 57, 110, 4, 0x271c27);
-          this.rect(106, 57, (e.hp * 110) / (6 + this.mission), 4, 0xd8aa64);
+          drawBossHealth(this.g, e.hp, e.maxHp ?? 6 + this.mission);
         }
       }
     if (

@@ -34,11 +34,12 @@
     "test:sequences": "node work/check-sequence-feedback.cjs && node work/check-art.cjs && node work/check-053.cjs",
     "test:fenetre": "node work/check-game-window.cjs && node work/check-direct-layout.cjs",
     "test:lettres": "node work/check-lettering-performance.cjs",
-    "test:playtest": "npm run test:rapide && npm run test:journee && npm run test:interface && npm run test:gamefeel && npm run test:musique && npm run test:cinematiques && npm run test:retour-maison && npm run test:sfx && npm run test:assets && npm run test:pages && npm run test:signaletique && npm run test:textes && npm run test:fenetre && npm run test:lettres && npm run test:cadre && npm run test:gamepad",
+    "test:playtest": "npm run test:rapide && npm run test:journee && npm run test:interface && npm run test:gamefeel && npm run test:musique && npm run test:cinematiques && npm run test:retour-maison && npm run test:sfx && npm run test:assets && npm run test:pages && npm run test:signaletique && npm run test:textes && npm run test:fenetre && npm run test:lettres && npm run test:cadre && npm run test:gamepad && npm run test:flow",
     "audit:projet": "node tools/audit-project.cjs work/checkpoints/inventory-current.json",
     "package:local": "pwsh -NoProfile -File tools/Package-Local.ps1",
     "test:cadre": "node work/check-cadre.cjs && node work/check-viewport-lifecycle.cjs && node work/check-condition-bars.cjs",
-    "test:gamepad": "node work/check-gamepad.cjs && node work/check-gamepad-integration.cjs"
+    "test:gamepad": "node work/check-gamepad.cjs && node work/check-gamepad-integration.cjs",
+    "test:flow": "node work/check-title-return.cjs && node work/check-boss-gauge.cjs && node work/check-traffic-lift.cjs"
   },
   "dependencies": {
     "phaser": "4.2.1"

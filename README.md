@@ -14,7 +14,8 @@ humaine**. Le futur lien stable sera
 
 Pour la version locale : télécharger le ZIP, **extraire tout le dossier**, puis
 ouvrir `Technoprof/Jouer-Technoprof-Fenetre.html` et cliquer sur **Ouvrir le jeu
-dans sa fenêtre**. Sur Windows, `Jouer.cmd` ouvre aussi le lanceur. Le jeu fonctionne
+dans sa fenêtre**. Sur Windows, `Jouer.cmd` ouvre directement Chrome en fenêtre
+d’application. Le jeu fonctionne
 hors connexion : conserver le dossier `audio/` avec les fichiers HTML.
 
 ## Version de playtest
@@ -24,12 +25,15 @@ Ormeaux H1 / Auguste-Berthelot A3 / Trois-Ponts I2, retour nocturne à Maison et
 Le lien s’ouvre directement dans un navigateur, sans installation ni compte.
 Clavier, souris et toucher sont disponibles ; les commandes et quatre volumes
 séparés sont accessibles depuis le menu. Le son démarre après une interaction.
-Le menu de pause et le bilan permettent d’exporter le journal d’essai.
+Le menu de pause permet d’exporter le journal d’essai.
 
 ## Jouer à la version d’atelier actuelle
 
-**Lancement conseillé : ouvrir Jouer-Technoprof-Fenetre.html**, puis **Ouvrir le jeu
-dans sa fenêtre**. `Jouer.cmd` ouvre ce lanceur sur Windows. Le cadre conserve le
+**Sur Windows : lancer Jouer.cmd** pour ouvrir directement Chrome en fenêtre
+d’application, sans onglets, avec Réduire / Agrandir / Fermer. Chrome doit déjà
+être installé ; sinon le lanceur HTML s’ouvre dans le navigateur par défaut.
+Autre possibilité : ouvrir **Jouer-Technoprof-Fenetre.html**, puis **Ouvrir le jeu
+dans sa fenêtre**. Le cadre conserve le
 ratio 4:3 en utilisant toute la place disponible. Un petit bouton Pause discret
 dans le CADRE donne accès au son, au plein écran et aux commandes. Le bulletin
 radio est consultable dans le menu de pause pendant la croisière. En cas de blocage
@@ -57,6 +61,12 @@ nocturne de 10 secondes avec ouverture depuis le noir, conclusion de 69 secondes
 et quatorze images, jusqu'à la cloche qui brise le rêve. Musique et bruitages
 conservent leurs volumes séparés ; les images suivent l'horloge sonore. Pause
 suspend le film ; « Passer la cinématique » passe la séquence entière.
+Dans la version locale actuelle, la dernière image de conclusion reste après
+les 69 secondes du morceau, puis tout le cadre fond au noir pendant trois secondes.
+Le titre et sa musique reviennent automatiquement. Le Game Over conserve sa
+vignette et son thème, puis revient au titre ; Action permet d’écourter après
+deux secondes. Il n’y a plus de compte-rendu intermédiaire. Les journaux restent
+sauvegardés, et une nouvelle tentative commence toujours à la première affectation.
 [Montage et synchronisation](docs/cinematiques/INTEGRATION.md).
 Pour jouer avec la musique sur disque, ouvrir **Jouer-Technoprof-Journee-Musique.html**
 et conserver le dossier `audio/` ainsi que le HTML journée à côté du lanceur.
@@ -99,6 +109,7 @@ npm run test:rapide
 | `npm run test:fenetre` | Ouverture, réutilisation, blocage et repli, plein écran refusé/accepté |
 | `npm run test:cadre` | Cadre après intro, dessin des jauges et cinq barres auto/professeur |
 | `npm run test:gamepad` | Mapping standard Xbox, gâchettes analogiques, appuis uniques, pause et déconnexion |
+| `npm run test:flow` | Fondu de fin, retour au titre, jauges boss et hausse commune du trafic |
 | `npm run test:lettres` | Rendu bitmap identique et réduction du nombre de rectangles |
 | `npm run audit:projet` | Inventaire en lecture seule et accessibilité des modules depuis le jeu |
 | `npm run test:journee` | Trois trajets + H1/A3/I2, commandes, soins, transitions et bilan à 30/60/120 fps simulés |

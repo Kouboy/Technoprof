@@ -11,6 +11,7 @@ export type Enemy = {
   role?: import("./missions").EnemyRole;
   turnTime?: number;
   hp: number;
+  maxHp?: number;
   boss: boolean;
   female?: boolean;
   actor?: "catchup-student";
