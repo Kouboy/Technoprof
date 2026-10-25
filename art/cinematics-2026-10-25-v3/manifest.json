@@ -1,15 +1,18 @@
 {
   "asset": "car-ride.png",
-  "prompt": "prompt-car-ride.txt",
+  "prompt": "prompt-car-left-drive.txt",
   "generatedWith": "built-in image_gen",
   "originalBytesUnchanged": true,
-  "sha256": "80c3bee0d60515a58c6fbd402ceb6d4a819388f84ec6814c03b102a61e39762e",
+  "sha256": "9ff1cabfa4480dc2bc351c9e68c0e27e322f0db17800e62d2a51a571ff69e0ff",
   "width": 1448,
   "height": 1086,
   "visualReview": [
-    "Young man drives on the far side, steering wheel in front of him, speaking cheerfully",
-    "Older passenger in foreground wears the same brown coat, rubs his eyes and holds his single pair of glasses",
-    "Clean modern sober cabin and peaceful French residential dawn",
-    "One full-bleed 4:3 scene, no spoken or written dialogue"
-  ]
+    "View from outside the right front-passenger window, vehicle front toward image right",
+    "Old passenger near camera on image left; young driver on far side toward image right, steering wheel in front of him on the far side",
+    "Solid foreground passenger door hides legs, knees and laps; upper bodies and faces remain visible",
+    "Old passenger rubs his eyes and holds his single pair of glasses near his chest",
+    "Clean modern cabin, peaceful French residential dawn, no dialogue or captions"
+  ],
+  "replacesSha256": "80c3bee0d60515a58c6fbd402ceb6d4a819388f84ec6814c03b102a61e39762e",
+  "previousPrompt": "prompt-car-ride.txt"
 }

@@ -14,5 +14,6 @@
   "v2OfficeLowEnergyFraction": 0.445,
   "mixPeak": 0.507476806640625,
   "stemSumWithinTwoLSB": true,
-  "allFourteenScenesContinuous": true
+  "allFourteenScenesContinuous": true,
+  "audioAndTimelineUnchangedAfterCarImageEdit": true
 }

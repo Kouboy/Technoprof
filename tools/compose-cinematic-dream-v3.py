@@ -141,7 +141,8 @@ def player(timeline):
     page = page.replace('data-time="54"', 'data-time="60"').replace("La rupture · 54 s", "La rupture · 60 s")
     page = re.sub(r"const scenes=\[[\s\S]*?\];", "const scenes=" + json.dumps(timeline, ensure_ascii=False) + ";", page, count=1)
     urls = ["../../art/cinematics-2026-10-24/storyboard-atlas.png", "../../art/cinematics-2026-10-25-v2/storyboard-v2.png",
-            "../../art/cinematics-2026-10-25-v2/visitor-coat.png", "../../art/cinematics-2026-10-25-v3/car-ride.png"]
+            "../../art/cinematics-2026-10-25-v2/visitor-coat.png",
+            "../../art/cinematics-2026-10-25-v3/car-ride.png?v=" + hashlib.sha256(ART.read_bytes()).hexdigest()[:12]]
     page = re.sub(r"const urls=\[[^\n]*\];", "const urls=" + json.dumps(urls) + ";", page, count=1)
     page = page.replace("if(scene.atlas===2)", "if(scene.atlas>=2)")
     page = page.replace("Piano fatigué, puis flûte chantante, harpe et basse mobile : un rêve progressivement plus enjoué, en samples PCM 8 bits.",

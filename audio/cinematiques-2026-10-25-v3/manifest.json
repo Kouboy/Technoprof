@@ -178,7 +178,7 @@
     }
   ],
   "carArtwork": "art/cinematics-2026-10-25-v3/car-ride.png",
-  "carArtworkSha256": "80c3bee0d60515a58c6fbd402ceb6d4a819388f84ec6814c03b102a61e39762e",
+  "carArtworkSha256": "9ff1cabfa4480dc2bc351c9e68c0e27e322f0db17800e62d2a51a571ff69e0ff",
   "effectEvents": [
     {
       "id": "doorbell",

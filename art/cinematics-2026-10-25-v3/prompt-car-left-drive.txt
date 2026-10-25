@@ -1,0 +1,18 @@
+Use case: precise-object-edit.
+Edit the supplied TECHNOPROF cinematic car scene. Preserve the exact characters, warm dawn, happy young guide and exhausted old professor, but REBUILD THE CAMERA/SEATING geometry and tighten the shot.
+
+MANDATORY GEOMETRY — THIS IS A FRENCH LEFT-HAND-DRIVE CAR:
+Camera is OUTSIDE THE RIGHT FRONT PASSENGER WINDOW, at shoulder/eye height, looking horizontally across the front cabin toward the LEFT-SIDE DRIVER. Seen from this side, the FRONT OF THE CAR points toward IMAGE RIGHT. Mirror the overall screen direction from the reference: BOTH MEN FACE IMAGE RIGHT.
+The OLD professor is the front passenger, CLOSEST to camera, on the LEFT FOREGROUND of this composition. The YOUNG guide is the driver on the FAR side of the cabin, seen farther away on the RIGHT/MIDDLE BACKGROUND. The steering wheel belongs to the YOUNG driver on that FAR side only, in front of him toward the RIGHT EDGE, attached to the far-side dashboard. It is NOT on the near passenger side. Show only its upper portion if needed. His steering hand visibly rests on that wheel; one other small natural conversational gesture is fine. There is exactly ONE steering wheel.
+Treat these as physically grounded positions in a real left-hand-drive car, not an arbitrary arrangement of seats.
+
+MANDATORY FRAMING:
+CLOSE SIDE/PROFILE TWO-SHOT, HEADS AND UPPER TORSOS ONLY, camera LEVEL, NOT looking down. The opaque NEAR PASSENGER DOOR and its window sill occupy the LOWER FOREGROUND and physically hide EVERYTHING BELOW THEIR CHESTS/UPPER WAISTS. ABSOLUTELY NO LEGS, NO KNEES, NO THIGHS, NO LAPS, NO FEET, NO SEAT CUSHIONS, NO CENTRE CONSOLE VIEW. The car body is solid and opaque, not an X-ray or cutaway. Do not simply show knees through a transparent door. A realistic near-side window frame/sill is allowed at the lower edge, not a decorative border.
+
+OLD PASSENGER: same tired thin man about 55 with messy gray hair, lined face and worn brown coat, seatbelt over his coat. Foreground LEFT, facing RIGHT, rubs his closed eyes/bridge of nose with one hand. His single pair of rectangular glasses is held in the other hand raised naturally near his CHEST, visible above the window sill. No glasses on face at same time, no duplicate pair, no extra hands. Keep his expression disoriented and exhausted.
+YOUNG DRIVER: same younger resemblance, dark tousled hair, rectangular glasses, navy suit, white shirt and burgundy tie. Background RIGHT, facing RIGHT, smiling and talking happily while looking forward. Both adults sit side by side on the SAME FRONT ROW. Never put the young man in a rear seat.
+
+INTERIOR: sober, new, clean unbranded European compact sedan, gray-blue trim, credible headrests and roof frame. Preserve plausible vehicle perspective and opposite-side window. Through the FAR SIDE WINDOW BEHIND THE YOUNG DRIVER, dawn lights a peaceful leafy new French residential quarter, cream stucco/modern low-rise buildings, tile roofs, trees and calm sidewalks. No American suburban clichés.
+
+STYLE AND OUTPUT: same French social pulp comic PIXEL ART with crisp clusters and black outlines, credible human proportions, old worn coat against clean cabin. One full-bleed LANDSCAPE 4:3 illustration, ideally 1536x1152, no added frame, no panels, no labels, no speech balloons, no readable text.
+Final check: old man on LEFT NEAR side, young driver on RIGHT FAR side, both profiles face RIGHT, car front toward RIGHT, steering wheel on FAR side only, solid passenger door hiding legs completely.
