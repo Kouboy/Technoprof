@@ -275,8 +275,8 @@
     "file": "stairs-1.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 3087,
-    "sha256": "f9751cd4f4bfc543cdbd6bb12d4789c102a47a33f33abaab9d9a625208006018"
+    "frames": 5512,
+    "sha256": "ed6fa5b85eb6e2363ab7c523ce360da8ebabbf1a76ca49a4ebeb53fabbe219be"
   },
   {
     "kind": "stairs",
@@ -284,8 +284,8 @@
     "file": "stairs-2.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 3087,
-    "sha256": "b9c34950e018cee796eae014f15a056da39e321df8aa193321df42d303318838"
+    "frames": 5512,
+    "sha256": "59f2bde6dbd6a4945e29a444eae59bca9d84d29b00e8606714db0f1e68375f8e"
   },
   {
     "kind": "gate",
@@ -367,6 +367,24 @@
     "bits": 8,
     "frames": 9371,
     "sha256": "7c854f307eced65e57842ad9e8d85e1f331f27ceb16d474e564a07523fb8d236"
+  },
+  {
+    "kind": "door-passage",
+    "take": 0,
+    "file": "door-passage-1.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 5292,
+    "sha256": "f51345f9dbfcc8fc5a6c501c86a4244b855366e2ed8b7ca8dffa93b89fdc0227"
+  },
+  {
+    "kind": "door-passage",
+    "take": 1,
+    "file": "door-passage-2.wav",
+    "rate": 11025,
+    "bits": 8,
+    "frames": 5292,
+    "sha256": "dfc814bbeec454745b54ca0382b7cc75586f412eaeb520c14572690217d777e4"
   },
   {
     "kind": "car-door",

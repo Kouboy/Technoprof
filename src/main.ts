@@ -5,6 +5,9 @@ import {
   missionEnemies,
 } from "./missions";
 import { NewSchoolArt } from "./new-school-art";
+import { drawCourseCard } from "./course-presentation";
+import { LIVES, loseLife } from "./lives";
+import { LivesArt } from "./lives-art";
 import {
   BRUEL_NAV,
   BRUEL_NAV_A2,
@@ -467,12 +470,14 @@ class Game extends Phaser.Scene {
   arrivalStill = false;
   failureArt?: FailureArt;
   cinematicArt?: CinematicArt;
+  livesArt?: LivesArt;
   reviewFacing = 1;
   preload() {
     this.runtime.mark("preload");
     this.audio.prepare();
     FailureArt.preload(this);
     CinematicArt.preload(this);
+    LivesArt.preload(this);
     SliceArt.preload(this, !DAY_ONLY);
     NewSchoolArt.preload(this, !DAY_ONLY);
     SchoolProps.preload(this);
@@ -753,6 +758,7 @@ class Game extends Phaser.Scene {
     this.sceneSurround = this.add.graphics().setDepth(4.1);
     drawSurround(this.sceneSurround);
     this.failureArt = new FailureArt(this);
+    this.livesArt = new LivesArt(this);
     this.physicalKeys = this.input.keyboard!.addKeys(
       Object.values(BINDINGS).flat().join(","),
     ) as typeof this.keys;
@@ -1339,6 +1345,9 @@ class Game extends Phaser.Scene {
     else keyboard.enableGlobalCapture();
   }
   runPolicy: RunPolicy = "three-required";
+  lives: number = LIVES.initial;
+  lifeLossFrom: number = LIVES.initial;
+  radiationStamped = false;
   cinematic: CinematicSequence | null = null;
   endingFade: number | null = null;
   introSeen = false;
@@ -1359,6 +1368,8 @@ class Game extends Phaser.Scene {
     if (!this.workshop) this.seed = Math.floor(Math.random() * 4294967295) || 1;
     this.mission = 0;
     this.won = 0;
+    this.lives = this.lifeLossFrom = LIVES.initial;
+    this.radiationStamped = false;
     this.results = [];
     this.vehicle = 100;
     this.kilometers = 0;
@@ -1378,6 +1389,15 @@ class Game extends Phaser.Scene {
     this.setPlayerMenu(false);
   }
   skipCinematic() {
+    if (this.phase === "radiated") {
+      if (
+        this.age >= LIVES.radiationSkipAfter &&
+        !this.paused &&
+        !this.playerMenu
+      )
+        this.returnToTitle();
+      return;
+    }
     const sequence = this.cinematic;
     if (!sequence || this.paused || this.playerMenu) return;
     sequence.skip();
@@ -1657,6 +1677,8 @@ class Game extends Phaser.Scene {
     if (
       [
         "fail",
+        "lifeLost",
+        "radiated",
         "opening",
         "blackBefore",
         "course",
@@ -1669,6 +1691,8 @@ class Game extends Phaser.Scene {
     )
       return;
     this.brokenRoad = ["free", "receive", "road"].includes(this.phase);
+    this.schoolFade = 0;
+    this.roomTransition = null;
     this.failureStartSpeed = this.speed;
     this.steerVelocity = 0;
     this.failureReason = ok
@@ -1708,6 +1732,9 @@ class Game extends Phaser.Scene {
     if (ok) {
       this.openingFrom = this.px;
       this.won++;
+    } else if (this.runPolicy === "three-required") {
+      this.lifeLossFrom = this.lives;
+      this.lives = loseLife(this.lives);
     }
     this.results.push(resultLine(ok, this.failureReason, this.brokenRoad));
     this.session.record(ok ? "success" : "failure", this.mission, this.room, {
@@ -1715,6 +1742,7 @@ class Game extends Phaser.Scene {
       remaining: this.remaining,
       hp: this.hp,
       vehicle: this.vehicle,
+      livesRemaining: this.lives,
     });
     if (this.navigationProfile) {
       this.navigationMetrics.end = {
@@ -1729,10 +1757,26 @@ class Game extends Phaser.Scene {
     this.persistJournal();
   }
   next() {
-    if (this.cinematic || this.phase === "report" || isHomePhase(this.phase))
+    if (
+      this.cinematic ||
+      ["report", "lifeLost", "radiated"].includes(this.phase) ||
+      isHomePhase(this.phase)
+    )
       return;
     if (this.runPolicy === "three-required" && this.phase === "fail") {
-      this.returnToTitle();
+      this.cancelBufferedActions("life-lost");
+      this.direct?.cancel();
+      this.controls?.reset();
+      this.input?.keyboard?.resetKeys();
+      this.gamepad?.suspend();
+      this.music?.stop();
+      this.speed = 0;
+      this.phase = "lifeLost";
+      this.age = 0;
+      this.session.record("life-lost", this.mission, this.room, {
+        before: this.lifeLossFrom,
+        remaining: this.lives,
+      });
       return;
     }
     this.navigationProfile = false;
@@ -1745,6 +1789,36 @@ class Game extends Phaser.Scene {
       this.age = 0;
       if (this.validatedDay) this.persistJournal();
     } else this.begin();
+  }
+  completeLifeLoss() {
+    if (this.phase !== "lifeLost") return;
+    this.cancelBufferedActions("life-retry");
+    this.direct?.cancel();
+    this.controls?.reset();
+    this.input?.keyboard?.resetKeys();
+    this.gamepad?.suspend();
+    if (this.lives === 0) {
+      this.phase = "radiated";
+      this.age = 0;
+      this.radiationStamped = false;
+      this.session.record("radiation", this.mission, this.room, { lives: 0 });
+      this.persistJournal();
+    } else {
+      this.vehicle = 100;
+      this.navigationMetrics = new NavigationMetrics(this.navigationRevision);
+      delete this.validatedDayRuns[this.mission + 1];
+      this.session.record(
+        "mission-retry",
+        this.mission,
+        this.missionSpec().start,
+        {
+          lives: this.lives,
+          seconds: this.missionSpec().seconds,
+        },
+      );
+      this.begin();
+      this.persistJournal();
+    }
   }
   startHomeReturn() {
     this.cancelBufferedActions("home-return");
@@ -1927,7 +2001,10 @@ class Game extends Phaser.Scene {
       campaign: {
         policy: this.runPolicy,
         requiredSuccesses: requiredAssignments(this.runPolicy),
-        firstFailureEndsRun: this.runPolicy === "three-required",
+        firstFailureEndsRun: false,
+        startingLives:
+          this.runPolicy === "three-required" ? LIVES.initial : null,
+        livesRemaining: this.runPolicy === "three-required" ? this.lives : null,
       },
       ...this.session.snapshot(
         this.seed,
@@ -1999,12 +2076,37 @@ class Game extends Phaser.Scene {
   }
   loadScenario(name: string) {
     this.cinematic = null;
+    this.lives = this.lifeLossFrom = LIVES.initial;
     this.runPolicy =
-      name === "journee-validee" || name.startsWith("cinematic-")
+      name === "journee-validee" ||
+      name.startsWith("cinematic-") ||
+      name.startsWith("lives-")
         ? "three-required"
         : "legacy-two";
     this.music?.stop();
     this.cancelBufferedActions("scenario");
+    if (this.workshop && name.startsWith("lives-")) {
+      this.workshopScenario = name;
+      this.validatedDay = true;
+      this.startDay(false);
+      this.mission = name === "lives-foot-second" ? 1 : 0;
+      this.won = this.mission;
+      this.begin();
+      this.lives = name === "lives-final" ? 1 : LIVES.initial;
+      this.notified = true;
+      if (name === "lives-foot-second") {
+        this.school();
+        this.hp = 0;
+        this.finish(false, "exhausted");
+      } else {
+        this.phase = "road";
+        this.vehicle = 0;
+        this.finish(false, "breakdown");
+      }
+      this.session.record("scenario", this.mission, this.room, { name });
+      this.draw();
+      return;
+    }
     const comparison = this.workshop ? gamefeelScenario(name) : null;
     this.gamefeelLab = !!comparison;
     this.gamefeelVariant = comparison?.variant ?? DEFAULT_GAMEFEEL;
@@ -2600,7 +2702,7 @@ class Game extends Phaser.Scene {
         if (this.phase === "course" && this.age > 0.3) this.freshKey = true;
       } else if (this.gamepadMenu) this.gamepadMenu(action);
       else if (action === "start") {
-        if (["intro", "ending"].includes(this.phase)) {
+        if (["intro", "ending", "radiated"].includes(this.phase)) {
           this.setPaused(false);
           this.setPlayerMenu(false);
           this.skipCinematic();
@@ -2893,6 +2995,24 @@ class Game extends Phaser.Scene {
             this.audio.musicVolume <= 0) &&
             this.age >= PLAY.failAutoReturnSeconds))
       )
+        this.next();
+    } else if (this.phase === "lifeLost") {
+      if (
+        this.age >= LIVES.lossSeconds ||
+        (this.age >= LIVES.lossSkipAfter &&
+          (enterPressed || attackPressed || jumpPressed))
+      )
+        this.completeLifeLoss();
+    } else if (this.phase === "radiated") {
+      if (!this.radiationStamped && this.age >= LIVES.stampAt) {
+        this.radiationStamped = true;
+        this.shake(120, 0.002);
+      }
+      if (
+        this.age >= LIVES.radiationSeconds ||
+        (this.age >= LIVES.radiationSkipAfter &&
+          (enterPressed || attackPressed || jumpPressed))
+      )
         this.returnToTitle();
     } else if (this.phase === "tow") {
       if (this.age > 3) {
@@ -3087,7 +3207,8 @@ class Game extends Phaser.Scene {
       }
 
       if (!home && this.vehicle <= 0) {
-        if (this.notified) this.finish(false);
+        if (this.notified || this.runPolicy === "three-required")
+          this.finish(false, "breakdown");
         else {
           this.phase = "tow";
           this.age = 0;
@@ -3670,7 +3791,7 @@ class Game extends Phaser.Scene {
     if (care && Math.abs(this.px - care.x) <= care.reach)
       return this.navigationCare.used
         ? "SOINS UTILISES"
-        : `${this.gamepadMode ? "B" : this.pointerMode ? "TOUCHER" : "F/X"} : SOINS +${this.navigationGain} PV`;
+        : `${this.gamepadMode ? "B/X" : this.pointerMode ? "TOUCHER" : "F/X"} : SOINS +${this.navigationGain} PV`;
     const hint = this.interaction();
     if (hint) return hint.label;
     const edges = this.roomSpec()?.blocked ?? [];
@@ -4787,7 +4908,8 @@ class Game extends Phaser.Scene {
     this.sceneFade?.clear();
     if (this.substepping) return;
     this.sceneSurround?.setVisible(
-      !(this.cinematic && ["intro", "ending"].includes(this.phase)),
+      !(this.cinematic && ["intro", "ending"].includes(this.phase)) &&
+        !["lifeLost", "radiated"].includes(this.phase),
     );
     this.syncMusic();
     this.art?.hide();
@@ -4813,11 +4935,25 @@ class Game extends Phaser.Scene {
     this.roadArt?.hide();
     this.foreground?.clear();
     this.failureArt?.hide();
+    this.livesArt?.hide();
     this.cinematicArt?.hide();
     if (this.sceneGraphics) this.g = this.sceneGraphics;
     this.g.clear();
     this.labels.forEach((t) => t.destroy());
     this.labels = [];
+    if (["lifeLost", "radiated"].includes(this.phase)) {
+      this.groundContact?.clear();
+      this.roadWash?.clear();
+      this.schoolWear?.clear();
+      this.g.fillStyle(0x000000);
+      this.g.fillRect(0, 0, 320, 240);
+      if (this.phase === "lifeLost")
+        this.livesArt?.loss(this.lifeLossFrom, this.lives, this.age);
+      else this.livesArt?.radiation(this.age);
+      if (this.workshop) drawWorkshop(this);
+      this.syncPlayerUI?.();
+      return;
+    }
     if (this.cinematic && ["intro", "ending"].includes(this.phase)) {
       this.groundContact?.clear();
       this.roadWash?.clear();
@@ -5016,11 +5152,8 @@ class Game extends Phaser.Scene {
         Phaser.Math.Clamp((this.age - (PLAY.openingSeconds - 0.9)) / 0.9, 0, 1),
       );
     }
-    if (this.phase === "course") {
-      this.rect(5, 5, 310, 172, 0x000000);
-      this.txt(61, 78, "Bon. Reprenons.", 17);
-    }
-    if (this.phase === "later") this.txt(47, 88, "Une heure plus tard...", 14);
+    if (this.phase === "course" || this.phase === "later")
+      drawCourseCard(this.g, this.phase);
     if (this.phase === "arrivalFade")
       this.fadeViewport(Math.min(1, this.age / 1.1));
     if (this.phase === "homeArrival")
@@ -5053,8 +5186,9 @@ class Game extends Phaser.Scene {
         INFIRMARY.nurseX,
         true,
         this.recoveryScene.dialogue,
-        this.gamepadMode ? "B" : this.pointerMode ? "TOUCHER" : "X/F",
+        this.gamepadMode ? "B/X" : this.pointerMode ? "TOUCHER" : "X/F",
         INFIRMARY.encounter,
+        this.runPolicy === "three-required" ? 258 : 308,
       );
     if (
       this.phase === "school" &&
@@ -5068,10 +5202,26 @@ class Game extends Phaser.Scene {
         this.enemies[0].x,
         this.enemies[0].female,
         this.dialogue,
-        this.gamepadMode ? "B" : this.pointerMode ? "TOUCHER" : "X/F",
+        this.gamepadMode ? "B/X" : this.pointerMode ? "TOUCHER" : "X/F",
         this.encounter(),
+        this.runPolicy === "three-required" ? 258 : 308,
       );
     this.drawingEncounter = false;
+    if (
+      this.runPolicy === "three-required" &&
+      [
+        "free",
+        "receive",
+        "road",
+        "school",
+        "opening",
+        "arrival",
+        "arrivalFade",
+        "home",
+        "homeArrival",
+      ].includes(this.phase)
+    )
+      this.livesArt?.hud(this.lives);
     if (this.phase === "school" && this.schoolFade > 0)
       this.fadeViewport(this.schoolFade / 0.7);
     if (this.phase === "school" && this.roomTransition)
@@ -5285,7 +5435,7 @@ class Game extends Phaser.Scene {
     panel.fillRect(14, 16, 3, 16);
     const title =
       this.runPolicy === "three-required"
-        ? "JOURNEE INTERROMPUE"
+        ? "AFFECTATION INTERROMPUE"
         : "AFFECTATION NON ASSUREE";
     bitmap(
       panel,
@@ -5307,7 +5457,7 @@ class Game extends Phaser.Scene {
     if (this.age >= PLAY.failContinueSeconds) {
       panel.fillStyle(0x080d13, 0.95);
       panel.fillRect(14, 153, 292, 16);
-      const command = `${this.gamepadMode ? "A/B" : this.pointerMode ? "TOUCHER" : "ENTREE"} : ${notice.next}`;
+      const command = `${this.gamepadMode ? "A/B/X" : this.pointerMode ? "TOUCHER" : "ENTREE"} : ${notice.next}`;
       bitmap(
         panel,
         Math.round(160 - bitmapWidth(command) / 2),

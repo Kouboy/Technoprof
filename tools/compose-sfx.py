@@ -17,7 +17,7 @@ OUT = ROOT / "audio/sfx-2026-10-24"
 SR = 11025
 LOOPS = {"engine", "wind", "rolling", "room", "hum"}
 EXTRA = {"step-wood": .16, "step-concrete": .16, "step-metal": .16,
-         "step-gravel": .16, "gate": .72, "stairs": .28}
+         "step-gravel": .16, "gate": .72, "stairs": .5}
 
 
 def filtered(signal, low=0, high=4200):
@@ -78,8 +78,14 @@ def sample(kind, seconds, variant):
         if kind == 'land':
             v = knock(0, 90 * jitter, .047) * 1.2 + mid * .75 * exp(.002, .017) + mid * .4 * puff(.05, .10)
         if kind == 'stairs':
-            v = knock(0, 145, .025) + hi * .4 * exp(0, .008) + knock(.12, 132, .035) * .65
-    elif kind in {'door', 'gate', 'car-door', 'handle'}:
+            # A compressed flight of three hard heel contacts, shoe scuffs and
+            # the short, hollow stairwell tail. Fits the existing visual fade.
+            v = np.zeros_like(t)
+            for at, pitch, gain in [(0, 162, 1), (.105, 143, .85), (.22, 127, .75)]:
+                v += gain * (knock(at, pitch * jitter, .036) + hi * .65 * exp(at, .008))
+                v += mid * .5 * puff(at + .025, .07)
+            v += knock(.29, 116, .06) * .26 + knock(.36, 98, .035) * .12
+    elif kind in {'door', 'door-passage', 'gate', 'car-door', 'handle'}:
         if kind == 'handle':
             v = (hi + mid) * exp(0, .012) + (tone(920) * .12 + mid * .3) * exp(.04, .018)
         elif kind == 'car-door':
@@ -89,6 +95,13 @@ def sample(kind, seconds, variant):
             v = (tone(173) * .2 + tone(481) * .12 + mid * .55) * puff(.02, .53)
             v *= .5 + .5 * np.abs(tone(39))
             v += (mid + hi * .7) * exp(0, .025) + knock(.60, 213, .037)
+        elif kind == 'door-passage':
+            # Latch, worn hinge, then wooden stop. Unlike the classroom door,
+            # the closing transient lands during the 300ms room transition.
+            v = (mid + hi * .45) * exp(0, .011)
+            v += (tone(216 + variant * 19) * .16 + mid * .55 + lo * .7) * puff(.02, .16)
+            v += knock(.205, 94 * jitter, .046) * 1.3 + hi * .4 * exp(.205, .009)
+            v += (tone(318) * .15 + mid * .25) * exp(.22, .033)
         else:
             v = mid * .5 * exp(0, .018)
             v += (lo * 1.2 + mid * .3 + tone(241) * .05) * puff(.04, .49)

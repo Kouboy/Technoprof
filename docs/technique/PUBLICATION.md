@@ -12,6 +12,13 @@ Le contrôle sur petit écran a révélé un chevauchement des zones tactiles du
 titre après les réglages. Le correctif `playtest-2026-10-25-r2` réserve deux
 zones de 44 px et leur espacement sans déplacer le titre sur grand écran.
 
+La passe du 26 octobre ajoute trois vies avec reprise au début du trajet de
+l'affectation en cours, une radiation au dernier échec et un compteur avec le
+portrait du professeur. Elle harmonise aussi les commandes B/X, les passages
+sonores, l'infirmerie de Berthelot et les panneaux de cours. Le bulletin radio
+utilise désormais toute la plage du curseur Voix. Publication autorisée par
+Nicolas le 26 octobre ; tag prévu : `playtest-2026-10-26`.
+
 ## Version locale
 
 Le téléchargement est l'asset **Technoprof-local.zip** d'une GitHub Release.

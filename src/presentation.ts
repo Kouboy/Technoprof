@@ -38,6 +38,7 @@ export function drawBossHealth(
 }
 
 // Shared presentation contract. Coordinates are logical pixels (output is ×2).
+export const INFIRMARY_VIEW = { teacherScale: 0.21, nurseSize: 99 };
 export const VIEW = {
   x: 7,
   y: 7,

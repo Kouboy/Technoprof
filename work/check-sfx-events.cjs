@@ -32,6 +32,22 @@ function rig() {
   a.tone = () => {};
   return { a, events };
 }
+for (const [phase, kind, at] of [
+  ["lifeLost", "relay", 0.8],
+  ["radiated", "stamp", 0.65],
+]) {
+  const { a, events } = rig();
+  a.scene(phase, false, 120, 0, 0, false, { age: 0 });
+  a.scene(phase, false, 120, at, 0, false, { age: at });
+  assert.equal(events.filter((e) => e.kind === kind).length, 1);
+  a.scene(phase, true, 120, 0, 0, false, { age: at });
+  a.scene(phase, false, 120, 0, 0, false, { age: at });
+  assert.equal(
+    events.filter((e) => e.kind === kind).length,
+    1,
+    "pause cannot duplicate the loss click or radiation stamp",
+  );
+}
 {
   const { a, events } = rig();
   a.scene("school", false, 120, 0.02, 105, false, {
@@ -117,30 +133,68 @@ for (const fps of [30, 60, 120]) {
     "arrival door is an atomic cue on resume",
   );
 }
-for (const kind of ["passage", "door", "stairs"]) {
-  const { a, events } = rig(),
-    transition = { age: 0, sound: kind, surface: "tile" };
-  a.scene("school", false, 120, 0.02, 201, false, {
-    surface: "tile",
-    transition,
-  });
-  for (let i = 1; i < 18; i++) {
-    transition.age = i / 60;
-    a.scene("school", false, 120, 1 / 60, 202, false, {
+for (const fps of [30, 60, 120])
+  for (const kind of ["passage", "door", "stairs"]) {
+    const { a, events } = rig(),
+      transition = { age: 0, sound: kind, surface: "tile" };
+    a.scene("school", false, 120, 0.02, 201, false, {
       surface: "tile",
       transition,
     });
+    for (let i = 1; i < Math.ceil(0.3 * fps); i++) {
+      transition.age = i / fps;
+      a.scene("school", false, 120, 1 / fps, 202, false, {
+        surface: "tile",
+        transition,
+      });
+    }
+    if (kind === "stairs")
+      assert.equal(events.filter((e) => e.kind === "stairs").length, 1);
+    if (kind === "door") {
+      assert.equal(events.filter((e) => e.kind === "handle").length, 1);
+      assert.equal(
+        events.filter((e) => e.kind === "door-passage").length,
+        1,
+        "room door has its own short hinge/latch sample",
+      );
+    }
+    if (kind === "passage")
+      assert(
+        !events.some((e) => ["door", "handle", "stairs"].includes(e.kind)),
+      );
+    const n = events.length;
+    a.scene("school", true, 120, 10, 202, false, {
+      surface: "tile",
+      transition,
+    });
+    a.scene("school", false, 120, 0, 202, false, {
+      surface: "tile",
+      transition,
+    });
+    assert.equal(events.length, n);
   }
-  if (kind === "stairs")
-    assert.equal(events.filter((e) => e.kind === "stairs").length, 1);
-  if (kind === "door")
-    assert.equal(events.filter((e) => e.kind === "handle").length, 1);
-  if (kind === "passage")
-    assert(!events.some((e) => ["door", "handle", "stairs"].includes(e.kind)));
-  const n = events.length;
-  a.scene("school", true, 120, 10, 202, false, { surface: "tile", transition });
-  a.scene("school", false, 120, 0, 202, false, { surface: "tile", transition });
-  assert.equal(events.length, n);
+for (const kind of ["passage", "door", "stairs"]) {
+  const { a, events } = rig(),
+    transition = { age: 0, sound: kind, surface: "wood" };
+  const context = { transition, surface: "wood" };
+  a.scene("school", false, 120, 0, 105, false, context);
+  transition.age = 0.04;
+  a.scene("school", false, 120, 0.04, 105, false, context);
+  const first = events.length;
+  a.scene("school", true, 120, 0, 105, false, context);
+  a.scene("school", false, 120, 0, 105, false, context);
+  assert.equal(
+    events.length,
+    first,
+    "resume never repeats the latch or first contact",
+  );
+  transition.age = 0.2;
+  a.scene("school", false, 120, 0.16, 104, false, context);
+  assert.equal(
+    events.filter((e) => e.kind === "step-wood").length,
+    kind === "passage" ? 2 : 0,
+    "pending corridor contact survives a mid-transition pause and uses destination floor",
+  );
 }
 {
   const t = createGame(),

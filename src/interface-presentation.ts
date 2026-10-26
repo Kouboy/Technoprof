@@ -6,6 +6,7 @@ export function failureNotice(s: {
   failureReason: string | null;
   mission: number;
   runPolicy?: string;
+  brokenRoad?: boolean;
 }) {
   const reason = s.failureReason;
   return {
@@ -14,7 +15,11 @@ export function failureNotice(s: {
         ? "road"
         : reason === "exhausted"
           ? "school"
-          : null,
+          : reason === "late"
+            ? s.brokenRoad
+              ? "road"
+              : "school"
+            : null,
     cause:
       reason === "breakdown"
         ? "VEHICULE EN PANNE"
@@ -32,7 +37,7 @@ export function failureNotice(s: {
         ? s.mission === 2
           ? "VOIR LE BILAN"
           : "AFFECTATION SUIVANTE"
-        : "RETOUR AU TITRE",
+        : "VIE PERDUE",
   };
 }
 

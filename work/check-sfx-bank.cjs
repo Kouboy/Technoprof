@@ -54,6 +54,8 @@ for (const kind of [
   );
 }
 assert.equal(b.readSfx("not-a-sound", 22050), null);
+assert(b.readSfx("door-passage", 22050)?.length > 9000, "short sampled doorway");
+assert(b.readSfx("stairs", 22050).length >= 10000, "three-step stair phrase with tail");
 console.log(
   "PASS 8-bit mono SFX bank: 11025 Hz, audible unclipped/DC-free takes, varied impacts/whooshes/floors",
 );

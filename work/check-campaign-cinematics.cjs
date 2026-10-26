@@ -99,8 +99,12 @@ for (const mission of [0, 1, 2])
     g.finish(false, reason);
     t.advance(2.1);
     t.press("ENTER");
-    assert.equal(g.phase, "title");
-    assert.equal(g.results.length, 1, "the last attempt remains available at the title");
+    assert.equal(g.phase, "lifeLost");
+    assert.equal(g.lives, 2);
+    t.advance(2.7);
+    assert.equal(g.mission, mission, "retry retains the current assignment");
+    assert.equal(g.won, mission, "earlier assignments remain acquired");
+    assert.equal(g.results.length, 1, "the failed attempt remains in the journal");
     g.startDay(false);
     assert.equal(g.mission, 0);
     assert.equal(g.phase, "free");
@@ -118,7 +122,8 @@ for (const mission of [0, 1, 2])
   g.validatedDay = true;
   g.startDay();
   assert.deepEqual(JSON.parse(JSON.stringify(g.journalSnapshot().campaign)), {
-    policy: "three-required", requiredSuccesses: 3, firstFailureEndsRun: true,
+    policy: "three-required", requiredSuccesses: 3, firstFailureEndsRun: false,
+    startingLives: 3, livesRemaining: 3,
   });
   assert.equal(g.phase, "intro");
   const timer = g.remaining;

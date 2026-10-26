@@ -13,9 +13,12 @@ Garder le dossier audio/ à côté des fichiers HTML pour entendre les musiques
 et les cinématiques. Les réglages proposent quatre volumes séparés.
 
 Trois affectations à réussir : Collège des Ormeaux, Lycée Auguste-Berthelot,
-Lycée professionnel des Trois-Ponts. Le premier échec termine la tentative.
+Lycée professionnel des Trois-Ponts. Vous disposez de trois vies.
+Un échec coûte une vie et fait recommencer le trajet de cette affectation,
+avec le délai, la santé et la voiture réinitialisés. Les cours déjà assurés
+restent acquis. Au troisième échec, radiation et retour au titre.
 Victoire : après la conclusion, fondu de trois secondes et retour au titre.
-Game Over : retour au titre après le thème ; Action permet d'écourter.
+Game Over : après le thème, le compteur perd une vie ; Action permet d'écourter.
 
 Commandes : flèches ou ZQSD ; Espace = saut ; F/X = frappe ou dialogue.
 Souris et toucher directement dans la scène. Commandes et réglages sont dans
@@ -23,7 +26,7 @@ le menu ; P ou Échap suspend le jeu. Sur téléphone, le paysage est conseillé
 
 Manette standard Xbox : appuyer sur un bouton pour la détecter.
 Stick gauche ou croix = diriger ; RT = accélérer ; LT = freiner.
-À pied : A = saut ; B = frappe / dialogue ; haut/bas = portes et escaliers.
+À pied : A = saut ; B ou X = frappe / dialogue ; haut/bas = portes et escaliers.
 Start = commencer au titre, passer un film, pause / reprise en jeu.
 Menus : A = valider, B = retour, gauche/droite = ajuster les volumes.
 Une déconnexion suspend la partie ; reconnecter puis appuyer sur Start.

@@ -4,7 +4,7 @@ import type { RoomSpec } from "./missions";
 import { smallPrint, smallWidth } from "./small-lettering";
 import { INFIRMARY_DATA } from "./infirmary-data";
 import { INFIRMARY } from "./bruel-recovery";
-import { VIEW } from "./presentation";
+import { VIEW, INFIRMARY_VIEW } from "./presentation";
 import { BruelA3Art } from "./bruel-a3-art";
 
 // Recompose existing raster pieces; keep props and lettering at integer pixels.
@@ -36,7 +36,7 @@ export class BruelNavigationArt {
     this.nurse = scene.add
       .image(INFIRMARY.nurseX, VIEW.floor, "infirmary-nurse")
       .setOrigin(0.5, 0.97)
-      .setDisplaySize(77, 77)
+      .setDisplaySize(INFIRMARY_VIEW.nurseSize, INFIRMARY_VIEW.nurseSize)
       .setDepth(2)
       .setVisible(false);
     for (let i = 0; i < (legacyBackgrounds ? 3 : 0); i++)

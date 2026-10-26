@@ -204,6 +204,18 @@ for (let visit = 0; visit < 3; visit++)
     assert.equal(renderer.a3.background.width, 306);
     assert.equal(renderer.a3.background.height, 168);
     assert.equal(renderer.nurse.visible, room.id === 107);
+    if (room.id === 107) {
+      assert.equal(
+        renderer.nurse.height,
+        99,
+        "nurse comparable to the 101px standing teacher",
+      );
+      assert.equal(
+        renderer.nurse.y,
+        163,
+        "both characters stand on the shared floor",
+      );
+    }
     assert(
       renderer.patches.every((p) => !p.visible),
       "old door/stair patches are not drawn over A3",
@@ -243,6 +255,54 @@ for (const id of Object.keys(layout.rooms)) {
   assert.equal(fixture.g.remaining, 195);
   assert.equal(fixture.g.hp, 5);
 }
+// Exercise the actual actor renderer rather than matching a source expression.
+vm.runInContext(
+  require("node:module").stripTypeScriptTypes(
+    strip(fs.readFileSync("src/new-school-art.ts", "utf8")),
+    { mode: "transform" },
+  ) + ";this.ActorRenderer=NewSchoolArt;",
+  scope,
+);
+const chain = {
+    setDepth() {
+      return this;
+    },
+    setVisible() {
+      return this;
+    },
+    setFlipX() {
+      return this;
+    },
+  },
+  scaleRig = {
+    background: chain,
+    door: chain,
+    legacyBackgrounds: false,
+    enemyImages: [],
+    combat: {},
+  },
+  scales = [],
+  host = {
+    mission: 1,
+    py: 159,
+    phase: "school",
+    enemies: [],
+    projectiles: [],
+    art: {
+      drawTeacher(_s, scale) {
+        scales.push(scale);
+      },
+    },
+  };
+scope.ActorRenderer.prototype.render.call(scaleRig, host, layout.rooms[107]);
+scope.ActorRenderer.prototype.render.call(scaleRig, host, layout.rooms[108]);
+host.mission = 2;
+scope.ActorRenderer.prototype.render.call(scaleRig, host, layout.rooms[107]);
+assert.deepEqual(
+  scales,
+  [0.21, 0.18, 0.18],
+  "care scale is restored on exit and does not change other establishments",
+);
 console.log(
   "PASS A3 rendering: 12 unique views, selected embedded PNGs/crop bounds, wall lettering, source rules intact, repeated visits/no allocations, phase/profile cleanup and declared room presets. Visual perception requires browser observation.",
 );

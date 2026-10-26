@@ -19,7 +19,7 @@ let draws=[],color=0;const g={fillStyle(c){color=c;},fillRect(x,y,w,h){draws.pus
 bitmap(g,0,0,'ABCDEFGHIJKLMN',0xffffff,1,20);assert(draws.every(p=>p.x+p.w<=20));
 for(const phase of ['title','free','receive','road','arrival','arrivalFade','school','opening','blackBefore','course','blackAfter','later','fail','tow','report']){
  const state={...base,phase,notified:!['title','free','tow'].includes(phase),remaining:19,vehicle:30,hp:1,messageTime:2,boardMessage:'UN MESSAGE ADMINISTRATIF TRES LONG '.repeat(6)};
- const before=JSON.stringify(state);draws=[];drawCadre(g,state,4200);assert.equal(JSON.stringify(state),before,'render must be read only');assert(draws.length>0);assert(draws.every(p=>[p.x,p.y,p.w,p.h].every(Number.isInteger)&&p.x>=0&&p.x+p.w<=320&&p.y>=179&&p.y+p.h<=240&&p.w>=0&&p.h>=0),phase+' stays in the HUD');
+ const before=JSON.stringify(state);draws=[];drawCadre(g,state,4200);assert.equal(JSON.stringify(state),before,'render must be read only');assert.equal(draws.length>0,!['blackBefore','course','blackAfter','later'].includes(phase),'interludes hide the entire HUD');assert(draws.every(p=>[p.x,p.y,p.w,p.h].every(Number.isInteger)&&p.x>=0&&p.x+p.w<=320&&p.y>=179&&p.y+p.h<=240&&p.w>=0&&p.h>=0),phase+' stays in the HUD');
 }
 console.log('PASS CADRE hidden destination, timer rounding, 1km threshold, km formatting, reveal, suspended state, text fit, integer pixels and viewport bounds');
 

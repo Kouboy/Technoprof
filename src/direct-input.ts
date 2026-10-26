@@ -103,6 +103,8 @@ export class DirectInput {
       s.phase !== "school" &&
       s.phase !== "course" &&
       s.phase !== "fail" &&
+      s.phase !== "lifeLost" &&
+      s.phase !== "radiated" &&
       s.phase !== "intro" &&
       s.phase !== "ending"
     )
@@ -170,6 +172,10 @@ export class DirectInput {
     }
     if (s.phase === "fail") {
       if (s.age > 2) this.pulse("ENTER");
+      return;
+    }
+    if (s.phase === "lifeLost" || s.phase === "radiated") {
+      this.pulse("ENTER");
       return;
     }
     if (s.phase !== "school") return;

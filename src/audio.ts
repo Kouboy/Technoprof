@@ -8,6 +8,7 @@ import {
 } from "./audio-materials";
 import { DRIVE } from "./driving";
 import { HOME_ARRIVAL } from "./home-arrival";
+import { LIVES } from "./lives";
 import { sfxTakes } from "./sfx-samples";
 import { WALK_SOUND, type FloorSound, type PassageAudio } from "./soundscape";
 import type { CinematicCue } from "./cinematic";
@@ -60,13 +61,24 @@ export function sceneCues(
   phase: string,
   context: SceneSoundContext,
 ): SceneCue[] {
+  if (phase === "lifeLost") return [["relay", LIVES.lossChangeAt, 0.8]];
+  if (phase === "radiated") return [["stamp", LIVES.stampAt, 1.4]];
   if (phase === "opening") return OPENING_CUES;
   if (phase === "homeArrival")
     return [
       ["car-door", HOME_ARRIVAL.doorSlamAt, 0.95],
-      ...Array.from({length: Math.ceil(HOME_ARRIVAL.walkSeconds / HOME_ARRIVAL.stepSeconds)}, (_, i): SceneCue => [
-        "step", HOME_ARRIVAL.walkAt + i * HOME_ARRIVAL.stepSeconds, 0.5 - i * 0.015,
-      ]),
+      ...Array.from(
+        {
+          length: Math.ceil(
+            HOME_ARRIVAL.walkSeconds / HOME_ARRIVAL.stepSeconds,
+          ),
+        },
+        (_, i): SceneCue => [
+          "step",
+          HOME_ARRIVAL.walkAt + i * HOME_ARRIVAL.stepSeconds,
+          0.5 - i * 0.015,
+        ],
+      ),
     ];
   if (phase === "arrival")
     return [
@@ -508,7 +520,9 @@ export class AudioKit {
     const c = this.context,
       wasPaused = this.paused;
     this.surface =
-      phase === "arrival" || phase === "homeArrival" ? "concrete" : (context.surface ?? "tile");
+      phase === "arrival" || phase === "homeArrival"
+        ? "concrete"
+        : (context.surface ?? "tile");
     this.paused = paused;
     this.master.gain.setTargetAtTime(
       this.muted || paused ? 0 : AUDIO.master * this.effectsVolume,
@@ -564,7 +578,7 @@ export class AudioKit {
         (!this.sequencePlayed.has(index) ||
           (wasPaused &&
             phase !== "arrival" &&
-            !["car-door", "step", "gate"].includes(kind)))
+            !["car-door", "step", "gate", "stamp", "relay"].includes(kind)))
       ) {
         this.sequencePlayed.add(index);
         const sample: Material =
@@ -584,15 +598,15 @@ export class AudioKit {
       }
       const cues: SceneCue[] =
         transition.sound === "stairs"
-          ? [["stairs", 0, 0.8]]
+          ? [["stairs", 0, 1]]
           : transition.sound === "door"
             ? [
-                ["handle", 0, 0.55],
-                ["door", 0.035, 0.38],
+                ["handle", 0, 0.8],
+                ["door-passage", 0.035, 1],
               ]
             : [
-                ["step", 0.025, 0.55],
-                ["step", 0.17, 0.48],
+                ["step", 0.025, 0.95],
+                ["step", 0.17, 0.8],
               ];
       cues.forEach(([kind, at, gain], i) => {
         if (transition.age >= at && !this.passagePlayed.has(i)) {
@@ -606,7 +620,7 @@ export class AudioKit {
             this.play(
               sample,
               0,
-              gain * (care ? WALK_SOUND.quiet : 1),
+              gain * (care ? 0.65 : 1),
               0,
               "movement",
               1,
@@ -626,7 +640,11 @@ export class AudioKit {
       this.storyKey = storyKey;
       this.storyPulse = -1;
     }
-    if (story && !context.cinematicSoundtrack && (phase === "intro" || phase === "ending")) {
+    if (
+      story &&
+      !context.cinematicSoundtrack &&
+      (phase === "intro" || phase === "ending")
+    ) {
       const alarm = story.cue === "alarm";
       const pulse = alarm ? Math.floor(story.age / 1.6) : 0;
       if (pulse !== this.storyPulse) {
@@ -636,16 +654,10 @@ export class AudioKit {
             [0, 0.16, 0.32].forEach((delay) =>
               this.tone(880, 0.09, 0.035, 880, delay),
             );
-          } else if (
-            story.cue === "doorbell" &&
-            story.age < 0.18
-          ) {
+          } else if (story.cue === "doorbell" && story.age < 0.18) {
             this.tone(660, 0.25, 0.045, 660);
             this.tone(523, 0.4, 0.035, 523, 0.24);
-          } else if (
-            story.cue === "bell" &&
-            story.age < 0.18
-          ) {
+          } else if (story.cue === "bell" && story.age < 0.18) {
             this.play("bell-start", 0, 0.9, 0, "cue");
           }
         }
@@ -823,7 +835,9 @@ export class AudioKit {
     u.lang = "fr-FR";
     u.rate = 1.08;
     u.pitch = 0.85;
-    u.volume = 0.45 * this.voiceVolume;
+    // Speech has its own output, outside the effects/music buses. Keep the
+    // voice slider's full range instead of silently capping the bulletin.
+    u.volume = this.voiceVolume;
     this.radioPlaying = true;
     this.radioDone = false;
     this.radioFailed = false;

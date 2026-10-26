@@ -1,7 +1,10 @@
 // Verify what the delivered HTML actually sends to speech synthesis. A fake
 // local voice makes the payload observable; this does not judge pronunciation.
 const assert = require('node:assert/strict');
-const path = require('node:path'), { pathToFileURL } = require('node:url');
+const path = require('node:path'), fs = require('node:fs'), { pathToFileURL } = require('node:url');
+const approved = fs.readFileSync('docs/ecriture/TEXTES-A-REECRIRE.md','utf8');
+const radioName = approved.match(/Nom affiché : \*\*(.+?)\*\*/)[1];
+const expectedSpeech = require('../work/test-harness.cjs').createGame().g.radioLines[0];
 const { chromium, firefox } = require(process.argv[2] || 'playwright');
 const engineName = process.argv[3] || 'chromium';
 if (!['chromium','firefox'].includes(engineName)) throw Error('Unknown browser');
@@ -15,7 +18,7 @@ if (!['chromium','firefox'].includes(engineName)) throw Error('Unknown browser')
       Object.defineProperty(window, 'SpeechSynthesisUtterance', { configurable: true, value: Utterance });
       Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: {
         getVoices: () => [{name:'Isolated QA voice',lang:'fr-FR',localService:true}],
-        speak: u => __radioEvidence.push({text:u.text,lang:u.lang}),
+        speak: u => __radioEvidence.push({text:u.text,lang:u.lang,volume:u.volume}),
         cancel() {}, pause() {}, resume() {},
       }});
     });
@@ -27,10 +30,11 @@ if (!['chromium','firefox'].includes(engineName)) throw Error('Unknown browser')
     await page.waitForFunction(() => __radioEvidence.length > 0, null, {timeout:15000});
     const spoken = await page.evaluate(() => __radioEvidence);
     assert.equal(spoken.length,1);
-    assert(spoken[0].text.startsWith('Radio Éduc France. La rentrée est prête'));
+    assert.equal(spoken[0].text,expectedSpeech,'delivered bulletin follows the approved current text');
     assert.equal(spoken[0].lang,'fr-FR');
+    assert.equal(spoken[0].volume,1,'full voice volume must reach the delivered speech output');
     assert(!/idiotie/i.test(spoken[0].text));
-    assert((await page.locator('#radio-caption').textContent()).startsWith("Radio Educ' France — "));
+    assert((await page.locator('#radio-caption').textContent()).startsWith(radioName+' — '));
     assert.deepEqual(errors, []);
     console.log('PASS '+engineName+' offline day: actual speech payload '+JSON.stringify(spoken[0])+'; correct caption, no JS error');
   } finally { await browser.close(); }

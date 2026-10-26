@@ -52,7 +52,7 @@ export function contextualHelp(s: PlayerContext) {
       : "Lecture automatique · Pause pour interrompre · Passer la cinématique pour poursuivre.";
   if (s.phase === "course" && s.age > 1)
     return s.gamepadMode
-      ? "A/B pour poursuivre après le cours."
+      ? "A/B/X pour poursuivre après le cours."
       : "Une touche ou un toucher pour poursuivre après le cours.";
   if (s.mission !== 0)
     return s.phase === "free" && s.age < 10
@@ -80,7 +80,7 @@ export function contextualHelp(s: PlayerContext) {
         : "Q D/← → marcher. Suivez les plaques ; les accès indiquent leur touche à proximité.";
   if ([1, 201].includes(s.room) && elapsed < 20)
     return s.gamepadMode
-      ? "B : se défendre avec le livre. A : sauter les trous ou une charge. Vous pouvez aussi éviter l’adversaire."
+      ? "B/X : se défendre avec le livre. A : sauter les trous ou une charge. Vous pouvez aussi éviter l’adversaire."
       : s.pointerMode
         ? "Touchez l’adversaire pour aller le frapper. Touchez le sol pour vous placer ; glissez vers le haut pour sauter."
         : "F/X : se défendre avec le livre. ESPACE : sauter les trous ou une charge. Vous pouvez aussi éviter l’adversaire.";
@@ -299,11 +299,11 @@ export function installPlayerExperience(s: Host) {
       ],
       [
         "Manette — à pied",
-        "Stick/croix : se déplacer et emprunter les accès · A : sauter · B : frapper / réplique",
+        "Stick/croix : se déplacer et emprunter les accès · A : sauter · B/X : frapper / réplique",
       ],
       [
         "Manette — menus",
-        "Croix/stick : naviguer · A : valider · B : retour · gauche/droite : ajuster un réglage",
+        "Croix/stick : naviguer · A : valider · B/X : retour · gauche/droite : ajuster un réglage",
       ],
       [
         "Start",
@@ -344,7 +344,7 @@ export function installPlayerExperience(s: Host) {
     }
     pauseButton.hidden = !mode ? false : true;
     pauseControl.hidden = !!mode;
-    const inStory = s.phase === "intro" || s.phase === "ending";
+    const inStory = ["intro", "ending", "radiated"].includes(s.phase);
     const storyKey = s.cinematic
       ? s.cinematic.kind + ":" + s.cinematic.index
       : "";
@@ -432,12 +432,12 @@ export function installPlayerExperience(s: Host) {
     if (menuPage !== "home" || mode !== "title") root.append(toolbar);
     if (menuPage === "controls") {
       paragraph(
-        "Trois affectations à réussir. Au premier échec, la tentative se termine et vous repartez à la première affectation. Attendez l’ordre en voiture, rejoignez l’établissement puis trouvez la salle. Le délai est commun à la route et à la recherche ; l’arrivée automatique est gratuite.",
+        "Trois affectations à réussir, avec trois vies pour toute la journée. Chaque échec retire une vie et vous ramène au début du trajet en cours, avec le délai et votre état rétablis. Les affectations réussies restent acquises. À la troisième défaite : radiation. Attendez l’ordre en voiture, puis trouvez la salle ; le délai est commun à la route et à la recherche.",
       );
       controls();
       if (s.gamepadConnected) paragraph("Manette standard détectée.");
       paragraph(
-        "Les dégâts de la voiture restent entre les affectations réussies ; le professeur récupère. Recommencer restaure toute la journée.",
+        "Les dégâts de la voiture restent entre les affectations réussies ; le professeur récupère. Perdre une vie restaure le professeur et la voiture pour retenter le même trajet. Une nouvelle journée rétablit les trois vies.",
       );
     } else if (menuPage === "settings") {
       const sliders: [string, number, (v: number) => void][] = [
@@ -513,7 +513,7 @@ export function installPlayerExperience(s: Host) {
       root.append(
         mountTitleArt(button("Prendre le service", returnToGame, true)),
       );
-      paragraph("Trois affectations à assurer. Un échec termine la tentative.");
+      paragraph("Trois affectations à assurer. Trois vies pour tenir la journée.");
     } else if (mode === "report") {
       paragraph(
         `${s.won} cours assuré${s.won > 1 ? "s" : ""} sur 3 — trois réussites requises.`,
@@ -599,7 +599,7 @@ export function installPlayerExperience(s: Host) {
   }
   s.gamepadMenu = (action) => {
     if (action === "start") {
-      if (["intro", "ending"].includes(s.phase)) {
+      if (["intro", "ending", "radiated"].includes(s.phase)) {
         if (s.paused) s.setPaused(false);
         s.setPlayerMenu(false);
         s.skipCinematic?.();

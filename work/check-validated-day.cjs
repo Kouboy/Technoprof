@@ -115,7 +115,7 @@ assert.deepEqual(keyboard.cinematics.ending, []);
 assert(keyboard.cinematics.clocksStable);
 results.push({ ...keyboard, journal: undefined });
 
-// Lifecycle: the real road timeout ends the attempt; ENTER starts a fresh H1.
+// Lifecycle: road timeout costs a life and restarts H1, preserving the run journal.
 const t = createGame({ policy: "three-required" }),
   g = t.g;
 g.workshop = true;
@@ -149,8 +149,8 @@ const failedSession = g.session;
 assert.equal(g.journalSnapshot().navigationByMission[1].end.outcome, "failure");
 t.advance(2.2, 30);
 t.press("ENTER");
-assert.equal(g.phase, "title");
-g.startDay(false);
+assert.equal(g.phase, "lifeLost");
+t.advance(2.7);
 assert.equal(g.phase, "free");
 assert.equal(g.mission, 0);
 assert.equal(g.navigationRevision, "H1");
@@ -160,17 +160,17 @@ assert.equal(g.vehicle, 100);
 assert.equal(g.hp, 5);
 assert(!g.navigationCare.used && !g.recoveryScene.active);
 assert.equal(Object.keys(g.validatedDayRuns).length, 0);
-assert.notEqual(g.session, failedSession, "retry owns a new journal");
+assert.equal(g.session, failedSession, "retry keeps the same run journal");
 assert.deepEqual(Object.keys(g.journalSnapshot().navigationByMission), ["1"]);
 assert.equal(
   g.journalSnapshot().events.filter((e) => e.kind === "failure").length,
-  0,
+  1,
 );
-assert.equal(g.results.length, 0);
+assert.equal(g.results.length, 1);
 assert.equal(g.won, 0);
 assert.equal(g.cinematic, null, "retry goes straight to the car");
 // Isolated lifecycle fixture: success preserves a worn car across assignments,
-// while a later failure resets the whole attempt rather than advancing to I2.
+// while a later failure retries Berthelot rather than advancing or losing Ormeaux.
 g.vehicle = 38;
 g.hp = 1;
 g.navigationCare.used = true;
@@ -187,19 +187,20 @@ g.navigationCare.used = true;
 g.finish(false);
 assert.equal(g.phase, "fail");
 g.next();
-assert.equal(g.phase, "title");
-g.startDay(false);
+assert.equal(g.phase, "lifeLost");
+t.advance(2.7);
 assert.equal(g.phase, "free");
-assert.equal(g.mission, 0);
-assert.equal(g.navigationRevision, "H1");
-assert.equal(g.room, 200);
+assert.equal(g.mission, 1);
+assert.equal(g.navigationRevision, "A3");
+assert.equal(g.room, 100);
 assert.equal(g.vehicle, 100);
 assert.equal(g.hp, 5);
 assert(!g.navigationCare.used && !g.recoveryScene.active);
-assert.equal(g.results.length, 0);
-assert.equal(g.won, 0);
-assert.equal(Object.keys(g.validatedDayRuns).length, 0);
-assert.equal(Object.keys(g.journalSnapshot().navigationByMission).length, 1);
+assert.equal(g.results.length, 3);
+assert.equal(g.won, 1);
+assert.equal(g.lives, 1);
+assert.equal(Object.keys(g.validatedDayRuns).length, 1);
+assert.equal(Object.keys(g.journalSnapshot().navigationByMission).length, 2);
 g.workshop = true;
 g.loadScenario("bruel-navigation-a3-care");
 assert(!g.validatedDay);
@@ -225,5 +226,5 @@ fs.writeFileSync(
   ) + "\n",
 );
 console.log(
-  "PASS complete day: three assignments + protected 3 km home road and parked black fade at 30/60/120 fps; automatic 10/69s cinematics, shared clocks, care, damage persistence, terminal 2/3 failure, pause, timeout, fresh H1 retry, lab switch and legacy isolation.",
+  "PASS complete day: three assignments + protected 3 km home road and parked black fade at 30/60/120 fps; automatic 10/69s cinematics, shared clocks, care, damage persistence, shared three-life budget, pause, timeout, same-assignment retry retaining successes, lab switch and legacy isolation.",
 );

@@ -72,10 +72,11 @@ g.phase='course';g.age=1.5;assert(ctx.api.contextualHelp(g).includes('Une touche
 g.gamepadMode=true;assert(ctx.api.contextualHelp(g).includes('A/B'));
 g.phase='free';g.age=1;g.mission=0;assert(ctx.api.contextualHelp(g).includes('RT'));
 g.phase='school';g.encounterTime=0;g.room=201;
-assert(ctx.api.contextualHelp(g).includes('B :'));
+assert(ctx.api.contextualHelp(g).includes('B/X :'));
 assert(!ctx.api.contextualHelp(g).includes('F/X'));
 g.gamepadMode=false;
-g.runPolicy='three-required';g.phase='school';g.finish(false,'exhausted');g.next();
+g.runPolicy='three-required';g.phase='school';g.lives=1;g.finish(false,'exhausted');g.next();
+assert.equal(g.phase,'lifeLost');g.completeLifeLoss();assert.equal(g.phase,'radiated');g.returnToTitle();
 assert(find('Prendre le service'),'terminal gameplay restores the actual title menu');
 assert.equal(nodes['player-panel'].className,'title-home');
 assert(!find('Nouvelle journée'),'no report menu between failure and title');
@@ -86,7 +87,19 @@ vm.createContext(audioCtx);vm.runInContext(ts(require('./audio-harness.cjs').sou
 const kit=new audioCtx.AudioKit();kit.context={currentTime:0};kit.master={gain:{setTargetAtTime:v=>gain.push(v)}};
 kit.radio('Bulletin',true);assert.equal(speech.length,0);
 audioCtx.speechSynthesis.getVoices=()=>[{lang:'fr-FR',localService:true}];kit.voiceVolume=.5;kit.radio('Bulletin',true);
-assert.equal(speech.length,1);assert.equal(speech[0].volume,.225);speech[0].onerror();assert(kit.radioFailed);
+assert.equal(speech.length,1);assert.equal(speech[0].volume,.5,'voice slider must not conceal a second attenuation');speech[0].onerror();assert(kit.radioFailed);
+for(const volume of [.25,.5,1]){
+ kit.radio('',false);kit.voiceVolume=volume;kit.radio('Bulletin',true);
+ assert.equal(speech.at(-1).volume,volume,'radio uses the full selected voice range');
+ const count=speech.length;kit.radio('Bulletin',true,true);kit.radio('Bulletin',true,false);
+ assert.equal(speech.length,count,'pause/resume cannot duplicate the louder bulletin');
+ speech.at(-1).onend();assert(kit.radioDone);kit.radio('Bulletin',true);
+ assert.equal(speech.length,count,'completed bulletin remains single-use');
+}
+kit.radio('',false);kit.voiceVolume=0;const silentCount=speech.length;kit.radio('Bulletin',true);
+assert.equal(speech.length,silentCount,'zero voice volume remains silent');
+kit.voiceVolume=1;kit.muted=true;kit.radio('Bulletin',true);assert.equal(speech.length,silentCount);
+kit.muted=false;
 kit.effectsVolume=.4;kit.previous='title';kit.scene('title',false,0,0);assert(Math.abs(gain.at(-1)-.28)<1e-8);
 kit.scene('title',true,0,0);assert.equal(gain.at(-1),0);
 console.log('PASS local voice only, speech error fallback and independent effects gain/mute on pause');

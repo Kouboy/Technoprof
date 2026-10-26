@@ -424,12 +424,13 @@ export function dialogueLayout(
   state?: DialogueState,
   actionLabel = "X/F",
   data = ENCOUNTERS[room] as Encounter | undefined,
+  rightEdge = 308,
 ) {
   if (!data) return;
   const page = state?.page ?? (remaining > ENCOUNTER_SECONDS / 2 ? 0 : 1),
     lines = data.pages[page];
   const w = Math.max(112, ...lines.map((l) => smallWidth(l) + 20));
-  const x = Math.max(12, Math.min(308 - w, speakerX - w * 0.6));
+  const x = Math.max(12, Math.min(rightEdge - w, speakerX - w * 0.6));
   return {
     name: room === 4 && female ? "INSPECTRICE" : data.name,
     lines,
@@ -459,6 +460,7 @@ export function drawDialogue(
   state?: DialogueState,
   actionLabel = "X/F",
   data = ENCOUNTERS[room] as Encounter | undefined,
+  rightEdge = 308,
 ) {
   const b = dialogueLayout(
     room,
@@ -468,6 +470,7 @@ export function drawDialogue(
     state,
     actionLabel,
     data,
+    rightEdge,
   );
   if (!b) return;
   const poly = (points: number[], color: number) => {

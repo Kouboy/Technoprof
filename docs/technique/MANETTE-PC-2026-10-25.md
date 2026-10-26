@@ -8,10 +8,10 @@ mauvaises commandes. Clavier, souris et toucher restent disponibles.
 | Situation | Commandes |
 | --- | --- |
 | Route | Stick gauche/croix : diriger ; RT : accélérer ; LT : freiner |
-| À pied | Stick/croix : marcher ; haut/bas : accès ; A : saut ; B : frappe/réplique |
+| À pied | Stick/croix : marcher ; haut/bas : accès ; A : saut ; B ou X : frappe/réplique |
 | Titre / cinématique / jeu | Start : commencer / passer / pause ou reprise |
-| Menus | Stick/croix : naviguer ; A : valider ; B : retour ; gauche/droite : volume |
-| Après le cours / échec | A/B : poursuivre |
+| Menus | Stick/croix : naviguer ; A : valider ; B ou X : retour ; gauche/droite : volume |
+| Après le cours / échec | A/B/X : poursuivre |
 
 `src/gamepad-input.ts` contient le mapper pur et `PAD_TUNING` : zones mortes du
 stick et des gâchettes, délai et répétition dans les menus. La lecture intervient

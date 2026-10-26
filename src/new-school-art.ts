@@ -4,7 +4,7 @@ import { QUIET_SCHOOL_DATA } from "./quiet-school-data";
 import { NEW_SCHOOL_DATA } from "./new-school-data";
 import { roomSpec, type RoomSpec } from "./missions";
 import { smallPrint, smallWidth } from "./small-lettering";
-import { drawBossHealth } from "./presentation";
+import { drawBossHealth, INFIRMARY_VIEW } from "./presentation";
 import type { SliceArt } from "./slice-art";
 import { STUDENT_FRAMES } from "./wing-art";
 import { GUARD_FRAMES } from "./bridge-art";
@@ -189,7 +189,14 @@ export class NewSchoolArt {
       ((r.navigation?.revision === "A3" || r.navigation?.revision === "I1") &&
         (s.falling ?? 0) > 0)
     )
-      s.art?.drawTeacher(s, r.boss ? 0.225 : 0.18);
+      s.art?.drawTeacher(
+        s,
+        s.mission === 1 && r.care
+          ? INFIRMARY_VIEW.teacherScale
+          : r.boss
+            ? 0.225
+            : 0.18,
+      );
     for (let index = 0; index < this.enemyImages.length; index++) {
       const image = this.enemyImages[index],
         e = s.enemies[index];
@@ -336,7 +343,13 @@ export class NewSchoolArt {
       g.lineStyle(1, 0xb9aa89);
       g.lineBetween(p.x - p.dir * 10, 131, p.x - p.dir * 4, 131);
     }
-    if (e?.role === "security" && e.hp > 0 && !s.encounterTime && !e.stun) {
+    if (
+      e?.role === "security" &&
+      !e.boss &&
+      e.hp > 0 &&
+      !s.encounterTime &&
+      !e.stun
+    ) {
       // A short ground marker shows the committed front without covering faces.
       // Turning uses broken strokes; it never advertises a solid frontal guard.
       const dir = e.facing ?? -1;
