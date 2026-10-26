@@ -835,7 +835,9 @@ export class AudioKit {
     u.lang = "fr-FR";
     u.rate = 1.08;
     u.pitch = 0.85;
-    u.volume = 0.45 * this.voiceVolume;
+    // Speech has its own output, outside the effects/music buses. Keep the
+    // voice slider's full range instead of silently capping the bulletin.
+    u.volume = this.voiceVolume;
     this.radioPlaying = true;
     this.radioDone = false;
     this.radioFailed = false;
