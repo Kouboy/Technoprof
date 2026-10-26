@@ -259,6 +259,9 @@ export function drawConditionBars(
   }
 }
 export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
+  // The classroom ellipse is carried by its intertitle and Foley, not mission UI.
+  if (["blackBefore", "course", "blackAfter", "later"].includes(s.phase))
+    return;
   const m = cadreModel(s, routeMeters);
   const ink = 0x080d13,
     metal = 0x24333b,

@@ -72,7 +72,7 @@ g.phase='course';g.age=1.5;assert(ctx.api.contextualHelp(g).includes('Une touche
 g.gamepadMode=true;assert(ctx.api.contextualHelp(g).includes('A/B'));
 g.phase='free';g.age=1;g.mission=0;assert(ctx.api.contextualHelp(g).includes('RT'));
 g.phase='school';g.encounterTime=0;g.room=201;
-assert(ctx.api.contextualHelp(g).includes('B :'));
+assert(ctx.api.contextualHelp(g).includes('B/X :'));
 assert(!ctx.api.contextualHelp(g).includes('F/X'));
 g.gamepadMode=false;
 g.runPolicy='three-required';g.phase='school';g.finish(false,'exhausted');g.next();

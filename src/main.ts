@@ -5,6 +5,7 @@ import {
   missionEnemies,
 } from "./missions";
 import { NewSchoolArt } from "./new-school-art";
+import { drawCourseCard } from "./course-presentation";
 import {
   BRUEL_NAV,
   BRUEL_NAV_A2,
@@ -3670,7 +3671,7 @@ class Game extends Phaser.Scene {
     if (care && Math.abs(this.px - care.x) <= care.reach)
       return this.navigationCare.used
         ? "SOINS UTILISES"
-        : `${this.gamepadMode ? "B" : this.pointerMode ? "TOUCHER" : "F/X"} : SOINS +${this.navigationGain} PV`;
+        : `${this.gamepadMode ? "B/X" : this.pointerMode ? "TOUCHER" : "F/X"} : SOINS +${this.navigationGain} PV`;
     const hint = this.interaction();
     if (hint) return hint.label;
     const edges = this.roomSpec()?.blocked ?? [];
@@ -5016,11 +5017,8 @@ class Game extends Phaser.Scene {
         Phaser.Math.Clamp((this.age - (PLAY.openingSeconds - 0.9)) / 0.9, 0, 1),
       );
     }
-    if (this.phase === "course") {
-      this.rect(5, 5, 310, 172, 0x000000);
-      this.txt(61, 78, "Bon. Reprenons.", 17);
-    }
-    if (this.phase === "later") this.txt(47, 88, "Une heure plus tard...", 14);
+    if (this.phase === "course" || this.phase === "later")
+      drawCourseCard(this.g, this.phase);
     if (this.phase === "arrivalFade")
       this.fadeViewport(Math.min(1, this.age / 1.1));
     if (this.phase === "homeArrival")
@@ -5053,7 +5051,7 @@ class Game extends Phaser.Scene {
         INFIRMARY.nurseX,
         true,
         this.recoveryScene.dialogue,
-        this.gamepadMode ? "B" : this.pointerMode ? "TOUCHER" : "X/F",
+        this.gamepadMode ? "B/X" : this.pointerMode ? "TOUCHER" : "X/F",
         INFIRMARY.encounter,
       );
     if (
@@ -5068,7 +5066,7 @@ class Game extends Phaser.Scene {
         this.enemies[0].x,
         this.enemies[0].female,
         this.dialogue,
-        this.gamepadMode ? "B" : this.pointerMode ? "TOUCHER" : "X/F",
+        this.gamepadMode ? "B/X" : this.pointerMode ? "TOUCHER" : "X/F",
         this.encounter(),
       );
     this.drawingEncounter = false;
@@ -5307,7 +5305,7 @@ class Game extends Phaser.Scene {
     if (this.age >= PLAY.failContinueSeconds) {
       panel.fillStyle(0x080d13, 0.95);
       panel.fillRect(14, 153, 292, 16);
-      const command = `${this.gamepadMode ? "A/B" : this.pointerMode ? "TOUCHER" : "ENTREE"} : ${notice.next}`;
+      const command = `${this.gamepadMode ? "A/B/X" : this.pointerMode ? "TOUCHER" : "ENTREE"} : ${notice.next}`;
       bitmap(
         panel,
         Math.round(160 - bitmapWidth(command) / 2),

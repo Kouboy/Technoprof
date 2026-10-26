@@ -64,9 +64,18 @@ export function sceneCues(
   if (phase === "homeArrival")
     return [
       ["car-door", HOME_ARRIVAL.doorSlamAt, 0.95],
-      ...Array.from({length: Math.ceil(HOME_ARRIVAL.walkSeconds / HOME_ARRIVAL.stepSeconds)}, (_, i): SceneCue => [
-        "step", HOME_ARRIVAL.walkAt + i * HOME_ARRIVAL.stepSeconds, 0.5 - i * 0.015,
-      ]),
+      ...Array.from(
+        {
+          length: Math.ceil(
+            HOME_ARRIVAL.walkSeconds / HOME_ARRIVAL.stepSeconds,
+          ),
+        },
+        (_, i): SceneCue => [
+          "step",
+          HOME_ARRIVAL.walkAt + i * HOME_ARRIVAL.stepSeconds,
+          0.5 - i * 0.015,
+        ],
+      ),
     ];
   if (phase === "arrival")
     return [
@@ -508,7 +517,9 @@ export class AudioKit {
     const c = this.context,
       wasPaused = this.paused;
     this.surface =
-      phase === "arrival" || phase === "homeArrival" ? "concrete" : (context.surface ?? "tile");
+      phase === "arrival" || phase === "homeArrival"
+        ? "concrete"
+        : (context.surface ?? "tile");
     this.paused = paused;
     this.master.gain.setTargetAtTime(
       this.muted || paused ? 0 : AUDIO.master * this.effectsVolume,
@@ -584,15 +595,15 @@ export class AudioKit {
       }
       const cues: SceneCue[] =
         transition.sound === "stairs"
-          ? [["stairs", 0, 0.8]]
+          ? [["stairs", 0, 1]]
           : transition.sound === "door"
             ? [
-                ["handle", 0, 0.55],
-                ["door", 0.035, 0.38],
+                ["handle", 0, 0.8],
+                ["door-passage", 0.035, 1],
               ]
             : [
-                ["step", 0.025, 0.55],
-                ["step", 0.17, 0.48],
+                ["step", 0.025, 0.95],
+                ["step", 0.17, 0.8],
               ];
       cues.forEach(([kind, at, gain], i) => {
         if (transition.age >= at && !this.passagePlayed.has(i)) {
@@ -606,7 +617,7 @@ export class AudioKit {
             this.play(
               sample,
               0,
-              gain * (care ? WALK_SOUND.quiet : 1),
+              gain * (care ? 0.65 : 1),
               0,
               "movement",
               1,
@@ -626,7 +637,11 @@ export class AudioKit {
       this.storyKey = storyKey;
       this.storyPulse = -1;
     }
-    if (story && !context.cinematicSoundtrack && (phase === "intro" || phase === "ending")) {
+    if (
+      story &&
+      !context.cinematicSoundtrack &&
+      (phase === "intro" || phase === "ending")
+    ) {
       const alarm = story.cue === "alarm";
       const pulse = alarm ? Math.floor(story.age / 1.6) : 0;
       if (pulse !== this.storyPulse) {
@@ -636,16 +651,10 @@ export class AudioKit {
             [0, 0.16, 0.32].forEach((delay) =>
               this.tone(880, 0.09, 0.035, 880, delay),
             );
-          } else if (
-            story.cue === "doorbell" &&
-            story.age < 0.18
-          ) {
+          } else if (story.cue === "doorbell" && story.age < 0.18) {
             this.tone(660, 0.25, 0.045, 660);
             this.tone(523, 0.4, 0.035, 523, 0.24);
-          } else if (
-            story.cue === "bell" &&
-            story.age < 0.18
-          ) {
+          } else if (story.cue === "bell" && story.age < 0.18) {
             this.play("bell-start", 0, 0.9, 0, "cue");
           }
         }

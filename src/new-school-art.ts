@@ -4,7 +4,7 @@ import { QUIET_SCHOOL_DATA } from "./quiet-school-data";
 import { NEW_SCHOOL_DATA } from "./new-school-data";
 import { roomSpec, type RoomSpec } from "./missions";
 import { smallPrint, smallWidth } from "./small-lettering";
-import { drawBossHealth } from "./presentation";
+import { drawBossHealth, INFIRMARY_VIEW } from "./presentation";
 import type { SliceArt } from "./slice-art";
 import { STUDENT_FRAMES } from "./wing-art";
 import { GUARD_FRAMES } from "./bridge-art";
@@ -189,7 +189,14 @@ export class NewSchoolArt {
       ((r.navigation?.revision === "A3" || r.navigation?.revision === "I1") &&
         (s.falling ?? 0) > 0)
     )
-      s.art?.drawTeacher(s, r.boss ? 0.225 : 0.18);
+      s.art?.drawTeacher(
+        s,
+        s.mission === 1 && r.care
+          ? INFIRMARY_VIEW.teacherScale
+          : r.boss
+            ? 0.225
+            : 0.18,
+      );
     for (let index = 0; index < this.enemyImages.length; index++) {
       const image = this.enemyImages[index],
         e = s.enemies[index];

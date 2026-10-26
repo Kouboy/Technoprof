@@ -33,7 +33,7 @@ for(const kind of ['intro','ending']){
   assert(image.crop.x>=0&&image.crop.y>=0&&image.crop.x+image.crop.w<=f.w+.001&&image.crop.y+image.crop.h<=f.h+.001);
  }
 }
-const opening=new scope.api.CinematicSequence('intro');art.render(opening);assert.equal(image.alpha,0);opening.tick(.5,false);art.render(opening);assert.equal(image.alpha,.5);opening.tick(.5,false);art.render(opening);assert.equal(image.alpha,1);
+const opening=new scope.api.CinematicSequence('intro');art.render(opening);assert.equal(image.alpha,0);opening.tick(1,false);art.render(opening);assert.equal(image.alpha,.5);opening.tick(1,false);art.render(opening);assert.equal(image.alpha,1);
 const ending=new scope.api.CinematicSequence('ending');for(const i of [12,13]){ending.index=i;ending.age=0;art.render(ending);assert.equal(image.alpha,1,'hard bell/wake cut')}
 art.hide();assert(!image.visible);for(const r of rects)assert(r.x>=0&&r.y>=0&&r.x+r.w<=320&&r.y+r.h<=240);
-console.log('PASS approved films: five unchanged PNGs, 23 bounded source crops, full-frame cover, 1s black opening and hard bell/wake cuts');
+console.log('PASS approved films: five unchanged PNGs, 23 bounded source crops, full-frame cover, 2s black opening and hard bell/wake cuts');

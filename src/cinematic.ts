@@ -71,7 +71,7 @@ export const CINEMATIC_PANELS: Record<
 };
 export const CINEMATIC = {
   fadeSeconds: 0.18,
-  openingFadeSeconds: 1,
+  openingFadeSeconds: 2,
   endingFadeSeconds: 3,
 };
 export function cinematicTimecodes(kind: CinematicKind) {

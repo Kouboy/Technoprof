@@ -47,6 +47,7 @@ assert.deepEqual(
 for (const [button, action] of [
   [0, "SPACE"],
   [1, "X"],
+  [2, "X"],
 ]) {
   input = make();
   input.sample([pad()], context(), 0.016);
@@ -62,6 +63,46 @@ for (const [button, action] of [
     input.sample([pad([button])], context(), 0.016).actions.includes(action),
   );
 }
+// B and X are one logical action, including across phase/focus changes.
+for (const button of [1, 2]) {
+  for (const [phase, menu, expected] of [
+    ["school", true, "back"],
+    ["course", false, "continue"],
+    ["fail", false, "ENTER"],
+  ]) {
+    const p = make();
+    const c = context(phase, menu);
+    const f = p.sample([pad([button])], c, 0.016);
+    assert.equal(
+      [...f.ui, ...f.actions].join(),
+      expected,
+      `${button} in ${phase}`,
+    );
+    assert.equal([...p.sample([pad([button])], c, 0.016).actions].length, 0);
+  }
+}
+input = make();
+assert.deepEqual(
+  [...input.sample([pad([1, 2])], context(), 0.016).actions],
+  ["X"],
+);
+assert.equal(
+  input.sample([pad([2])], context(), 0.016).actions.length,
+  0,
+  "releasing B while X remains held cannot retrigger",
+);
+assert.equal(
+  input.sample([pad([1, 2])], context("course"), 0.016).ui.length,
+  0,
+  "held logical action cannot advance a new phase",
+);
+input.suspend();
+assert.equal(input.sample([pad([2])], context(), 0.016).actions.length, 0);
+input.sample([pad()], context(), 0.016);
+assert.deepEqual(
+  [...input.sample([pad([2])], context(), 0.016).actions],
+  ["X"],
+);
 input = make();
 assert(
   !input.sample([pad([], [0.1, -0.1])], context("road"), 0.016).drive,

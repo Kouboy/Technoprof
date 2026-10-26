@@ -81,7 +81,8 @@ export class GamepadInput {
     const pressed = (i: number) =>
       !!selected.buttons[i]?.pressed ||
       padValue(selected.buttons[i]?.value) > 0.5;
-    const current = [pressed(0), pressed(1), pressed(9)];
+    // Merge before edge detection: B + X is one action, never a double hit.
+    const current = [pressed(0), pressed(1) || pressed(2), pressed(9)];
     const edges = current.map((down, i) => {
       if (!down) this.blocked[i] = false;
       return down && !this.previous[i] && !this.blocked[i];
@@ -119,7 +120,8 @@ export class GamepadInput {
       current.some(Boolean)
     );
     if (edges[2]) {
-      if (context.phase === "fail" && !context.menu) frame.actions.push("ENTER");
+      if (context.phase === "fail" && !context.menu)
+        frame.actions.push("ENTER");
       else frame.ui.push("start");
       // One Start must never also act in the state it just opened.
       return frame;

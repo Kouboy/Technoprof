@@ -52,7 +52,7 @@ export function contextualHelp(s: PlayerContext) {
       : "Lecture automatique · Pause pour interrompre · Passer la cinématique pour poursuivre.";
   if (s.phase === "course" && s.age > 1)
     return s.gamepadMode
-      ? "A/B pour poursuivre après le cours."
+      ? "A/B/X pour poursuivre après le cours."
       : "Une touche ou un toucher pour poursuivre après le cours.";
   if (s.mission !== 0)
     return s.phase === "free" && s.age < 10
@@ -80,7 +80,7 @@ export function contextualHelp(s: PlayerContext) {
         : "Q D/← → marcher. Suivez les plaques ; les accès indiquent leur touche à proximité.";
   if ([1, 201].includes(s.room) && elapsed < 20)
     return s.gamepadMode
-      ? "B : se défendre avec le livre. A : sauter les trous ou une charge. Vous pouvez aussi éviter l’adversaire."
+      ? "B/X : se défendre avec le livre. A : sauter les trous ou une charge. Vous pouvez aussi éviter l’adversaire."
       : s.pointerMode
         ? "Touchez l’adversaire pour aller le frapper. Touchez le sol pour vous placer ; glissez vers le haut pour sauter."
         : "F/X : se défendre avec le livre. ESPACE : sauter les trous ou une charge. Vous pouvez aussi éviter l’adversaire.";
@@ -299,11 +299,11 @@ export function installPlayerExperience(s: Host) {
       ],
       [
         "Manette — à pied",
-        "Stick/croix : se déplacer et emprunter les accès · A : sauter · B : frapper / réplique",
+        "Stick/croix : se déplacer et emprunter les accès · A : sauter · B/X : frapper / réplique",
       ],
       [
         "Manette — menus",
-        "Croix/stick : naviguer · A : valider · B : retour · gauche/droite : ajuster un réglage",
+        "Croix/stick : naviguer · A : valider · B/X : retour · gauche/droite : ajuster un réglage",
       ],
       [
         "Start",
