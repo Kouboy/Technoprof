@@ -1,62 +1,28 @@
-import type Phaser from "phaser";
+import Phaser from "phaser";
 import { bitmap, bitmapWidth } from "./cadre";
 import { LIVES, remainingLives } from "./lives";
 import { RADIATION_DATA } from "./radiation-data";
 
 type Ink = Parameters<typeof bitmap>[0];
-// Hand-placed pixels, like the existing HUD glyphs: hair, glasses, tired face,
-// grey stubble and an old coat collar. No generated high-resolution head crop.
-const HEAD = [
-  "....333.3.......",
-  "..33444333......",
-  ".33444444333....",
-  ".344443333333...",
-  "3343355555333...",
-  ".333555555553...",
-  ".335511511555...",
-  ".335171171555...",
-  "..35111111155...",
-  "..35556555555...",
-  "...556665555....",
-  "...55322555.....",
-  "....523325......",
-  "....523335......",
-  "...11222211.....",
-  "..1881551881....",
-  ".188811188881...",
+// Four cardinal silhouette copies give the already-transparent profile a thin
+// dark edge. Both displays reuse the teacher atlas prepared by SliceArt.
+const OUTLINE = [
+  [-1, 0],
+  [1, 0],
+  [0, -1],
+  [0, 1],
 ];
-const COLORS: Record<string, number> = {
-  "1": 0x10171b,
-  "2": 0x68675e,
-  "3": 0x91918a,
-  "4": 0xbcb9a5,
-  "5": 0xc39f75,
-  "6": 0x956c50,
-  "7": 0xb1c7bc,
-  "8": 0x66503b,
-};
-export function drawLifeCount(
+function drawLifeNumber(
   g: Ink,
   x: number,
   y: number,
   count: number,
   scale = 1,
 ) {
-  HEAD.forEach((row, dy) =>
-    [...row].forEach((pixel, dx) => {
-      if (pixel === ".") return;
-      g.fillStyle(COLORS[pixel]);
-      g.fillRect(x + dx * scale, y + dy * scale, scale, scale);
-    }),
-  );
-  bitmap(
-    g,
-    x + 20 * scale,
-    y + 5 * scale,
-    "X " + remainingLives(count),
-    0xe3d4b3,
-    scale,
-  );
+  const text = "X " + remainingLives(count);
+  for (const [dx, dy] of OUTLINE)
+    bitmap(g, x + dx, y + dy, text, 0x080d13, scale);
+  bitmap(g, x, y, text, 0xe3d4b3, scale);
 }
 
 export class LivesArt {
@@ -64,11 +30,43 @@ export class LivesArt {
   stamp: Phaser.GameObjects.Graphics;
   veil: Phaser.GameObjects.Graphics;
   image: Phaser.GameObjects.Image;
+  face: Phaser.GameObjects.Image;
+  outlines: Phaser.GameObjects.Image[];
   static preload(scene: Phaser.Scene) {
     scene.load.image("radiation", RADIATION_DATA);
   }
   constructor(scene: Phaser.Scene) {
     scene.textures.get("radiation").setFilter(1);
+    if (!scene.textures.exists("life-profile")) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 94;
+      canvas.height = 99;
+      const context = canvas.getContext("2d", { willReadFrequently: true })!;
+      context.drawImage(
+        scene.textures.get("prof").getSourceImage() as HTMLCanvasElement,
+        163,
+        32,
+        94,
+        99,
+        0,
+        0,
+        94,
+        99,
+      );
+      const pixels = context.getImageData(0, 0, 94, 99);
+      // Remove the muted chroma fringe too, without touching the actor atlas.
+      for (let i = 0; i < pixels.data.length; i += 4) {
+        const r = pixels.data[i],
+          g = pixels.data[i + 1],
+          b = pixels.data[i + 2];
+        if (r > 24 && b > 35 && r > g * 1.12 && b > g * 1.12 && b > r * 0.8)
+          pixels.data[i + 3] = 0;
+      }
+      context.putImageData(pixels, 0, 0);
+      const texture = scene.textures.addCanvas("life-profile", canvas)!;
+      texture.add("life-head", 0, 0, 0, 94, 99);
+      texture.setFilter(1);
+    }
     this.image = scene.add
       .image(0, 0, "radiation")
       .setOrigin(0)
@@ -82,30 +80,55 @@ export class LivesArt {
       .setPosition(160, 148)
       .setAngle(-8);
     this.veil = scene.add.graphics().setDepth(4.19);
+    this.outlines = OUTLINE.map(() =>
+      scene.add
+        .image(0, 0, "life-profile", "life-head")
+        .setOrigin(0)
+        .setTint(0x080d13)
+        .setTintMode(Phaser.TintModes.FILL)
+        .setDepth(4.115)
+        .setVisible(false),
+    );
+    this.face = scene.add
+      .image(0, 0, "life-profile", "life-head")
+      .setOrigin(0)
+      .setDepth(4.12)
+      .setVisible(false);
   }
   hide() {
     this.ink.clear();
     this.stamp.clear();
     this.veil.clear();
     this.image.setVisible(false);
+    this.face.setVisible(false);
+    for (const outline of this.outlines) outline.setVisible(false);
+  }
+  portrait(x: number, y: number, width: number) {
+    const height = Math.round((width * 99) / 94);
+    this.face
+      .setPosition(x, y)
+      .setDisplaySize(width, height)
+      .setAlpha(1)
+      .setVisible(true);
+    this.outlines.forEach((outline, i) =>
+      outline
+        .setPosition(x + OUTLINE[i][0], y + OUTLINE[i][1])
+        .setDisplaySize(width, height)
+        .setVisible(true),
+    );
   }
   hud(count: number) {
-    const g = this.ink;
-    g.fillStyle(0x080d13, 0.92);
-    g.fillRect(264, 8, 47, 24);
-    g.fillStyle(0x52605b);
-    g.fillRect(265, 8, 45, 1);
-    g.fillStyle(0x24333b);
-    g.fillRect(264, 31, 47, 1);
-    drawLifeCount(g, 267, 11, count);
+    this.portrait(275, 10, 14);
+    drawLifeNumber(this.ink, 294, 14, count);
   }
   loss(before: number, after: number, age: number) {
     const count = age < LIVES.lossChangeAt ? before : after;
-    drawLifeCount(this.ink, 86, 83, count, 4);
-    // A brief red cut at the exact decrement makes the loss unambiguous.
+    this.portrait(110, 96, 42);
+    drawLifeNumber(this.ink, 164, 108, count, 3);
+    // Keep the existing decrement beat, sized to the smaller central counter.
     if (age >= LIVES.lossChangeAt && age < LIVES.lossChangeAt + 0.18) {
       this.ink.fillStyle(0xd97561);
-      this.ink.fillRect(165, 139, 64, 2);
+      this.ink.fillRect(164, 138, 45, 2);
     }
     const line = after > 0 ? "REPRISE DU TRAJET" : "DERNIERE VIE PERDUE";
     bitmap(

@@ -81,3 +81,11 @@ for(const id of [302,306]){
  art.hide();assert(art.enemyImages.every(s=>s.setVisibleArgs[0]===false));
 }
 console.log('PASS I2 actual render: distinct student/guard and thrower textures, positions and independent defeat/cleanup');
+{
+ const h=ready(2,24),g=h.g,e=g.enemies[0],lines=[],rects=[];
+ e.wind=.5;e.stun=0;e.recovery=0;
+ art.combat=new Proxy({}, {get:(_target,key)=>(...a)=>{if(key==='lineBetween')lines.push(a);if(key==='fillRect')rects.push(a);}});
+ render(g);
+ assert(rects.length>10,'boss health gauge remains visible');
+ assert.equal(lines.filter(a=>a[1]>=164||a[3]>=164).length,0,'no movement indicators below the final boss');
+}

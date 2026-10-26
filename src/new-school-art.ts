@@ -343,7 +343,13 @@ export class NewSchoolArt {
       g.lineStyle(1, 0xb9aa89);
       g.lineBetween(p.x - p.dir * 10, 131, p.x - p.dir * 4, 131);
     }
-    if (e?.role === "security" && e.hp > 0 && !s.encounterTime && !e.stun) {
+    if (
+      e?.role === "security" &&
+      !e.boss &&
+      e.hp > 0 &&
+      !s.encounterTime &&
+      !e.stun
+    ) {
       // A short ground marker shows the committed front without covering faces.
       // Turning uses broken strokes; it never advertises a solid frontal guard.
       const dir = e.facing ?? -1;
