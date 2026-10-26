@@ -8,6 +8,7 @@ import {
 } from "./audio-materials";
 import { DRIVE } from "./driving";
 import { HOME_ARRIVAL } from "./home-arrival";
+import { LIVES } from "./lives";
 import { sfxTakes } from "./sfx-samples";
 import { WALK_SOUND, type FloorSound, type PassageAudio } from "./soundscape";
 import type { CinematicCue } from "./cinematic";
@@ -60,6 +61,8 @@ export function sceneCues(
   phase: string,
   context: SceneSoundContext,
 ): SceneCue[] {
+  if (phase === "lifeLost") return [["relay", LIVES.lossChangeAt, 0.8]];
+  if (phase === "radiated") return [["stamp", LIVES.stampAt, 1.4]];
   if (phase === "opening") return OPENING_CUES;
   if (phase === "homeArrival")
     return [
@@ -575,7 +578,7 @@ export class AudioKit {
         (!this.sequencePlayed.has(index) ||
           (wasPaused &&
             phase !== "arrival" &&
-            !["car-door", "step", "gate"].includes(kind)))
+            !["car-door", "step", "gate", "stamp", "relay"].includes(kind)))
       ) {
         this.sequencePlayed.add(index);
         const sample: Material =

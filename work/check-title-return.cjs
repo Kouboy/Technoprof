@@ -51,11 +51,14 @@ for (const phase of ["road", "school"]) {
   g.finish(false, phase === "road" ? "breakdown" : "exhausted");
   t.advance(2.1);
   t.press("ENTER");
-  assert.equal(g.phase, "title", "failure returns to title");
+  assert.equal(g.phase, "lifeLost", "failure shows the lost life");
+  t.advance(2.7);
+  assert.equal(g.phase, "free");
+  assert.equal(g.lives, 2);
   assert.equal(
     g.results.length,
     1,
-    "journal remains available until a new run",
+    "retry preserves the run journal",
   );
   g.startDay(false);
   assert.equal(g.phase, "free");
@@ -64,7 +67,7 @@ for (const phase of ["road", "school"]) {
   assert.equal(g.hp, 5);
 }
 console.log(
-  "PASS 69s ending + 3s suspendable fade, skip and road/school failure return to title",
+  "PASS 69s ending + 3s suspendable fade, skip and road/school lost-life retry",
 );
 {
   const t = createGame({ policy: "three-required" }),
@@ -75,7 +78,7 @@ console.log(
   t.advance(12.6);
   assert.equal(
     g.phase,
-    "title",
-    "silent/no-audio Game Over also returns automatically",
+    "lifeLost",
+    "silent/no-audio Game Over also shows the counter automatically",
   );
 }

@@ -11,13 +11,14 @@ for (const reason of ['breakdown', 'exhausted', 'late', null]) {
     const s = { failureReason: reason, mission, brokenRoad: reason === 'breakdown', pointerMode: false };
     const before = JSON.stringify(s), n = context.notice(s);
     assert.equal(JSON.stringify(s), before, 'presentation never changes simulation');
-    assert.equal(n.next, 'RETOUR AU TITRE');
+    assert.equal(n.next, 'VIE PERDUE');
     assert.equal(context.notice({...s,runPolicy:'legacy-two'}).next,mission === 2 ? 'VOIR LE BILAN' : 'AFFECTATION SUIVANTE','explicit historical fixture');
-    assert.equal(n.frame, reason === 'breakdown' ? 'road' : reason === 'exhausted' ? 'school' : null);
+    assert.equal(n.frame, reason === 'breakdown' ? 'road' : ['exhausted','late'].includes(reason) ? 'school' : null);
     assert(n.cause.length && n.detail.length);
     assert(!JSON.stringify(n).includes('RADIATION'), 'one assignment failure is not radiation');
   }
 }
+assert.equal(context.notice({failureReason:'late',mission:0,brokenRoad:true}).frame,'road','road timeout also has its defeat illustration');
 let rects = [], color;
 const g = { clear() { rects = []; }, fillStyle(c) { color = c; }, fillRect(x,y,w,h) { rects.push({x,y,w,h,color}); } };
 vm.runInContext(stripTypeScriptTypes(strip(fs.readFileSync('src/presentation.ts', 'utf8'))) + ';globalThis.frame=drawSurround;', context);

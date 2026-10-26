@@ -50,8 +50,12 @@ Ouvrir **Jouer-Technoprof-Journee-Atelier.html**, puis **Prendre le service**.
 Ce fichier autonome fonctionne sur disque, hors connexion. Il enchaîne les trois
 trajets et les établissements validés : Ormeaux H1, Auguste-Berthelot A3 et
 Trois-Ponts I2. Le journal d’essai réunit toute la journée.
-Les trois affectations doivent réussir : le premier échec interrompt la journée,
-et recommencer repart du début. Après le dernier cours, retour protégé de 3 km à
+Les trois affectations doivent réussir, avec **trois vies pour la journée**.
+Chaque échec retire une vie : après la vignette, le compteur de vies diminue sur
+fond noir, puis le trajet de l’affectation en cours recommence avec le délai,
+le professeur et la voiture rétablis. Les affectations réussies restent acquises.
+La troisième défaite provoque la radiation puis le retour au titre. Une nouvelle
+journée rétablit trois vies. Après le dernier cours, retour protégé de 3 km à
 Maison, stationnement, portière et marche lente jusqu'à l'appartement, puis fondu
 noir de deux secondes avant la conclusion.
 

@@ -69,6 +69,8 @@ for (const button of [1, 2]) {
     ["school", true, "back"],
     ["course", false, "continue"],
     ["fail", false, "ENTER"],
+    ["lifeLost", false, "ENTER"],
+    ["radiated", false, "ENTER"],
   ]) {
     const p = make();
     const c = context(phase, menu);

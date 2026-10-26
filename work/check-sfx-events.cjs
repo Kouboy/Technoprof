@@ -32,6 +32,22 @@ function rig() {
   a.tone = () => {};
   return { a, events };
 }
+for (const [phase, kind, at] of [
+  ["lifeLost", "relay", 0.8],
+  ["radiated", "stamp", 0.65],
+]) {
+  const { a, events } = rig();
+  a.scene(phase, false, 120, 0, 0, false, { age: 0 });
+  a.scene(phase, false, 120, at, 0, false, { age: at });
+  assert.equal(events.filter((e) => e.kind === kind).length, 1);
+  a.scene(phase, true, 120, 0, 0, false, { age: at });
+  a.scene(phase, false, 120, 0, 0, false, { age: at });
+  assert.equal(
+    events.filter((e) => e.kind === kind).length,
+    1,
+    "pause cannot duplicate the loss click or radiation stamp",
+  );
+}
 {
   const { a, events } = rig();
   a.scene("school", false, 120, 0.02, 105, false, {

@@ -168,7 +168,10 @@ export class GamepadInput {
       if (edges[1]) frame.actions.push("X");
     } else if (context.phase === "course" && (edges[0] || edges[1]))
       frame.ui.push("continue");
-    else if (context.phase === "fail" && (edges[0] || edges[1]))
+    else if (
+      ["fail", "lifeLost", "radiated"].includes(context.phase) &&
+      (edges[0] || edges[1])
+    )
       frame.actions.push("ENTER");
     return frame;
   }

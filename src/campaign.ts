@@ -1,4 +1,4 @@
-// The public campaign is one continuous attempt. Historical fixtures opt in explicitly.
+// Three successes are mandatory; the shared life budget controls retries.
 export type RunPolicy = "three-required" | "legacy-two";
 export const REQUIRED_ASSIGNMENTS = 3;
 export function requiredAssignments(policy: RunPolicy = "three-required") {
