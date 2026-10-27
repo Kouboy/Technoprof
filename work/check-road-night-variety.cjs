@@ -51,8 +51,22 @@ const samples = [
   [1120, 450, [210, 209, 195, 255]],
   [1085, 410, [150, 150, 150, 255]],
 ];
+// Actual source colours on the curved wings, roof and door bottoms. The old
+// rectangular recolouring left these original blue/white strips around a patch.
+const bodySeams = [
+  [55, 710, [61, 102, 144, 255]],
+  [90, 660, [57, 95, 137, 255]],
+  [440, 690, [53, 86, 128, 255]],
+  [135, 595, [145, 180, 210, 255]],
+  [600, 695, [159, 171, 178, 255]],
+  [940, 700, [189, 197, 199, 255]],
+  [1112, 600, [202, 198, 184, 255]],
+];
+bodySeams.forEach(([x, y, c]) => put(x, y, c));
 samples.forEach(([x, y, c]) => put(x, y, c));
 a.recolorRoadTraffic(pixels, width, height, 2);
+for (const [x, y, color] of bodySeams)
+  assert.notDeepEqual(get(x, y), color, `continuous body paint at ${x},${y}`);
 assert.notDeepEqual(get(100, 690), samples[0][2]);
 assert.notDeepEqual(get(1120, 450), samples[5][2]);
 for (const i of [1, 2, 3, 4, 6])
@@ -124,6 +138,22 @@ art.hide();
 art.mission = 1;
 art.draw("district", 0, 220, 140, 100, false, 4);
 assert.equal(images[1].setVisibleArgs[0], false, "day hides night windows");
+for (let frame = 0; frame < 3; frame++) {
+  for (let id = 0; id < 15; id++) {
+    art.hide();
+    art.draw("traffic", frame, 160, 140, 50, false, id);
+    assert.equal(
+      art.index,
+      1,
+      "one complete sprite per vehicle, no original underneath",
+    );
+    const variant = a.roadTrafficVariant(id, frame);
+    assert.deepEqual(images[0].setTextureArgs, [
+      variant ? "traffic-paint-" + variant : "traffic",
+      frame,
+    ]);
+  }
+}
 const draw = source.slice(source.indexOf("  draw("));
 assert(
   !/getImageData|putImageData|createElement/.test(draw),

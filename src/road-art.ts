@@ -62,25 +62,42 @@ export function recolorRoadTraffic(
         let panel = false,
           base = 185;
         if (frame === 0) {
+          // Follow the source colour across the entire silhouette, including
+          // curved wings and roof. Rectangular patches leave an original-colour
+          // rim that reads like two cars superimposed at gameplay scale.
+          const glass =
+            y >= 512 &&
+            y < 582 &&
+            x > 139 - (y - 512) * 0.4 &&
+            x < 388 + (y - 512) * 0.4;
           panel =
-            ((y >= 580 && y < 733 && x > 63 && x < 469) ||
-              (y >= 487 && y < 505 && x > 146 && x < 377)) &&
-            b > r * 1.18 &&
-            g > r * 1.08 &&
-            light > 40;
+            y >= 486 &&
+            y < 766 &&
+            !glass &&
+            !(x >= 191 && x <= 335 && y >= 630 && y <= 668) &&
+            b > r * 1.12 &&
+            g > r * 1.04 &&
+            light > 28;
           base = 112;
         } else if (frame === 1) {
+          const glass =
+            y >= 511 &&
+            y < 591 &&
+            x > 656 - (y - 511) * 0.4 &&
+            x < 878 + (y - 511) * 0.4;
           panel =
-            ((y >= 588 && y < 744 && x > 590 && x < 952) ||
-              (y >= 486 && y < 506 && x > 666 && x < 869)) &&
+            y >= 486 &&
+            y < 754 &&
+            !glass &&
             !(x >= 689 && x <= 835 && y >= 680 && y <= 722) &&
-            light > 100 &&
-            Math.max(r, g, b) - Math.min(r, g, b) < 38;
+            !((x - 767) ** 2 + (y - 618) ** 2 < 17 ** 2) &&
+            light > 46 &&
+            Math.max(r, g, b) - Math.min(r, g, b) < 52;
         } else {
           panel =
             y >= 231 &&
-            y < 598 &&
-            ((x > 1082 && x < 1227) || (x > 1298 && x < 1440)) &&
+            y < 609 &&
+            ((x > 1082 && x < 1230) || (x > 1298 && x < 1440)) &&
             !(
               ((x < 1110 || x > 1410) &&
                 ((y >= 262 && y <= 280) ||
