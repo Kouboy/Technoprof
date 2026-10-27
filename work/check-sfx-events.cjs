@@ -158,10 +158,16 @@ for (const fps of [30, 60, 120])
         "room door has its own short hinge/latch sample",
       );
     }
-    if (kind === "passage")
+    if (kind === "passage") {
+      assert.equal(
+        events.filter((e) => e.kind === "step").length,
+        1,
+        "one corridor contact per passage",
+      );
       assert(
         !events.some((e) => ["door", "handle", "stairs"].includes(e.kind)),
       );
+    }
     const n = events.length;
     a.scene("school", true, 120, 10, 202, false, {
       surface: "tile",
@@ -192,8 +198,8 @@ for (const kind of ["passage", "door", "stairs"]) {
   a.scene("school", false, 120, 0.16, 104, false, context);
   assert.equal(
     events.filter((e) => e.kind === "step-wood").length,
-    kind === "passage" ? 2 : 0,
-    "pending corridor contact survives a mid-transition pause and uses destination floor",
+    kind === "passage" ? 1 : 0,
+    "corridor contact uses destination floor without a second contact on resume",
   );
 }
 {
@@ -210,7 +216,7 @@ for (const kind of ["passage", "door", "stairs"]) {
   t.advance(0.8);
   assert(!events.some((e) => e[0] === "step"), "idle is silent");
   g.keys.RIGHT.isDown = true;
-  t.advance(0.3);
+  t.advance(0.5);
   g.keys.RIGHT.isDown = false;
   assert(events.some((e) => e[0] === "step"));
   events.length = 0;

@@ -16,8 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "audio/sfx-2026-10-24"
 SR = 11025
 LOOPS = {"engine", "wind", "rolling", "room", "hum"}
-EXTRA = {"step-wood": .16, "step-concrete": .16, "step-metal": .16,
-         "step-gravel": .16, "gate": .72, "stairs": .5}
+# Every sample duration comes from FOLEY, so audition and runtime stay aligned.
 
 
 def filtered(signal, low=0, high=4200):
@@ -64,27 +63,26 @@ def sample(kind, seconds, variant):
             v += mid * .45 * puff(.002, .035)  # coat and satchel, no rising note
     elif kind.startswith('step') or kind in {'land', 'stairs'}:
         floor = kind.removeprefix('step-') if kind.startswith('step-') else 'tile'
-        v = knock(0, (140 if floor == 'wood' else 175) * jitter, .018) * .65
-        v += hi * .6 * exp(.001, .005) + mid * .3 * puff(.022, .07)
+        # Short heel/body contact, no trailing shoe scrape. Surface identity is
+        # carried by the body pitch and a small, quickly damped texture.
+        v = knock(0, 155 * jitter, .012) * .7 + mid * .15 * exp(.001, .005)
         if floor == 'wood':
-            v = knock(0, 118 * jitter, .034) + (tone(269 * jitter) * .18 + tone(417 * jitter) * .09) * exp(.002, .038)
-            v += mid * .45 * puff(.025, .075)
+            v = knock(0, 118 * jitter, .017) + (tone(269 * jitter) * .12 + tone(417 * jitter) * .06) * exp(.002, .022)
         elif floor == 'metal':
-            v += (tone(633 * jitter) * .22 + tone(1191 * jitter) * .13) * exp(0, .035)
+            v += (tone(633 * jitter) * .12 + tone(1191 * jitter) * .045) * exp(0, .022)
         elif floor == 'concrete':
-            v = knock(0, 145 * jitter, .023) * .7 + mid * .9 * exp(.002, .012) + hi * .4 * puff(.022, .07)
+            v = knock(0, 140 * jitter, .013) * .75 + mid * .3 * exp(.002, .007)
         elif floor == 'gravel':
-            v = knock(0, 125, .023) * .65 + hi * .7 * (puff(.004, .04) + puff(.035, .06) + puff(.08, .05))
+            v = knock(0, 125 * jitter, .014) * .7 + mid * .38 * puff(.002, .027) + hi * .12 * exp(.003, .008)
         if kind == 'land':
             v = knock(0, 90 * jitter, .047) * 1.2 + mid * .75 * exp(.002, .017) + mid * .4 * puff(.05, .10)
         if kind == 'stairs':
-            # A compressed flight of three hard heel contacts, shoe scuffs and
-            # the short, hollow stairwell tail. Fits the existing visual fade.
+            # Two relaxed heel contacts. The subdued resonant tail may continue
+            # after the visual fade; it does not add any further footfalls.
             v = np.zeros_like(t)
-            for at, pitch, gain in [(0, 162, 1), (.105, 143, .85), (.22, 127, .75)]:
-                v += gain * (knock(at, pitch * jitter, .036) + hi * .65 * exp(at, .008))
-                v += mid * .5 * puff(at + .025, .07)
-            v += knock(.29, 116, .06) * .26 + knock(.36, 98, .035) * .12
+            for at, pitch, gain in [(0, 135, 1), (.30, 121, .85)]:
+                v += gain * (knock(at, pitch * jitter, .019) + mid * .12 * exp(at, .005))
+                v += gain * (tone(187) * .025 + tone(294) * .012) * exp(at + .018, .075)
     elif kind in {'door', 'door-passage', 'gate', 'car-door', 'handle'}:
         if kind == 'handle':
             v = (hi + mid) * exp(0, .012) + (tone(920) * .12 + mid * .3) * exp(.04, .018)
@@ -96,12 +94,11 @@ def sample(kind, seconds, variant):
             v *= .5 + .5 * np.abs(tone(39))
             v += (mid + hi * .7) * exp(0, .025) + knock(.60, 213, .037)
         elif kind == 'door-passage':
-            # Latch, worn hinge, then wooden stop. Unlike the classroom door,
-            # the closing transient lands during the 300ms room transition.
-            v = (mid + hi * .45) * exp(0, .011)
-            v += (tone(216 + variant * 19) * .16 + mid * .55 + lo * .7) * puff(.02, .16)
-            v += knock(.205, 94 * jitter, .046) * 1.3 + hi * .4 * exp(.205, .009)
-            v += (tone(318) * .15 + mid * .25) * exp(.22, .033)
+            # Soft latch, relaxed worn hinge, then a matte wooden stop.
+            v = (mid * .6 + hi * .12) * exp(0, .009)
+            v += (tone(216 + variant * 19) * .11 + mid * .25 + lo * .6) * puff(.025, .32)
+            v += knock(.385, 94 * jitter, .036) * .9 + mid * .2 * exp(.385, .007)
+            v += (tone(318) * .08 + lo * .2) * exp(.40, .045)
         else:
             v = mid * .5 * exp(0, .018)
             v += (lo * 1.2 + mid * .3 + tone(241) * .05) * puff(.04, .49)
@@ -154,7 +151,7 @@ def sample(kind, seconds, variant):
     else:
         raise ValueError(kind)
     # A fixed sampled transient, gently saturated then bandwidth/8-bit limited.
-    v = filtered(np.tanh(v * 1.7), 25, 4200)
+    v = filtered(np.tanh(v * 1.7), 25, 1550 if kind.startswith('step') or kind == 'stairs' else 4200)
     v -= np.mean(v)
     v *= np.minimum(1, t / .0015) * np.minimum(1, (seconds - t) / .008)
     v -= np.mean(v)
@@ -168,7 +165,6 @@ def sample(kind, seconds, variant):
 def main():
     source = (ROOT / 'src/audio-materials.ts').read_text(encoding='utf-8').split('export const FOLEY = {')[1].split('} as const')[0]
     durations = {m[0] or m[1]: float(m[2]) for m in re.findall(r'^  (?:(\w+)|"([\w-]+)"): \[([\d.]+),', source, re.M)}
-    durations.update(EXTRA)
     OUT.mkdir(parents=True, exist_ok=True)
     bank, manifest, montage = {}, [], []
     for kind, seconds in durations.items():

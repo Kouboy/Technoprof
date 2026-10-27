@@ -44,7 +44,11 @@ for (const fps of [30, 60, 120]) {
     hits += walkContacts(phase, next);
     phase = next;
   }
-  assert.equal(hits, 8, `walking cadence stable ${fps}`);
+  assert.equal(
+    hits,
+    4,
+    `walking cadence is about two audible contacts per second at ${fps} fps`,
+  );
 }
 assert.equal(walkContacts(4, 4), 0);
 assert.equal(walkContacts(0, 40), 1, "slow frames do not backlog footsteps");

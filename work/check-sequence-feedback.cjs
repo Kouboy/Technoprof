@@ -103,7 +103,7 @@ for (const [road, reason, expected] of [
   a.scene("opening", false, 120, 0, 111, false, { age: 0.03 });
   a.scene("opening", false, 120, 0.15, 111, false, { age: 0.18 });
   assert.equal(events.filter((e) => e.kind === "door").length, 1);
-  a.scene("opening", false, 120, 0.65, 111, false, { age: 0.83 });
+  a.scene("opening", false, 120, 0.6, 111, false, { age: 0.78 });
   assert(events.some((e) => e.kind === "step"));
   a.scene("course", false, 120, 0, 111, false, { age: 0 });
   assert.equal(events.filter((e) => e.kind === "bell-start").length, 1);

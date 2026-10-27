@@ -7,7 +7,7 @@ export type PassageAudio = {
   surface: FloorSound;
 };
 type Place = Pick<RoomSpec, "name" | "frame" | "navigation" | "care">;
-export const WALK_SOUND = { phasePerSecond: 13, contactPeriod: 3, quiet: 0.42 };
+export const WALK_SOUND = { phasePerSecond: 13, contactPeriod: 6, quiet: 0.42 };
 export function floorSound(mission: number, room?: Place): FloorSound {
   if (!room || room.care) return "tile";
   if (

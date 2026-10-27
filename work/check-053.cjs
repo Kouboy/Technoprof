@@ -96,3 +96,81 @@ assert(female.source.stopAt-speech.context.currentTime<.06,'speech grain outlive
 speech.scene('school',true,240,0,4,true);assert.equal(speech.voices.size,0);speech.talk(4,true);assert.equal(speech.voices.size,0);
 speech.scene('school',false,240,0,4,true);speech.muted=true;speech.talk(4,true);assert.equal(speech.voices.size,0);
 console.log('PASS 0.54 speech profiles, effects volume routing, short immediate sources, gesture gate, pause and mute');
+
+// Long movement phrases remain independent of the 300ms visual transition.
+for (const sound of ["stairs", "door"]) {
+  const movement = new AudioKit();
+  movement.unlock();
+  const transition = { sound, age: 0, surface: "tile" };
+  const scene = () =>
+    movement.scene("school", false, 120, 0.02, 201, false, {
+      surface: "tile",
+      transition,
+    });
+  scene();
+  transition.age = 0.04;
+  scene();
+  const phrase = [...movement.voices].find(
+    (v) => v.group === "movement" && v.source.buffer.duration > 0.6,
+  );
+  assert(phrase, sound + " creates a relaxed sampled phrase");
+  movement.context.advance(0.3);
+  movement.scene("school", false, 120, 0.02, 202, false, {
+    surface: "tile",
+    transition: null,
+  });
+  assert(
+    movement.voices.has(phrase),
+    sound + " tail survives the visual fade without extending gameplay",
+  );
+  movement.scene("school", true, 120, 0, 202, false, {
+    surface: "tile",
+    transition: null,
+  });
+  assert.equal(movement.voices.size, 0, "pause interrupts movement tail");
+  movement.scene("school", false, 120, 0, 202, false, {
+    surface: "tile",
+    transition,
+  });
+  assert.equal(
+    [...movement.voices].filter((v) => v.group === "movement").length,
+    0,
+    "resume does not replay interrupted phrase",
+  );
+  const next = { sound, age: 0, surface: "tile" };
+  movement.scene("school", false, 120, 0.02, 202, false, {
+    surface: "tile",
+    transition: next,
+  });
+  const prior = [...movement.voices].filter((v) => v.group === "movement");
+  movement.scene("school", false, 120, 0.02, 203, false, {
+    surface: "tile",
+    transition: { sound, age: 0, surface: "wood" },
+  });
+  assert(
+    prior.every(
+      (v) =>
+        !movement.voices.has(v) &&
+        v.source.stopAt <= movement.context.currentTime + 0.015 &&
+        v.nodes[0].gain.value === 0,
+    ),
+    "new passage cancels old movement voices with a short fade",
+  );
+  movement.context.advance(0.02);
+  assert(
+    prior.every((v) => v.source.disconnected),
+    "cancelled movement nodes are disconnected",
+  );
+  movement.scene("school", false, 120, 0.02, 204, false, {
+    surface: "tile",
+    transition: { sound, age: 2, surface: "tile" },
+  });
+  assert.equal(
+    [...movement.voices].filter((v) => v.group === "movement").length,
+    0,
+    "late transition never backlogs expired sounds",
+  );
+}
+console.log(
+  "PASS movement tails: natural fade continuation, pause/new-passage cancellation and no expired backlog",
+);

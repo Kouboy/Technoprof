@@ -1,6 +1,7 @@
 import type { AudioKit, SceneSoundContext } from "./audio";
 import { campaignWon, type RunPolicy } from "./campaign";
 import { mountTitleArt } from "./title-screen";
+import { paintMenuLabel } from "./menu-presentation";
 import { ENCOUNTERS, type Encounter, type DialogueState } from "./dialogue";
 import type { PadUIAction } from "./gamepad-input";
 export const RADIO_NAME = "Radio Educa France";
@@ -181,6 +182,7 @@ export function installPlayerExperience(s: Host) {
     const b = document.createElement("button");
     b.textContent = text;
     if (primary) b.className = "primary";
+    if (text !== "Prendre le service" && text !== "Pause") paintMenuLabel(b);
     b.onclick = () => {
       if (s.phase === "title") s.music?.retry();
       action();
@@ -323,8 +325,10 @@ export function installPlayerExperience(s: Host) {
       musicRetry.hidden = !s.music?.blocked && !s.cinematicAudio?.blocked;
       const retryLabel =
         s.phase === "title" ? "Écouter le titre" : "Relancer la musique";
-      if (musicRetry.textContent !== retryLabel)
+      if (musicRetry.textContent !== retryLabel) {
         musicRetry.textContent = retryLabel;
+        paintMenuLabel(musicRetry);
+      }
     }
     if (lastMuted !== s.audio.muted) {
       lastMuted = s.audio.muted;
@@ -354,7 +358,13 @@ export function installPlayerExperience(s: Host) {
     }
     storySkip.hidden = !inStory;
     const muteText = s.audio.muted ? "Activer le son (M)" : "Couper le son (M)";
-    if (muteButton.textContent !== muteText) muteButton.textContent = muteText;
+    if (muteButton.textContent !== muteText) {
+      muteButton.textContent = muteText;
+      paintMenuLabel(muteButton);
+    }
+    for (const control of toolbar.querySelectorAll?.("button") ?? []) {
+      if (control !== pauseButton) paintMenuLabel(control as HTMLElement);
+    }
     const hint = hints ? contextualHelp(s) : "";
     if (help.textContent !== hint) help.textContent = hint;
     help.hidden = !hint || !!mode;
@@ -397,7 +407,7 @@ export function installPlayerExperience(s: Host) {
             (campaignWon(s.won, s.runPolicy)
               ? "result-maintained"
               : "result-radiated")
-          : "";
+          : "cadre-menu menu-" + menuPage;
     const key =
       mode +
       ":" +
@@ -408,6 +418,15 @@ export function installPlayerExperience(s: Host) {
       !!s.gamepadConnected;
     if (key === previous) return;
     previous = key;
+    root.setAttribute(
+      "role",
+      root.className === "title-home" ? "region" : "dialog",
+    );
+    root.setAttribute(
+      "aria-modal",
+      root.className === "title-home" ? "false" : "true",
+    );
+    root.setAttribute("aria-labelledby", "player-menu-heading");
     s.setPlayerMenu(!!mode);
     if (!mode) return;
     root.replaceChildren();
@@ -415,6 +434,7 @@ export function installPlayerExperience(s: Host) {
     const eyebrow = document.createElement("small");
     eyebrow.textContent = "CADRE / PERSONNEL REMPLAÇANT";
     const heading = document.createElement("h1");
+    heading.id = "player-menu-heading";
     heading.tabIndex = -1;
     heading.textContent =
       menuPage === "controls"
@@ -429,7 +449,12 @@ export function installPlayerExperience(s: Host) {
                 : "Radiation prononcée"
               : "Service suspendu";
     root.append(eyebrow, heading);
-    if (menuPage !== "home" || mode !== "title") root.append(toolbar);
+    let pauseContext: HTMLElement | undefined;
+    const pauseNotes: string[] = [];
+    if (root.className.startsWith("cadre-menu")) {
+      paintMenuLabel(eyebrow);
+      paintMenuLabel(heading);
+    }
     if (menuPage === "controls") {
       paragraph(
         "Trois affectations à réussir, avec trois vies pour toute la journée. Chaque échec retire une vie et vous ramène au début du trajet en cours, avec le délai et votre état rétablis. Les affectations réussies restent acquises. À la troisième défaite : radiation. Attendez l’ordre en voiture, puis trouvez la salle ; le délai est commun à la route et à la recherche.",
@@ -513,7 +538,9 @@ export function installPlayerExperience(s: Host) {
       root.append(
         mountTitleArt(button("Prendre le service", returnToGame, true)),
       );
-      paragraph("Trois affectations à assurer. Trois vies pour tenir la journée.");
+      paragraph(
+        "Trois affectations à assurer. Trois vies pour tenir la journée.",
+      );
     } else if (mode === "report") {
       paragraph(
         `${s.won} cours assuré${s.won > 1 ? "s" : ""} sur 3 — trois réussites requises.`,
@@ -547,18 +574,24 @@ export function installPlayerExperience(s: Host) {
           ? "La partie est suspendue. Reprenez quand vous êtes prêt."
           : "Le délai est arrêté. Soufflez un instant.",
       );
-      paragraph(DAY_BRIEFS[Math.min(2, s.mission)]);
+      const context = document.createElement("p");
+      context.className = "menu-assignment";
+      context.textContent =
+        s.phase === "home" || s.phase === "homeArrival"
+          ? "FIN DE SERVICE / MAISON"
+          : (s.missionSpec?.().school ?? DAY_BRIEFS[Math.min(2, s.mission)]);
+      pauseContext = context;
       if (hints) {
         const hint = contextualHelp({ ...s, paused: false });
-        if (hint) paragraph(hint);
+        if (hint) pauseNotes.push(hint);
       }
       if (s.phase === "free")
-        paragraph(RADIO_NAME + " — " + RADIO_BULLETINS[Math.min(2, s.mission)]);
+        pauseNotes.push(
+          RADIO_NAME + " — " + RADIO_BULLETINS[Math.min(2, s.mission)],
+        );
     }
     const actions = document.createElement("div");
     actions.className = "player-actions";
-    if (menuPage === "home" && mode !== "title")
-      actions.append(button("Exporter mon essai", () => s.exportJournal()));
     if (menuPage !== "home")
       actions.append(
         button(
@@ -585,7 +618,15 @@ export function installPlayerExperience(s: Host) {
         button("Réglages", () => open("settings")),
       );
     }
+    if (menuPage === "home" && mode !== "title") {
+      const journal = button("Exporter mon essai", () => s.exportJournal());
+      journal.className += " menu-secondary";
+      actions.append(journal);
+    }
     root.append(actions);
+    if (menuPage !== "home" || mode !== "title") root.append(toolbar);
+    if (pauseContext) root.append(pauseContext);
+    for (const note of pauseNotes) paragraph(note);
     const preferred =
       s.gamepadMode && root.querySelector
         ? root.querySelector<HTMLElement>(
@@ -660,6 +701,24 @@ export function installPlayerExperience(s: Host) {
   document.addEventListener(
     "keydown",
     (event) => {
+      if (currentMode && event.key === "Tab") {
+        const items = [
+          ...root.querySelectorAll<HTMLElement>("button,input,select"),
+        ].filter(
+          (node) =>
+            !node.hidden &&
+            !(node as HTMLInputElement).disabled &&
+            node.getClientRects().length > 0,
+        );
+        const active = document.activeElement as HTMLElement;
+        const target = event.shiftKey
+          ? (active === items[0] || !items.includes(active)) && items.at(-1)
+          : active === items.at(-1) && items[0];
+        if (target) {
+          event.preventDefault();
+          target.focus();
+        }
+      }
       const editable = (event.target as HTMLElement)?.matches(
         "input,select,button",
       );

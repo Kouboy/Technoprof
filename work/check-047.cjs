@@ -42,6 +42,7 @@ if(fs.existsSync('src/title-screen.ts')) {
  vm.runInContext(ts('const TITLE_DATA="data:image/png;base64,";'+strip(lettering)+strip(fs.readFileSync('src/title-screen.ts','utf8'))),ctx);
 }
 vm.runInContext(ts(fs.readFileSync('src/campaign.ts','utf8').replace(/export /g,'')),ctx);
+if(fs.existsSync('src/menu-presentation.ts')) vm.runInContext(ts(fs.readFileSync('src/menu-presentation.ts','utf8').replace(/^import[\s\S]*?from\s+['"][^'"]+['"];?\r?\n/gm,'').replace(/export /g,'')),ctx);
 vm.runInContext(ts(fs.readFileSync('src/player-experience.ts','utf8').replace(/^import[\s\S]*?from\s+['"][^'"]+['"];?\r?\n/gm,'').replace(/export /g,'')+'\nglobalThis.api={installPlayerExperience,contextualHelp,resultLine};'),ctx);
 const all=(node)=>[node,...node.children.filter(n=>n instanceof Node).flatMap(all)];
 const find=(text)=>all(nodes['player-panel']).find(n=>n.tagName==='BUTTON'&&n.textContent===text);
@@ -58,6 +59,8 @@ find('Retour').onclick();find('Prendre le service').onclick();assert.equal(g.pha
 assert(nodes['radio-caption'].textContent.includes('postes vacants'));assert(!nodes['radio-caption'].hidden);
 g.phase='receive';g.syncPlayerUI();assert(nodes['radio-caption'].hidden);assert(nodes['player-help'].textContent.includes('même chronomètre'));
 g.setPaused(true);const timer=g.remaining;advance(1);assert.equal(g.remaining,timer);
+assert(nodes['player-panel'].className.includes('cadre-menu'),'pause uses integrated art direction');
+assert.equal(nodes['player-panel'].attrs.role,'dialog');assert.equal(nodes['player-panel'].attrs['aria-modal'],'true');
 find('Commandes').onclick();const event=key=>({key,repeat:false,target:new Node(),preventDefault(){},stopImmediatePropagation(){}});
 listeners.keydown(event('Escape'));assert(find('Reprendre'));
 listeners.keydown(event('m'));assert(g.audio.muted);assert(JSON.parse(storage.get('technoprof-player-options')).muted);
