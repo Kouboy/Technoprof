@@ -101,6 +101,15 @@ for (const [id, room] of Object.entries(i1.rooms)) {
     "boss",
   ]) {
     if (key === "exits" && [304, 307, 315].includes(Number(id))) continue;
+    if (key === "gaps" && Number(id) === 308) {
+      assert.equal(room.gaps.length, 0, "I1 reference unchanged");
+      assert.deepEqual(
+        plain(next.gaps),
+        [[126, 156]],
+        "one added I2 combat opening",
+      );
+      continue;
+    }
     assert.equal(
       JSON.stringify(next[key]),
       JSON.stringify(room[key]),

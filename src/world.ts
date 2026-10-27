@@ -8,6 +8,13 @@ export const TUNING = {
 };
 export type Enemy = {
   x: number;
+  floorLift?: number;
+  floorStep?: {
+    fromX: number;
+    targetX: number;
+    elapsed: number;
+    seconds: number;
+  };
   role?: import("./missions").EnemyRole;
   turnTime?: number;
   hp: number;

@@ -160,6 +160,8 @@ const SCENARIOS: Record<string, string> = {
   "bruel-navigation-a3-view-108": "Auguste-Berthelot A3 / décor jonction B",
   "bruel-navigation-a3-view-109": "Auguste-Berthelot A3 / décor galerie B",
   "bruel-navigation-a3-view-110": "Auguste-Berthelot A3 / décor palier B",
+  "bruel-navigation-a3-view-111":
+    "Auguste-Berthelot A3 / seuil B12 et plancher rompu",
   "bruel-navigation-a3-view-107": "Auguste-Berthelot A3 / décor infirmerie",
   "bruel-navigation-a2": "Auguste-Berthelot A2 / découverte du réseau",
   "bruel-navigation-a2-road": "Auguste-Berthelot A2 / route puis réseau",

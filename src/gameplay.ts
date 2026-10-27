@@ -329,3 +329,79 @@ export class SeededRandom {
     return this.state / 4294967296;
   }
 }
+
+export const ENEMY_FLOOR_STEP = { seconds: 0.28, height: 18, bank: 8 };
+// Presentation follows a committed, short crossing. No damage, invulnerability
+// or shared random state is introduced by a broken floor.
+export function startEnemyFloorStep(
+  e: Enemy,
+  previousX: number,
+  gaps: number[][],
+  chargeSpeed = 140,
+) {
+  if (e.floorStep) return false;
+  const direction = Math.sign(e.x - previousX);
+  if (!direction) return false;
+  const margin = ENEMY_FLOOR_STEP.bank;
+  const gap = gaps.find(([l, r]) =>
+    direction > 0
+      ? previousX < r + margin && e.x > l - margin && previousX <= l
+      : previousX > l - margin && e.x < r + margin && previousX >= r,
+  );
+  if (!gap) return false;
+  const targetX = direction > 0 ? gap[1] + margin : gap[0] - margin;
+  e.floorStep = {
+    fromX: previousX,
+    targetX,
+    elapsed: 0,
+    seconds:
+      (e.chargeTime ?? 0) > 0
+        ? Math.max(
+            0.12,
+            Math.min(
+              ENEMY_FLOOR_STEP.seconds,
+              Math.abs(targetX - previousX) / chargeSpeed,
+            ),
+          )
+        : ENEMY_FLOOR_STEP.seconds,
+  };
+  e.x = previousX;
+  e.floorLift = 0;
+  return true;
+}
+export function advanceEnemyFloorStep(e: Enemy, dt: number) {
+  const step = e.floorStep;
+  if (!step) return false;
+  step.elapsed = Math.min(step.seconds, step.elapsed + dt);
+  const progress = step.elapsed / step.seconds;
+  e.x = step.fromX + (step.targetX - step.fromX) * progress;
+  e.floorLift = Math.round(
+    Math.sin(Math.PI * progress) * ENEMY_FLOOR_STEP.height,
+  );
+  e.walk = (e.walk ?? 0) + dt * 12;
+  if (progress >= 1) {
+    e.floorStep = undefined;
+    e.floorLift = 0;
+  }
+  return true;
+}
+// A non-damaging boss separation may approach an edge, never force the player
+// across it. Deliberate jumps and ordinary movement still use the normal rules.
+export function safeFloorDisplacement(
+  from: number,
+  target: number,
+  gaps: number[][],
+) {
+  for (const [l, r] of gaps) {
+    if (from <= l && target > l)
+      target = Math.min(target, l - ENEMY_FLOOR_STEP.bank);
+    else if (from >= r && target < r)
+      target = Math.max(target, r + ENEMY_FLOOR_STEP.bank);
+    else if (target > l && target < r)
+      target =
+        from < (l + r) / 2
+          ? l - ENEMY_FLOOR_STEP.bank
+          : r + ENEMY_FLOOR_STEP.bank;
+  }
+  return target;
+}

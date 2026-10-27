@@ -268,6 +268,7 @@ export class NewSchoolArt {
           .setVisible(true);
       }
       s.art?.reactEnemy(image, e, (e.facing ?? Math.sign(s.px - e.x)) || -1);
+      if (e.floorLift) image.y -= e.floorLift;
     }
     const e = s.enemies[0];
     if (s.phase === "opening") {

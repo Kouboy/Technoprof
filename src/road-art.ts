@@ -26,6 +26,183 @@ export const ROAD_FRAMES = {
   ],
 };
 export const VERGE = { zoneLength: 720, visible: 720, bridgeBehind: 48 };
+// Only painted panels are recoloured; glass, rubber, registration plates,
+// lights and truck hardware keep the original pixels. All variants are baked
+// once in the constructor, never read back while driving.
+const TRAFFIC_PAINTS = [
+  [0, 0, 0], // untouched original
+  [103, 123, 105], // muted green
+  [148, 86, 78], // burgundy
+  [183, 166, 126], // sand
+  [103, 115, 135], // slate
+];
+export function roadTrafficVariant(id: number | undefined, frame: number) {
+  if (id === undefined) return 0;
+  const hash = Math.imul((id | 0) ^ (frame * 7919), 0x45d9f3b);
+  return ((hash ^ (hash >>> 16)) >>> 0) % TRAFFIC_PAINTS.length;
+}
+export function recolorRoadTraffic(
+  pixels: Uint8ClampedArray,
+  width: number,
+  height: number,
+  variant: number,
+) {
+  if (variant === 0) return;
+  const paint = TRAFFIC_PAINTS[variant];
+  for (let frame = 0; frame < 3; frame++) {
+    const [sx, sy, w, h] = ROAD_FRAMES.traffic[frame];
+    for (let y = sy; y < Math.min(height, sy + h); y++)
+      for (let x = sx; x < Math.min(width, sx + w); x++) {
+        const i = (y * width + x) * 4;
+        if (!pixels[i + 3]) continue;
+        const r = pixels[i],
+          g = pixels[i + 1],
+          b = pixels[i + 2];
+        const light = r * 0.3 + g * 0.59 + b * 0.11;
+        let panel = false,
+          base = 185;
+        if (frame === 0) {
+          panel =
+            ((y >= 580 && y < 733 && x > 63 && x < 469) ||
+              (y >= 487 && y < 505 && x > 146 && x < 377)) &&
+            b > r * 1.18 &&
+            g > r * 1.08 &&
+            light > 40;
+          base = 112;
+        } else if (frame === 1) {
+          panel =
+            ((y >= 588 && y < 744 && x > 590 && x < 952) ||
+              (y >= 486 && y < 506 && x > 666 && x < 869)) &&
+            !(x >= 689 && x <= 835 && y >= 680 && y <= 722) &&
+            light > 100 &&
+            Math.max(r, g, b) - Math.min(r, g, b) < 38;
+        } else {
+          panel =
+            y >= 231 &&
+            y < 598 &&
+            ((x > 1082 && x < 1227) || (x > 1298 && x < 1440)) &&
+            !(
+              ((x < 1110 || x > 1410) &&
+                ((y >= 262 && y <= 280) ||
+                  (y >= 400 && y <= 422) ||
+                  (y >= 542 && y <= 568))) ||
+              (x >= 1183 && x <= 1344 && y >= 535 && y <= 568)
+            ) &&
+            light > 100 &&
+            Math.max(r, g, b) - Math.min(r, g, b) < 38;
+          base = 220;
+        }
+        if (!panel) continue;
+        // Keep source highlights, wear and shading; truck paint stays lighter.
+        const pale = frame === 2 ? 0.5 : 0;
+        const stripe = frame === 2 && variant === 2 && y >= 461 && y < 479;
+        const mark =
+          frame === 2 &&
+          variant === 4 &&
+          x >= 1320 &&
+          x < 1380 &&
+          y >= 329 &&
+          y < 349;
+        const shade = (light / base) * (stripe || mark ? 0.66 : 1);
+        for (let c = 0; c < 3; c++)
+          pixels[i + c] = Math.min(
+            255,
+            (paint[c] * (1 - pale) + 220 * pale) * shade,
+          );
+      }
+  }
+}
+// Glazing interiors read from the actual district/verge source atlases. Split
+// panes leave the original mullions, shutters and dark frames visible.
+export const ROAD_WINDOWS: Record<string, number[][]> = {
+  "district/0": [
+    [195, 207, 16, 36],
+    [222, 207, 16, 36],
+    [195, 253, 16, 36],
+    [222, 253, 16, 36],
+    [501, 207, 16, 35],
+    [528, 207, 16, 35],
+    [501, 251, 16, 37],
+    [528, 251, 16, 37],
+    [257, 380, 15, 35],
+    [283, 380, 15, 35],
+    [257, 426, 15, 34],
+    [283, 426, 15, 34],
+    [561, 383, 15, 34],
+    [587, 383, 15, 34],
+    [561, 428, 15, 32],
+    [587, 428, 15, 32],
+  ],
+  "verge/0": [
+    [228, 130, 11, 40],
+    [247, 130, 10, 40],
+    [228, 190, 11, 32],
+    [247, 190, 10, 32],
+    [228, 239, 11, 32],
+    [247, 239, 10, 32],
+    [228, 288, 11, 34],
+    [247, 288, 10, 34],
+  ],
+  "verge/1": [
+    [574, 287, 15, 25],
+    [610, 285, 15, 25],
+    [689, 280, 15, 26],
+    [728, 276, 15, 26],
+    [846, 267, 15, 26],
+    [905, 261, 15, 26],
+  ],
+  "verge/2": [
+    [1322, 218, 13, 25],
+    [1345, 217, 13, 25],
+    [1322, 253, 13, 24],
+    [1345, 252, 13, 24],
+    [1207, 367, 8, 43],
+    [1221, 367, 6, 43],
+  ],
+};
+export function roadWindowPlacement(
+  key: string,
+  frame: number,
+  width: number,
+  flip: boolean,
+) {
+  const [, , w, h] = ROAD_FRAMES[key as keyof typeof ROAD_FRAMES][frame];
+  return {
+    width,
+    height: (width * h) / w,
+    origin: roadSpriteOrigin(key, frame),
+    flip,
+  };
+}
+// Source skyline windows (2172×724), on apartment façades and small houses.
+const CITY_WINDOWS = [
+  [89, 648],
+  [99, 658],
+  [121, 641],
+  [174, 655],
+  [192, 667],
+  [391, 640],
+  [405, 652],
+  [414, 665],
+  [452, 660],
+  [546, 640],
+  [563, 650],
+  [575, 665],
+  [665, 661],
+  [678, 672],
+  [817, 659],
+  [832, 671],
+  [854, 655],
+  [1004, 665],
+  [1021, 676],
+  [1658, 653],
+  [1680, 666],
+  [1723, 682],
+  [1807, 655],
+  [1823, 668],
+  [1939, 684],
+  [1952, 691],
+];
 // Atlas-space bulb centres, shared by both sides and all perspective scales.
 const ROAD_BULBS = {
   traffic: [
@@ -336,6 +513,8 @@ export class RoadArt {
   images: Phaser.GameObjects.Image[] = [];
   clouds: Phaser.GameObjects.Image;
   skyline: Phaser.GameObjects.Image;
+  skylineLights: Phaser.GameObjects.Image;
+  private trafficIds = new WeakMap<object, number>();
   horizonLight?: Phaser.GameObjects.Graphics;
   layers: Phaser.GameObjects.Graphics[] = [];
   lightImages: Phaser.GameObjects.Image[] = [];
@@ -377,6 +556,20 @@ export class RoadArt {
       .setDepth(3.002)
 
       .setVisible(false);
+    const city = document.createElement("canvas");
+    city.width = sourceSky.width;
+    city.height = sourceSky.height - split;
+    const cityInk = city.getContext("2d")!;
+    cityInk.fillStyle = "rgba(255,219,145,0.8)";
+    for (const [x, y] of CITY_WINDOWS) cityInk.fillRect(x, y - split, 3, 4);
+    scene.textures
+      .addCanvas("road-city-lights", city)!
+      .setFilter(Phaser.Textures.FilterMode.NEAREST);
+    this.skylineLights = scene.add
+      .image(0, 0, "road-city-lights")
+      .setOrigin(0)
+      .setDepth(3.0021)
+      .setVisible(false);
     this.horizonLight = scene.add.graphics().setDepth(3.0015);
     // Children retain one shared world and their exact depth order.
     // The player car and the CADRE remain outside this depth band.
@@ -403,6 +596,45 @@ export class RoadArt {
         texture.add(i, 0, x, y, w, h),
       );
       texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      if (key === "traffic") {
+        for (let variant = 1; variant < TRAFFIC_PAINTS.length; variant++) {
+          const paint = document.createElement("canvas");
+          paint.width = canvas.width;
+          paint.height = canvas.height;
+          const pc = paint.getContext("2d")!;
+          const copy = pc.createImageData(canvas.width, canvas.height);
+          copy.data.set(pixels.data);
+          recolorRoadTraffic(copy.data, canvas.width, canvas.height, variant);
+          pc.putImageData(copy, 0, 0);
+          const variation = scene.textures.addCanvas(
+            "traffic-paint-" + variant,
+            paint,
+          )!;
+          ROAD_FRAMES.traffic.forEach(([x, y, w, h], frame) =>
+            variation.add(frame, 0, x, y, w, h),
+          );
+          variation.setFilter(Phaser.Textures.FilterMode.NEAREST);
+        }
+      } else {
+        const windows = document.createElement("canvas");
+        windows.width = canvas.width;
+        windows.height = canvas.height;
+        const wc = windows.getContext("2d")!;
+        for (let frame = 0; frame < ROAD_FRAMES[key].length; frame++)
+          (ROAD_WINDOWS[`${key}/${frame}`] ?? []).forEach(([x, y, w, h], i) => {
+            // A few occupied rooms, not every window on the street.
+            if (Math.floor(i / 4) % 2 === 1) return;
+            wc.fillStyle = "rgba(255,211,128,0.64)";
+            wc.fillRect(x, y, w, h);
+            wc.fillStyle = "rgba(255,235,176,0.3)";
+            wc.fillRect(x + 1, y + 1, Math.max(1, w - 3), 2);
+          });
+        const wt = scene.textures.addCanvas("road-windows-" + key, windows)!;
+        ROAD_FRAMES[key].forEach(([x, y, w, h], frame) =>
+          wt.add(frame, 0, x, y, w, h),
+        );
+        wt.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      }
     }
     const marks = document.createElement("canvas");
     marks.width = 196;
@@ -475,7 +707,13 @@ export class RoadArt {
       for (let y = 7; y < horizon; y++) {
         const p = (y - 7) / (horizon - 7);
         glow.fillStyle(
-          mission === 3 ? 0x496075 : mission === 2 ? 0xd68a66 : mission === 0 ? 0xd7b786 : 0xf9e4b1,
+          mission === 3
+            ? 0x496075
+            : mission === 2
+              ? 0xd68a66
+              : mission === 0
+                ? 0xd7b786
+                : 0xf9e4b1,
           (mission === 3 ? 0.07 : mission === 1 ? 0.1 : 0.38) * p * p,
         );
         glow.fillRect(7, y, 306, 1);
@@ -492,12 +730,17 @@ export class RoadArt {
       .setPosition(-10 - bend * 0.1, 7 + cloudHeight)
       .setDisplaySize(340, horizon - 7 - cloudHeight + 1)
       .setVisible(true);
+    this.skylineLights
+      .setPosition(-10 - bend * 0.1, 7 + cloudHeight)
+      .setDisplaySize(340, horizon - 7 - cloudHeight + 1)
+      .setVisible(mission === 3);
   }
   hide() {
     this.world?.setVisible(false);
     this.horizonLight?.clear();
     this.clouds?.setVisible(false);
     this.skyline?.setVisible(false);
+    this.skylineLights?.setVisible(false);
     this.index = 0;
     this.images.forEach((s) => s.setVisible(false));
     this.layers.forEach((g) => g.clear());
@@ -611,6 +854,18 @@ export class RoadArt {
     this.world?.sort("depth");
     this.world?.setVisible(true);
   }
+  trafficIdentity(vehicle: { z: number; type: number }) {
+    // Object identity survives movement, overtaking and obstacle-slot recycling.
+    // Seed once from authored world position; never consume gameplay randomness.
+    this.trafficIds ??= new WeakMap<object, number>();
+    let id = this.trafficIds.get(vehicle);
+    if (id === undefined) {
+      id =
+        (Math.round(vehicle.z * 100) ^ Math.imul(vehicle.type + 1, 7919)) >>> 0;
+      this.trafficIds.set(vehicle, id);
+    }
+    return id;
+  }
   draw(
     key: "traffic" | "district" | "verge",
     frame: number,
@@ -625,14 +880,41 @@ export class RoadArt {
       (this.images[this.index] = this.newImage(key, frame).setOrigin(0.5, 1));
     this.index++;
     const [, , w, h] = ROAD_FRAMES[key][frame];
-    s.setTexture(key, frame)
+    const paint = key === "traffic" ? roadTrafficVariant(id, frame) : 0;
+    s.setTexture(paint ? "traffic-paint-" + paint : key, frame)
       .setOrigin(0.5, roadSpriteOrigin(key, frame))
       .setPosition(x, y)
       .setDisplaySize(width, (width * h) / w)
       .setFlipX(flip)
-      .setTint(this.mission === 3 ? 0x8094ad : this.mission === 2 ? ROAD_LIGHT.duskTint : 0xffffff)
+      .setTint(
+        this.mission === 3
+          ? 0x8094ad
+          : this.mission === 2
+            ? ROAD_LIGHT.duskTint
+            : 0xffffff,
+      )
       .setDepth(this.depth + 0.0001)
       .setVisible(true);
+    if (
+      this.mission === 3 &&
+      ROAD_WINDOWS[`${key}/${frame}`] &&
+      (id === undefined || id % 5 !== 1)
+    ) {
+      const windows =
+        this.images[this.index] ??
+        (this.images[this.index] = this.newImage("road-windows-" + key, frame));
+      this.index++;
+      const p = roadWindowPlacement(key, frame, width, flip);
+      windows
+        .setTexture("road-windows-" + key, frame)
+        .setOrigin(0.5, p.origin)
+        .setPosition(x, y)
+        .setDisplaySize(p.width, p.height)
+        .setFlipX(p.flip)
+        .setTint(0xffffff)
+        .setDepth(this.depth + 0.00015)
+        .setVisible(true);
+    }
     const tag = roadDecoration(id, key, frame);
     if (tag) {
       const p = roadPatchPlacement(key, frame, tag, width, flip);
@@ -646,7 +928,13 @@ export class RoadArt {
         .setPosition(x + p.dx, y + p.bottom)
         .setDisplaySize(p.width, p.height)
         .setFlipX(false)
-        .setTint(this.mission === 3 ? 0x8094ad : this.mission === 2 ? ROAD_LIGHT.duskTint : 0xffffff)
+        .setTint(
+          this.mission === 3
+            ? 0x8094ad
+            : this.mission === 2
+              ? ROAD_LIGHT.duskTint
+              : 0xffffff,
+        )
         .setDepth(this.depth + 0.0002)
         .setVisible(true);
     }

@@ -10,7 +10,7 @@ vm.runInContext(
     ["small-lettering", "cadre"]
       .map((n) => strip(fs.readFileSync("src/" + n + ".ts", "utf8")))
       .join("\n"),
-  ) + ";globalThis.bars=drawConditionBars;",
+  ) + ";globalThis.bars=drawConditionBars;globalThis.draw=drawCadre;",
   ctx,
 );
 function paint(value, max, y) {
@@ -52,4 +52,27 @@ assert.equal(
 );
 console.log(
   "PASS shared five bars, car/prof thresholds, partial segment, full and empty",
+);
+const labels = [];
+ctx.smallPrint = (g, x, y, text) => labels.push(text);
+ctx.draw(
+  { fillStyle() {}, fillRect() {} },
+  {
+    phase: "road",
+    notified: true,
+    remaining: 180,
+    vehicle: 82,
+    speed: 110,
+    road: 100,
+    mission: 0,
+    hp: 5,
+    age: 0,
+    ambienceClock: 0,
+    paused: false,
+  },
+  4200,
+);
+assert(
+  !labels.some((t) => t.includes("%")),
+  "car HUD uses condition bars without an integrity percentage",
 );

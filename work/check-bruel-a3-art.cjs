@@ -177,7 +177,12 @@ const layout = fixture.g.navigationSpec();
 for (const room of Object.values(layout.rooms))
   if (room.gaps.length) {
     assert.equal(room.navigation.floor, 1);
-    assert.equal(room.encounter, undefined, "no hole during a fight");
+    if (!room.boss)
+      assert.equal(
+        room.encounter,
+        undefined,
+        "quiet galleries retain their non-combat holes",
+      );
     assert.equal(room.care, undefined, "no hole in recovery scene");
   }
 assert.equal(Object.keys(scope.rooms).length, Object.keys(layout.rooms).length);

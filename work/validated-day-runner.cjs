@@ -46,7 +46,22 @@ exports.runDay = ({
     g.direct.down(1, x, y);
     g.direct.up(1, x, y);
   };
+  let floorJumpTarget = null;
   const move = (x) => {
+    if (floorJumpTarget !== null) x = floorJumpTarget;
+    const dir = Math.sign(x - g.px);
+    const gap = g
+      .floorGaps()
+      .find(([l, r]) => (dir > 0 ? g.px < l && x > l : g.px > r && x < r));
+    if (
+      gap &&
+      g.py === 159 &&
+      Math.abs(g.px - (dir > 0 ? gap[0] : gap[1])) <= 18
+    ) {
+      floorJumpTarget = dir > 0 ? gap[1] + 18 : gap[0] - 18;
+      jump(dir);
+      return;
+    }
     if (mode === "keyboard") {
       if (Math.abs(x - g.px) > 1) hold(x > g.px ? "RIGHT" : "LEFT");
     } else if (
@@ -151,7 +166,11 @@ exports.runDay = ({
   let mission = -1,
     ri = 0,
     lastRoom = -1;
-  for (let n = 0; n < fps * 1400 && g.phase !== "title" && g.phase !== "report"; n++) {
+  for (
+    let n = 0;
+    n < fps * 1400 && g.phase !== "title" && g.phase !== "report";
+    n++
+  ) {
     for (const k of Object.values(g.physicalKeys)) k.isDown = false;
     const cinematicClock = g.cinematic ? chargedClocks() : null;
     if (g.mission !== mission) {
@@ -190,6 +209,7 @@ exports.runDay = ({
         schoolClocks[mission] ??= g.remaining;
         if (g.room !== lastRoom) {
           lastRoom = g.room;
+          floorJumpTarget = null;
           roomRuns[mission].push(g.room);
           if (g.room === routes[mission][ri + 1]) ri++;
         }
@@ -206,7 +226,33 @@ exports.runDay = ({
             const dx = e.x - g.px,
               side = Math.sign(dx) || 1,
               dist = Math.abs(dx);
-            if (e.securityCycle) {
+            // A direct walk persists during enemy anticipation. Keep observing
+            // the floor even when no new tactical move is issued this frame.
+            if (
+              mode === "direct" &&
+              floorJumpTarget === null &&
+              g.py === 159 &&
+              g.direct.intent?.kind === "walk"
+            ) {
+              const target = g.direct.intent.x,
+                dir = Math.sign(target - g.px);
+              const gap = g
+                .floorGaps()
+                .find(([l, r]) =>
+                  dir > 0
+                    ? g.px <= l && target > l && l - g.px <= 18
+                    : g.px >= r && target < r && g.px - r <= 18,
+                );
+              if (gap) {
+                floorJumpTarget = dir > 0 ? gap[1] + 18 : gap[0] - 18;
+                jump(dir);
+              }
+            }
+            if (floorJumpTarget !== null) {
+              if (g.py === 159 && Math.abs(g.px - floorJumpTarget) < 4)
+                floorJumpTarget = null;
+              else move(floorJumpTarget);
+            } else if (e.securityCycle) {
               const c = e.securityCycle;
               if (c.phase === "approach" && dist > 69) move(e.x - side * 65);
               if (c.phase === "push-windup" && dist < 64) move(e.x - side * 76);
@@ -217,7 +263,7 @@ exports.runDay = ({
               }
             } else if (e.parentCycle) {
               if (e.chargeTime > 0) {
-                if (dist < 58) jump();
+                if (dist < 58) jump(g.floorGaps().length ? side : 0);
                 if ((g.px - e.x) * (e.chargeDir ?? -1) < 0 && dist > 60)
                   move(e.x - side * 55);
               } else if (e.parentCycle.phase === "opening") {
@@ -284,7 +330,9 @@ exports.runDay = ({
       homeReturn: {
         seconds: g.session.phaseSeconds.home ?? 0,
         arrivalSeconds: g.session.phaseSeconds.homeArrival ?? 0,
-        completions: g.session.events.filter(e => e.kind === "home-return-end").map(e => e.data),
+        completions: g.session.events
+          .filter((e) => e.kind === "home-return-end")
+          .map((e) => e.data),
       },
       collisions: g.collisions,
       falls: g.session.falls,

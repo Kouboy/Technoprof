@@ -66,6 +66,9 @@ import {
   combatProfile,
   terminalReason,
   SeededRandom,
+  startEnemyFloorStep,
+  advanceEnemyFloorStep,
+  safeFloorDisplacement,
   type FailureReason,
 } from "./gameplay";
 import { SessionLog, RuntimeLog } from "./session-log";
@@ -518,6 +521,14 @@ class Game extends Phaser.Scene {
   lastGroundX = 25;
   floorGaps() {
     return this.roomSpec()?.gaps ?? [];
+  }
+  combatFloorGaps() {
+    return (this.mission === 1 &&
+      this.room === NAV_ID.seuil &&
+      this.roomSpec()?.navigation?.revision === "A3") ||
+      (this.mission === 2 && this.room === INSHAPE_ID.sas && this.isInshapeI2())
+      ? this.floorGaps()
+      : [];
   }
   drawingEncounter = false;
   encounterTime = 0;
@@ -2363,7 +2374,13 @@ class Game extends Phaser.Scene {
               : name.endsWith("-parent")
                 ? NAV_ID.seuil
                 : NAV_ID.cour,
-          name.endsWith("-parent") ? 150 : visualPreset ? 55 : 20,
+          name.endsWith("-parent")
+            ? this.navigationRevision === "A3"
+              ? 55
+              : 150
+            : visualPreset
+              ? 55
+              : 20,
         );
       }
       this.session.record("scenario", this.mission, this.room, {
@@ -3592,8 +3609,10 @@ class Game extends Phaser.Scene {
           e.hitDirection = this.face;
           e.recoilTime = PLAY.hitStun;
           const oldX = e.x;
-          e.x = Phaser.Math.Clamp(e.x + this.face * PLAY.recoil, 22, 287);
+          if (!e.floorStep)
+            e.x = Phaser.Math.Clamp(e.x + this.face * PLAY.recoil, 22, 287);
           e.recoilDistance = e.x - oldX;
+          startEnemyFloorStep(e, oldX, this.combatFloorGaps());
           this.hitStop = PLAY.hitStop;
           this.punches++;
           this.impact = PLAY.impactSeconds;
@@ -3648,12 +3667,41 @@ class Game extends Phaser.Scene {
         e.recoilTime = Math.max(0, (e.recoilTime ?? 0) - dt);
         e.blockTime = Math.max(0, (e.blockTime ?? 0) - dt);
         if (e.downTime) e.downTime = Math.max(0, e.downTime - dt);
+        if (advanceEnemyFloorStep(e, dt)) {
+          if (
+            e.hp > 0 &&
+            e.parent &&
+            ((e.chargeTime ?? 0) > 0 || e.parentCycle?.phase === "charge")
+          ) {
+            e.chargeTime = Math.max(0, e.chargeTime! - dt);
+            const parent = this.enemyTuning().parent;
+            if (
+              Math.abs(e.x - this.px) < parent.reach &&
+              this.py > 130 &&
+              this.inv <= 0
+            ) {
+              this.hurt(e.chargeDir ?? 1);
+              this.impact = PLAY.impactSeconds;
+              this.impactKind = "hurt";
+              this.impactX = this.px - (e.chargeDir ?? 1) * 8;
+              this.impactY = this.py - 43;
+              this.hitStop = 0.045;
+            }
+            if (!e.floorStep && e.chargeTime <= 0) {
+              e.recovery = parent.recovery;
+              if (e.parentCycle) this.openParentWindow(e);
+            }
+          }
+          continue;
+        }
         if (e.hp <= 0) continue;
         e.strikeTime = Math.max(0, (e.strikeTime ?? 0) - dt);
         e.stun = Math.max(0, e.stun - dt);
         if (e.stun > 0) continue;
         if (e.actor === "catchup-student") {
+          const from = e.x;
           this.updateCatchupStudent(e, dt);
+          startEnemyFloorStep(e, from, this.combatFloorGaps());
           continue;
         }
         if ((e.role ?? this.roomSpec()?.role) === "student") {
@@ -3678,7 +3726,14 @@ class Game extends Phaser.Scene {
           continue;
         }
         if (e.parent) {
+          const from = e.x;
           this.updateParent(e, dt);
+          startEnemyFloorStep(
+            e,
+            from,
+            this.combatFloorGaps(),
+            this.enemyTuning().parent.chargeSpeed,
+          );
           continue;
         }
         if (e.recovery > 0) {
@@ -4393,12 +4448,18 @@ class Game extends Phaser.Scene {
     c.phase = "breakaway";
     c.elapsed = 0;
     c.fromX = e.x;
-    c.targetX = Phaser.Math.Clamp(e.x + dir * PARENT_CYCLE.retreat, 29, 275);
+    e.floorStep = undefined;
+    e.floorLift = 0;
+    c.targetX = safeFloorDisplacement(
+      e.x,
+      Phaser.Math.Clamp(e.x + dir * PARENT_CYCLE.retreat, 29, 275),
+      this.combatFloorGaps(),
+    );
     c.playerFrom = this.px;
-    c.playerTarget = Phaser.Math.Clamp(
-      c.targetX - dir * PARENT_CYCLE.distance,
-      10,
-      302,
+    c.playerTarget = safeFloorDisplacement(
+      this.px,
+      Phaser.Math.Clamp(c.targetX - dir * PARENT_CYCLE.distance, 10, 302),
+      this.combatFloorGaps(),
     );
     e.facing = -dir;
     e.stun = e.recovery = e.wind = e.cool = 0;
@@ -4624,10 +4685,14 @@ class Game extends Phaser.Scene {
         continue;
       const side = previousX < e.x ? -1 : 1;
       if ((this.px - e.x) * side < profile.bodyGap) {
-        this.px = Phaser.Math.Clamp(
-          e.x + side * profile.bodyGap,
-          bounds.min,
-          bounds.max,
+        this.px = safeFloorDisplacement(
+          previousX,
+          Phaser.Math.Clamp(
+            e.x + side * profile.bodyGap,
+            bounds.min,
+            bounds.max,
+          ),
+          this.combatFloorGaps(),
         );
         if (Math.abs(this.px - e.x) < profile.bodyGap)
           e.x = this.px - side * profile.bodyGap;
@@ -6006,6 +6071,8 @@ class Game extends Phaser.Scene {
           p.x,
           p.y,
           trafficWidth(o.type) * p.scale,
+          false,
+          this.roadArt.trafficIdentity(o),
         );
         this.roadArt.lights(
           "traffic",

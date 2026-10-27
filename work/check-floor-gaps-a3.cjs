@@ -22,7 +22,7 @@ const setup = (room, x) => {
 };
 const base = setup(104, 55),
   rooms = base.g.navigationSpec().rooms;
-const hazards = Object.values(rooms).filter((r) => r.gaps.length);
+const hazards = Object.values(rooms).filter((r) => r.gaps.length && !r.boss);
 assert.equal(hazards.length, 2);
 for (const r of hazards) {
   assert.equal(r.navigation.floor, 1);
