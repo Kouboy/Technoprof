@@ -1,0 +1,22 @@
+{
+  "asset": "badge-classroom.png",
+  "generatedWith": "built-in image_gen",
+  "prompt": "prompt-badge.txt",
+  "correctionPrompt": "prompt-badge-older-photo.txt",
+  "width": 1448,
+  "height": 1086,
+  "sha256": "1dba57f35561def1cfe5c99854e8038f74fff1d178570faf0ce4ca9172e39981",
+  "originalBytesUnchanged": true,
+  "slot": {
+    "id": "badge-handover",
+    "start": 50,
+    "end": 56,
+    "seconds": 6
+  },
+  "visualReview": [
+    "Older professor in worn brown coat and younger professor in navy suit",
+    "Badge photo identifies the older professor; handover invites him into his new post",
+    "Empty sunlit French classroom, no pupil or AESH in this vignette",
+    "Crisp pixel art, no dialogue or captions"
+  ]
+}

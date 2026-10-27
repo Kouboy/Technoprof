@@ -68,6 +68,13 @@ for(const i of [3,7]){
  assert(excluded(30,130));assert(!excluded(100,130));assert(!excluded(200,490));
 }
 console.log('PASS 058 atlas recovery masks exclude neighbouring hands, preserve body and foot anchors');
+{
+ const masks=scope.api.poseExclusions(1,432,512);
+ const excluded=(x,y)=>masks.some(([mx,my,w,h])=>x>=mx&&x<mx+w&&y>=my&&y<my+h);
+ assert(excluded(390,470),'exclude boot from neighbouring strike pose');
+ assert(!excluded(370,130),'preserve outstretched windup palm');
+ assert(!excluded(290,470),'preserve own boot');
+}
 for(const id of [302,306]){
  const t=createGame();t.g.workshop=true;t.g.loadScenario('inshape-navigation-i2-view-'+id);
  render(t.g);

@@ -5,7 +5,8 @@ export type CinematicTexture =
   | "cinematic-intro-v2"
   | "cinematic-campus-approved"
   | "cinematic-visitor"
-  | "cinematic-car";
+  | "cinematic-car"
+  | "cinematic-badge";
 type CinematicPanel = {
   id: string;
   texture: CinematicTexture;
@@ -63,7 +64,7 @@ export const CINEMATIC_PANELS: Record<
     original("corridor", 7, 5),
     campus("preparation", 4, 6),
     campus("classroom", 5, 7),
-    campus("aesh", 6, 6),
+    { id: "badge-handover", texture: "cinematic-badge", frame: 0, seconds: 6 },
     campus("exterior", 2, 6),
     original("bell", 9, 1.2, "bell", true),
     { ...campus("wake", 7, 5.8), cue: "alarm", cut: true },

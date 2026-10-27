@@ -191,35 +191,37 @@ export function roadWindowPlacement(
     flip,
   };
 }
-// Source skyline windows (2172×724), on apartment façades and small houses.
+// Inspected façade panes in the 2172×724 skyline, grouped by source row.
+// Uneven occupied flats and house windows leave roofs, trees and the water
+// tower dark. At the 340×12 return-road scale a 3×4 source pane usually misses
+// every nearest-neighbour sample; 5×8 keeps these distant lights perceptible.
 const CITY_WINDOWS = [
-  [89, 648],
-  [99, 658],
-  [121, 641],
-  [174, 655],
-  [192, 667],
-  [391, 640],
-  [405, 652],
-  [414, 665],
-  [452, 660],
-  [546, 640],
-  [563, 650],
-  [575, 665],
-  [665, 661],
-  [678, 672],
-  [817, 659],
-  [832, 671],
-  [854, 655],
-  [1004, 665],
-  [1021, 676],
-  [1658, 653],
-  [1680, 666],
-  [1723, 682],
-  [1807, 655],
-  [1823, 668],
-  [1939, 684],
-  [1952, 691],
-];
+  [634, 89, 119, 391, 418, 545, 575],
+  [
+    644, 29, 53, 101, 129, 171, 194, 319, 342, 365, 404, 430, 452, 479, 506,
+    557, 583,
+  ],
+  [654, 42, 63, 90, 119, 182, 204, 330, 354, 391, 418, 466, 492, 518, 545, 573],
+  [
+    664, 53, 102, 129, 171, 194, 319, 342, 365, 404, 430, 452, 479, 506, 557,
+    583,
+  ],
+  [652, 666, 691, 711, 815, 841, 861, 1658, 1681, 1695, 1807, 1834],
+  [662, 677, 701, 826, 851, 1669, 1691, 1819, 1843],
+  [672, 666, 691, 711, 815, 841, 861, 1658, 1681, 1807, 1834],
+  [684, 76, 116, 230, 274, 303, 408, 426, 606, 642, 763, 784, 923, 949],
+  [691, 69, 128, 240, 262, 288, 398, 444, 619, 632, 774, 801, 936, 962],
+  [
+    684, 1043, 1062, 1105, 1139, 1160, 1280, 1309, 1338, 1416, 1440, 1468, 1519,
+    1537,
+  ],
+  [
+    691, 1034, 1074, 1125, 1150, 1266, 1293, 1324, 1345, 1405, 1428, 1453, 1480,
+    1528, 1546,
+  ],
+  [684, 1615, 1630, 1712, 1734, 1779, 1888, 1908, 1940, 1968, 2007, 2022],
+  [691, 1603, 1640, 1722, 1746, 1766, 1899, 1924, 1955, 1980, 2014, 2033],
+].flatMap(([y, ...xs]) => xs.map((x) => [x, y]));
 // Atlas-space bulb centres, shared by both sides and all perspective scales.
 const ROAD_BULBS = {
   traffic: [
@@ -577,8 +579,12 @@ export class RoadArt {
     city.width = sourceSky.width;
     city.height = sourceSky.height - split;
     const cityInk = city.getContext("2d")!;
-    cityInk.fillStyle = "rgba(255,219,145,0.8)";
-    for (const [x, y] of CITY_WINDOWS) cityInk.fillRect(x, y - split, 3, 4);
+    CITY_WINDOWS.forEach(([x, y], i) => {
+      // Bake a quiet warm/cool mix once, without tinting light by night darkness.
+      cityInk.fillStyle =
+        i % 7 === 0 ? "rgba(205,224,237,0.84)" : "rgba(255,219,145,0.94)";
+      cityInk.fillRect(x, y - split, 5, 8);
+    });
     scene.textures
       .addCanvas("road-city-lights", city)!
       .setFilter(Phaser.Textures.FilterMode.NEAREST);
