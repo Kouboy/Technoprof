@@ -32,4 +32,10 @@ art.world={add(child){parented.push(child);},sort(key){assert.equal(key,'depth')
 art.layer(51);assert.equal(parented.length,1,'new road layers join the masked world');
 art.finishFrame();assert(sorted,'pooled children must be re-sorted every frame');
 
-const skyCalls=[];const skySprite={setTint(){return this;},setPosition(x,y){skyCalls.push([x,y]);return this;},setDisplaySize(w,h){assert(w>=306&&h>0);return this;},setVisible(){return this;}};art.clouds=skySprite;art.skyline=skySprite;art.sky(67,54,20);assert.equal(skyCalls.length,2);assert(Math.abs(skyCalls[0][0])<20&&Math.abs(skyCalls[1][0])<20);art.hide();console.log('PASS sky parallax coverage and cleanup');
+const skyCalls=[];const skySprite={setTint(){return this;},setPosition(x,y){skyCalls.push([x,y]);return this;},setDisplaySize(w,h){assert(w>=306&&h>0);return this;},setVisible(){return this;}};
+let cityVisible=false,cityPosition=[];
+art.clouds=skySprite;art.skyline=skySprite;
+art.skylineLights={...skySprite,setPosition(x,y){cityPosition=[x,y];return this;},setVisible(v){cityVisible=v;return this;}};
+art.sky(67,54,20);assert.equal(skyCalls.length,2);assert(Math.abs(skyCalls[0][0])<20&&Math.abs(skyCalls[1][0])<20);assert.equal(cityVisible,false,'day skyline has no lit windows');
+art.sky(67,54,20,3);assert.equal(cityVisible,true,'night home journey lights city windows');assert.deepEqual(cityPosition,skyCalls.at(-1),'lights track skyline bend and horizon');
+art.hide();assert.equal(cityVisible,false,'hide cleans city overlay');console.log('PASS sky parallax coverage, night-only city lights and cleanup');

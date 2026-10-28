@@ -457,9 +457,7 @@ export function drawCadre(g: Graphics, s: CadreState, routeMeters: number) {
     r(117, 231, 88, 1, red);
   }
   if (m.driving) {
-    const healthColor = s.vehicle <= 40 ? red : dim;
     const health = Math.max(0, Math.min(100, s.vehicle));
-    compact(281, 187, Math.round(health) + "%", healthColor, 28);
     drawConditionBars(g, health, 100, 222);
     if (m.assigned || m.home) {
       t(218, 198, Math.round(s.speed) + " KM/H", paper, 1, 88);

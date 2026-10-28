@@ -59,14 +59,16 @@ for (const mission of [0, 1, 2])
       assert.equal(g.lives, 3 - defeat, "loss card cannot lose another life");
       t.advance(2.7);
       if (defeat < 3) {
-        assert.equal(g.phase, "free");
+        const schoolRetry = reason !== "breakdown";
+        assert.equal(g.phase, schoolRetry ? "school" : "free");
         assert.equal(g.mission, mission);
         assert.equal(g.won, mission);
         assert.equal(g.hp, 5);
         assert.equal(g.vehicle, 100);
         assert.equal(g.road, 0);
-        assert(!g.notified);
-        assert.equal(g.remaining, g.missionSpec().seconds);
+        assert.equal(g.notified, schoolRetry);
+        assert.equal(g.room, g.missionSpec().start);
+        assert.equal(g.remaining, schoolRetry ? 120 : g.missionSpec().seconds);
         assert(!g.navigationCare.used && !g.recoveryScene.active);
         assert(!g.cleared.has(999));
         assert(!g.roomEnemies.has(999));
@@ -112,8 +114,45 @@ for (const fps of [30, 60, 120]) {
   assert.equal(g.phase, "home");
 }
 console.log(
-  "PASS 3 lives: all missions/reasons, exact single loss, same-road retry, restored clock/health/car/rooms/care, retained successes/journal, pause, third radiation/title, 30/60/120fps and protected home",
+  "PASS 3 lives: all missions/reasons, exact single loss, school checkpoint at 120s or road retry, reset health/rooms/care, retained journal, pause, third radiation/title and protected home",
 );
+for (const fps of [30, 60, 120])
+  for (const mission of [0, 1, 2]) {
+    const t = createGame({ policy: "three-required" }),
+      g = t.g;
+    g.validatedDay = true;
+    g.startDay(false);
+    g.mission = mission;
+    g.begin();
+    g.phase = "road";
+    g.finish(false, "late");
+    g.next();
+    g.completeLifeLoss();
+    assert.equal(g.phase, "free", "road timeout restarts road, not school");
+    assert.equal(g.remaining, g.missionSpec().seconds);
+    g.school();
+    g.finish(false, "late");
+    g.next();
+    g.completeLifeLoss();
+    assert.equal(g.phase, "school");
+    assert.equal(g.remaining, 120);
+    assert.equal(g.lives, 1);
+    const room = g.room;
+    g.setPaused(true);
+    t.advance(3, fps);
+    assert.equal(g.remaining, 120);
+    assert.equal(g.room, room);
+    g.setPaused(false);
+    t.advance(0.4, fps);
+    assert.equal(g.remaining, 120, "entry fade does not consume retry time");
+    assert.equal(g.recoveryScene.active, false);
+    assert.equal(g.navigationCare.used, false);
+    assert.equal(
+      g.session.events.filter((e) => e.kind === "mission-retry").at(-1).data
+        .checkpoint,
+      "school",
+    );
+  }
 {
   const t = createGame({ policy: "three-required" }),
     g = t.g;

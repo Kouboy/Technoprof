@@ -8,6 +8,7 @@ const source={
  'cinematic-campus-approved':[approved.campus,'art/cinematics-2026-10-25-v2/storyboard-v2.png'],
  'cinematic-visitor':[approved.visitor,'art/cinematics-2026-10-25-v2/visitor-coat.png'],
  'cinematic-car':[approved.car,'art/cinematics-2026-10-25-v3/car-ride.png'],
+ 'cinematic-badge':[approved.badge,'art/cinematics-2026-10-27/badge-classroom.png'],
 };
 const dimensions={};for(const [key,[uri,path]] of Object.entries(source)){
  const bytes=fs.readFileSync(path);assert.deepEqual(Buffer.from(uri.split(',')[1],'base64'),bytes,'approved source bytes: '+path);
@@ -20,7 +21,7 @@ const graphics={setDepth(){return this},fillStyle(){},fillRect(x,y,w,h){rects.pu
 const scope={CINEMATIC_DATA:original,CINEMATIC_INTRO_DATA:intro,CINEMATIC_APPROVED_DATA:approved};vm.createContext(scope);
 vm.runInContext(require('node:module').stripTypeScriptTypes(strip(fs.readFileSync('src/cinematic.ts','utf8'))+'\n'+strip(fs.readFileSync('src/cinematic-art.ts','utf8')))+';this.api={CinematicArt,CinematicSequence};',scope);
 const art=new scope.api.CinematicArt({textures:{get:texture},add:{graphics:()=>graphics,image:()=>image}});
-assert.equal(frames.length,23);
+assert.equal(frames.length,24);
 for(const f of frames){assert([f.x,f.y,f.w,f.h].every(Number.isInteger));assert(f.x>=4&&f.y>=4&&f.x+f.w<=dimensions[f.key].width-4&&f.y+f.h<=dimensions[f.key].height-4);assert(f.w>0&&f.h>0)}
 for(const kind of ['intro','ending']){
  const s=new scope.api.CinematicSequence(kind);
@@ -36,4 +37,4 @@ for(const kind of ['intro','ending']){
 const opening=new scope.api.CinematicSequence('intro');art.render(opening);assert.equal(image.alpha,0);opening.tick(1,false);art.render(opening);assert.equal(image.alpha,.5);opening.tick(1,false);art.render(opening);assert.equal(image.alpha,1);
 const ending=new scope.api.CinematicSequence('ending');for(const i of [12,13]){ending.index=i;ending.age=0;art.render(ending);assert.equal(image.alpha,1,'hard bell/wake cut')}
 art.hide();assert(!image.visible);for(const r of rects)assert(r.x>=0&&r.y>=0&&r.x+r.w<=320&&r.y+r.h<=240);
-console.log('PASS approved films: five unchanged PNGs, 23 bounded source crops, full-frame cover, 2s black opening and hard bell/wake cuts');
+console.log('PASS approved films: six source PNGs, 24 bounded crops, badge handover, full-frame cover, 2s black opening and hard bell/wake cuts');

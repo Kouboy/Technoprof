@@ -45,8 +45,8 @@ const server = http.createServer((req, res) => {
     ["chrome", chromium],
     ["firefox", firefox],
   ]) {
-    if(process.argv.includes('--firefox-only') && name!=='firefox')continue;
-    if(process.argv.includes('--chrome-only') && name!=='chrome')continue;
+    if (process.argv.includes("--firefox-only") && name !== "firefox") continue;
+    if (process.argv.includes("--chrome-only") && name !== "chrome") continue;
     const browser = await engine.launch({ headless: true });
     try {
       const context = await browser.newContext({
@@ -64,12 +64,20 @@ const server = http.createServer((req, res) => {
       page.on("pageerror", (e) => errors.push(e.message));
       page.setDefaultTimeout(90000);
       const load = async (scenario) => {
-        await page.goto(
-          `http://127.0.0.1:${server.address().port}/?essai=labo&scenario=${scenario}&musique=essai`,
-        );
-        await page.waitForFunction(() => !!window.__lifeScene);
+        if (page.url() !== "about:blank") {
+          await page
+            .getByRole("combobox", { name: "Scénario", exact: true })
+            .selectOption(scenario);
+        } else {
+          await page.goto(
+            `http://127.0.0.1:${server.address().port}/?essai=labo&scenario=${scenario}&musique=essai`,
+          );
+          await page.waitForFunction(() => !!window.__lifeScene);
+        }
         await page.evaluate(() => {
           window.__sounds = [];
+          if (window.__lifeSoundProbe) return;
+          window.__lifeSoundProbe = true;
           const a = __lifeScene.audio,
             p = a.play.bind(a);
           a.play = (...v) => {
@@ -181,10 +189,13 @@ const server = http.createServer((req, res) => {
         box.y + box.height * 0.4,
       );
       await wait(() => __lifeScene.phase === "lifeLost");
-      await wait(() => __lifeScene.phase === "free");
+      await wait(() => __lifeScene.phase === "school");
       assert.equal(await page.evaluate(() => __lifeScene.mission), 1);
       assert.equal(await page.evaluate(() => __lifeScene.won), 1);
-      assert.equal(await page.evaluate(() => __lifeScene.remaining), 195);
+      assert.equal(await page.evaluate(() => __lifeScene.remaining), 120);
+      assert.equal(await page.evaluate(() => __lifeScene.room), 100);
+      assert.equal(await page.evaluate(() => __lifeScene.hp), 5);
+      await snap("reprise-ecole-120s");
       await load("lives-final");
       await pad(-1);
       await wait(() => __lifeScene.age > 2.1);
@@ -200,8 +211,13 @@ const server = http.createServer((req, res) => {
         ),
         1,
       );
-      await page.getByRole("button", {name:"Pause / reprendre",exact:true}).click();
-      assert(await page.evaluate(()=>__lifeScene.paused),'pause freezes radiation');
+      await page
+        .getByRole("button", { name: "Pause / reprendre", exact: true })
+        .click();
+      assert(
+        await page.evaluate(() => __lifeScene.paused),
+        "pause freezes radiation",
+      );
       const age = await page.evaluate(() => __lifeScene.age);
       await page.waitForTimeout(250);
       assert.equal(await page.evaluate(() => __lifeScene.age), age);

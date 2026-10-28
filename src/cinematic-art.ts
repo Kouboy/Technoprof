@@ -18,6 +18,7 @@ export class CinematicArt {
     );
     scene.load.image("cinematic-visitor", CINEMATIC_APPROVED_DATA.visitor);
     scene.load.image("cinematic-car", CINEMATIC_APPROVED_DATA.car);
+    scene.load.image("cinematic-badge", CINEMATIC_APPROVED_DATA.badge);
   }
   constructor(scene: Phaser.Scene) {
     const texture = scene.textures.get("cinematic-storyboard");
@@ -60,7 +61,11 @@ export class CinematicArt {
       this.sizes.set("cinematic-campus-approved:" + i, { w, h });
     });
     campus.setFilter(1);
-    for (const key of ["cinematic-visitor", "cinematic-car"]) {
+    for (const key of [
+      "cinematic-visitor",
+      "cinematic-car",
+      "cinematic-badge",
+    ]) {
       const t = scene.textures.get(key),
         source = t.getSourceImage() as HTMLImageElement;
       const w = source.width - 8,
@@ -103,8 +108,7 @@ export class CinematicArt {
     const frame = String(sequence.panel.frame);
     const size = this.sizes.get(key + ":" + frame)!;
     const scale = Math.max(212 / size.w, 158 / size.h);
-    const focusY =
-      key === "cinematic-campus-approved" && sequence.frame === 6 ? 0 : 0.5;
+    const focusY = 0.5;
     const cropW = 212 / scale,
       cropH = 158 / scale;
     this.image

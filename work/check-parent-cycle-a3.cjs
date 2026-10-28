@@ -15,6 +15,9 @@ function setup() {
   g.direct = new t.api.DirectInput(g);
   g.loadScenario("bruel-navigation-a3");
   g.enterRoom(111, 150);
+  // Isolate the two-hit cycle on its original flat-floor fixture. The new
+  // mixed floor/charge scenarios are exercised in check-combat-floor-gaps.
+  g.roomSpec().gaps = [];
   t.advance(0.4);
   for (let i = 0; i < 12 && g.encounterTime; i++) {
     g.physicalKeys.F.just = true;

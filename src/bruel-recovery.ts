@@ -57,6 +57,8 @@ export const PARENT_CYCLE = {
   breakSeconds: 0.38,
   retreat: 34,
   distance: 84,
+  hurtHalfWidth: 12,
+  blockSeconds: 0.24,
 };
 export type ParentCycle = {
   phase: "guard" | "windup" | "charge" | "opening" | "breakaway";

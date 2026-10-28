@@ -40,7 +40,10 @@ for (const [kind, count] of [
     const ids = [];
     const cues = [];
     for (let i = 0; i < count; i++) { s.index = i; ids.push(s.panel.id); if (s.cue) cues.push([i, s.cue]); }
-    assert.deepEqual(Array.from(ids), ["grading", "fatigue", "doorbell", "visitor", "invitation", "car-ride", "courtyard", "corridor", "preparation", "classroom", "aesh", "exterior", "bell", "wake"]);
+    assert.deepEqual(Array.from(ids), ["grading", "fatigue", "doorbell", "visitor", "invitation", "car-ride", "courtyard", "corridor", "preparation", "classroom", "badge-handover", "exterior", "bell", "wake"]);
+    s.index = 10;
+    assert.equal(s.panel.texture, "cinematic-badge", "own badge handover replaces seated AESH scene");
+    assert.equal(s.panel.seconds, 6, "same soundtrack slot");
     assert.deepEqual(JSON.parse(JSON.stringify(cues)), [[2, "doorbell"], [12, "bell"], [13, "alarm"]]);
     s.index = 0;
   }

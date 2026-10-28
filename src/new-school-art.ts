@@ -73,7 +73,9 @@ export const BACKGROUND_FRAMES: Record<string, number[][]> = {
 // Rectangles occupied by a neighbouring pose, outside this actor's silhouette.
 // Original atlas files stay intact; these are runtime extraction masks.
 export function poseExclusions(i: number, width: number, height: number) {
-  if (i === 1) return [[410, 300, width - 410, height - 300]];
+  // Windup arms extend into the next column above the waist. Below it, that
+  // column belongs to the strike pose's rear boot, starting at local x384.
+  if (i === 1) return [[384, 300, width - 384, height - 300]];
   if (i === 2) return [[0, 0, 85, 190]];
   if (i === 3 || i === 7) return [[0, 0, 70, height]];
   return [];
@@ -268,6 +270,7 @@ export class NewSchoolArt {
           .setVisible(true);
       }
       s.art?.reactEnemy(image, e, (e.facing ?? Math.sign(s.px - e.x)) || -1);
+      if (e.floorLift) image.y -= e.floorLift;
     }
     const e = s.enemies[0];
     if (s.phase === "opening") {

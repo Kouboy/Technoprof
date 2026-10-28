@@ -62,10 +62,14 @@ import {
   SECURITY,
   THROWER,
   FILMER,
+  combatBodyX,
   enemyTuning,
   combatProfile,
   terminalReason,
   SeededRandom,
+  startEnemyFloorStep,
+  advanceEnemyFloorStep,
+  safeFloorDisplacement,
   type FailureReason,
 } from "./gameplay";
 import { SessionLog, RuntimeLog } from "./session-log";
@@ -519,6 +523,14 @@ class Game extends Phaser.Scene {
   floorGaps() {
     return this.roomSpec()?.gaps ?? [];
   }
+  combatFloorGaps() {
+    return (this.mission === 1 &&
+      this.room === NAV_ID.seuil &&
+      this.roomSpec()?.navigation?.revision === "A3") ||
+      (this.mission === 2 && this.room === INSHAPE_ID.sas && this.isInshapeI2())
+      ? this.floorGaps()
+      : [];
+  }
   drawingEncounter = false;
   encounterTime = 0;
   dialogue: DialogueState = { page: 0, characters: 0 };
@@ -550,6 +562,7 @@ class Game extends Phaser.Scene {
   openingFrom = 280;
   failureStartSpeed = 0;
   attackHit = false;
+  attackSoundPlayed = false;
   schoolFade = 0;
   roomTransition: {
     target: number;
@@ -1804,6 +1817,7 @@ class Game extends Phaser.Scene {
       this.session.record("radiation", this.mission, this.room, { lives: 0 });
       this.persistJournal();
     } else {
+      const retrySchool = !this.brokenRoad;
       this.vehicle = 100;
       this.navigationMetrics = new NavigationMetrics(this.navigationRevision);
       delete this.validatedDayRuns[this.mission + 1];
@@ -1813,10 +1827,19 @@ class Game extends Phaser.Scene {
         this.missionSpec().start,
         {
           lives: this.lives,
-          seconds: this.missionSpec().seconds,
+          seconds: retrySchool
+            ? LIVES.schoolRetrySeconds
+            : this.missionSpec().seconds,
+          checkpoint: retrySchool ? "school" : "road",
         },
       );
       this.begin();
+      if (retrySchool) {
+        this.notified = true;
+        this.returnFade = 0;
+        this.remaining = LIVES.schoolRetrySeconds;
+        this.school();
+      }
       this.persistJournal();
     }
   }
@@ -1975,7 +1998,7 @@ class Game extends Phaser.Scene {
   bookContact(e: Enemy) {
     const profile = this.combatProfile();
     return {
-      x: e.x - this.face * profile.contactX,
+      x: (e.parentCycle ? combatBodyX(e) : e.x) - this.face * profile.contactX,
       y: this.py - profile.contactY,
     };
   }
@@ -2363,7 +2386,13 @@ class Game extends Phaser.Scene {
               : name.endsWith("-parent")
                 ? NAV_ID.seuil
                 : NAV_ID.cour,
-          name.endsWith("-parent") ? 150 : visualPreset ? 55 : 20,
+          name.endsWith("-parent")
+            ? this.navigationRevision === "A3"
+              ? 55
+              : 150
+            : visualPreset
+              ? 55
+              : 20,
         );
       }
       this.session.record("scenario", this.mission, this.room, {
@@ -3526,27 +3555,38 @@ class Game extends Phaser.Scene {
         this.attackBuffer = 0;
         this.attack = PLAY.attackDuration;
         this.attackHit = false;
+        this.attackSoundPlayed = false;
         this.traceControl("attack", "accepted");
         this.session.record("attack", this.mission, this.room, {
           x: this.px,
           facing: this.face,
         });
       }
+      const parentFight = this.enemies.some((e) => e.hp > 0 && !!e.parentCycle);
       if (
         this.attack > 0 &&
         this.attack <= PLAY.attackContact &&
-        !this.attackHit
+        !this.attackHit &&
+        (!parentFight || this.attack > PLAY.attackRecovery)
       ) {
-        this.attackHit = true;
-        this.audio.combat("swing", this.face);
+        if (!parentFight) this.attackHit = true;
+        if (!this.attackSoundPlayed) {
+          this.audio.combat("swing", this.face);
+          this.attackSoundPlayed = true;
+        }
         for (const e of this.enemies) {
+          const targetX = e.parentCycle ? combatBodyX(e) : e.x;
+          const reach =
+            this.combatProfile().bookReach +
+            (e.parentCycle ? PARENT_CYCLE.hurtHalfWidth : 0);
           if (
             e.hp <= 0 ||
-            Math.abs(e.x - this.px) > this.combatProfile().bookReach ||
-            (e.x - this.px) * this.face < -8 ||
+            Math.abs(targetX - this.px) > reach ||
+            (targetX - this.px) * this.face < -8 ||
             this.py < 125
           )
             continue;
+          this.attackHit = true;
           const contact = this.bookContact(e);
           if (
             e.boss &&
@@ -3568,14 +3608,22 @@ class Game extends Phaser.Scene {
             this.audio.combat("block", this.face);
             this.bookBlocked = PLAY.attackRecovery;
             this.attack = PLAY.attackRecovery;
-            e.blockTime = 0.14;
+            e.blockTime = e.parentCycle ? PARENT_CYCLE.blockSeconds : 0.14;
             e.hitDirection = this.face;
             this.impact = PLAY.impactSeconds;
             this.impactX = contact.x;
             this.impactY = contact.y;
             this.impactKind = "block";
             this.hitStop = PLAY.blockStop;
-            this.session.record("blocked", this.mission, this.room, contact);
+            this.session.record("blocked", this.mission, this.room, {
+              ...contact,
+              ...(e.parentCycle
+                ? {
+                    cycle: e.parentCycle.phase,
+                    distance: Math.abs(targetX - this.px),
+                  }
+                : {}),
+            });
             continue;
           }
           e.hp--;
@@ -3592,8 +3640,10 @@ class Game extends Phaser.Scene {
           e.hitDirection = this.face;
           e.recoilTime = PLAY.hitStun;
           const oldX = e.x;
-          e.x = Phaser.Math.Clamp(e.x + this.face * PLAY.recoil, 22, 287);
+          if (!e.floorStep)
+            e.x = Phaser.Math.Clamp(e.x + this.face * PLAY.recoil, 22, 287);
           e.recoilDistance = e.x - oldX;
+          startEnemyFloorStep(e, oldX, this.combatFloorGaps());
           this.hitStop = PLAY.hitStop;
           this.punches++;
           this.impact = PLAY.impactSeconds;
@@ -3648,12 +3698,41 @@ class Game extends Phaser.Scene {
         e.recoilTime = Math.max(0, (e.recoilTime ?? 0) - dt);
         e.blockTime = Math.max(0, (e.blockTime ?? 0) - dt);
         if (e.downTime) e.downTime = Math.max(0, e.downTime - dt);
+        if (advanceEnemyFloorStep(e, dt)) {
+          if (
+            e.hp > 0 &&
+            e.parent &&
+            ((e.chargeTime ?? 0) > 0 || e.parentCycle?.phase === "charge")
+          ) {
+            e.chargeTime = Math.max(0, e.chargeTime! - dt);
+            const parent = this.enemyTuning().parent;
+            if (
+              Math.abs(e.x - this.px) < parent.reach &&
+              this.py > 130 &&
+              this.inv <= 0
+            ) {
+              this.hurt(e.chargeDir ?? 1);
+              this.impact = PLAY.impactSeconds;
+              this.impactKind = "hurt";
+              this.impactX = this.px - (e.chargeDir ?? 1) * 8;
+              this.impactY = this.py - 43;
+              this.hitStop = 0.045;
+            }
+            if (!e.floorStep && e.chargeTime <= 0) {
+              e.recovery = parent.recovery;
+              if (e.parentCycle) this.openParentWindow(e);
+            }
+          }
+          continue;
+        }
         if (e.hp <= 0) continue;
         e.strikeTime = Math.max(0, (e.strikeTime ?? 0) - dt);
         e.stun = Math.max(0, e.stun - dt);
         if (e.stun > 0) continue;
         if (e.actor === "catchup-student") {
+          const from = e.x;
           this.updateCatchupStudent(e, dt);
+          startEnemyFloorStep(e, from, this.combatFloorGaps());
           continue;
         }
         if ((e.role ?? this.roomSpec()?.role) === "student") {
@@ -3678,7 +3757,14 @@ class Game extends Phaser.Scene {
           continue;
         }
         if (e.parent) {
+          const from = e.x;
           this.updateParent(e, dt);
+          startEnemyFloorStep(
+            e,
+            from,
+            this.combatFloorGaps(),
+            this.enemyTuning().parent.chargeSpeed,
+          );
           continue;
         }
         if (e.recovery > 0) {
@@ -4131,7 +4217,8 @@ class Game extends Phaser.Scene {
       e.x = Phaser.Math.Clamp(e.x + Math.sign(d) * STUDENT.speed * dt, 22, 287);
     if (Math.abs(d) < STUDENT.trigger && e.cool <= 0) {
       e.facing = Math.sign(d) || -1;
-      e.wind = STUDENT.wind;
+      e.wind =
+        e.role === "filmer" ? this.enemyTuning().filmer.wind : STUDENT.wind;
       this.enemyAttack(e, "windup");
       if (e.role === "filmer") this.audio.enemyGesture("filmer", "windup", e.x);
     }
@@ -4139,9 +4226,12 @@ class Game extends Phaser.Scene {
   }
   updateFilmer(e: Enemy, dt: number) {
     const FILMER = this.enemyTuning().filmer;
-    if (e.wind > dt) {
+    if (e.wind > FILMER.settleSeconds) {
       e.x = Phaser.Math.Clamp(
-        e.x + (e.facing ?? -1) * FILMER.windAdvance * dt,
+        e.x +
+          (e.facing ?? -1) *
+            FILMER.windAdvance *
+            Math.min(dt, e.wind - FILMER.settleSeconds),
         32,
         280,
       );
@@ -4393,12 +4483,18 @@ class Game extends Phaser.Scene {
     c.phase = "breakaway";
     c.elapsed = 0;
     c.fromX = e.x;
-    c.targetX = Phaser.Math.Clamp(e.x + dir * PARENT_CYCLE.retreat, 29, 275);
+    e.floorStep = undefined;
+    e.floorLift = 0;
+    c.targetX = safeFloorDisplacement(
+      e.x,
+      Phaser.Math.Clamp(e.x + dir * PARENT_CYCLE.retreat, 29, 275),
+      this.combatFloorGaps(),
+    );
     c.playerFrom = this.px;
-    c.playerTarget = Phaser.Math.Clamp(
-      c.targetX - dir * PARENT_CYCLE.distance,
-      10,
-      302,
+    c.playerTarget = safeFloorDisplacement(
+      this.px,
+      Phaser.Math.Clamp(c.targetX - dir * PARENT_CYCLE.distance, 10, 302),
+      this.combatFloorGaps(),
     );
     e.facing = -dir;
     e.stun = e.recovery = e.wind = e.cool = 0;
@@ -4624,10 +4720,14 @@ class Game extends Phaser.Scene {
         continue;
       const side = previousX < e.x ? -1 : 1;
       if ((this.px - e.x) * side < profile.bodyGap) {
-        this.px = Phaser.Math.Clamp(
-          e.x + side * profile.bodyGap,
-          bounds.min,
-          bounds.max,
+        this.px = safeFloorDisplacement(
+          previousX,
+          Phaser.Math.Clamp(
+            e.x + side * profile.bodyGap,
+            bounds.min,
+            bounds.max,
+          ),
+          this.combatFloorGaps(),
         );
         if (Math.abs(this.px - e.x) < profile.bodyGap)
           e.x = this.px - side * profile.bodyGap;
@@ -4948,7 +5048,12 @@ class Game extends Phaser.Scene {
       this.g.fillStyle(0x000000);
       this.g.fillRect(0, 0, 320, 240);
       if (this.phase === "lifeLost")
-        this.livesArt?.loss(this.lifeLossFrom, this.lives, this.age);
+        this.livesArt?.loss(
+          this.lifeLossFrom,
+          this.lives,
+          this.age,
+          !this.brokenRoad,
+        );
       else this.livesArt?.radiation(this.age);
       if (this.workshop) drawWorkshop(this);
       this.syncPlayerUI?.();
@@ -6006,6 +6111,8 @@ class Game extends Phaser.Scene {
           p.x,
           p.y,
           trafficWidth(o.type) * p.scale,
+          false,
+          this.roadArt.trafficIdentity(o),
         );
         this.roadArt.lights(
           "traffic",

@@ -140,8 +140,8 @@
     "file": "step-1.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "0293ac9643b309236605b13d5e5f9f585ff3a7302eb3bc6fbd6d0aa63fbfd869"
+    "frames": 1433,
+    "sha256": "f3eb1e80f0bf977cc256d126313905f3a232e3af6e4f042305759d054e510d4b"
   },
   {
     "kind": "step",
@@ -149,8 +149,8 @@
     "file": "step-2.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "acd0ca7f94776f2c6a16dc7a6a0844c1a9d3844eb641592a110751115ad4b915"
+    "frames": 1433,
+    "sha256": "c73e1685ed6644c5d2f17220dd7b90c08daa76222ea32a39ac1bb03c14759ebf"
   },
   {
     "kind": "step",
@@ -158,8 +158,8 @@
     "file": "step-3.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "958331097a3cdd72bf64023d1b89480447213a7dc6c0ca4102640b0b07f70efa"
+    "frames": 1433,
+    "sha256": "a5bdd66ba07b13f196abf7988549784ef045473c9c2e5566e7a134c08f349ec9"
   },
   {
     "kind": "step-wood",
@@ -167,8 +167,8 @@
     "file": "step-wood-1.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "aca664991e899839844a890bac47fb051c8df2889c9b7f6d24b2d75541c418b6"
+    "frames": 1433,
+    "sha256": "db2f6b78126a51ae81dfe7e0a783323505c41fa22199f4964540c5eb9b615cd2"
   },
   {
     "kind": "step-wood",
@@ -176,8 +176,8 @@
     "file": "step-wood-2.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "a412a66d751ceeb32d39ddacb89db71e36b87b7ed7479b18c6eeafdd130b6d49"
+    "frames": 1433,
+    "sha256": "1fd15a15136cb393f83ebaabdf394332650b234fcedc69d5eb00d9b3589bf14d"
   },
   {
     "kind": "step-wood",
@@ -185,8 +185,8 @@
     "file": "step-wood-3.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "6950177f17442e74489e09c8a8c73a563e31bb8b4b13b92f84318305709a300d"
+    "frames": 1433,
+    "sha256": "d7e64af31b03406deb62f6c343c6013d95a2bcf9ddbcd71288ad601487cfabae"
   },
   {
     "kind": "step-concrete",
@@ -194,8 +194,8 @@
     "file": "step-concrete-1.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "69d85196f3914d20410203d36afea6d11022e32faa12cf085b0a070ba72bceee"
+    "frames": 1433,
+    "sha256": "880c922c6de8b4ddb1e21ba53c8e0cfca2a8e24611b6edc279c961dcdebcaa0f"
   },
   {
     "kind": "step-concrete",
@@ -203,8 +203,8 @@
     "file": "step-concrete-2.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "8a16f322c291b9805936660e316fcb7a37d3b177e8efdc04c83e4619faed9b7c"
+    "frames": 1433,
+    "sha256": "3eaafd11e7098c2e6e7bf29ac0b535f5c3cbb1b69b8d22463fccb7066eca8167"
   },
   {
     "kind": "step-concrete",
@@ -212,8 +212,8 @@
     "file": "step-concrete-3.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "b04b1f395c651ad5f75577ce8ea72c2c60854ece385d1700ec58654ed6693ec2"
+    "frames": 1433,
+    "sha256": "e347b113035dc5d48801a43087c9cca1bada6ae788524eac4346cd30cfff3813"
   },
   {
     "kind": "step-metal",
@@ -221,8 +221,8 @@
     "file": "step-metal-1.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "e707a36a29e2a6f318ea4abb513499bca0e1419608be1e61fa0c7746bb5684ae"
+    "frames": 1433,
+    "sha256": "9639ff76f09189e4e9dd4f6c25b1882f55437ccfcad3be5c334c0d78c7cc3af7"
   },
   {
     "kind": "step-metal",
@@ -230,8 +230,8 @@
     "file": "step-metal-2.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "5fdfde6fe61ad5c93f576fee6ad8a8977ded7fc254cb0c857f3d4def641ee2fd"
+    "frames": 1433,
+    "sha256": "44b5c51e93282bbc210c187f26838a75e90303529c4a162bbe02dada699a7f38"
   },
   {
     "kind": "step-metal",
@@ -239,8 +239,8 @@
     "file": "step-metal-3.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "4fad7eac7e2fdbe80050e3dcf650aca9c601b046847a1d7130856eac7dd3e587"
+    "frames": 1433,
+    "sha256": "8919829f8c88674d06d8a08e0208397f8ffb130d7f33b3fc55a76cdb764edbe2"
   },
   {
     "kind": "step-gravel",
@@ -248,8 +248,8 @@
     "file": "step-gravel-1.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "604759b4ed84ec41d2de28224288d85792687591fc401e15a39d3fb8cb0802da"
+    "frames": 1433,
+    "sha256": "27515c541d0f233dfc3b6885313b1a4187cbe293a46ecf8d05758b8a25e8050e"
   },
   {
     "kind": "step-gravel",
@@ -257,8 +257,8 @@
     "file": "step-gravel-2.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "bd1aef8b205a571a1de62ee0ba754556ec4c6a485b404c908793c70c94b9412d"
+    "frames": 1433,
+    "sha256": "c2791572c867a84634c211c26518f96ca2db42cab9c7be8c57c0f97363ed3660"
   },
   {
     "kind": "step-gravel",
@@ -266,8 +266,8 @@
     "file": "step-gravel-3.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 1764,
-    "sha256": "65ffdf46a775a105caf782861c4ceb2f22bcd87114760f9e9b8c19edcb9b9b9f"
+    "frames": 1433,
+    "sha256": "f5911e5186b6f3782ccd8d6c48d9ed39c04ba1671bde6fd4cbd513c1e6c9f8ac"
   },
   {
     "kind": "stairs",
@@ -275,8 +275,8 @@
     "file": "stairs-1.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 5512,
-    "sha256": "ed6fa5b85eb6e2363ab7c523ce360da8ebabbf1a76ca49a4ebeb53fabbe219be"
+    "frames": 8269,
+    "sha256": "8644763922585766cde055870ecf55192fd215fd46eff211cf35170e7fe60f19"
   },
   {
     "kind": "stairs",
@@ -284,8 +284,8 @@
     "file": "stairs-2.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 5512,
-    "sha256": "59f2bde6dbd6a4945e29a444eae59bca9d84d29b00e8606714db0f1e68375f8e"
+    "frames": 8269,
+    "sha256": "4ee9fb811dd988e3072e1d6aca67b9f82e02c76b98467ea67f82f3210ef942dc"
   },
   {
     "kind": "gate",
@@ -374,8 +374,8 @@
     "file": "door-passage-1.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 5292,
-    "sha256": "f51345f9dbfcc8fc5a6c501c86a4244b855366e2ed8b7ca8dffa93b89fdc0227"
+    "frames": 7166,
+    "sha256": "975e959d36c8831fa061cbc7b5d384e95a65e59750699fbfbfdb492a2faed592"
   },
   {
     "kind": "door-passage",
@@ -383,8 +383,8 @@
     "file": "door-passage-2.wav",
     "rate": 11025,
     "bits": 8,
-    "frames": 5292,
-    "sha256": "dfc814bbeec454745b54ca0382b7cc75586f412eaeb520c14572690217d777e4"
+    "frames": 7166,
+    "sha256": "cfa18e649d55229253c4b2a61015dffbfa0df1425906a084d3d55fb59e8580e3"
   },
   {
     "kind": "car-door",

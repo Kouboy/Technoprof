@@ -601,13 +601,10 @@ export class AudioKit {
           ? [["stairs", 0, 1]]
           : transition.sound === "door"
             ? [
-                ["handle", 0, 0.8],
+                ["handle", 0, 0.55],
                 ["door-passage", 0.035, 1],
               ]
-            : [
-                ["step", 0.025, 0.95],
-                ["step", 0.17, 0.8],
-              ];
+            : [["step", 0.025, 0.8]];
       cues.forEach(([kind, at, gain], i) => {
         if (transition.age >= at && !this.passagePlayed.has(i)) {
           this.passagePlayed.add(i);

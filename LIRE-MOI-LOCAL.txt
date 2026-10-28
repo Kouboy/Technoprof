@@ -14,9 +14,10 @@ et les cinématiques. Les réglages proposent quatre volumes séparés.
 
 Trois affectations à réussir : Collège des Ormeaux, Lycée Auguste-Berthelot,
 Lycée professionnel des Trois-Ponts. Vous disposez de trois vies.
-Un échec coûte une vie et fait recommencer le trajet de cette affectation,
-avec le délai, la santé et la voiture réinitialisés. Les cours déjà assurés
-restent acquis. Au troisième échec, radiation et retour au titre.
+Un échec coûte une vie. Sur la route, le trajet recommence avec son délai normal.
+À pied, reprise à l'entrée du même établissement avec 2:00 et 5 PV ; les ennemis
+et l'infirmerie sont réinitialisés. La voiture est rétablie. Les cours déjà
+assurés restent acquis. Au troisième échec, radiation et retour au titre.
 Victoire : après la conclusion, fondu de trois secondes et retour au titre.
 Game Over : après le thème, le compteur perd une vie ; Action permet d'écourter.
 

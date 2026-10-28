@@ -53,7 +53,8 @@ for (const phase of ["road", "school"]) {
   t.press("ENTER");
   assert.equal(g.phase, "lifeLost", "failure shows the lost life");
   t.advance(2.7);
-  assert.equal(g.phase, "free");
+  assert.equal(g.phase, phase === "school" ? "school" : "free");
+  if(phase === "school") assert.equal(g.remaining,120);
   assert.equal(g.lives, 2);
   assert.equal(
     g.results.length,

@@ -7,6 +7,8 @@ export const INSHAPE_NAV_I2: MissionSpec = structuredClone(INSHAPE_NAV);
 INSHAPE_NAV_I2.id = "inshape-navigation-atelier-i2";
 export const INSHAPE_I2_CARE = { corridor: 317, entranceX: 191 };
 const rooms = INSHAPE_NAV_I2.rooms;
+// Added only to I2: the final student's room, before the T03 boss threshold.
+rooms[INSHAPE_ID.sas].gaps = [[126, 156]];
 // Move the single existing infirmary; the gallery no longer offers care.
 rooms[INSHAPE_ID.galerie].exits = rooms[INSHAPE_ID.galerie].exits!.filter(
   (e) => e.target !== INSHAPE_ID.infirmerie,

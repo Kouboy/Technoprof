@@ -156,7 +156,9 @@ export const THROWER = {
   height: 130,
 };
 export const FILMER = {
-  windAdvance: 12,
+  wind: 0.6,
+  settleSeconds: 0.18,
+  windAdvance: 20,
   activePose: 0.22,
 };
 // A3 is a controlled workshop comparison. Range, damage and player inputs stay
@@ -214,7 +216,7 @@ export const PRESSURE_ENEMY = {
     cooldown: 0.45,
   },
   thrower: { ...THROWER, wind: 0.55, recovery: 0.65, cooldown: 0.55 },
-  filmer: { ...FILMER, windAdvance: 34 },
+  filmer: FILMER,
   initialCooldown: 0.18,
   hitStun: 0.08,
   hitRecovery: 0,
@@ -284,6 +286,14 @@ export type EnemyPhase =
   | "turn"
   | "hurt"
   | "defeated";
+// Shared by presentation and book contact: the hurt body follows the same
+// recoil interpolation the player can see, rather than its future landing x.
+export function combatBodyX(e: Enemy) {
+  return (
+    e.x -
+    (e.recoilDistance ?? 0) * Math.min(1, (e.recoilTime ?? 0) / PLAY.hitStun)
+  );
+}
 // Timers are the simulation truth. One exclusive state is derived for presentation
 // and diagnostics, so it cannot drift out of sync with the collision rules.
 export function enemyPhase(e: Enemy, presentation = false): EnemyPhase {
@@ -328,4 +338,80 @@ export class SeededRandom {
     this.state = n >>> 0;
     return this.state / 4294967296;
   }
+}
+
+export const ENEMY_FLOOR_STEP = { seconds: 0.28, height: 18, bank: 8 };
+// Presentation follows a committed, short crossing. No damage, invulnerability
+// or shared random state is introduced by a broken floor.
+export function startEnemyFloorStep(
+  e: Enemy,
+  previousX: number,
+  gaps: number[][],
+  chargeSpeed = 140,
+) {
+  if (e.floorStep) return false;
+  const direction = Math.sign(e.x - previousX);
+  if (!direction) return false;
+  const margin = ENEMY_FLOOR_STEP.bank;
+  const gap = gaps.find(([l, r]) =>
+    direction > 0
+      ? previousX < r + margin && e.x > l - margin && previousX <= l
+      : previousX > l - margin && e.x < r + margin && previousX >= r,
+  );
+  if (!gap) return false;
+  const targetX = direction > 0 ? gap[1] + margin : gap[0] - margin;
+  e.floorStep = {
+    fromX: previousX,
+    targetX,
+    elapsed: 0,
+    seconds:
+      (e.chargeTime ?? 0) > 0
+        ? Math.max(
+            0.12,
+            Math.min(
+              ENEMY_FLOOR_STEP.seconds,
+              Math.abs(targetX - previousX) / chargeSpeed,
+            ),
+          )
+        : ENEMY_FLOOR_STEP.seconds,
+  };
+  e.x = previousX;
+  e.floorLift = 0;
+  return true;
+}
+export function advanceEnemyFloorStep(e: Enemy, dt: number) {
+  const step = e.floorStep;
+  if (!step) return false;
+  step.elapsed = Math.min(step.seconds, step.elapsed + dt);
+  const progress = step.elapsed / step.seconds;
+  e.x = step.fromX + (step.targetX - step.fromX) * progress;
+  e.floorLift = Math.round(
+    Math.sin(Math.PI * progress) * ENEMY_FLOOR_STEP.height,
+  );
+  e.walk = (e.walk ?? 0) + dt * 12;
+  if (progress >= 1) {
+    e.floorStep = undefined;
+    e.floorLift = 0;
+  }
+  return true;
+}
+// A non-damaging boss separation may approach an edge, never force the player
+// across it. Deliberate jumps and ordinary movement still use the normal rules.
+export function safeFloorDisplacement(
+  from: number,
+  target: number,
+  gaps: number[][],
+) {
+  for (const [l, r] of gaps) {
+    if (from <= l && target > l)
+      target = Math.min(target, l - ENEMY_FLOOR_STEP.bank);
+    else if (from >= r && target < r)
+      target = Math.max(target, r + ENEMY_FLOOR_STEP.bank);
+    else if (target > l && target < r)
+      target =
+        from < (l + r) / 2
+          ? l - ENEMY_FLOOR_STEP.bank
+          : r + ENEMY_FLOOR_STEP.bank;
+  }
+  return target;
 }

@@ -53,8 +53,10 @@ function walk(t, x, mode) {
   } else if (t.g.direct.intent?.kind !== "walk") tap(t, x, 164);
   jumpGap(t, x, mode);
 }
-// The route driver now reads the floor hazard and uses actual jump controls;
-// it never removes gaps, moves actors across them or grants invulnerability.
+// Read the navigation/gallery hazards using actual jump controls. A3 route
+// comparisons below retain the original flat boss-arena fixture so historical
+// route/care timings remain comparable. The delivered combat floor is covered
+// by check-combat-floor-gaps and the continuous validated-day runner.
 function jumpGap(t, x, mode) {
   const g = t.g;
   if (g.py !== 159 || g.falling > 0) return;
@@ -357,6 +359,7 @@ for (const fps of [30, 60, 120])
         ),
         g = t.g,
         route = d.routes[path].map((id) => bySlug[id]);
+      if (a3) g.navigationSpec().rooms[t.api.NAV_ID.seuil].gaps = [];
       let ri = 0;
       let roadSpent = 0;
       if (run.road) {
@@ -535,6 +538,7 @@ for (const fps of [30, 60, 120])
         mode,
         path,
         road: !!run.road,
+        ...(a3 ? { arenaFixture: "original-flat-floor-reference" } : {}),
         roadSpent: +roadSpent.toFixed(3),
         startHp: hp,
         gain: nav.careUsed ? gain : 0,
@@ -556,7 +560,7 @@ fs.writeFileSync(
   JSON.stringify(
     {
       method:
-        "Isolated declared presets; all traversal and care through physical aliases or DirectInput. Only edge-case tests set timer/position explicitly. Not human orientation or phone validation.",
+        "Isolated declared presets; all traversal and care through physical aliases or DirectInput. A3 route timings retain the original flat boss floor as a reference; actual new combat holes are tested in check-combat-floor-gaps and validated-day-runner. Only edge-case tests set timer/position explicitly. Not human orientation or phone validation.",
       care: careReports,
       branchChecks,
       routes: routesReports,
