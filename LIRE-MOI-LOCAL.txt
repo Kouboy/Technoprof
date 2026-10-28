@@ -26,7 +26,7 @@ Souris et toucher directement dans la scène. Commandes et réglages sont dans
 le menu ; P ou Échap suspend le jeu. Sur téléphone, le paysage est conseillé.
 
 Manette standard Xbox : appuyer sur un bouton pour la détecter.
-Stick gauche ou croix = diriger ; RT = accélérer ; LT = freiner.
+Stick gauche ou croix = diriger ; A ou RT = accélérer ; B/X ou LT = freiner.
 À pied : A = saut ; B ou X = frappe / dialogue ; haut/bas = portes et escaliers.
 Start = commencer au titre, passer un film, pause / reprise en jeu.
 Menus : A = valider, B = retour, gauche/droite = ajuster les volumes.

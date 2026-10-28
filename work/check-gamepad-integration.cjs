@@ -31,6 +31,23 @@ function setup() {
   t.g.gamepad = new ctx.PadInput();
   return { ...t, set: (value) => (snapshot = value) };
 }
+for (const brake of [1, 2]) {
+  const t = setup(),
+    g = t.g;
+  g.startDay(false);
+  g.phase = "road";
+  g.notified = true;
+  g.speed = 100;
+  g.obstacles = [];
+  t.set([pad([0])]);
+  t.advance(1);
+  assert(g.speed > 110, "held A really accelerates");
+  const speed = g.speed;
+  t.set([pad([brake])]);
+  t.advance(0.5);
+  assert(g.speed < speed - 35, "held B/X really brakes");
+  assert.equal(g.attack, 0, "pedals cannot strike while driving");
+}
 {
   const t = setup(),
     g = t.g;

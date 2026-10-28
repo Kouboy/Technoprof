@@ -61,7 +61,7 @@ export function contextualHelp(s: PlayerContext) {
       : "";
   if (s.phase === "free" && s.age < 10)
     return s.gamepadMode
-      ? "RT accélérer · LT freiner · stick gauche ou croix pour diriger."
+      ? "A/RT accélérer · B/X/LT freiner · stick gauche ou croix pour diriger."
       : s.pointerMode
         ? "Maintenez dans la scène pour accélérer. Glissez pour diriger ; vers le bas pour freiner. Relâchez pour laisser rouler."
         : "Z/↑ accélérer · S/↓ freiner · Q D/← → diriger. Souris/tactile : maintenir puis glisser dans la scène.";
@@ -297,7 +297,7 @@ export function installPlayerExperience(s: Host) {
       ["À tout moment", "P ou Échap : pause / reprise · M : son"],
       [
         "Manette — route",
-        "Stick gauche ou croix : diriger · RT : accélérer · LT : freiner",
+        "Stick gauche ou croix : diriger · A/RT : accélérer · B/X/LT : freiner",
       ],
       [
         "Manette — à pied",
