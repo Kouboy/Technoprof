@@ -226,7 +226,10 @@ export function drawComicFX(g: Phaser.GameObjects.Graphics, s: State) {
     }
   }
   // A threat's anticipation has priority; lettering stays below the faces.
-  if (s.comicWords === false || s.enemies.some((e) => e.hp > 0 && e.wind > 0))
+  if (
+    s.comicWords === false ||
+    (!blocked && s.enemies.some((e) => e.hp > 0 && e.wind > 0))
+  )
     return;
   const word = blocked ? "CLAC!" : hurt ? "AIE!" : "PAF!",
     size = (s.room === 4 ? 1.25 : 1) * (1 + Math.max(0, 0.12 - elapsed)),

@@ -1,9 +1,11 @@
-import { PLAY, enemyPhase } from "./gameplay";
+import { PLAY, FILMER, enemyPhase, combatBodyX } from "./gameplay";
 import type { Enemy } from "./world";
 
 // New four-pose actors share the same exclusive state priority as diagnostics.
 // Recovery starts at contact, but the active silhouette must remain visible.
 export function newEnemyFrame(e: Enemy, presentation = false) {
+  if (!presentation && e.hp > 0 && e.parentCycle && (e.blockTime ?? 0) > 0)
+    return 0;
   if (e.hp > 0 && !presentation && e.securityCycle?.phase === "reset") return 1;
   if (e.hp > 0 && e.parentCycle?.phase === "breakaway")
     return e.parentCycle.elapsed < 0.12 ? 3 : 1;
@@ -105,6 +107,16 @@ export function teacherPose(s: TeacherState) {
 }
 
 export function enemyPose(e: Enemy, facing: number) {
+  const filmingWind =
+    e.role === "filmer" && e.hp > 0 && !e.stun && e.wind > 0
+      ? Math.min(
+          1,
+          Math.max(
+            0,
+            (FILMER.wind - e.wind) / (FILMER.wind - FILMER.settleSeconds),
+          ),
+        )
+      : 0;
   const recoil = Math.min(1, (e.recoilTime ?? 0) / PLAY.hitStun);
   const block = Math.min(1, (e.blockTime ?? 0) / 0.14);
   const direction = e.hitDirection ?? -facing;
@@ -115,9 +127,11 @@ export function enemyPose(e: Enemy, facing: number) {
   return {
     // The collision body separates immediately. The drawn body travels to it
     // during the recoil, beginning at the exact contact rather than teleporting.
-    x: e.x - (e.recoilDistance ?? 0) * recoil + direction * 2 * block,
+    x: combatBodyX(e) + direction * 2 * block,
     y: PLAY.floor + 3 * progress,
-    angle: direction * (8 * recoil + 24 * progress + 2 * block),
+    angle:
+      direction * (8 * recoil + 24 * progress + 2 * block) -
+      facing * 7 * filmingWind,
     alpha: defeated ? Math.min(1, Math.max(0, (e.downTime ?? 0) / 0.4)) : 1,
   };
 }

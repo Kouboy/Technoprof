@@ -156,7 +156,9 @@ export const THROWER = {
   height: 130,
 };
 export const FILMER = {
-  windAdvance: 12,
+  wind: 0.6,
+  settleSeconds: 0.18,
+  windAdvance: 20,
   activePose: 0.22,
 };
 // A3 is a controlled workshop comparison. Range, damage and player inputs stay
@@ -214,7 +216,7 @@ export const PRESSURE_ENEMY = {
     cooldown: 0.45,
   },
   thrower: { ...THROWER, wind: 0.55, recovery: 0.65, cooldown: 0.55 },
-  filmer: { ...FILMER, windAdvance: 34 },
+  filmer: FILMER,
   initialCooldown: 0.18,
   hitStun: 0.08,
   hitRecovery: 0,
@@ -284,6 +286,14 @@ export type EnemyPhase =
   | "turn"
   | "hurt"
   | "defeated";
+// Shared by presentation and book contact: the hurt body follows the same
+// recoil interpolation the player can see, rather than its future landing x.
+export function combatBodyX(e: Enemy) {
+  return (
+    e.x -
+    (e.recoilDistance ?? 0) * Math.min(1, (e.recoilTime ?? 0) / PLAY.hitStun)
+  );
+}
 // Timers are the simulation truth. One exclusive state is derived for presentation
 // and diagnostics, so it cannot drift out of sync with the collision rules.
 export function enemyPhase(e: Enemy, presentation = false): EnemyPhase {

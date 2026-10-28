@@ -99,13 +99,13 @@ for (const fps of [30, 60, 120]) {
   );
   results.push({ ...r, journal: undefined });
 }
-// A less effective keyboard pilot stops at its first terminal final encounter.
-// Two successful courses cannot unlock either the ending or a winning report.
+// A less effective keyboard pilot stops at its first failure. Its exact failed
+// room changes with combat tuning; success requires all three courses regardless.
 const keyboard = runDay({ mode: "keyboard" }).report;
 assert.equal(keyboard.phase, "fail");
-assert.equal(keyboard.won, 2);
-assert.equal(keyboard.results.length, 3);
-assert.equal(keyboard.journal.navigationByMission[3].end.outcome, "failure");
+assert(keyboard.won < 3);
+assert.equal(keyboard.results.length, keyboard.won + 1);
+assert.equal(keyboard.journal.navigationByMission[keyboard.won + 1].end.outcome, "failure");
 assert.equal(
   keyboard.journal.events.filter((e) => e.kind === "failure").length,
   1,

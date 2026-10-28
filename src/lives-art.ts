@@ -121,7 +121,7 @@ export class LivesArt {
     this.portrait(275, 10, 14);
     drawLifeNumber(this.ink, 294, 14, count);
   }
-  loss(before: number, after: number, age: number) {
+  loss(before: number, after: number, age: number, school = false) {
     const count = age < LIVES.lossChangeAt ? before : after;
     this.portrait(110, 96, 42);
     drawLifeNumber(this.ink, 164, 108, count, 3);
@@ -130,7 +130,12 @@ export class LivesArt {
       this.ink.fillStyle(0xd97561);
       this.ink.fillRect(164, 138, 45, 2);
     }
-    const line = after > 0 ? "REPRISE DU TRAJET" : "DERNIERE VIE PERDUE";
+    const line =
+      after > 0
+        ? school
+          ? "REPRISE ETABLISSEMENT - 2:00"
+          : "REPRISE DU TRAJET"
+        : "DERNIERE VIE PERDUE";
     bitmap(
       this.ink,
       Math.round(160 - bitmapWidth(line) / 2),

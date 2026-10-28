@@ -52,8 +52,10 @@ trajets et les établissements validés : Ormeaux H1, Auguste-Berthelot A3 et
 Trois-Ponts I2. Le journal d’essai réunit toute la journée.
 Les trois affectations doivent réussir, avec **trois vies pour la journée**.
 Chaque échec retire une vie : après la vignette, le compteur de vies diminue sur
-fond noir, puis le trajet de l’affectation en cours recommence avec le délai,
-le professeur et la voiture rétablis. Les affectations réussies restent acquises.
+fond noir. Un échec sur la route relance le trajet avec son délai normal ; un
+échec à pied relance l’établissement à son entrée avec **2:00**, 5 PV et les
+rencontres et l’infirmerie réinitialisées. La voiture est rétablie. Les
+affectations réussies restent acquises.
 La troisième défaite provoque la radiation puis le retour au titre. Une nouvelle
 journée rétablit trois vies. Après le dernier cours, retour protégé de 3 km à
 Maison, stationnement, portière et marche lente jusqu'à l'appartement, puis fondu
@@ -68,8 +70,8 @@ Dans le playtest actuel, la dernière image de conclusion reste après
 les 69 secondes du morceau, puis tout le cadre fond au noir pendant trois secondes.
 Le titre et sa musique reviennent automatiquement. Le Game Over conserve sa
 vignette et son thème, puis affiche la perte d'une vie ; Action permet d’écourter
-après deux secondes. S'il reste une vie, le trajet de l'affectation en cours
-recommence. Après la troisième défaite, la radiation ramène au titre.
+après deux secondes. S'il reste une vie, la reprise dépend du lieu de l'échec
+(trajet ou entrée de l'établissement). Après la troisième défaite, la radiation ramène au titre.
 Il n’y a plus de compte-rendu intermédiaire. Les journaux restent sauvegardés ;
 une nouvelle journée lancée depuis le titre commence à la première affectation.
 [Montage et synchronisation](docs/cinematiques/INTEGRATION.md).

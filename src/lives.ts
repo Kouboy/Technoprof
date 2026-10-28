@@ -1,6 +1,7 @@
 // One run, three assignments, three lives shared by road and school.
 export const LIVES = {
   initial: 3,
+  schoolRetrySeconds: 120,
   lossChangeAt: 0.8,
   lossSeconds: 2.6,
   lossSkipAfter: 1.2,
