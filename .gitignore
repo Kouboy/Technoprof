@@ -6,6 +6,8 @@ work/checkpoints/
 # Livraisons générées : télécharger depuis les releases ou lancer npm run build.
 /Jouer-*.html
 /Technoprof-*.zip
+/Technoprof.ico
+/TECHNOPROF.lnk
 /archives/versions/
 /archives/working-copies/
 

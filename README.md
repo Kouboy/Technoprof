@@ -31,6 +31,9 @@ Le menu de pause permet d’exporter le journal d’essai.
 **Sur Windows : lancer Jouer.cmd** pour ouvrir directement Chrome en fenêtre
 d’application, sans onglets, avec Réduire / Agrandir / Fermer. Chrome doit déjà
 être installé ; sinon le lanceur HTML s’ouvre dans le navigateur par défaut.
+Pour l’icône illustrée, lancer **Creer-raccourci.cmd**, puis ouvrir le raccourci
+**TECHNOPROF** créé dans le dossier du jeu. Après déplacement du dossier, relancer
+Creer-raccourci.cmd pour actualiser ses chemins ; Jouer.cmd le fait également.
 Autre possibilité : ouvrir **Jouer-Technoprof-Fenetre.html**, puis **Ouvrir le jeu
 dans sa fenêtre**. Le cadre conserve le
 ratio 4:3 en utilisant toute la place disponible. Un petit bouton Pause discret
