@@ -1,3 +1,4 @@
+import { addPreparedTexture } from "./prepared-texture";
 import Phaser from "phaser";
 import { BRIDGE_DATA } from "./bridge-data";
 // Foot anchors and silhouette masks refer to the unmodified source sheet.
@@ -299,7 +300,7 @@ export class BridgeArt {
     }
     ctx.clip();
     ctx.drawImage(raw, 0, 0);
-    const atlas = scene.textures.addCanvas("guard-33", canvas)!;
+    const atlas = addPreparedTexture(scene, "guard-33", canvas)!;
     GUARD_FRAMES.forEach(([x, y, w, h], i) => atlas.add(i, 0, x, y, w, h));
     atlas.setFilter(Phaser.Textures.FilterMode.NEAREST);
     this.guard = scene.add.image(0, 0, "guard-33", 0).setDepth(2);

@@ -24,10 +24,10 @@ try {
     if ($LASTEXITCODE -ne 0 -or $commit -notmatch '^[0-9a-f]{40}$') { throw 'Build commit unavailable.' }
     $build = Get-Content -LiteralPath (Join-Path $projectRoot 'dist-day/local-build-info.json') -Raw | ConvertFrom-Json
     if ($build.commit -ne $commit) { throw 'Day HTML belongs to another commit. Run npm run build:journee first.' }
-    foreach ($artifact in @(@('Jouer-Technoprof-Journee-Atelier.html', $build.htmlSha256), @('Jouer-Technoprof-Fenetre.html', $build.launcherSha256))) {
+    foreach ($artifact in @(@('Jouer-Technoprof-Journee-Atelier.html', $build.htmlSha256), @('Jouer-Technoprof-Fenetre.html', $build.launcherSha256), @('Technoprof.ico', $build.iconSha256))) {
         if ((Get-FileHash -LiteralPath (Join-Path $projectRoot $artifact[0]) -Algorithm SHA256).Hash.ToLowerInvariant() -ne $artifact[1]) { throw "Built artifact changed: $($artifact[0])" }
     }
-    $files = @('Jouer-Technoprof-Fenetre.html', 'Jouer-Technoprof-Journee-Atelier.html', 'Jouer.cmd', 'LIRE-MOI-LOCAL.txt', 'RETOURS-TEST.txt') + $music
+    $files = @('Jouer-Technoprof-Fenetre.html', 'Jouer-Technoprof-Journee-Atelier.html', 'Jouer.cmd', 'Creer-raccourci.cmd', 'Technoprof.ico', 'LIRE-MOI-LOCAL.txt', 'RETOURS-TEST.txt') + $music
     foreach ($file in $files) {
         if ($file.Contains('..') -or [IO.Path]::IsPathRooted($file)) { throw "Unsafe relative path: $file" }
         if (-not (Test-Path -LiteralPath (Join-Path $projectRoot $file) -PathType Leaf)) { throw "Build the day first; missing file: $file" }

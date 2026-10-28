@@ -66,8 +66,13 @@ const code = stripTypeScriptTypes(
         const Renderer = new Function(
           "Phaser",
           "prepareCatchupStudent",
+          "addPreparedTexture",
           code + ";return NewSchoolArt;",
-        )({ Textures: { FilterMode: { NEAREST: 0 } } }, () => {});
+        )(
+          { Textures: { FilterMode: { NEAREST: 0 } } },
+          () => {},
+          (scene, key, canvas) => scene.textures.addCanvas(key, canvas),
+        );
         new Renderer(scene, false);
         const windup = poses["pro-pose-1"],
           context = windup.getContext("2d");

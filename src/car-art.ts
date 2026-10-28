@@ -1,3 +1,4 @@
+import { addPreparedTexture } from "./prepared-texture";
 import Phaser from "phaser";
 import { CAR_DATA } from "./car-data";
 import { CAR_RIGHT_DATA } from "./car-right-data";
@@ -103,12 +104,14 @@ export class CarArt {
     ctx.drawImage(source, 0, 0);
     const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < pixels.data.length; i += 4) {
-      const [r, g, b] = pixels.data.subarray(i, i + 3);
+      const r = pixels.data[i],
+        g = pixels.data[i + 1],
+        b = pixels.data[i + 2];
       if (r > 110 && b > 100 && r > g * 1.6 && b > g * 1.6)
         pixels.data[i + 3] = 0;
     }
     ctx.putImageData(pixels, 0, 0);
-    const texture = scene.textures.addCanvas("service", canvas)!;
+    const texture = addPreparedTexture(scene, "service", canvas)!;
     CAR_FRAMES.slice(0, 3).forEach(([x, y, w, h], i) =>
       texture.add(i, 0, x, y, w, h),
     );
@@ -126,7 +129,7 @@ export class CarArt {
     rc.closePath();
     rc.clip();
     rc.drawImage(rightSource, 0, 0);
-    const rt = scene.textures.addCanvas("service-right", rightCanvas)!;
+    const rt = addPreparedTexture(scene, "service-right", rightCanvas)!;
     const [rx, ry, rw, rh] = CAR_FRAMES[3];
     rt.add(3, 0, rx, ry, rw, rh);
     rt.setFilter(Phaser.Textures.FilterMode.NEAREST);

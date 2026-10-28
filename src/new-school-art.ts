@@ -1,3 +1,4 @@
+import { addPreparedTexture } from "./prepared-texture";
 import Phaser from "phaser";
 import { DRIVE } from "./driving";
 import { QUIET_SCHOOL_DATA } from "./quiet-school-data";
@@ -120,7 +121,7 @@ export class NewSchoolArt {
           if (cw > 0 && ch > 0) ctx.rect(cx, cy, cw, ch);
         ctx.clip("evenodd");
         ctx.drawImage(raw, -x, -y);
-        const t = scene.textures.addCanvas(key + "-pose-" + i, canvas)!;
+        const t = addPreparedTexture(scene, key + "-pose-" + i, canvas)!;
         t.setFilter(Phaser.Textures.FilterMode.NEAREST);
       });
     }

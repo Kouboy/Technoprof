@@ -1,3 +1,4 @@
+import { addPreparedTexture } from "./prepared-texture";
 import {
   ENCOUNTERS,
   dialogueReady,
@@ -188,7 +189,7 @@ export class SchoolProps {
     }
     ctx.clip();
     ctx.drawImage(raw, 0, 0);
-    const texture = scene.textures.addCanvas("school-props-36", canvas)!;
+    const texture = addPreparedTexture(scene, "school-props-36", canvas)!;
     PROP_FRAMES.forEach(([x, y, w, h], i) => texture.add(i, 0, x, y, w, h));
     texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
     const warningSource = scene.textures
@@ -261,7 +262,7 @@ export class SchoolProps {
     }
     wc.clip("evenodd");
     wc.drawImage(warningSource, 0, 0);
-    const warnings = scene.textures.addCanvas("warnings-37", warningCanvas)!;
+    const warnings = addPreparedTexture(scene, "warnings-37", warningCanvas)!;
     warnings.add(0, 0, 108, 85, 470, 860);
     warnings.add(1, 0, 840, 158, 582, 790);
     warnings.setFilter(Phaser.Textures.FilterMode.NEAREST);

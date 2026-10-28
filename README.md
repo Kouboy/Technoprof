@@ -1,190 +1,175 @@
+<p align="center">
+  <img src="art/presentation-2026-10-28/banner-960x504.png" width="960" alt="TECHNOPROF — Physique appliquée. Un professeur fatigué, son manuel et sa vieille voiture de service devant une école délabrée.">
+</p>
+
 # TECHNOPROF — Physique appliquée
 
-Jeu d’action rétro satirique français : rejoindre une affectation en voiture,
-traverser un établissement dégradé, puis faire cours avant la fin du délai.
+<p align="center">
+  <strong>Trois affectations. Une vieille voiture de service. Un manuel de physique.</strong>
+</p>
 
-## Jouer et télécharger
+<p align="center">
+  <a href="https://kouboy.github.io/Technoprof/"><strong>▶ JOUER EN LIGNE</strong></a>
+  &nbsp; · &nbsp;
+  <a href="https://github.com/Kouboy/Technoprof/releases/latest/download/Technoprof-local.zip"><strong>⬇ TÉLÉCHARGER LE JEU</strong></a>
+  &nbsp; · &nbsp;
+  <a href="https://github.com/Kouboy/Technoprof/releases/latest">Notes de version</a>
+</p>
 
-**[▶ Jouer à la version actuellement publiée](https://kouboy.github.io/Technoprof/)** ·
-[Versions déjà publiées](https://github.com/Kouboy/Technoprof/releases)
+**Vous êtes professeur remplaçant. Votre mission : arriver à temps pour faire cours.**
+Au volant d’une voiture publique fatiguée, puis dans les couloirs d’établissements
+à bout de moyens, chaque affectation devient une petite course d’obstacles.
+Un même compte à rebours relie la route à la salle de classe.
 
-**[⬇ Télécharger la version locale](https://github.com/Kouboy/Technoprof/releases/latest/download/Technoprof-local.zip)**
-— journée complète, musiques et cinématiques incluses.
+TECHNOPROF est un jeu d’action rétro satirique français, inspiré de **Technocop** :
+conduite en fausse 3D, exploration et combats de profil, pixel art comics pulp
+et bande-son à samples low-fi dans l’esprit Amiga. Sous l’action, une école
+qui tient encore grâce aux personnes qui y travaillent.
 
-Pour la version locale : télécharger le ZIP, **extraire tout le dossier**, puis
-ouvrir `Technoprof/Jouer-Technoprof-Fenetre.html` et cliquer sur **Ouvrir le jeu
-dans sa fenêtre**. Sur Windows, `Jouer.cmd` ouvre directement Chrome en fenêtre
-d’application. Le jeu fonctionne
-hors connexion : conserver le dossier `audio/` avec les fichiers HTML.
+**Version de playtest** · Manette, clavier, souris et tactile · Trois vies pour réussir les trois affectations.
 
-## Version de playtest
+## En images
 
-**[Jouer à Technoprof](https://kouboy.github.io/Technoprof/)** — journée complète
-Ormeaux H1 / Auguste-Berthelot A3 / Trois-Ponts I2, retour nocturne à Maison et cinématiques sonorisées.
-Le lien s’ouvre directement dans un navigateur, sans installation ni compte.
-Clavier, souris et toucher sont disponibles ; les commandes et quatre volumes
-séparés sont accessibles depuis le menu. Le son démarre après une interaction.
-Le menu de pause permet d’exporter le journal d’essai.
+<table>
+  <tr>
+    <td width="50%"><a href="docs/presentation/conduite.png"><img src="docs/presentation/conduite.png" alt="Capture de jeu : conduite vers le collège des Ormeaux, avec destination, délai et état de la voiture dans le CADRE."></a></td>
+    <td width="50%"><a href="docs/presentation/etablissement.png"><img src="docs/presentation/etablissement.png" alt="Capture de jeu : le professeur dans la cour vétuste du collège, près des débris, flaques et sacs-poubelle."></a></td>
+  </tr>
+  <tr>
+    <td><strong>Sur la route</strong> — recevoir une affectation, gérer la circulation et gagner du temps.</td>
+    <td><strong>Dans l’établissement</strong> — s’orienter, franchir les obstacles et rejoindre sa classe.</td>
+  </tr>
+</table>
 
-## Jouer à la version d’atelier actuelle
+*Captures du jeu jouable, sans retouche. Cliquer pour les agrandir.*
 
-**Sur Windows : lancer Jouer.cmd** pour ouvrir directement Chrome en fenêtre
-d’application, sans onglets, avec Réduire / Agrandir / Fermer. Chrome doit déjà
-être installé ; sinon le lanceur HTML s’ouvre dans le navigateur par défaut.
-Autre possibilité : ouvrir **Jouer-Technoprof-Fenetre.html**, puis **Ouvrir le jeu
-dans sa fenêtre**. Le cadre conserve le
-ratio 4:3 en utilisant toute la place disponible. Un petit bouton Pause discret
-dans le CADRE donne accès au son, au plein écran et aux commandes. Le bulletin
-radio est consultable dans le menu de pause pendant la croisière. En cas de blocage
-des fenêtres, le lien **Jouer dans cet onglet** conserve le même affichage adapté.
-Garder `Jouer-Technoprof-Journee-Atelier.html` et le dossier `audio/` à côté du
-lanceur. Ce lanceur de moins de 2 Kio ne duplique pas les images du jeu.
+## Jouer
 
-Depuis l’onglet de jeu normal, **Ouvrir dans une fenêtre** suspend la partie en
-cours et ouvre une nouvelle journée au titre. Un second clic réutilise la fenêtre
-existante sans la recharger ; la progression n’est pas transférée entre fenêtres.
-Le navigateur peut conserver sa barre de titre ou ouvrir un onglet selon ses
-préférences. Sur téléphone, le paysage est conseillé.
+### Dans le navigateur
 
-Ouvrir **Jouer-Technoprof-Journee-Atelier.html**, puis **Prendre le service**.
-Ce fichier autonome fonctionne sur disque, hors connexion. Il enchaîne les trois
-trajets et les établissements validés : Ormeaux H1, Auguste-Berthelot A3 et
-Trois-Ponts I2. Le journal d’essai réunit toute la journée.
-Les trois affectations doivent réussir, avec **trois vies pour la journée**.
-Chaque échec retire une vie : après la vignette, le compteur de vies diminue sur
-fond noir. Un échec sur la route relance le trajet avec son délai normal ; un
-échec à pied relance l’établissement à son entrée avec **2:00**, 5 PV et les
-rencontres et l’infirmerie réinitialisées. La voiture est rétablie. Les
-affectations réussies restent acquises.
-La troisième défaite provoque la radiation puis le retour au titre. Une nouvelle
-journée rétablit trois vies. Après le dernier cours, retour protégé de 3 km à
-Maison, stationnement, portière et marche lente jusqu'à l'appartement, puis fondu
-noir de deux secondes avant la conclusion.
+**[Ouvrir TECHNOPROF sur GitHub Pages](https://kouboy.github.io/Technoprof/)**,
+puis choisir **Prendre le service**. Aucune installation ni compte nécessaire.
+Sur téléphone, privilégier le paysage. Le son démarre après une première interaction.
 
-Les cinématiques validées sont automatiques et sans dialogue : introduction
-nocturne de 10 secondes avec ouverture depuis le noir, conclusion de 69 secondes
-et quatorze images, jusqu'à la cloche qui brise le rêve. Musique et bruitages
-conservent leurs volumes séparés ; les images suivent l'horloge sonore. Pause
-suspend le film ; « Passer la cinématique » passe la séquence entière.
-Dans le playtest actuel, la dernière image de conclusion reste après
-les 69 secondes du morceau, puis tout le cadre fond au noir pendant trois secondes.
-Le titre et sa musique reviennent automatiquement. Le Game Over conserve sa
-vignette et son thème, puis affiche la perte d'une vie ; Action permet d’écourter
-après deux secondes. S'il reste une vie, la reprise dépend du lieu de l'échec
-(trajet ou entrée de l'établissement). Après la troisième défaite, la radiation ramène au titre.
-Il n’y a plus de compte-rendu intermédiaire. Les journaux restent sauvegardés ;
-une nouvelle journée lancée depuis le titre commence à la première affectation.
-[Montage et synchronisation](docs/cinematiques/INTEGRATION.md).
-Pour jouer avec la musique sur disque, ouvrir **Jouer-Technoprof-Journee-Musique.html**
-et conserver le dossier `audio/` ainsi que le HTML journée à côté du lanceur.
+### Sur PC, hors connexion
 
-Pour voir la conclusion sans gagner la journée, ouvrir **Jouer-Labo.html**, choisir
-le scénario **Cinématique / conclusion muette (animatique)**, puis **Rejouer**.
+1. **[Télécharger le ZIP local](https://github.com/Kouboy/Technoprof/releases/latest/download/Technoprof-local.zip)** et extraire tout le dossier.
+2. Sur Windows, lancer **Creer-raccourci.cmd**, puis le raccourci illustré **TECHNOPROF**. **Jouer.cmd** ouvre aussi directement le jeu.
+3. Choisir **Prendre le service**. La fenêtre est redimensionnable et conserve le ratio 4:3.
 
-Pour le régénérer depuis les sources (Node.js 24 et npm) :
+Le lanceur Windows utilise Chrome s’il est installé. Pour un autre navigateur,
+ouvrir **Jouer-Technoprof-Fenetre.html**, puis **Ouvrir le jeu dans sa fenêtre**.
+Conserver le dossier **audio/** avec les fichiers du jeu.
+Après déplacement du dossier, **Creer-raccourci.cmd** actualise le raccourci.
+
+## Commandes
+
+### Manette Xbox ou compatible
+
+Appuyer sur un bouton pour activer la manette. Le stick gauche et la croix
+directionnelle sont utilisables. Une déconnexion met la partie en pause.
+
+| Action | En voiture | À pied |
+|---|---|---|
+| Se diriger | Stick gauche ou croix, gauche / droite | Stick gauche ou croix, gauche / droite |
+| Accélérer | **RT** ou **A** | — |
+| Freiner | **LT**, **B** ou **X** | — |
+| Sauter | — | **A** |
+| Frapper / avancer un dialogue | — | **B** ou **X** |
+| Emprunter un passage | — | Direction indiquée près du passage |
+
+**Start** : commencer au titre, pause / reprise en jeu, passer une cinématique.
+Dans les menus : **A** pour valider, **B / X** pour revenir, directions pour naviguer.
+
+### Clavier
+
+| Action | Touches |
+|---|---|
+| Diriger / marcher | **← →** ou **Q D** |
+| Accélérer / freiner | **↑ ↓** ou **Z S** |
+| Emprunter un passage à pied | Direction indiquée : **flèches** ou **ZQSD** |
+| Sauter | **Espace** |
+| Frapper / avancer un dialogue | **F** ou **X** |
+| Pause / reprise | **P** ou **Échap** |
+| Couper / rétablir le son | **M** |
+
+### Souris et tactile
+
+Les commandes se font directement dans la scène, sans croix virtuelle ni boutons d’action superposés.
+
+- **Conduite :** maintenir le clic ou le doigt et glisser latéralement pour diriger ; glisser vers le bas pour freiner.
+- **À pied :** cliquer / toucher le sol pour marcher, un adversaire pour l’approcher et frapper, ou un passage pour l’emprunter.
+- **Saut :** glisser vers le haut ; un geste en diagonale permet de sauter en avançant.
+- **Dialogues :** cliquer / toucher pour afficher la réplique, puis avancer.
+
+Le bouton **Pause** discret du CADRE donne accès à l’aide, au plein écran et aux réglages.
+Quatre volumes séparés permettent d’ajuster musique, voix, effets et ambiance ; les secousses peuvent être réduites.
+
+## Participer aux playtests
+
+Les retours sur les sensations de conduite, la lisibilité des combats,
+l’orientation et le rythme sont particulièrement utiles.
+
+Après une session, **Pause / aide → Exporter mon essai** permet de sauvegarder
+le journal JSON. Rien n’est envoyé automatiquement.
+Le [questionnaire de retour](RETOURS-TEST.txt) aide à noter ses observations.
+Pour signaler un problème : préciser le navigateur, le périphérique de jeu et le moment concerné
+[dans les tickets du dépôt](https://github.com/Kouboy/Technoprof/issues).
+
+---
+
+## Le projet
+
+Un projet de **Kouboy**, en développement et en phase de playtests.
+La version jouable relie trois établissements : **Collège des Ormeaux**,
+**Lycée Auguste-Berthelot** et **Lycée professionnel des Trois-Ponts**.
+
+| Repère | Où le trouver |
+|---|---|
+| Jouable actuel et notes | [Dernière release](https://github.com/Kouboy/Technoprof/releases/latest) |
+| Toutes les versions distribuées | [Releases](https://github.com/Kouboy/Technoprof/releases) |
+| Historique des sources | [Commits](https://github.com/Kouboy/Technoprof/commits/main/) · [Historique importé](HISTORIQUE.md) |
+| Documents de conception et d’atelier | [Documentation](docs/README.md) |
+| Visuels de présentation et prompts | [Kit graphique](art/presentation-2026-10-28/README.md) |
+| Optimisation, mesures et limites | [Rapport du 28 octobre](docs/technique/OPTIMISATION-PRESENTATION-2026-10-28.md) |
+
+### Versions et identification des builds
+
+GitHub Pages et le ZIP de chaque nouvelle release sont produits depuis le **même commit**.
+Le commit servi en ligne figure dans [build-info.json](https://kouboy.github.io/Technoprof/build-info.json).
+Dans le ZIP, **BUILD-INFO.json** liste la version et les empreintes des fichiers ;
+**Technoprof-local.zip.sha256** permet de vérifier l’archive téléchargée.
+Les anciennes releases, dont [v0.61](https://github.com/Kouboy/Technoprof/releases/tag/v0.61), restent disponibles.
+
+### Construire depuis les sources
+
+**Node.js 24 et npm** sont nécessaires. Le jeu utilise **TypeScript, Phaser et Vite**.
 
 ```sh
 npm ci
-npm run build:atelier
-```
-
-Le build produit deux fichiers autonomes : `Jouer-Technoprof.html` (moteur commun
-et anciens essais) et `Jouer-Technoprof-Journee-Atelier.html` (journée actuelle).
-La journée utilise un profil de compilation dédié : environ 128 Mo contre
-163 Mo pour l'atelier complet, avec les mêmes images utiles et sans les anciens
-arrière-plans. `npm run build:journee` régénère uniquement ce fichier ;
-`npx vite --mode day` permet de vérifier ce profil en développement.
-Les dix-neuf autres lanceurs sont de petits raccourcis ; conserver
-`Jouer-Technoprof.html` à côté pour les utiliser. Les exports sont ignorés par Git.
-
-La [release v0.61](https://github.com/Kouboy/Technoprof/releases/tag/v0.61) conserve
-la référence publique antérieure à l’atelier. Le site Pages sert désormais la
-journée actuelle avec musique. Le HTML local `Jouer-Technoprof-0.61.html`
-reste intact ; les versions 0.40–0.60 sont rangées dans `archives/versions/`.
-
-## Développer et vérifier
-
-```sh
 npm run dev
-npm run test:rapide
 ```
 
-| Commande | Usage |
-| --- | --- |
-| `npm run test:rapide` | Règles principales, conduite, lumières, audio de route et voiture |
-| `npm run test:playtest` | Validation consolidée de la journée actuelle : interface, gamefeel, musiques, cinéma, SFX, assets, signalétique, textes et fenêtre |
-| `npm run test:fenetre` | Ouverture, réutilisation, blocage et repli, plein écran refusé/accepté |
-| `npm run test:cadre` | Cadre après intro, dessin des jauges et cinq barres auto/professeur |
-| `npm run test:gamepad` | Mapping standard Xbox, gâchettes analogiques, appuis uniques, pause et déconnexion |
-| `npm run test:flow` | Fondu de fin, retour au titre, jauges boss et hausse commune du trafic |
-| `npm run test:lettres` | Rendu bitmap identique et réduction du nombre de rectangles |
-| `npm run audit:projet` | Inventaire en lecture seule et accessibilité des modules depuis le jeu |
-| `npm run test:journee` | Trois trajets + H1/A3/I2, commandes, soins, transitions et bilan à 30/60/120 fps simulés |
-| `npm run test:cinematiques` | Règle 3/3, échec terminal, films 10/69 s, son synchronisé, pause et cadrages validés |
-| `npm run test:assets` | Catalogue de compilation, images retenues intactes et préchargement des acteurs partagés |
-| `npm run test:musique` | Treize thèmes, priorités, pauses et reprises |
-| `npm run test:sfx` | Samples low-fi, variantes, sols, pas/cinématiques, portes/escaliers et interruptions |
-| `npm run test:pages` | Export web : images inchangées, treize thèmes et quatre stems cinéma |
-| `npm run build:pages` | Journée musicale pour Pages, puis vérification du contenu de `dist/` |
-| `npm run package:local` | Après `build:journee` : ZIP joueur avec ses 17 WAV, manifeste et SHA256 (PowerShell 7) |
-| `npm run test:retouches` | Nouveaux délais/dégâts, radio et claquement de portière |
-| `npm run test:signaletique` | Panneaux et rendu des trois établissements |
-| `npm run test:sequences` | Entrée en classe, échecs et feedbacks sonores |
-| `npm run test:hanouna-h1` | Premier établissement et Inspectrice |
-| `npm run test:inshape-i2` | Lycée professionnel et détour de soin |
-| `npm test` | Régressions historiques complètes ; à lancer avant livraison |
-| `node work/check-local.cjs` | Après build : autonomie et raccourcis sans copie d’assets |
+| Commande | Résultat |
+|---|---|
+| `npm run build:pages` | Version web dans `dist/`, images et musiques séparées |
+| `npm run build:journee` | Journée autonome : `Jouer-Technoprof-Journee-Atelier.html`, lanceur et icône Windows |
+| `npm run build:atelier` | Atelier complet, journée jouable et raccourcis d’essai |
+| `npm run package:local` | ZIP joueur et SHA-256 sous `work/checkpoints/release/` ; PowerShell 7 requis |
+| `npm run test:playtest` | Vérification consolidée de la version de playtest |
+| `npm run test:rapide` | Vérifications courantes pendant le développement |
 
-Les anciens tests numérotés restent utiles : leurs numéros décrivent le moment
-auquel ils ont été ajoutés, pas leur obsolescence. L’essai humain reste nécessaire
-pour le gamefeel, l’écoute et le téléphone physique.
+Pour le jeu local, garder le dossier `audio/` à côté du HTML généré.
+Les exports et dépendances ne sont pas conservés dans Git.
+La [procédure de publication](docs/technique/PUBLICATION.md) décrit la livraison
+Pages + ZIP et leurs contrôles.
 
-Commandes : flèches ou ZQSD ; Espace pour sauter ; F/X pour frapper et avancer
-les répliques. La souris et le toucher utilisent directement la scène.
+### Organisation
 
-Le jeu accepte aussi les manettes reconnues par le navigateur
-avec le mapping standard Xbox (dont les manettes XInput compatibles). Appuyer sur
-un bouton pour les détecter. Stick gauche ou croix : diriger ; A ou RT : accélérer ;
-B/X ou LT : freiner. À pied, A saute, B frappe ou avance une réplique, haut/bas emprunte
-les accès. Start commence au titre, passe la cinématique ou ouvre/reprend la pause.
-Dans les menus : A valide, B revient, gauche/droite ajuste les volumes. La perte
-de connexion pendant une partie à la manette suspend le jeu. Ces commandes ont
-été vérifiées avec une manette simulée dans Chrome et Firefox ; l’essai sur
-matériel réel complète ces vérifications, sur navigateur comme sur la version locale.
+- **src/** : gameplay, contrôles, rendu, son et données d’assets.
+- **art/** et **audio/** : sources visuelles et sonores, maquettes et exports.
+- **docs/** : conception, audits et documentation technique.
+- **tools/** et **work/** : fabrication, validation et instrumentation.
+- **archives/** : anciennes livraisons locales et manifestes.
 
-## Se repérer dans le projet
-
-- `src/` : jeu, rendu, données et images intégrées.
-- `art/` : sources artistiques.
-- `audio/sfx-2026-10-24/` : palette SFX originale, prises WAV et écoute ; les mêmes PCM sont intégrés au jeu pour le lancement sur disque.
-- [docs/](docs/README.md) : documents d’atelier, audits et historique du design.
-- `tools/` : outils maintenus de rangement et de profilage.
-- [work/](work/README.md) : tests, pilotes et anciens outils de fabrication.
-- [archives/](archives/README.md) : anciennes livraisons locales, avec manifestes.
-- `dist/` : build web complet généré ; `dist-day/` : build journée ; `node_modules/` : dépendances locales.
-
-Le [bilan de nettoyage et de profilage](docs/technique/NETTOYAGE-2026-10-22.md)
-distingue les premiers gains du [chargement allégé de la journée](docs/technique/ASSETS-JOURNEE-2026-10-22.md).
-L’[historique Git](HISTORIQUE.md) décrit les sauvegardes importées.
-La [passe fenêtre et nettoyage du 25 octobre](docs/technique/FENETRE-NETTOYAGE-2026-10-25.md)
-documente les vérifications, le rangement et les limites des optimisations.
-La [procédure de publication](docs/technique/PUBLICATION.md) décrit Pages et le
-ZIP de Release, construits depuis le même commit.
-
-GitHub Pages publie `dist/` uniquement après un envoi sur `main`, via
-[pages.yml](.github/workflows/pages.yml). Le workflow vérifie la journée, la
-musique et les assets avant de construire et publier le site. Le mode `pages`
-sépare les images du JavaScript, préserve leurs octets et copie uniquement les
-douze WAV utilisés. Les fichiers `build-info.json` et `.nojekyll` sont générés ;
-le premier identifie le commit servi. La branche d’atelier conserve les essais
-locaux ; la release et le HTML figés 0.61 restent intacts.
-
-Pour vérifier le build sous `/Technoprof/` dans Chromium, Firefox et une fenêtre
-tactile mobile, lancer `node work/check-pages-browser.cjs` avec Playwright
-disponible (`PLAYWRIGHT_MODULE` peut désigner son module installé). Le même test
-accepte `PAGES_URL` pour contrôler le déploiement public.
-
-La palette SFX se régénère avec `python tools/compose-sfx.py` (NumPy requis).
-Les gains restent dans `src/audio-materials.ts`, les surfaces et contacts de pas
-dans `src/soundscape.ts`, les séquences et le mix dans `src/audio.ts`.
-`audio/sfx-2026-10-24/Ecouter-SFX.html` permet d'écouter chaque prise séparément.
+© 2026 Brainrot Interactive Software

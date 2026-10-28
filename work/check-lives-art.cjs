@@ -22,6 +22,9 @@ const strip = (s) =>
 const ctx = {
   Phaser: { TintModes: { FILL: 1 } },
   RADIATION_DATA: "data:image/png;base64,AA==",
+  // The stripped import uses this presentation-only texture registration stub.
+  addPreparedTexture: (scene, key, canvas) =>
+    scene.textures.addCanvas(key, canvas),
 };
 vm.createContext(ctx);
 vm.runInContext(

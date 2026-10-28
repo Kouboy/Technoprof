@@ -2,7 +2,8 @@ TECHNOPROF — Physique appliquée
 Version locale de playtest
 
 1. Extraire le ZIP entier avant de lancer le jeu.
-2. Sur Windows, lancer Jouer.cmd : Chrome ouvre le jeu sans onglets.
+2. Sur Windows, lancer Creer-raccourci.cmd, puis le raccourci illustré TECHNOPROF.
+   Jouer.cmd ouvre aussi directement Chrome sans onglets et recrée le raccourci.
 3. Cliquer sur « Prendre le service ». Agrandir utilise les boutons Windows.
 Autre navigateur : ouvrir Jouer-Technoprof-Fenetre.html puis « Ouvrir le jeu
 dans sa fenêtre ». Si une fenêtre est bloquée,

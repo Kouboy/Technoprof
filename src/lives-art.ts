@@ -1,3 +1,4 @@
+import { addPreparedTexture } from "./prepared-texture";
 import Phaser from "phaser";
 import { bitmap, bitmapWidth } from "./cadre";
 import { LIVES, remainingLives } from "./lives";
@@ -63,7 +64,7 @@ export class LivesArt {
           pixels.data[i + 3] = 0;
       }
       context.putImageData(pixels, 0, 0);
-      const texture = scene.textures.addCanvas("life-profile", canvas)!;
+      const texture = addPreparedTexture(scene, "life-profile", canvas)!;
       texture.add("life-head", 0, 0, 0, 94, 99);
       texture.setFilter(1);
     }

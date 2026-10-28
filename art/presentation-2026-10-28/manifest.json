@@ -1,0 +1,327 @@
+{
+  "schema": 1,
+  "title": "TECHNOPROF — Physique appliquée",
+  "tool": {
+    "file": "tools/export-presentation.py",
+    "sha256": "63a14c1318f2d14dd04a10ce5ef07953aa53bd9de3737e86fed9539b79c5ac1d",
+    "pillowVersion": "12.3.0"
+  },
+  "resampling": "PIL.Image.Resampling.NEAREST",
+  "sources": [
+    {
+      "file": "icon-master.png",
+      "bytes": 1330194,
+      "sha256": "4890d9ebdf2d3fead4a5f22e8d635d1cada540305891d9ba13ab03d1edbeb988",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA"
+    },
+    {
+      "file": "cover-master.png",
+      "bytes": 2558866,
+      "sha256": "50441e7e837f15eca604eaaad2d6997da8b7f794239e6b88f3292ae0e893f3ef",
+      "width": 1408,
+      "height": 1117,
+      "mode": "RGB"
+    },
+    {
+      "file": "wide-master.png",
+      "bytes": 2796814,
+      "sha256": "4e9b08db018a977aa375964f58ffc7544d7f8b9a39d9ddfa20948e8b1fb53f05",
+      "width": 1730,
+      "height": 909,
+      "mode": "RGB"
+    },
+    {
+      "file": "prompt-icon.txt",
+      "bytes": 1874,
+      "sha256": "8bc31dedc330d830ab951acd096cf84cb671f3ea0a83c512a3e56b0a45df78c1"
+    },
+    {
+      "file": "prompt-cover.txt",
+      "bytes": 2370,
+      "sha256": "00e7c84c1fc1df94c2800f31c77adabfff1abc4ad744e63f3613f99553376d62"
+    },
+    {
+      "file": "prompt-wide.txt",
+      "bytes": 2164,
+      "sha256": "c2017d0fb7c9f41f7d4a843ea21438bbb72e066914bae69c07c014cd9f2cd231"
+    }
+  ],
+  "exports": [
+    {
+      "file": "icon-16.png",
+      "bytes": 541,
+      "sha256": "d2ef5806088b9cc5dcf6f9a882d307d0feabed30d861c5656bfe83147653d5ed",
+      "width": 16,
+      "height": 16,
+      "mode": "RGBA",
+      "master": "icon-master.png",
+      "recipe": "alpha bounds / transparent square padding / NEAREST",
+      "alphaBounds": [
+        0,
+        19,
+        1242,
+        1254
+      ],
+      "squareSide": 1479,
+      "pasteOffset": [
+        118,
+        122
+      ],
+      "paddingFraction": 0.08
+    },
+    {
+      "file": "icon-32.png",
+      "bytes": 1723,
+      "sha256": "91d14e840309f0417b185a3059f204f9cc2412e351678dfaf10adcacebb8d274",
+      "width": 32,
+      "height": 32,
+      "mode": "RGBA",
+      "master": "icon-master.png",
+      "recipe": "alpha bounds / transparent square padding / NEAREST",
+      "alphaBounds": [
+        0,
+        19,
+        1242,
+        1254
+      ],
+      "squareSide": 1479,
+      "pasteOffset": [
+        118,
+        122
+      ],
+      "paddingFraction": 0.08
+    },
+    {
+      "file": "icon-48.png",
+      "bytes": 3507,
+      "sha256": "1e78375bc38922bbfe7caadc208b299deabff452eb2bc0bd657ef0b000fa6e57",
+      "width": 48,
+      "height": 48,
+      "mode": "RGBA",
+      "master": "icon-master.png",
+      "recipe": "alpha bounds / transparent square padding / NEAREST",
+      "alphaBounds": [
+        0,
+        19,
+        1242,
+        1254
+      ],
+      "squareSide": 1479,
+      "pasteOffset": [
+        118,
+        122
+      ],
+      "paddingFraction": 0.08
+    },
+    {
+      "file": "icon-64.png",
+      "bytes": 5960,
+      "sha256": "2c2ee9f7ad290e24d6c08beb09e85953a16cc5911b381ac151296a430066fe18",
+      "width": 64,
+      "height": 64,
+      "mode": "RGBA",
+      "master": "icon-master.png",
+      "recipe": "alpha bounds / transparent square padding / NEAREST",
+      "alphaBounds": [
+        0,
+        19,
+        1242,
+        1254
+      ],
+      "squareSide": 1479,
+      "pasteOffset": [
+        118,
+        122
+      ],
+      "paddingFraction": 0.08
+    },
+    {
+      "file": "icon-128.png",
+      "bytes": 21469,
+      "sha256": "5cbd77b1c6bfa2b28204d148628ea86e6a339668b01d2f2036b0cdf51b4125a2",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA",
+      "master": "icon-master.png",
+      "recipe": "alpha bounds / transparent square padding / NEAREST",
+      "alphaBounds": [
+        0,
+        19,
+        1242,
+        1254
+      ],
+      "squareSide": 1479,
+      "pasteOffset": [
+        118,
+        122
+      ],
+      "paddingFraction": 0.08
+    },
+    {
+      "file": "icon-192.png",
+      "bytes": 44022,
+      "sha256": "2d83b50884980f10d38f754200b71487b530fc37f7077241e53556b12fa1b17b",
+      "width": 192,
+      "height": 192,
+      "mode": "RGBA",
+      "master": "icon-master.png",
+      "recipe": "alpha bounds / transparent square padding / NEAREST",
+      "alphaBounds": [
+        0,
+        19,
+        1242,
+        1254
+      ],
+      "squareSide": 1479,
+      "pasteOffset": [
+        118,
+        122
+      ],
+      "paddingFraction": 0.08
+    },
+    {
+      "file": "icon-256.png",
+      "bytes": 71816,
+      "sha256": "0232e59c5e7cab11019052bfcfedebeb710ed90f38a6ad5c1fb05fcb7f9b9293",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA",
+      "master": "icon-master.png",
+      "recipe": "alpha bounds / transparent square padding / NEAREST",
+      "alphaBounds": [
+        0,
+        19,
+        1242,
+        1254
+      ],
+      "squareSide": 1479,
+      "pasteOffset": [
+        118,
+        122
+      ],
+      "paddingFraction": 0.08
+    },
+    {
+      "file": "icon-512.png",
+      "bytes": 226091,
+      "sha256": "009afe85efcfbcca7d49332e5fe2f8951d1799b24a20a0f388a6f08ddccb27c6",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "master": "icon-master.png",
+      "recipe": "alpha bounds / transparent square padding / NEAREST",
+      "alphaBounds": [
+        0,
+        19,
+        1242,
+        1254
+      ],
+      "squareSide": 1479,
+      "pasteOffset": [
+        118,
+        122
+      ],
+      "paddingFraction": 0.08
+    },
+    {
+      "file": "favicon.ico",
+      "bytes": 149156,
+      "sha256": "d8caacf923f3f9927df43dcf59fda7aac24f34c395d8d4fc745c06454f9b79a6",
+      "master": "icon-master.png",
+      "frames": [
+        16,
+        32,
+        48,
+        64,
+        128,
+        192,
+        256
+      ],
+      "recipe": "exported PNG frames embedded verbatim"
+    },
+    {
+      "file": "cover-630x500.png",
+      "bytes": 625338,
+      "sha256": "821746031715733178a74f49d88f3e7195c0ac014dd4877bdbea9ac27c2df6bf",
+      "width": 630,
+      "height": 500,
+      "mode": "RGB",
+      "master": "cover-master.png",
+      "recipe": "minimum centered fractional crop / NEAREST",
+      "sourceCropBox": [
+        0.2899999999999636,
+        0.0,
+        1407.71,
+        1117.0
+      ]
+    },
+    {
+      "file": "cover-315x250.png",
+      "bytes": 182413,
+      "sha256": "913f9a2bf258b954b28c0de2064effb140e9070714127780a221e812d19f7e59",
+      "width": 315,
+      "height": 250,
+      "mode": "RGB",
+      "master": "cover-master.png",
+      "recipe": "minimum centered fractional crop / NEAREST",
+      "sourceCropBox": [
+        0.2899999999999636,
+        0.0,
+        1407.71,
+        1117.0
+      ]
+    },
+    {
+      "file": "social-1200x630.png",
+      "bytes": 1418346,
+      "sha256": "7d9ed19bdb92d3d92cdabff738e33c603afeb3d67e0ff9487973d005814638ac",
+      "width": 1200,
+      "height": 630,
+      "mode": "RGB",
+      "master": "wide-master.png",
+      "recipe": "minimum centered fractional crop / NEAREST",
+      "sourceCropBox": [
+        0.0,
+        0.375,
+        1730.0,
+        908.625
+      ]
+    },
+    {
+      "file": "banner-960x504.png",
+      "bytes": 966311,
+      "sha256": "8098bc28c67ac88e7512de4346115d50f18bfbd490b13d2d242cf70473bd0a5f",
+      "width": 960,
+      "height": 504,
+      "mode": "RGB",
+      "master": "wide-master.png",
+      "recipe": "minimum centered fractional crop / NEAREST",
+      "sourceCropBox": [
+        0.0,
+        0.375,
+        1730.0,
+        908.625
+      ]
+    }
+  ],
+  "documentation": [
+    {
+      "file": "Presentation-Technoprof.html",
+      "bytes": 6648,
+      "sha256": "f59730d5cbf55181854553c965e013c272cfc9c0a4937a128af750334d29f75f"
+    },
+    {
+      "file": "README.md",
+      "bytes": 2783,
+      "sha256": "d0f3f349719eb285aad3773caff3479ce4600b1ce0a97f650a1c35894883ae9b"
+    }
+  ],
+  "verification": {
+    "sourcesUnchanged": true,
+    "decodedPngPixelsEqual": true,
+    "icoFramesEqualExportedPngs": true,
+    "iconCornersTransparent": true
+  }
+}

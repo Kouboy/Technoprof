@@ -1,3 +1,4 @@
+import { addPreparedTexture } from "./prepared-texture";
 import Phaser from "phaser";
 import { HALL_DATA } from "./hall-data";
 export const PARENT_FRAMES = [
@@ -31,12 +32,14 @@ export class HallArt {
     ctx.drawImage(source, 0, 0);
     const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < pixels.data.length; i += 4) {
-      const [r, g, b] = pixels.data.subarray(i, i + 3);
+      const r = pixels.data[i],
+        g = pixels.data[i + 1],
+        b = pixels.data[i + 2];
       if (r > 110 && b > 100 && r > g * 1.6 && b > g * 1.6)
         pixels.data[i + 3] = 0;
     }
     ctx.putImageData(pixels, 0, 0);
-    const texture = scene.textures.addCanvas("parent", canvas)!;
+    const texture = addPreparedTexture(scene, "parent", canvas)!;
     PARENT_FRAMES.forEach(([x, y, w, h], i) => texture.add(i, 0, x, y, w, h));
     texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
     this.parent = scene.add.image(0, 0, "parent", 0).setDepth(2);
