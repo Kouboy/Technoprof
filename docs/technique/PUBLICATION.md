@@ -27,17 +27,28 @@ l'établissement avec 2:00 et 5 PV, rencontres et infirmerie réinitialisées.
 La route conserve sa reprise au départ avec délai normal. Release :
 `playtest-2026-10-28`, même commit pour Pages et le ZIP local.
 
+La publication `playtest-2026-10-28-r3`, autorisée le 28 octobre, intègre
+l'optimisation des textures immuables (137,99 Mio de snapshots évités),
+le chargement habillé, le kit graphique, le titre local corrigé et le raccourci
+Windows illustré. La page d'accueil du dépôt présente le jeu sans spoiler,
+avec captures réelles, liens d'accès et commandes ; les détails techniques
+restent dans sa seconde partie. Le son et les pixels de jeu sont conservés.
+
 ## Version locale
 
 Le téléchargement est l'asset **Technoprof-local.zip** d'une GitHub Release.
-Extraire le ZIP entier, puis lancer `Technoprof/Jouer.cmd` sur Windows : Chrome
+Extraire le ZIP entier, puis lancer `Technoprof/Creer-raccourci.cmd` pour créer
+l'icône illustrée TECHNOPROF. `Technoprof/Jouer.cmd` ouvre directement le jeu
+et actualise aussi ce raccourci sur Windows : Chrome
 ouvre le jeu en fenêtre d’application. Le lanceur HTML
 `Technoprof/Jouer-Technoprof-Fenetre.html` permet d’utiliser un autre navigateur.
 Le navigateur et les fichiers locaux
 suffisent ; aucune installation du moteur ni serveur ne sont nécessaires.
 
-L'archive contient uniquement la journée jouable, le lanceur, Jouer.cmd, les
-consignes, le questionnaire, un manifeste et les 17 WAV réellement utilisés.
+L'archive contient uniquement la journée jouable, le lanceur, Jouer.cmd,
+Creer-raccourci.cmd, Technoprof.ico, les consignes, le questionnaire, un manifeste
+et les 17 WAV réellement utilisés. Aucun raccourci avec des chemins propres
+au poste de développement n'est distribué : il est créé sur le poste joueur.
 Le fichier `BUILD-INFO.json` indique le commit et les SHA256 des fichiers.
 Le SHA256 du ZIP est publié séparément dans `Technoprof-local.zip.sha256`.
 Les ateliers et archives de développement restent dans le dépôt, hors du ZIP.
