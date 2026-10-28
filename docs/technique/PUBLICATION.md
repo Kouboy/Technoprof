@@ -19,6 +19,14 @@ sonores, l'infirmerie de Berthelot et les panneaux de cours. Le bulletin radio
 utilise désormais toute la plage du curseur Voix. Publication autorisée par
 Nicolas le 26 octobre ; tag prévu : `playtest-2026-10-26`.
 
+Publication demandée le 28 octobre : intégration des passes locales du 27–28
+octobre (menus CADRE, pas/transitions, variété des véhicules, lumières nocturnes,
+trous en combat, vignette de remise du badge, découpe du boss et contacts du
+Parent). La reprise après un échec à pied se fait désormais à l'entrée de
+l'établissement avec 2:00 et 5 PV, rencontres et infirmerie réinitialisées.
+La route conserve sa reprise au départ avec délai normal. Release :
+`playtest-2026-10-28`, même commit pour Pages et le ZIP local.
+
 ## Version locale
 
 Le téléchargement est l'asset **Technoprof-local.zip** d'une GitHub Release.
