@@ -3,8 +3,37 @@
   <meta charset="UTF-8" /><meta
     name="viewport"
     content="width=device-width,initial-scale=1,viewport-fit=cover"
-  /><title>TECHNOPROF — Physique appliquée</title
-  ><style>
+  /><title>TECHNOPROF — Physique appliquée</title>
+  <meta
+    name="description"
+    content="Trois affectations. Une vieille voiture de service. Un manuel de physique. Un jeu d’action rétro sur l’école publique à bout de moyens."
+  />
+  <meta name="theme-color" content="#141e27" />
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="32x32"
+    href="__PRESENTATION_ICON_32__"
+  />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://kouboy.github.io/Technoprof/" />
+  <meta property="og:title" content="TECHNOPROF — Physique appliquée" />
+  <meta
+    property="og:description"
+    content="Trois affectations. Une vieille voiture de service. Un manuel de physique. Un jeu d’action rétro sur l’école publique à bout de moyens."
+  />
+  <meta
+    property="og:image"
+    content="https://kouboy.github.io/Technoprof/presentation/social-2026-10-28.png"
+  />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta
+    property="og:image:alt"
+    content="TECHNOPROF : un professeur fatigué, son manuel de physique et sa vieille voiture devant un établissement délabré."
+  />
+  <meta name="twitter:card" content="summary_large_image" />
+  <style>
     body {
       margin: 0;
       background: radial-gradient(
@@ -54,6 +83,107 @@
       display: grid;
       place-content: center;
       text-align: center;
+      z-index: 20;
+      background: repeating-linear-gradient(
+        0deg,
+        #18252b 0 3px,
+        #17232a 3px 4px
+      );
+      border: 6px double #79837b;
+      box-shadow:
+        inset 0 0 0 3px #080e14,
+        inset 0 0 0 8px #2d4048,
+        0 8px 30px #0009;
+      gap: 12px;
+    }
+    #loading[hidden] {
+      display: none;
+    }
+    #loading::before,
+    #loading::after {
+      content: "+";
+      position: absolute;
+      top: 10px;
+      color: #89928b;
+      font-size: 14px;
+      text-shadow: 1px 1px #000;
+    }
+    #loading::before {
+      left: 12px;
+    }
+    #loading::after {
+      right: 12px;
+    }
+    .loading-portrait {
+      width: clamp(56px, 11vw, 96px);
+      height: auto;
+      justify-self: center;
+      image-rendering: pixelated;
+    }
+    #loading h1 {
+      font: bold clamp(22px, 5vw, 42px)/1 monospace;
+      letter-spacing: 0.06em;
+      margin: 0;
+      color: #e3d4b3;
+      text-shadow:
+        2px 2px #060c11,
+        0 3px #7a7566;
+    }
+    #loading small {
+      color: #a3afa9;
+      letter-spacing: 0.12em;
+    }
+    #loading-stage {
+      margin: 10px 0 0;
+      font-size: clamp(11px, 2.5vw, 14px);
+    }
+    #loading-progress {
+      appearance: none;
+      width: min(280px, 65vw);
+      height: 16px;
+      border: 3px solid #4f6267;
+      background: #080f14;
+      justify-self: center;
+      color: #d5b574;
+    }
+    #loading-progress::-webkit-progress-bar {
+      background: #080f14;
+    }
+    #loading-progress::-webkit-progress-value {
+      background: repeating-linear-gradient(
+        90deg,
+        #d5b574 0 11px,
+        #080f14 11px 14px
+      );
+    }
+    #loading-progress::-moz-progress-bar {
+      background: repeating-linear-gradient(
+        90deg,
+        #d5b574 0 11px,
+        #080f14 11px 14px
+      );
+    }
+    #loading-progress:not([value]) {
+      opacity: 0.65;
+    }
+    #loading-retry {
+      justify-self: center;
+    }
+    #loading:has(#loading-retry:not([hidden])) .loading-portrait {
+      display: none;
+    }
+    @media (max-width: 480px), (max-height: 430px) {
+      #loading {
+        gap: 6px;
+        padding: 12px;
+      }
+      .loading-portrait {
+        width: 48px;
+      }
+      #loading-stage {
+        margin-top: 0;
+        line-height: 1.3;
+      }
     }
     #player-panel h1 {
       font-size: clamp(22px, 3.2vw, 34px);
@@ -962,7 +1092,22 @@
   <div id="game-shell">
     <div id="game" tabindex="0" aria-label="TECHNOPROF — zone de jeu"></div>
     <div id="loading" role="status">
-      TECHNOPROF<br />Préparation du service…
+      <img
+        class="loading-portrait"
+        src="__PRESENTATION_ICON_128__"
+        width="128"
+        height="128"
+        alt=""
+      />
+      <h1>TECHNOPROF</h1>
+      <small>PHYSIQUE APPLIQUÉE</small>
+      <p id="loading-stage">Ouverture du dossier…</p>
+      <progress
+        id="loading-progress"
+        max="1"
+        aria-label="Chargement des images"
+      ></progress>
+      <button id="loading-retry" type="button" hidden>Réessayer</button>
     </div>
     <section id="player-panel" hidden aria-label="Menu du jeu"></section>
   </div>

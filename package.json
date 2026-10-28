@@ -12,7 +12,7 @@
     "test:cinematiques": "node work/check-campaign-cinematics.cjs && node work/check-cinematic-audio.cjs && node work/check-cinematic-art.cjs && node work/check-cinematic-soundtrack.cjs",
     "build:atelier": "npm run build && npm run build:journee && node work/export-navigation-atelier.cjs",
     "build:journee": "tsc && vite build --mode day --outDir dist-day && node tools/export-day.cjs",
-    "test:assets": "node work/check-asset-catalog.cjs && node work/check-day-preload.cjs",
+    "test:assets": "node work/check-asset-catalog.cjs && node work/check-day-preload.cjs && node work/check-prepared-texture.cjs && node work/check-color-key.cjs && node work/check-loading-presentation.cjs && node work/check-presentation-export.cjs",
     "test:interface": "node work/check-illustrated-interface.cjs && node work/check-047.cjs && node work/check-menu-presentation.cjs && node work/check-sequence-feedback.cjs && node work/check-course-presentation.cjs",
     "test:gamefeel": "node work/check-gamefeel-trust.cjs && node work/check-gamefeel-input.cjs",
     "test:textes": "node work/check-approved-texts.cjs",

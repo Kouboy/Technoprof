@@ -1,3 +1,4 @@
+import { addPreparedTexture } from "./prepared-texture";
 import Phaser from "phaser";
 import { ART_DATA } from "./art-data";
 import { INSPECTRICE_DATA } from "./inspectrice-data";
@@ -60,13 +61,15 @@ export class SliceArt {
       ctx.drawImage(source, 0, 0);
       const pixels = ctx.getImageData(0, 0, atlas.width, atlas.height);
       for (let i = 0; i < pixels.data.length; i += 4) {
-        const [r, g, b] = pixels.data.subarray(i, i + 3);
+        const r = pixels.data[i],
+          g = pixels.data[i + 1],
+          b = pixels.data[i + 2];
         // Runtime colour key. No altered source image is written to disk.
         if (r > 110 && b > 100 && r > g * 1.6 && b > g * 1.6)
           pixels.data[i + 3] = 0;
       }
       ctx.putImageData(pixels, 0, 0);
-      const texture = scene.textures.addCanvas(role, atlas)!;
+      const texture = addPreparedTexture(scene, role, atlas)!;
       POSES[role === "inspectrice" ? "inspecteur" : role].forEach(
         ([x, y, w, h], index) => texture.add(index, 0, x, y, w, h),
       );

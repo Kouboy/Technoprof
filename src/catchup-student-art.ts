@@ -1,3 +1,4 @@
+import { addPreparedTexture } from "./prepared-texture";
 import Phaser from "phaser";
 import { CATCHUP_STUDENT_DATA } from "./catchup-student-data";
 import {
@@ -350,7 +351,7 @@ export function prepareCatchupStudent(scene: Phaser.Scene) {
   }
   ctx.clip();
   ctx.drawImage(raw, 0, 0);
-  const atlas = scene.textures.addCanvas("catchup-student", canvas)!;
+  const atlas = addPreparedTexture(scene, "catchup-student", canvas)!;
   CATCHUP_FRAMES.forEach(([x, y, w, h], n) => atlas.add(n, 0, x, y, w, h));
   atlas.setFilter(Phaser.Textures.FilterMode.NEAREST);
   scene.textures.remove("raw-catchup-student");

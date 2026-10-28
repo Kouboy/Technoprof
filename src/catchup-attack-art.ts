@@ -1,3 +1,4 @@
+import { addPreparedTexture } from "./prepared-texture";
 import Phaser from "phaser";
 import { CATCHUP_ATTACK_DATA } from "./catchup-attack-data";
 
@@ -405,7 +406,7 @@ export function prepareCatchupAttacks(scene: Phaser.Scene) {
     ctx.drawImage(raw, 0, 0);
     ctx.restore();
   });
-  const atlas = scene.textures.addCanvas("catchup-attacks", canvas)!;
+  const atlas = addPreparedTexture(scene, "catchup-attacks", canvas)!;
   CATCHUP_ATTACK_FRAMES.forEach(([, , w, h], n) =>
     atlas.add(n, 0, 0, n * 615, w, h),
   );

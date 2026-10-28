@@ -2,6 +2,11 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const { selectDayAssets, dayDocument, DAY_ASSETS } = require('../tools/asset-catalog.cjs');
 let removed = 0;
+for(const name of ['service-data','technical-data','central-data','stair-data','court-data']) {
+ const source=fs.readFileSync('src/'+name+'.ts','utf8');
+ const selected=selectDayAssets('/project/src/'+name+'.ts',source);
+ assert(selected && !selected.includes('data:image/'),'historical-only image omitted before URL emission: '+name);
+}
 for (const [name, rule] of Object.entries(DAY_ASSETS)) {
   const source = fs.readFileSync('src/' + name + '.ts', 'utf8');
   const selected = selectDayAssets('/project/src/' + name + '.ts', source);

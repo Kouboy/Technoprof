@@ -1,3 +1,4 @@
+import { addPreparedTexture } from "./prepared-texture";
 import { daylight } from "./presentation";
 import { SKY_DATA } from "./sky-data";
 import Phaser from "phaser";
@@ -585,9 +586,9 @@ export class RoadArt {
         i % 7 === 0 ? "rgba(205,224,237,0.84)" : "rgba(255,219,145,0.94)";
       cityInk.fillRect(x, y - split, 5, 8);
     });
-    scene.textures
-      .addCanvas("road-city-lights", city)!
-      .setFilter(Phaser.Textures.FilterMode.NEAREST);
+    addPreparedTexture(scene, "road-city-lights", city)!.setFilter(
+      Phaser.Textures.FilterMode.NEAREST,
+    );
     this.skylineLights = scene.add
       .image(0, 0, "road-city-lights")
       .setOrigin(0)
@@ -609,12 +610,14 @@ export class RoadArt {
       ctx.drawImage(source, 0, 0);
       const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
       for (let i = 0; i < pixels.data.length; i += 4) {
-        const [r, g, b] = pixels.data.subarray(i, i + 3);
+        const r = pixels.data[i],
+          g = pixels.data[i + 1],
+          b = pixels.data[i + 2];
         if (r > 110 && b > 100 && r > g * 1.6 && b > g * 1.6)
           pixels.data[i + 3] = 0;
       }
       ctx.putImageData(pixels, 0, 0);
-      const texture = scene.textures.addCanvas(key, canvas)!;
+      const texture = addPreparedTexture(scene, key, canvas)!;
       ROAD_FRAMES[key].forEach(([x, y, w, h], i) =>
         texture.add(i, 0, x, y, w, h),
       );
@@ -629,7 +632,8 @@ export class RoadArt {
           copy.data.set(pixels.data);
           recolorRoadTraffic(copy.data, canvas.width, canvas.height, variant);
           pc.putImageData(copy, 0, 0);
-          const variation = scene.textures.addCanvas(
+          const variation = addPreparedTexture(
+            scene,
             "traffic-paint-" + variant,
             paint,
           )!;
@@ -652,7 +656,7 @@ export class RoadArt {
             wc.fillStyle = "rgba(255,235,176,0.3)";
             wc.fillRect(x + 1, y + 1, Math.max(1, w - 3), 2);
           });
-        const wt = scene.textures.addCanvas("road-windows-" + key, windows)!;
+        const wt = addPreparedTexture(scene, "road-windows-" + key, windows)!;
         ROAD_FRAMES[key].forEach(([x, y, w, h], frame) =>
           wt.add(frame, 0, x, y, w, h),
         );
@@ -677,7 +681,7 @@ export class RoadArt {
       paintRoadPatch(ink, tag);
       ctx.restore();
     }
-    const marksTexture = scene.textures.addCanvas("road-patches", marks)!;
+    const marksTexture = addPreparedTexture(scene, "road-patches", marks)!;
     for (const [tag, [x, y, w, h]] of Object.entries(ROAD_PATCH_FRAMES))
       marksTexture.add(tag, 0, x, y, w, h);
     marksTexture.setFilter(Phaser.Textures.FilterMode.NEAREST);
@@ -710,7 +714,7 @@ export class RoadArt {
     lc.ellipse(bulb.dx + 29 * 0.24, -0.5, 29 / 2, 29 * 0.08, 0, 0, Math.PI * 2);
     lc.fill();
     lc.restore();
-    const lighting = scene.textures.addCanvas("road-lights", lights)!;
+    const lighting = addPreparedTexture(scene, "road-lights", lights)!;
     lighting.add("halo", 0, 0, 0, 32, 20);
     lighting.add("pixel", 0, 34, 0, 1, 1);
     lighting.add("pool", 0, 32, 20, 64, 96);

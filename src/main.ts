@@ -1,4 +1,9 @@
 import {
+  installLoadingPresentation,
+  prepareLoadingPresentation,
+  finishLoadingPresentation,
+} from "./loading-presentation";
+import {
   missionSpec,
   roomSpec,
   missionPassages,
@@ -476,8 +481,10 @@ class Game extends Phaser.Scene {
   cinematicArt?: CinematicArt;
   livesArt?: LivesArt;
   reviewFacing = 1;
+  loadingFailed = false;
   preload() {
     this.runtime.mark("preload");
+    installLoadingPresentation(this.load);
     this.audio.prepare();
     FailureArt.preload(this);
     CinematicArt.preload(this);
@@ -616,6 +623,10 @@ class Game extends Phaser.Scene {
   results: string[] = [];
   create() {
     this.runtime.mark("create");
+    if (!prepareLoadingPresentation()) {
+      this.loadingFailed = true;
+      return;
+    }
     const shakeOption = document.getElementById(
       "reduced-shake",
     ) as HTMLInputElement | null;
@@ -1090,6 +1101,7 @@ class Game extends Phaser.Scene {
       this.direct = installDirectInput(this);
     this.draw();
     this.runtime.mark("ready");
+    finishLoadingPresentation();
   }
   refreshLayout() {
     this.scale?.getParentBounds();
@@ -2741,6 +2753,8 @@ class Game extends Phaser.Scene {
     }
   }
   update(_t: number, ms: number) {
+    // Phaser runs update even when create returned early after a failed file.
+    if (this.loadingFailed) return;
     if (
       !this.paused &&
       !this.playerMenu &&

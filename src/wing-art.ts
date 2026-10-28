@@ -1,3 +1,4 @@
+import { addPreparedTexture } from "./prepared-texture";
 import Phaser from "phaser";
 import { WING_DATA } from "./wing-data";
 // Coordinates in the unmodified imagegen sheet; origins stay at the supporting feet.
@@ -466,7 +467,7 @@ export class WingArt {
     }
     ctx.clip();
     ctx.drawImage(raw, 0, 0);
-    const atlas = scene.textures.addCanvas("student-34", canvas)!;
+    const atlas = addPreparedTexture(scene, "student-34", canvas)!;
     STUDENT_FRAMES.forEach(([x, y, w, h], i) => atlas.add(i, 0, x, y, w, h));
     atlas.setFilter(Phaser.Textures.FilterMode.NEAREST);
     this.student = scene.add.image(0, 0, "student-34", 0).setDepth(2);

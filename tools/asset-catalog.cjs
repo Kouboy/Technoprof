@@ -6,6 +6,11 @@ const DAY_ASSETS = {
   'wing-data': { export: 'WING_DATA', keep: ['student'] },
   'bridge-data': { export: 'BRIDGE_DATA', keep: ['guard'] },
   'quiet-school-data': { export: 'QUIET_SCHOOL_DATA' },
+  'service-data': { export: 'SERVICE_DATA' },
+  'technical-data': { export: 'TECHNICAL_DATA' },
+  'central-data': { export: 'CENTRAL_DATA' },
+  'stair-data': { export: 'STAIR_DATA' },
+  'court-data': { export: 'COURT_DATA' },
 };
 function selectDayAssets(id, source) {
   const match = id.replaceAll('\\', '/').match(/\/src\/([^/]+)\.ts$/);
