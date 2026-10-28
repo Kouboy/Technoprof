@@ -140,6 +140,19 @@ const server = http.createServer((req, res) => {
       await snapshot([6]);
       await page.waitForTimeout(400);
       assert((await page.evaluate(() => __padScene.speed)) < accelerated - 15);
+      for (const button of [1, 2]) {
+        const slow = await page.evaluate(() => __padScene.speed);
+        await snapshot([0]);
+        await page.waitForTimeout(650);
+        const fast = await page.evaluate(() => __padScene.speed);
+        assert(fast > slow, "held A accelerates in the real browser");
+        await snapshot([button]);
+        await page.waitForTimeout(350);
+        assert(
+          (await page.evaluate(() => __padScene.speed)) < fast - 10,
+          "held B/X brakes in the real browser",
+        );
+      }
       await snapshot();
       await press(9);
       assert(await page.evaluate(() => __padScene.paused));
@@ -215,7 +228,7 @@ const server = http.createServer((req, res) => {
       console.log(
         "PASS " +
           name +
-          " standard pad: title, movie, RT/LT, pause, menus/range, reconnect and keyboard",
+          " standard pad: title, movie, RT/LT + held A/B/X pedals, pause, menus/range, reconnect and keyboard",
       );
     } finally {
       await browser.close();

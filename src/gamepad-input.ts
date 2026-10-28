@@ -106,8 +106,10 @@ export class GamepadInput {
         (padValue(selected.buttons[i]?.value) - PAD_TUNING.triggerDeadzone) /
           (1 - PAD_TUNING.triggerDeadzone),
       );
-    const throttle = trigger(7),
-      brake = trigger(6);
+    // Face buttons are full pedals while held; triggers stay analog. Context
+    // routing below still owns A/B/X edge actions in menus and on foot.
+    const throttle = Math.max(trigger(7), Number(current[0])),
+      brake = Math.max(trigger(6), Number(current[1]));
     frame.used = !!(
       x ||
       y ||

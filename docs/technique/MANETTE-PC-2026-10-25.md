@@ -7,7 +7,7 @@ mauvaises commandes. Clavier, souris et toucher restent disponibles.
 
 | Situation | Commandes |
 | --- | --- |
-| Route | Stick gauche/croix : diriger ; RT : accélérer ; LT : freiner |
+| Route | Stick gauche/croix : diriger ; A ou RT : accélérer ; B/X ou LT : freiner |
 | À pied | Stick/croix : marcher ; haut/bas : accès ; A : saut ; B ou X : frappe/réplique |
 | Titre / cinématique / jeu | Start : commencer / passer / pause ou reprise |
 | Menus | Stick/croix : naviguer ; A : valider ; B ou X : retour ; gauche/droite : volume |
@@ -19,7 +19,9 @@ une fois par update, dans la boucle existante. Les gâchettes et la direction so
 progressives sur la route ; les valeurs de vitesse, d’inertie et de freinage
 existantes sont conservées.
 
-Les appuis A/B/Start sont des fronts uniques : maintenir un bouton ne passe pas
+En conduite, A et B/X fonctionnent comme des pédales maintenues à pleine
+intensité ; elles se combinent par maximum avec les gâchettes analogiques.
+À pied et dans les menus, les appuis A/B/X/Start sont des fronts uniques : maintenir un bouton ne passe pas
 plusieurs répliques, ne répète pas les sauts et ne saute pas l’intro ouverte au
 titre. Un changement de salle consomme l’interaction ; la direction maintenue
 ne déclenche pas un deuxième escalier. La perte de focus neutralise les boutons

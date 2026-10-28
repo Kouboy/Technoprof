@@ -144,8 +144,8 @@ les répliques. La souris et le toucher utilisent directement la scène.
 
 Le jeu accepte aussi les manettes reconnues par le navigateur
 avec le mapping standard Xbox (dont les manettes XInput compatibles). Appuyer sur
-un bouton pour les détecter. Stick gauche ou croix : diriger ; RT : accélérer ;
-LT : freiner. À pied, A saute, B frappe ou avance une réplique, haut/bas emprunte
+un bouton pour les détecter. Stick gauche ou croix : diriger ; A ou RT : accélérer ;
+B/X ou LT : freiner. À pied, A saute, B frappe ou avance une réplique, haut/bas emprunte
 les accès. Start commence au titre, passe la cinématique ou ouvre/reprend la pause.
 Dans les menus : A valide, B revient, gauche/droite ajuste les volumes. La perte
 de connexion pendant une partie à la manette suspend le jeu. Ces commandes ont

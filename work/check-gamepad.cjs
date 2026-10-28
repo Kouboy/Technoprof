@@ -117,6 +117,32 @@ assert.equal(state.drive.brake, 0);
 state = input.sample([pad([14, 6])], context("free"), 0.016);
 assert.equal(state.drive.steer, -1);
 assert.equal(state.drive.brake, 1);
+// Face buttons are held pedals on the road, but keep their edge actions on foot.
+for (const phase of ["free", "receive", "road", "home"]) {
+  for (const [button, pedal] of [
+    [0, "throttle"],
+    [1, "brake"],
+    [2, "brake"],
+  ]) {
+    const p = make();
+    for (let held = 0; held < 3; held++) {
+      const f = p.sample([pad([button])], context(phase), 0.016);
+      assert.equal(f.drive?.[pedal], 1, `${phase}: held face button ${button}`);
+      assert(!f.actions.includes("SPACE") && !f.actions.includes("X"));
+    }
+    assert.equal(p.sample([pad()], context(phase), 0.016).drive, null);
+  }
+}
+state = make().sample([pad([0, 7, 1, 2, 6])], context("road"), 0.016);
+assert.equal(state.drive.throttle, 1, "pedals combine by max, never sum");
+assert.equal(state.drive.brake, 1);
+input = make();
+input.sample([pad([0, 1])], context("road"), 0.016);
+state = input.sample([pad([0, 1])], context("school"), 0.016);
+assert(
+  !state.actions.includes("SPACE") && !state.actions.includes("X"),
+  "held pedals cannot jump or hit on arrival",
+);
 const half = pad([], [0.6, 0]);
 half.buttons[7].value = 0.55;
 state = input.sample([half], context("road"), 0.016);
