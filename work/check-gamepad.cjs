@@ -193,8 +193,8 @@ assert.equal(state.drive, null);
 assert.equal(state.actions.length, 0);
 assert(!input.sample([], context(), 0.016).lost, "one disconnect event");
 assert(
-  !make().sample([{ ...pad(), mapping: "" }], context(), 0.016).connected,
-  "unknown mapping never guesses buttons",
+  make().sample([{ ...pad(), mapping: "" }], context(), 0.016).connected,
+  "unknown mapping falls back to the usual button order",
 );
 assert(
   make().sample([null, pad()], context(), 0.016).connected,
@@ -211,7 +211,7 @@ assert(
   input.sample([pad([9])], context("fail"), 0.016).actions.includes("ENTER"),
 );
 console.log(
-  "PASS standard pad, analog drive, deadzone, action edges, contextual Start, menu repeat, disconnect, focus and unknown mapping",
+  "PASS standard pad, analog drive, deadzone, action edges, contextual Start, menu repeat, disconnect, focus and unknown-mapping fallback",
 );
 
 input = make();
