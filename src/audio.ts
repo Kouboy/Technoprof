@@ -823,12 +823,14 @@ export class AudioKit {
       this.radioPaused = false;
     }
     if (!this.context || this.radioText === text) return;
-    const voice = speechSynthesis
-      .getVoices()
-      .find((v) => v.lang.startsWith("fr") && v.localService !== false);
-    if (!voice) return;
+    const voices = speechSynthesis.getVoices();
+    const voice =
+      voices.find((v) => v.lang.startsWith("fr") && v.localService !== false) ??
+      voices.find((v) => v.lang.startsWith("fr"));
     const u = new SpeechSynthesisUtterance(text);
-    u.voice = voice;
+    // Android browsers can expose no voices initially, or only a non-local
+    // French voice. In that case, let the platform resolve fr-FR itself.
+    if (voice) u.voice = voice;
     u.lang = "fr-FR";
     u.rate = 1.08;
     u.pitch = 0.85;
