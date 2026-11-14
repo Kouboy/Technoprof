@@ -62,9 +62,14 @@ export class GamepadInput {
       lost: false,
       used: false,
     };
-    const available = pads.filter(
-      (p): p is PadSnapshot => !!p?.connected && p.mapping === "standard",
+    // Prefer browser-standard pads, but keep connected pads whose browser does
+    // not expose a known mapping. Android handhelds can report mapping === ""
+    // even when they use the usual Xbox-style button/axis order.
+    const connected = pads.filter(
+      (p): p is PadSnapshot => !!p?.connected,
     );
+    const standard = connected.filter((p) => p.mapping === "standard");
+    const available = standard.length ? standard : connected;
     const hadPad = this.index !== null;
     const selected =
       available.find((p) => p.index === this.index) ?? available[0];
