@@ -13,6 +13,27 @@ assert.match(info.commit, /^[a-f0-9]{40}$/);
 assert.deepEqual(info.music, musicFiles(root));
 assert.equal(info.music.length, 17);
 const html = read("index.html").toString();
+assert.match(html, /rel="manifest" href="\.\/manifest\.webmanifest"/);
+const manifest = JSON.parse(read("manifest.webmanifest"));
+assert.equal(manifest.scope, "./");
+assert.equal(manifest.display, "standalone");
+assert.equal(manifest.orientation, "landscape");
+assert.deepEqual(
+  manifest.icons.map((icon) => icon.sizes),
+  ["192x192", "512x512"],
+);
+for (const icon of manifest.icons) assert(read(icon.src).length > 1000);
+const worker = read("sw.js").toString();
+const offline = JSON.parse(worker.match(/^const RELEASE = (.+);/m)[1]);
+assert(offline.files.includes("index.html"));
+assert(
+  offline.files.every((name) => fs.statSync(path.join(dist, name)).isFile()),
+);
+assert.equal(
+  offline.bytes,
+  offline.files.reduce((bytes, name) => bytes + read(name).length, 0),
+);
+assert(!offline.files.includes("diagnostic-voix.html"));
 assert(html.includes("Day player bootstrap"));
 assert(!html.includes("const testView"));
 assert(
@@ -23,6 +44,12 @@ const scripts = [...html.matchAll(/<script[^>]*src="([^"]+)"/g)].map(
   (m) => m[1],
 );
 assert(scripts.length > 0);
+for (const name of [
+  ...scripts.map((url) => url.slice(2)),
+  ...info.music,
+  ...info.images.map((image) => image.fileName),
+])
+  assert(offline.files.includes(name), `offline copy ships ${name}`);
 const inlineRadio = new Set();
 for (const url of scripts) {
   assert(url.startsWith("./"), "Script URL must work below /Technoprof/");

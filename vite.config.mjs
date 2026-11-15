@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import catalog from "./tools/asset-catalog.cjs";
 import pages from "./tools/pages-assets.cjs";
+import pwa from "./tools/pwa.cjs";
 import presentation from "./tools/presentation-assets.cjs";
 import { fileURLToPath } from "node:url";
 
@@ -30,7 +31,10 @@ export default defineConfig(({ mode }) => ({
         ]
       : []),
     ...(mode === "pages"
-      ? [pages.createPagesPlugin(fileURLToPath(new URL(".", import.meta.url)))]
+      ? [
+          pages.createPagesPlugin(fileURLToPath(new URL(".", import.meta.url))),
+          pwa.createPwaPlugin(fileURLToPath(new URL(".", import.meta.url))),
+        ]
       : []),
   ],
 }));

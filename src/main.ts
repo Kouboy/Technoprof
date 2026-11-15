@@ -139,6 +139,7 @@ import {
 } from "./world";
 import { AudioKit } from "./audio";
 import { DAY_ONLY, PUBLIC_PLAYTEST } from "./asset-profile";
+import { installPwa } from "./pwa";
 import { FailureArt, failureNotice } from "./interface-presentation";
 import { MusicKit } from "./music";
 import { campaignWon, requiredAssignments, type RunPolicy } from "./campaign";
@@ -1060,7 +1061,10 @@ class Game extends Phaser.Scene {
       if (window.matchMedia("(any-pointer: coarse)").matches)
         this.pointerMode = true;
       this.phase = "title";
-      this.syncPlayerUI = installPlayerExperience(this);
+      this.syncPlayerUI = installPlayerExperience(
+        this,
+        PUBLIC_PLAYTEST ? installPwa() : undefined,
+      );
       installGameWindow(
         () => {
           if (!["title", "report"].includes(this.phase))

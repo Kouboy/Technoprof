@@ -119,7 +119,7 @@ type Host = PlayerContext & {
   draw(): void;
   exportJournal(): void;
 };
-export function installPlayerExperience(s: Host) {
+export function installPlayerExperience(s: Host, pwaControls?: HTMLElement) {
   const root = document.getElementById("player-panel")!;
   const toolbar = document.getElementById("player-toolbar")!;
   const help = document.getElementById("player-help")!;
@@ -533,6 +533,7 @@ export function installPlayerExperience(s: Host) {
       paragraph(
         "Le bulletin radio est consultable dans le menu pause pendant la croisière. Le bulletin est enregistré et se lit aussi hors ligne.",
       );
+      if (pwaControls && mode === "title") root.append(pwaControls);
     } else if (mode === "title") {
       root.append(
         mountTitleArt(button("Prendre le service", returnToGame, true)),

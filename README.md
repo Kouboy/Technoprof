@@ -51,6 +51,12 @@ qui tient encore grâce aux personnes qui y travaillent.
 puis choisir **Prendre le service**. Aucune installation ni compte nécessaire.
 Sur téléphone, privilégier le paysage. Le son démarre après une première interaction.
 
+### Installer sur Android
+
+Ouvrir GitHub Pages directement dans Chrome, puis choisir **Installer l’application** ou **Ajouter à l’écran d’accueil** dans le menu du navigateur. L’icône TECHNOPROF ouvre le jeu dans sa propre fenêtre en paysage. Sur la Retroid, le navigateur continue de gérer les commandes physiques.
+
+Pour jouer sans réseau, ouvrir **Réglages** depuis l’écran titre, choisir **Préparer le jeu hors connexion** et attendre la confirmation. Ce téléchargement facultatif comprend les trois affectations, les cinématiques, la musique et les bulletins radio.
+
 ### Sur PC, hors connexion
 
 1. **[Télécharger le ZIP local](https://github.com/Kouboy/Technoprof/releases/latest/download/Technoprof-local.zip)** et extraire tout le dossier.
