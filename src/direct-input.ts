@@ -360,7 +360,7 @@ export class DirectInput {
 }
 
 export function installDirectInput(
-  s: Host & { audio: { unlock(): void }; draw(): void },
+  s: Host & { audio: { unlock(): void; primeSpeech(): void }; draw(): void },
 ) {
   const input = new DirectInput(s),
     game = document.getElementById("game")!;
@@ -403,6 +403,7 @@ export function installDirectInput(
   };
   game.addEventListener("pointerdown", (event) => {
     if (event.button !== 0 && event.pointerType === "mouse") return;
+    s.audio.primeSpeech();
     const p = point(event);
     // Initialize context before the first gesture so its first tick retains it.
     input.tick(0);
