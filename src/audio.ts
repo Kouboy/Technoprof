@@ -187,6 +187,7 @@ export class AudioKit {
   radioPaused = false;
   radioFailed = false;
   radioUtterance?: SpeechSynthesisUtterance;
+  speechPrimed = false;
   prepare() {
     if (this.preparing || typeof setTimeout === "undefined") return;
     this.preparing = true;
@@ -789,6 +790,24 @@ export class AudioKit {
       0.12,
     );
   }
+  primeSpeech() {
+    if (
+      this.speechPrimed ||
+      typeof speechSynthesis === "undefined" ||
+      typeof SpeechSynthesisUtterance === "undefined"
+    )
+      return;
+    try {
+      const u = new SpeechSynthesisUtterance(" ");
+      u.lang = "fr-FR";
+      u.volume = 0;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+      this.speechPrimed = true;
+    } catch {
+      /* Some mobile browsers expose the API before the platform TTS is ready. */
+    }
+  }
   radio(text: string, on: boolean, paused = false) {
     if (typeof speechSynthesis === "undefined") return;
     if (!on) {
@@ -854,6 +873,9 @@ export class AudioKit {
       this.radioFailed = true;
       finish();
     };
+    // Android/Chrome can retain a stalled utterance in the global queue.
+    // Reset it before each bulletin; prior user activation is primed separately.
+    speechSynthesis.cancel();
     speechSynthesis.speak(u);
   }
 }
