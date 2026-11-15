@@ -190,6 +190,7 @@ export function installPlayerExperience(s: Host) {
     return b;
   };
   const returnToGame = () => {
+    s.audio.primeSpeech();
     s.audio.unlock();
     menuPage = "home";
     if (s.phase === "title" || s.phase === "report") s.startDay();
