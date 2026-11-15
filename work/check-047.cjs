@@ -84,13 +84,16 @@ assert(find('Prendre le service'),'terminal gameplay restores the actual title m
 assert.equal(nodes['player-panel'].className,'title-home');
 assert(!find('Nouvelle journée'),'no report menu between failure and title');
 console.log('PASS real menu actions, persisted separate volumes, captions, help priority, Escape/back, pause/resume and report relaunch');
-// No remote voice is selected; audio gain applies the user's effects volume.
+// Android may expose only a non-local French voice, or no voice list yet.
+// The bulletin must still be spoken; fr-FR lets the platform resolve a default voice.
 const speech=[],gain=[],audioCtx={speechSynthesis:{getVoices:()=>[{lang:'fr-FR',localService:false}],speak:u=>speech.push(u),cancel(){},pause(){},resume(){}},SpeechSynthesisUtterance:class{constructor(text){this.text=text;}}};
 vm.createContext(audioCtx);vm.runInContext(ts(require('./audio-harness.cjs').source)+';globalThis.AudioKit=AudioKit;',audioCtx);
 const kit=new audioCtx.AudioKit();kit.context={currentTime:0};kit.master={gain:{setTargetAtTime:v=>gain.push(v)}};
-kit.radio('Bulletin',true);assert.equal(speech.length,0);
+kit.radio('Bulletin',true);assert.equal(speech.length,1);assert.equal(speech[0].lang,'fr-FR');
+speech[0].onerror();assert(kit.radioFailed);
+kit.radio('',false);
 audioCtx.speechSynthesis.getVoices=()=>[{lang:'fr-FR',localService:true}];kit.voiceVolume=.5;kit.radio('Bulletin',true);
-assert.equal(speech.length,1);assert.equal(speech[0].volume,.5,'voice slider must not conceal a second attenuation');speech[0].onerror();assert(kit.radioFailed);
+assert.equal(speech.length,2);assert.equal(speech[1].volume,.5,'voice slider must not conceal a second attenuation');
 for(const volume of [.25,.5,1]){
  kit.radio('',false);kit.voiceVolume=volume;kit.radio('Bulletin',true);
  assert.equal(speech.at(-1).volume,volume,'radio uses the full selected voice range');
