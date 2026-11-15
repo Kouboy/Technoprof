@@ -16,7 +16,7 @@ const html = read("index.html").toString();
 assert.match(html, /rel="manifest" href="\.\/manifest\.webmanifest"/);
 const manifest = JSON.parse(read("manifest.webmanifest"));
 assert.equal(manifest.scope, "./");
-assert.equal(manifest.display, "standalone");
+assert.equal(manifest.display, "fullscreen");
 assert.equal(manifest.orientation, "landscape");
 assert.deepEqual(
   manifest.icons.map((icon) => icon.sizes),

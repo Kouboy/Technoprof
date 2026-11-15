@@ -46,9 +46,11 @@ export function installPwa() {
   controls.append(actions, installHelp, progress, status);
 
   let prompt: InstallPrompt | undefined;
-  const standalone = window.matchMedia("(display-mode: standalone)");
+  const installedDisplay = window.matchMedia(
+    "(display-mode: fullscreen), (display-mode: standalone)",
+  );
   install.hidden =
-    standalone.matches ||
+    installedDisplay.matches ||
     (navigator as Navigator & { standalone?: boolean }).standalone === true;
   window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();

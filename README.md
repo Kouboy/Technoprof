@@ -53,7 +53,7 @@ Sur téléphone, privilégier le paysage. Le son démarre après une première i
 
 ### Installer sur Android
 
-Ouvrir GitHub Pages directement dans Chrome, puis choisir **Installer l’application** ou **Ajouter à l’écran d’accueil** dans le menu du navigateur. L’icône TECHNOPROF ouvre le jeu dans sa propre fenêtre en paysage. Sur la Retroid, le navigateur continue de gérer les commandes physiques.
+Ouvrir GitHub Pages directement dans Chrome, puis choisir **Installer l’application** ou **Ajouter à l’écran d’accueil** dans le menu du navigateur. L’icône TECHNOPROF ouvre le jeu en plein écran et en paysage sur les navigateurs compatibles. Sur la Retroid, le navigateur continue de gérer les commandes physiques.
 
 Pour jouer sans réseau, ouvrir **Réglages** depuis l’écran titre, choisir **Préparer le jeu hors connexion** et attendre la confirmation. Ce téléchargement facultatif comprend les trois affectations, les cinématiques, la musique et les bulletins radio.
 

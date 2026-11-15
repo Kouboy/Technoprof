@@ -42,7 +42,7 @@ function createPwaPlugin(root) {
         lang: "fr",
         start_url: "./?fenetre=1",
         scope: "./",
-        display: "standalone",
+        display: "fullscreen",
         orientation: "landscape",
         theme_color: "#141e27",
         background_color: "#101719",
