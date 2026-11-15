@@ -109,7 +109,6 @@ type Host = PlayerContext & {
   audio: AudioKit;
   music?: { blocked: boolean; retry(): void };
   cinematicAudio?: { blocked: boolean; retry(): void };
-  radioLines: string[];
   remaining: number;
   enemies?: { female?: boolean }[];
   encounter?(): Encounter | undefined;
@@ -190,7 +189,6 @@ export function installPlayerExperience(s: Host) {
     return b;
   };
   const returnToGame = () => {
-    s.audio.primeSpeech?.();
     s.audio.unlock();
     menuPage = "home";
     if (s.phase === "title" || s.phase === "report") s.startDay();
@@ -215,7 +213,7 @@ export function installPlayerExperience(s: Host) {
     s.audio.muted = !s.audio.muted;
     save();
     s.audio.radio(
-      s.radioLines[Math.min(2, s.mission)],
+      s.mission,
       s.phase === "free",
       s.paused,
     );
@@ -533,7 +531,7 @@ export function installPlayerExperience(s: Host) {
         root.append(wrap);
       }
       paragraph(
-        "Le bulletin radio est consultable dans le menu pause pendant la croisière. Une voix française locale est utilisée si elle est disponible.",
+        "Le bulletin radio est consultable dans le menu pause pendant la croisière. Le bulletin est enregistré et se lit aussi hors ligne.",
       );
     } else if (mode === "title") {
       root.append(

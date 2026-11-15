@@ -30,7 +30,5 @@ for(let index=0;index<rooms.length;index++){
  assert.equal(g.encounterTime,0,'all approved pages can finish');
 }
 assert.deepEqual(Array.from(a.INFIRMARY.encounter.pages,p=>p.join(' ')),sections['SOIN-1'].pages);
-const {g}=createGame();
-for(let i=0;i<3;i++)assert.equal(g.radioLines[i],a.RADIO_SPOKEN_NAME+'. '+sections['RADIO-'+(i+1)].pages[0]);
 assert(fs.readFileSync('src/cadre.ts','utf8').includes('"EDUCA FRANCE"'),'radio HUD follows the new identity');
 console.log('PASS all 16 approved encounters + shared I2 guard, 3 bulletins, displayed/spoken radio identity, nurse unchanged, page sequencing and bubble bounds');

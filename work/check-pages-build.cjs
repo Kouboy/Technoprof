@@ -23,9 +23,14 @@ const scripts = [...html.matchAll(/<script[^>]*src="([^"]+)"/g)].map(
   (m) => m[1],
 );
 assert(scripts.length > 0);
+const inlineRadio = new Set();
 for (const url of scripts) {
   assert(url.startsWith("./"), "Script URL must work below /Technoprof/");
   const code = read(url).toString();
+  for (const [, sample] of code.matchAll(
+    /data:audio\/mpeg;base64,([A-Za-z0-9+/=]+)/g,
+  ))
+    inlineRadio.add(hash(Buffer.from(sample, "base64")));
   assert(
     Buffer.byteLength(code) < 5 * 1024 * 1024,
     "Do not ship the embedded standalone JS on the web",
@@ -35,6 +40,13 @@ for (const url of scripts) {
     "Large image payload still embedded",
   );
 }
+for (const name of ["matin", "midi", "soir"])
+  assert(
+    inlineRadio.has(
+      hash(fs.readFileSync(path.join(root, "audio/bulletins", name + ".mp3"))),
+    ),
+    name + " bulletin inline",
+  );
 assert(info.images.length > 0);
 for (const image of info.images) {
   const bytes = read(image.fileName);

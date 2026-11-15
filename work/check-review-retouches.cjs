@@ -18,24 +18,7 @@ for (const [type, damage] of [[0,18],[1,25],[2,18]]) {
   g.vehicle = 3; g.trafficHit = 0; g.crash(0, type);
   assert.equal(g.vehicle, 0, 'damage clamps at zero');
 }
-const utterances = [];
-const { AudioKit, bank } = load({
-  SpeechSynthesisUtterance: class { constructor(text) { this.text = text; } },
-  speechSynthesis: { getVoices: () => [{ lang: 'fr-FR', localService: true }], speak: u => utterances.push(u), cancel() {}, pause() {}, resume() {} },
-});
-const { g } = createGame();
-assert.equal(g.radioLines.length, 3);
-for (const text of g.radioLines) {
-  const audio = new AudioKit(); audio.context = { currentTime: 0 };
-  audio.radio(text, true); audio.radio(text, true);
-  assert.equal(utterances.at(-1).text, text);
-  assert(text.startsWith('Radio Éduca-France. '), 'approved spoken radio name, distinct from caption typography');
-  assert(!/idiotie/i.test(text));
-  utterances.at(-1).onend(); assert(audio.radioDone);
-  audio.radio(text, true); assert(!audio.radioPlaying, 'completed bulletin is not repeated');
-}
-assert.equal(utterances.length, 3);
-assert(g.radioLines[2].includes('corrigent les copies des examens en retard'));
+const { AudioKit, bank } = load();
 for (const fps of [30,60,120]) {
   const a = new AudioKit(), events = [];
   a.context = { currentTime: 0 };
@@ -71,4 +54,4 @@ assert(pcm.every(Number.isFinite));
   a.scene('arrivalFade', false, 180, 0, 0, false, { age: 0 });
   assert(!events.includes('car-door'), 'no pending cue leaks into arrival fade');
 }
-console.log('PASS deadlines, gentler collisions, spoken radio identity and single exit-door cue across pause at 30/60/120 fps');
+console.log('PASS deadlines, gentler collisions and single exit-door cue across pause at 30/60/120 fps');

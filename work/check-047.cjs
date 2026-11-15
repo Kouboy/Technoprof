@@ -19,10 +19,10 @@ const ts=require('node:module').stripTypeScriptTypes;
 console.log('PASS three-outcome day, explicit causes, next mission, report, clean restart and menu key release');
 {
  const {g,advance}=createGame();g.begin();g.audio.radioDone=true;g.audio.radioFailed=true;
- advance(5);assert.equal(g.phase,'free','failed speech must leave reading time');
+ advance(5);assert.equal(g.phase,'free','failed recorded audio must leave reading time');
  advance(10.1);assert.equal(g.phase,'receive');
 }
-console.log('PASS failed speech preserves the 15-second text fallback before assignment');
+console.log('PASS failed recorded audio preserves the 15-second text fallback before assignment');
 // Exercise the actual menu handlers against a tiny DOM, without browser state injection.
 class Node {
  constructor(tag='div'){this.tagName=tag.toUpperCase();this.children=[];this.hidden=false;this.value='';this.checked=false;this.attrs={};this.textContent='';}
@@ -84,28 +84,10 @@ assert(find('Prendre le service'),'terminal gameplay restores the actual title m
 assert.equal(nodes['player-panel'].className,'title-home');
 assert(!find('Nouvelle journée'),'no report menu between failure and title');
 console.log('PASS real menu actions, persisted separate volumes, captions, help priority, Escape/back, pause/resume and report relaunch');
-// Android may expose only a non-local French voice, or no voice list yet.
-// The bulletin must still be spoken; fr-FR lets the platform resolve a default voice.
-const speech=[],gain=[],audioCtx={speechSynthesis:{getVoices:()=>[{lang:'fr-FR',localService:false}],speak:u=>speech.push(u),cancel(){},pause(){},resume(){}},SpeechSynthesisUtterance:class{constructor(text){this.text=text;}}};
-vm.createContext(audioCtx);vm.runInContext(ts(require('./audio-harness.cjs').source)+';globalThis.AudioKit=AudioKit;',audioCtx);
-const kit=new audioCtx.AudioKit();kit.context={currentTime:0};kit.master={gain:{setTargetAtTime:v=>gain.push(v)}};
-kit.radio('Bulletin',true);assert.equal(speech.length,1);assert.equal(speech[0].lang,'fr-FR');
-speech[0].onerror();assert(kit.radioFailed);
-kit.radio('',false);
-audioCtx.speechSynthesis.getVoices=()=>[{lang:'fr-FR',localService:true}];kit.voiceVolume=.5;kit.radio('Bulletin',true);
-assert.equal(speech.length,2);assert.equal(speech[1].volume,.5,'voice slider must not conceal a second attenuation');
-for(const volume of [.25,.5,1]){
- kit.radio('',false);kit.voiceVolume=volume;kit.radio('Bulletin',true);
- assert.equal(speech.at(-1).volume,volume,'radio uses the full selected voice range');
- const count=speech.length;kit.radio('Bulletin',true,true);kit.radio('Bulletin',true,false);
- assert.equal(speech.length,count,'pause/resume cannot duplicate the louder bulletin');
- speech.at(-1).onend();assert(kit.radioDone);kit.radio('Bulletin',true);
- assert.equal(speech.length,count,'completed bulletin remains single-use');
-}
-kit.radio('',false);kit.voiceVolume=0;const silentCount=speech.length;kit.radio('Bulletin',true);
-assert.equal(speech.length,silentCount,'zero voice volume remains silent');
-kit.voiceVolume=1;kit.muted=true;kit.radio('Bulletin',true);assert.equal(speech.length,silentCount);
-kit.muted=false;
+// Effects retain their own gain when sampled radio is enabled.
+const {AudioKit}=require('./audio-harness.cjs').load();
+const gain=[],kit=new AudioKit();
+kit.context={currentTime:0};kit.master={gain:{setTargetAtTime:v=>gain.push(v)}};
 kit.effectsVolume=.4;kit.previous='title';kit.scene('title',false,0,0);assert(Math.abs(gain.at(-1)-.28)<1e-8);
 kit.scene('title',true,0,0);assert.equal(gain.at(-1),0);
-console.log('PASS local voice only, speech error fallback and independent effects gain/mute on pause');
+console.log('PASS independent effects gain and silence on pause');

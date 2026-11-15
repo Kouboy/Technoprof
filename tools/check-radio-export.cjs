@@ -1,41 +1,83 @@
-// Verify what the delivered HTML actually sends to speech synthesis. A fake
-// local voice makes the payload observable; this does not judge pronunciation.
-const assert = require('node:assert/strict');
-const path = require('node:path'), fs = require('node:fs'), { pathToFileURL } = require('node:url');
-const approved = fs.readFileSync('docs/ecriture/TEXTES-A-REECRIRE.md','utf8');
-const radioName = approved.match(/Nom affiché : \*\*(.+?)\*\*/)[1];
-const expectedSpeech = require('../work/test-harness.cjs').createGame().g.radioLines[0];
-const { chromium, firefox } = require(process.argv[2] || 'playwright');
-const engineName = process.argv[3] || 'chromium';
-if (!['chromium','firefox'].includes(engineName)) throw Error('Unknown browser');
+// Test the standalone with no network and no platform speech API.
+// Keep real Chromium decoding and scheduling, recording only long source starts.
+const assert = require("node:assert/strict");
+const path = require("node:path");
+const { pathToFileURL } = require("node:url");
+const { chromium, firefox } = require(process.argv[2] || "playwright");
+const engine = process.argv[3] === "firefox" ? firefox : chromium;
+
 (async () => {
-  const browser = await ({ chromium, firefox })[engineName].launch({ headless: true });
+  const browser = await engine.launch();
   try {
-    const context = await browser.newContext({ offline: true });
-    await context.addInitScript(() => {
-      globalThis.__radioEvidence = [];
-      class Utterance { constructor(text) { this.text = text; } }
-      Object.defineProperty(window, 'SpeechSynthesisUtterance', { configurable: true, value: Utterance });
-      Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: {
-        getVoices: () => [{name:'Isolated QA voice',lang:'fr-FR',localService:true}],
-        speak: u => __radioEvidence.push({text:u.text,lang:u.lang,volume:u.volume}),
-        cancel() {}, pause() {}, resume() {},
-      }});
+    const context = await browser.newContext({
+      offline: true,
+      viewport: { width: 900, height: 480 },
+      hasTouch: true,
+      ...(engine === chromium ? { isMobile: true } : {}),
     });
-    const page = await context.newPage(), errors = [];
-    page.on('pageerror', e => errors.push(e.message));
-    await page.goto(pathToFileURL(path.resolve('Jouer-Technoprof-Journee-Atelier.html')).href, {waitUntil:'load',timeout:120000});
-    await page.getByRole('button',{name:'Prendre le service',exact:true}).waitFor({timeout:120000});
-    await page.getByRole('button',{name:'Prendre le service',exact:true}).click();
-    await page.waitForFunction(() => __radioEvidence.length > 0, null, {timeout:15000});
-    const spoken = await page.evaluate(() => __radioEvidence);
-    assert.equal(spoken.length,1);
-    assert.equal(spoken[0].text,expectedSpeech,'delivered bulletin follows the approved current text');
-    assert.equal(spoken[0].lang,'fr-FR');
-    assert.equal(spoken[0].volume,1,'full voice volume must reach the delivered speech output');
-    assert(!/idiotie/i.test(spoken[0].text));
-    assert((await page.locator('#radio-caption').textContent()).startsWith(radioName+' — '));
+    await context.addInitScript(() => {
+      for (const property of ["speechSynthesis", "SpeechSynthesisUtterance"])
+        Object.defineProperty(window, property, {
+          configurable: true,
+          get() {
+            throw new Error("The recorded bulletin must not use system TTS");
+          },
+        });
+      globalThis.radioStarts = [];
+      const start = AudioBufferSourceNode.prototype.start;
+      AudioBufferSourceNode.prototype.start = function (...args) {
+        if (
+          this.buffer?.duration > 5 &&
+          this.buffer?.duration < 12 &&
+          !this.loop
+        )
+          globalThis.radioStarts.push({
+            duration: this.buffer.duration,
+            offset: args[1] || 0,
+          });
+        return start.apply(this, args);
+      };
+    });
+    const page = await context.newPage();
+    const errors = [];
+    page.on("pageerror", (event) => errors.push(event.message));
+    await page.goto(
+      pathToFileURL(path.resolve("Jouer-Technoprof-Journee-Atelier.html")).href,
+      {
+        waitUntil: "load",
+        timeout: 120000,
+      },
+    );
+    await page
+      .getByRole("button", { name: "Prendre le service", exact: true })
+      .click({ timeout: 90000 });
+    const skip = page.getByRole("button", {
+      name: "Passer la cinématique",
+      exact: true,
+    });
+    if (await skip.isVisible()) await skip.click();
+    await page.waitForFunction(() => radioStarts.length > 0, null, {
+      timeout: 18000,
+    });
+    const caption = page.locator("#radio-caption");
+    assert.match(
+      await caption.textContent(),
+      /Radio Educa France.*les postes vacants/,
+    );
+    const starts = await page.evaluate(() => radioStarts);
+    assert.equal(starts.length, 1);
+    assert(starts[0].duration > 6 && starts[0].duration < 7);
+    assert.equal(starts[0].offset, 0);
+    await caption.waitFor({ state: "hidden", timeout: 12000 });
+    assert.equal(await page.evaluate(() => radioStarts.length), 1);
     assert.deepEqual(errors, []);
-    console.log('PASS '+engineName+' offline day: actual speech payload '+JSON.stringify(spoken[0])+'; correct caption, no JS error');
-  } finally { await browser.close(); }
-})().catch(error => { console.error(error); process.exitCode=1; });
+    console.log(
+      `PASS ${engine.name()} standalone, offline: real MP3 decode, Radio Educa France caption, one read, automatic assignment, zero TTS calls`,
+    );
+  } finally {
+    await browser.close();
+  }
+})().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

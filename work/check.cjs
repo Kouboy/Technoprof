@@ -53,8 +53,8 @@ g.speed=260;g.travel=220*Math.PI/2;const rightBend=g.curveForce();g.travel=220*M
 g.mission=0;g.begin();assert.equal(g.obstacles.length,32);assert(g.obstacles.slice(1).every((o,i)=>o.z-g.obstacles[i].z>=190));g.mission=1;g.begin();assert.equal(g.obstacles.length,32);g.mission=2;g.begin();assert.equal(g.obstacles.length,32);console.log('PASS equal traffic queue capacity, first mission spaced; actual encounter progression checked in 059');
 // Feedback is tied to actual passes and hard braking, with no repeated whoosh.
 g.mission=0;g.begin();g.phase='road';g.notified=true;g.speed=180;g.car=0;g.travel=0;g.obstacles=[{z:.1,x:.5,type:0}];let passes=0;g.audio.pass=()=>passes++;step(1);assert.equal(passes,1);step(10);assert.equal(passes,1);g.keys.DOWN.isDown=true;step(2);assert(g.tireMarks.length>0);g.keys.DOWN.isDown=false;step(70);assert.equal(g.tireMarks.length,0);console.log('PASS one-shot passing sound and temporary hard-braking tire marks');
-// Audio sequencing without relying on installed voices or speakers.
-const audioEvents=[];const ac={speechSynthesis:{getVoices:()=>[{lang:'fr-FR'}],speak:()=>audioEvents.push('speech'),cancel:()=>audioEvents.push('cancel')},SpeechSynthesisUtterance:class {constructor(text){this.text=text;}}};vm.createContext(ac);vm.runInContext(require('node:module').stripTypeScriptTypes(require('./audio-harness.cjs').source)+';globalThis.AudioKit=AudioKit;',ac);const kit=new ac.AudioKit();kit.context={currentTime:0};kit.master={gain:{setTargetAtTime(){}}};kit.noise=()=>{};kit.tone=()=>{};kit.material=(kind)=>audioEvents.push(kind);kit.play=(kind)=>audioEvents.push(kind);kit.radio('Bulletin',true);kit.radio('Bulletin',true);assert.equal(audioEvents.filter(x=>x==='speech').length,1);kit.radio('',false);assert(audioEvents.includes('cancel'));kit.scene('course',false,120,.02);assert(audioEvents.includes('chair')&&audioEvents.includes('paper')&&audioEvents.includes('chalk'));console.log('PASS radio once per cruise, interruption, classroom sound sequence');
+// Classroom sound sequence.
+const audioEvents=[];const {AudioKit}=require('./audio-harness.cjs').load();const kit=new AudioKit();kit.context={currentTime:0};kit.master={gain:{setTargetAtTime(){}}};kit.noise=()=>{};kit.tone=()=>{};kit.material=(kind)=>audioEvents.push(kind);kit.play=(kind)=>audioEvents.push(kind);kit.scene('course',false,120,.02);assert(audioEvents.includes('chair')&&audioEvents.includes('paper')&&audioEvents.includes('chalk'));console.log('PASS classroom sound sequence');
 // Falling is visible over time, costs one health point, and recovers on solid floor.
 g.school();g.schoolFade=0;g.enterRoom(8,110);g.inv=0;g.hitStop=0;const beforeFall=g.hp;step(1);assert(g.falling>0);assert.equal(g.hp,beforeFall);step(10);assert(g.py>159);step(35);assert.equal(g.falling,0);assert.equal(g.hp,beforeFall-1);assert.equal(g.px,80);console.log('PASS animated fall and single damage on recovery');
 
@@ -122,14 +122,10 @@ g.enterRoom(3,45);g.schoolFade=0;g.interactLock=0;g.hitStop=0;g.attack=0;press('
 g.enterRoom(3,299);g.schoolFade=0;g.interactLock=0;g.hitStop=0;edge(299,'RIGHT');assert.equal(g.room,30);
 console.log('PASS student wind-up, short kick, jump/back evasion, poses, two-hit defeat, impact height and both exits');
 
-// A completed bulletin must never enqueue again during the same cruise.
-const spoken=[];ac.speechSynthesis.speak=u=>spoken.push(u);ac.speechSynthesis.pause=()=>audioEvents.push('pause');ac.speechSynthesis.resume=()=>audioEvents.push('resume');
-kit.radio('Unique',true);const utterance=spoken.at(-1);utterance.onend();assert(kit.radioDone&&!kit.radioPlaying);for(let i=0;i<100;i++)kit.radio('Unique',true);assert.equal(spoken.length,1);
-kit.radio('',false);kit.radio('Unique',true);const next=spoken.at(-1);kit.radio('Unique',true,true);kit.radio('Unique',true,false);assert(audioEvents.includes('pause')&&audioEvents.includes('resume'));assert.equal(spoken.length,2);utterance.onend();assert(kit.radioPlaying,'stale callback must not finish next bulletin');next.onerror();assert(kit.radioDone&&!kit.radioPlaying);
-kit.radio('',false);kit.radio('Muted',true);kit.muted=true;kit.radio('Muted',true);kit.muted=false;kit.radio('Muted',true);assert.equal(spoken.length,3);assert(kit.radioDone);
+// Radio lifecycle is covered by check-radio-bulletin.cjs. Exercise the shared assignment gate here.
 g.begin();g.audio.radioPlaying=true;g.audio.radioDone=false;g.age=20;step(1);assert.equal(g.phase,'free');g.audio.radioPlaying=false;g.audio.radioDone=true;step(1);assert.equal(g.phase,'receive');g.audio.radioDone=false;
 g.begin();g.audio.radioPlaying=true;g.age=45;step(1);assert.equal(g.phase,'receive');g.audio.radioPlaying=false;
-console.log('PASS completed radio is not repeated, pause resumes, stale callbacks ignored, muted bulletin stays consumed, assignment follows end with fallback');
+console.log('PASS assignment follows bulletin end and stays reachable after a stall');
 
 // Enter from either bank, then recover on that bank; jumping must preserve last takeoff.
 for(const [start,dir,expected] of [[80,'RIGHT',80],[143,'LEFT',143],[175,'RIGHT',175],[238,'LEFT',238]]) {

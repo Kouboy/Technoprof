@@ -43,8 +43,6 @@ import { drawComicFX } from "./comic-fx";
 import {
   installPlayerExperience,
   resultLine,
-  RADIO_BULLETINS,
-  RADIO_SPOKEN_NAME,
 } from "./player-experience";
 import {
   VIEW,
@@ -523,7 +521,6 @@ class Game extends Phaser.Scene {
   skidClock = 0;
   rattleClock = 0;
   tireMarks: { x: number; y: number; life: number }[] = [];
-  radioLines = RADIO_BULLETINS.map((text) => RADIO_SPOKEN_NAME + ". " + text);
   falling = 0;
   fallReturn = 25;
   lastGroundX = 25;
@@ -1386,7 +1383,7 @@ class Game extends Phaser.Scene {
     this.navigationMetrics = new NavigationMetrics();
     this.validatedDayRuns = {};
     this.audio.unlock();
-    this.audio.radio("", false);
+    this.audio.radio(this.mission, false);
     this.cadreReview = false;
     this.session = new SessionLog();
     this.runtime.resetFrames();
@@ -1467,7 +1464,7 @@ class Game extends Phaser.Scene {
     this.recoveryScene.reset();
     this.encounterTime = this.bossIntro = this.hitStop = 0;
     this.speed = 0;
-    this.audio.radio("", false);
+    this.audio.radio(this.mission, false);
     this.audio.motor(0, false, false);
     this.paused = false;
     this.pauseReason = "";
@@ -1860,7 +1857,7 @@ class Game extends Phaser.Scene {
     this.direct?.cancel();
     this.controls?.reset();
     this.input?.keyboard?.resetKeys();
-    this.audio.radio("", false);
+    this.audio.radio(this.mission, false);
     this.music?.stop();
     this.cinematic = null;
     this.phase = "home";
@@ -1967,7 +1964,7 @@ class Game extends Phaser.Scene {
     this.freshKey = false;
     // Focus loss may stop the render loop: silence audio in the event itself.
     this.audio.radio(
-      this.radioLines[Math.min(this.mission, 2)],
+      this.mission,
       this.phase === "free",
       value,
     );
@@ -2895,7 +2892,7 @@ class Game extends Phaser.Scene {
     }
     this.ambienceClock += this.paused ? 0 : dt;
     this.audio.radio(
-      this.radioLines[Math.min(this.mission, 2)],
+      this.mission,
       this.phase === "free",
       this.paused,
     );
@@ -3281,7 +3278,7 @@ class Game extends Phaser.Scene {
       ) {
         this.phase = "receive";
         this.notified = true;
-        this.audio.radio("", false);
+        this.audio.radio(this.mission, false);
         this.age = 0;
         this.road = 0;
       }

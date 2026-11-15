@@ -11,6 +11,7 @@ import { HOME_ARRIVAL } from "./home-arrival";
 import { LIVES } from "./lives";
 import { sfxTakes } from "./sfx-samples";
 import { WALK_SOUND, type FloorSound, type PassageAudio } from "./soundscape";
+import { RadioBulletin } from "./radio-bulletin";
 import type { CinematicCue } from "./cinematic";
 type Voice = {
   source: AudioBufferSourceNode | OscillatorNode;
@@ -181,13 +182,16 @@ export class AudioKit {
   shiftUntil = 0;
   duckUntil = 0;
   serial = 0;
-  radioPlaying = false;
-  radioText = "";
-  radioDone = false;
-  radioPaused = false;
-  radioFailed = false;
-  radioUtterance?: SpeechSynthesisUtterance;
-  speechPrimed = false;
+  private readonly bulletin = new RadioBulletin();
+  get radioPlaying() {
+    return this.bulletin.playing;
+  }
+  get radioDone() {
+    return this.bulletin.done;
+  }
+  get radioFailed() {
+    return this.bulletin.failed;
+  }
   prepare() {
     if (this.preparing || typeof setTimeout === "undefined") return;
     this.preparing = true;
@@ -790,92 +794,12 @@ export class AudioKit {
       0.12,
     );
   }
-  primeSpeech() {
-    if (
-      this.speechPrimed ||
-      typeof speechSynthesis === "undefined" ||
-      typeof SpeechSynthesisUtterance === "undefined"
-    )
-      return;
-    try {
-      const u = new SpeechSynthesisUtterance(" ");
-      u.lang = "fr-FR";
-      u.volume = 0;
-      speechSynthesis.cancel();
-      speechSynthesis.speak(u);
-      this.speechPrimed = true;
-    } catch {
-      /* Some mobile browsers expose the API before the platform TTS is ready. */
-    }
-  }
-  radio(text: string, on: boolean, paused = false) {
-    if (typeof speechSynthesis === "undefined") return;
-    if (!on) {
-      const playing = this.radioPlaying;
-      this.radioUtterance = undefined;
-      this.radioPlaying = false;
-      this.radioPaused = false;
-      this.radioText = "";
-      this.radioDone = false;
-      this.radioFailed = false;
-      if (playing) speechSynthesis.cancel();
-      return;
-    }
-    if (this.muted || this.voiceVolume === 0) {
-      if (this.radioPlaying) {
-        this.radioUtterance = undefined;
-        this.radioPlaying = false;
-        this.radioDone = true;
-        speechSynthesis.cancel();
-      }
-      return;
-    }
-    if (paused) {
-      if (this.radioPlaying && !this.radioPaused) {
-        speechSynthesis.pause();
-        this.radioPaused = true;
-      }
-      return;
-    }
-    if (this.radioPaused) {
-      speechSynthesis.resume();
-      this.radioPaused = false;
-    }
-    if (!this.context || this.radioText === text) return;
-    const voices = speechSynthesis.getVoices();
-    const voice =
-      voices.find((v) => v.lang.startsWith("fr") && v.localService !== false) ??
-      voices.find((v) => v.lang.startsWith("fr"));
-    const u = new SpeechSynthesisUtterance(text);
-    // Android browsers can expose no voices initially, or only a non-local
-    // French voice. In that case, let the platform resolve fr-FR itself.
-    if (voice) u.voice = voice;
-    u.lang = "fr-FR";
-    u.rate = 1.08;
-    u.pitch = 0.85;
-    // Speech has its own output, outside the effects/music buses. Keep the
-    // voice slider's full range instead of silently capping the bulletin.
-    u.volume = this.voiceVolume;
-    this.radioPlaying = true;
-    this.radioDone = false;
-    this.radioFailed = false;
-    this.radioText = text;
-    this.radioUtterance = u;
-    const finish = () => {
-      if (this.radioUtterance !== u) return;
-      this.radioPlaying = false;
-      this.radioDone = true;
-      this.radioUtterance = undefined;
-    };
-    u.onend = finish;
-    u.onerror = () => {
-      if (this.radioUtterance !== u) return;
-      this.radioFailed = true;
-      finish();
-    };
-    // Android/Chrome can retain a stalled utterance in the global queue.
-    // Reset it before each bulletin; prior user activation is primed separately.
-    speechSynthesis.cancel();
-    speechSynthesis.speak(u);
+  radio(mission: number, on: boolean, paused = false) {
+    this.bulletin.sync(
+      this.context,
+      on ? mission : null,
+      paused,
+      this.muted ? 0 : this.voiceVolume,
+    );
   }
 }

@@ -49,7 +49,10 @@ c.advance(.3);kit.motor(260,true,true);const fast=kit.loops.wind.gain.gain.value
 assert(slow<medium&&medium<fast/4);const full=kit.loops.engine.gain.gain.value;
 c.advance(.3);kit.motor(260,true,true);const steady=kit.loops.engine.gain.gain.value;
 assert(steady>full,'gear shift did not briefly unload engine');
-kit.radioPlaying=true;kit.motor(260,true,true);assert(kit.loops.engine.gain.gain.value<steady*.6);kit.radioPlaying=false;
+let bulletinPlaying = true;
+Object.defineProperty(kit, 'radioPlaying', {get: () => bulletinPlaying});
+kit.motor(260,true,true);assert(kit.loops.engine.gain.gain.value<steady*.6);
+bulletinPlaying = false;
 kit.motor(260,false);assert.equal(kit.loops.engine.gain.gain.value,0);assert.equal(kit.loops.wind.gain.gain.value,0);
 kit.pass(-1,false,false,160);const far=[...kit.voices].at(-1),farGain=far.nodes[0].gain.events.find(e=>e[1]>0)[1];assert(far.nodes[1].pan.value<0);
 kit.pass(1,true,false,160);const near=[...kit.voices].at(-1),nearGain=near.nodes[0].gain.events.find(e=>e[1]>0)[1];assert(near.nodes[1].pan.value>0);assert(nearGain>farGain*2);
