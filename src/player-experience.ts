@@ -119,7 +119,11 @@ type Host = PlayerContext & {
   draw(): void;
   exportJournal(): void;
 };
-export function installPlayerExperience(s: Host, pwaControls?: HTMLElement) {
+export function installPlayerExperience(
+  s: Host,
+  pwaControls?: HTMLElement,
+  titleImage?: HTMLImageElement,
+) {
   const root = document.getElementById("player-panel")!;
   const toolbar = document.getElementById("player-toolbar")!;
   const help = document.getElementById("player-help")!;
@@ -212,11 +216,7 @@ export function installPlayerExperience(s: Host, pwaControls?: HTMLElement) {
   const toggleMute = () => {
     s.audio.muted = !s.audio.muted;
     save();
-    s.audio.radio(
-      s.mission,
-      s.phase === "free",
-      s.paused,
-    );
+    s.audio.radio(s.mission, s.phase === "free", s.paused);
     s.audio.scene(
       s.phase,
       s.paused,
@@ -536,7 +536,10 @@ export function installPlayerExperience(s: Host, pwaControls?: HTMLElement) {
       if (pwaControls && mode === "title") root.append(pwaControls);
     } else if (mode === "title") {
       root.append(
-        mountTitleArt(button("Prendre le service", returnToGame, true)),
+        mountTitleArt(
+          button("Prendre le service", returnToGame, true),
+          titleImage,
+        ),
       );
       paragraph(
         "Trois affectations à assurer. Trois vies pour tenir la journée.",

@@ -2,6 +2,7 @@
 export const LIVES = {
   initial: 3,
   schoolRetrySeconds: 120,
+  bossRetrySeconds: 60,
   lossChangeAt: 0.8,
   lossSeconds: 2.6,
   lossSkipAfter: 1.2,

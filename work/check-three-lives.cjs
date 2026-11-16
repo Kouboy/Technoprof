@@ -116,6 +116,58 @@ for (const fps of [30, 60, 120]) {
 console.log(
   "PASS 3 lives: all missions/reasons, exact single loss, school checkpoint at 120s or road retry, reset health/rooms/care, retained journal, pause, third radiation/title and protected home",
 );
+for (const mission of [0, 1, 2])
+  for (const reason of ["exhausted", "late"]) {
+    const t = createGame({ policy: "three-required" }),
+      g = t.g;
+    g.validatedDay = true;
+    g.startDay(false);
+    g.mission = g.won = mission;
+    g.begin();
+    g.school();
+    const { start, arena } = g.missionSpec();
+    g.cleared.add(start);
+    g.navigationCare.used = true;
+    g.enterRoom(arena, 48);
+    const spawn = g.px;
+    const initialHp = g.enemies[0].hp;
+    g.encounterTime = g.bossIntro = 0;
+    g.enemies[0].hp = 1;
+    g.px = 215;
+    g.projectiles.push({ x: 45, life: 1, dir: 1 });
+    g.finish(false, reason);
+    g.next();
+    g.completeLifeLoss();
+    assert.equal(g.phase, "school");
+    assert.equal(g.room, arena, "active boss defeat retries the arena");
+    assert.equal(g.px, spawn);
+    assert.equal(g.remaining, 60);
+    assert.equal(g.lives, 2);
+    assert.equal(g.won, mission);
+    assert.equal(g.hp, 5);
+    assert.equal(g.enemies[0].hp, initialHp);
+    assert(g.enemies[0].boss && g.arena);
+    assert.equal(g.projectiles.length, 0);
+    assert.equal(g.encounterTime, 0);
+    assert(g.cleared.has(start) && g.navigationCare.used);
+    t.advance(0.4);
+    assert.equal(g.remaining, 60, "entry fade does not spend the retry minute");
+    assert.equal(
+      g.session.events.findLast((e) => e.kind === "mission-retry").data
+        .checkpoint,
+      "boss",
+    );
+    g.enemies[0].hp = 0;
+    g.finish(false, "late");
+    g.next();
+    g.completeLifeLoss();
+    assert.equal(
+      g.room,
+      start,
+      "a defeated boss no longer owns the checkpoint",
+    );
+    assert.equal(g.remaining, 120);
+  }
 for (const fps of [30, 60, 120])
   for (const mission of [0, 1, 2]) {
     const t = createGame({ policy: "three-required" }),

@@ -2,7 +2,16 @@ import {
   installLoadingPresentation,
   prepareLoadingPresentation,
   finishLoadingPresentation,
+  showLoadingFailure,
+  verifyLoadingPresentation,
 } from "./loading-presentation";
+import {
+  missingRoadFrame,
+  missingWebAudio,
+  prepareTitleImage,
+  watchImages,
+} from "./asset-readiness";
+import { TITLE_DATA } from "./interface-data";
 import {
   missionSpec,
   roomSpec,
@@ -40,10 +49,7 @@ import { GamepadInput, type PadUIAction } from "./gamepad-input";
 import { DirectInput, installDirectInput } from "./direct-input";
 import { installGameWindow } from "./game-window";
 import { drawComicFX } from "./comic-fx";
-import {
-  installPlayerExperience,
-  resultLine,
-} from "./player-experience";
+import { installPlayerExperience, resultLine } from "./player-experience";
 import {
   VIEW,
   daylight,
@@ -481,9 +487,12 @@ class Game extends Phaser.Scene {
   livesArt?: LivesArt;
   reviewFacing = 1;
   loadingFailed = false;
+  private booting = false;
+  private verifyImages?: ReturnType<typeof watchImages>;
   preload() {
     this.runtime.mark("preload");
     installLoadingPresentation(this.load);
+    this.verifyImages = watchImages(this.load);
     this.audio.prepare();
     FailureArt.preload(this);
     CinematicArt.preload(this);
@@ -592,6 +601,8 @@ class Game extends Phaser.Scene {
   interactLock = 0;
   trafficHit = 0;
   room = 0;
+  private roomEntrance = 25;
+  private retryAtBoss = false;
   travel = 0;
   arena = false;
   cleared = new Set<number>();
@@ -619,12 +630,36 @@ class Game extends Phaser.Scene {
   shoulder = 0;
   shoulderClock = 0;
   results: string[] = [];
-  create() {
+  async create() {
     this.runtime.mark("create");
+    this.booting = true;
     if (!prepareLoadingPresentation()) {
       this.loadingFailed = true;
       return;
     }
+    try {
+      const missing = this.verifyImages?.(this.textures);
+      if (missing) return this.failLoading(missing);
+      verifyLoadingPresentation();
+      const [title, audio] = await Promise.all([
+        prepareTitleImage(TITLE_DATA).catch(() => undefined),
+        PUBLIC_PLAYTEST ? missingWebAudio() : undefined,
+      ]);
+      if (!title) return this.failLoading("image de titre");
+      if (audio) return this.failLoading(audio.split("/").at(-1));
+      this.createReady(title);
+    } catch (error) {
+      console.error("Failed to prepare Technoprof assets", error);
+      this.failLoading();
+    } finally {
+      this.booting = false;
+    }
+  }
+  private failLoading(asset?: string) {
+    this.loadingFailed = true;
+    showLoadingFailure(asset);
+  }
+  private createReady(titleImage: HTMLImageElement) {
     const shakeOption = document.getElementById(
       "reduced-shake",
     ) as HTMLInputElement | null;
@@ -771,6 +806,8 @@ class Game extends Phaser.Scene {
     this.sceneGraphics = this.g;
     this.carArt = new CarArt(this);
     this.roadArt = new RoadArt(this);
+    const missingFrame = missingRoadFrame(this.textures);
+    if (missingFrame) return this.failLoading(missingFrame);
     this.releasePreparedSources();
     this.foreground = this.add.graphics().setDepth(3.2);
     this.sceneFade = this.add.graphics().setDepth(4.05);
@@ -1064,6 +1101,7 @@ class Game extends Phaser.Scene {
       this.syncPlayerUI = installPlayerExperience(
         this,
         PUBLIC_PLAYTEST ? installPwa() : undefined,
+        titleImage,
       );
       installGameWindow(
         () => {
@@ -1503,6 +1541,7 @@ class Game extends Phaser.Scene {
     this.exitHeld = false;
     this.dialogueSoundWait = 0;
     this.failureReason = null;
+    this.retryAtBoss = false;
     this.playerRecovery = 0;
     this.attackBuffer = 0;
     this.bookBlocked = 0;
@@ -1559,12 +1598,11 @@ class Game extends Phaser.Scene {
       return { z, x: cue.x, type: cue.type, speed: cue.speed };
     });
   }
-  school() {
+  school(room = this.missionSpec().start, spawn = 25) {
     this.phase = "school";
     this.schoolFade = 0.7;
     this.age = 0;
-    this.room = this.missionSpec().start;
-    this.enterRoom(this.missionSpec().start, 25);
+    this.enterRoom(room, spawn);
   }
   enterRoom(room: number, x: number) {
     this.cancelBufferedActions("room");
@@ -1583,6 +1621,7 @@ class Game extends Phaser.Scene {
     this.interactLock = PLAY.interactLock;
     const bounds = this.movementBounds();
     this.px = Phaser.Math.Clamp(x, bounds.min, bounds.max);
+    this.roomEntrance = this.px;
     this.lastGroundX = this.px;
     this.py = 159;
     this.vy = 0;
@@ -1731,6 +1770,11 @@ class Game extends Phaser.Scene {
           this.brokenRoad,
         ) ??
         "late");
+    this.retryAtBoss =
+      !ok &&
+      this.phase === "school" &&
+      this.room === this.missionSpec().arena &&
+      this.enemies.some((enemy) => enemy.boss && enemy.hp > 0);
     this.attack = 0;
     this.playerRecovery = 0;
     this.attackBuffer = 0;
@@ -1828,6 +1872,27 @@ class Game extends Phaser.Scene {
       this.age = 0;
       this.radiationStamped = false;
       this.session.record("radiation", this.mission, this.room, { lives: 0 });
+      this.persistJournal();
+    } else if (this.retryAtBoss) {
+      this.retryAtBoss = false;
+      this.failureReason = null;
+      this.hp = 5;
+      this.face = 1;
+      this.speed = 0;
+      this.exitHeld = false;
+      this.notified = true;
+      this.remaining = LIVES.bossRetrySeconds;
+      this.roomEnemies.delete(this.room);
+      this.cleared.delete(this.room);
+      this.navigationMetrics.end = undefined;
+      delete this.validatedDayRuns[this.mission + 1];
+      this.session.record("mission-retry", this.mission, this.room, {
+        lives: this.lives,
+        seconds: this.remaining,
+        checkpoint: "boss",
+      });
+      this.school(this.room, this.roomEntrance);
+      this.encounterTime = this.bossIntro = 0;
       this.persistJournal();
     } else {
       const retrySchool = !this.brokenRoad;
@@ -1967,11 +2032,7 @@ class Game extends Phaser.Scene {
     this.pauseReason = value ? reason : "";
     this.freshKey = false;
     // Focus loss may stop the render loop: silence audio in the event itself.
-    this.audio.radio(
-      this.mission,
-      this.phase === "free",
-      value,
-    );
+    this.audio.radio(this.mission, this.phase === "free", value);
     this.audio.scene(
       this.phase,
       value,
@@ -2755,7 +2816,7 @@ class Game extends Phaser.Scene {
   }
   update(_t: number, ms: number) {
     // Phaser runs update even when create returned early after a failed file.
-    if (this.loadingFailed) return;
+    if (this.loadingFailed || this.booting) return;
     if (
       !this.paused &&
       !this.playerMenu &&
@@ -2895,11 +2956,7 @@ class Game extends Phaser.Scene {
       jumpPressed = attackPressed = false;
     }
     this.ambienceClock += this.paused ? 0 : dt;
-    this.audio.radio(
-      this.mission,
-      this.phase === "free",
-      this.paused,
-    );
+    this.audio.radio(this.mission, this.phase === "free", this.paused);
     this.audio.scene(
       this.phase,
       this.paused,

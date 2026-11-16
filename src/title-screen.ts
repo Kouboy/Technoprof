@@ -73,11 +73,14 @@ function titleLabel(
 }
 
 // Native button semantics; the illustration and its raster lettering never own input.
-export function mountTitleArt(start: HTMLButtonElement) {
+export function mountTitleArt(
+  start: HTMLButtonElement,
+  loaded?: HTMLImageElement,
+) {
   const art = document.createElement("div");
   art.className = "title-art";
-  const image = document.createElement("img");
-  image.src = TITLE_DATA;
+  const image = loaded ?? document.createElement("img");
+  if (!loaded) image.src = TITLE_DATA;
   image.alt =
     "TECHNOPROF — Physique appliquée. Le professeur et son manuel, sa vieille voiture de service et un collège en décrépitude.";
   image.draggable = false;

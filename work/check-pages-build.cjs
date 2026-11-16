@@ -14,6 +14,15 @@ assert.deepEqual(info.music, musicFiles(root));
 assert.equal(info.music.length, 17);
 const html = read("index.html").toString();
 assert.match(html, /rel="manifest" href="\.\/manifest\.webmanifest"/);
+const sizes = JSON.parse(
+  html.match(
+    /<script id="asset-dimensions" type="application\/json">([^<]+)<\/script>/,
+  )[1],
+);
+assert.equal(
+  Object.keys(sizes).length,
+  info.images.filter((image) => image.fileName.endsWith(".png")).length,
+);
 const manifest = JSON.parse(read("manifest.webmanifest"));
 assert.equal(manifest.scope, "./");
 assert.equal(manifest.display, "fullscreen");
@@ -79,6 +88,11 @@ for (const image of info.images) {
   const bytes = read(image.fileName);
   assert.equal(bytes.length, image.bytes);
   assert.equal(hash(bytes), image.sha256);
+  if (image.fileName.endsWith(".png"))
+    assert.deepEqual(sizes[path.basename(image.fileName)], [
+      bytes.readUInt32BE(16),
+      bytes.readUInt32BE(20),
+    ]);
 }
 for (const name of info.music)
   assert.equal(

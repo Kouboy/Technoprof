@@ -3,6 +3,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const http = require("node:http");
+const { createHash } = require("node:crypto");
 const { chromium } = require(process.argv[2] || "playwright");
 
 const root = path.resolve("dist");
@@ -17,7 +18,7 @@ const types = {
   ".wav": "audio/wav",
 };
 let online = true;
-let breakDownload = true;
+let breakDownload = false;
 const server = http.createServer((request, response) => {
   const url = new URL(request.url, "http://localhost");
   if (!url.pathname.startsWith(scope)) return response.writeHead(404).end();
@@ -33,6 +34,63 @@ const server = http.createServer((request, response) => {
   });
   fs.createReadStream(file).pipe(response);
 });
+
+function sourceImage(name) {
+  const source = fs.readFileSync(`src/${name}-data.ts`, "utf8");
+  const bytes = Buffer.from(
+    source.match(/base64,([A-Za-z0-9+/=]+)/)[1],
+    "base64",
+  );
+  return `${createHash("sha256").update(bytes).digest("hex")}.png`;
+}
+
+async function checkBrokenAssets(browser, base) {
+  const placeholder = Buffer.from(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jr1sAAAAASUVORK5CYII=",
+    "base64",
+  );
+  for (const [file, asset] of [
+    [sourceImage("sky"), "sky"],
+    [sourceImage("car-right"), "raw-service-right"],
+    ["13-retour-maison.wav", "13-retour-maison.wav"],
+  ]) {
+    const context = await browser.newContext({ serviceWorkers: "block" });
+    try {
+      const page = await context.newPage();
+      const path = `**/${file}`;
+      await page.route(path, (route) =>
+        file.endsWith(".png")
+          ? route.fulfill({ contentType: "image/png", body: placeholder })
+          : route.fulfill({ status: 404 }),
+      );
+      await page.goto(base);
+      const retry = page.getByRole("button", {
+        name: "Réessayer",
+        exact: true,
+      });
+      await retry.waitFor({ timeout: 45000 });
+      assert(
+        (await page.locator("#loading-stage").textContent()).includes(
+          `(${asset})`,
+        ),
+      );
+      assert.equal(
+        await page.getByRole("button", { name: "Prendre le service" }).count(),
+        0,
+      );
+      await page.unroute(path);
+      await retry.click();
+      await page
+        .getByRole("button", { name: "Prendre le service" })
+        .waitFor({ timeout: 45000 });
+    } finally {
+      await context.close();
+    }
+  }
+  console.log(
+    "PASS incomplete skyline/right-facing sprite and missing WAV block startup; retry starts the complete game",
+  );
+}
 
 (async () => {
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
@@ -78,6 +136,7 @@ const server = http.createServer((request, response) => {
     assert.equal(manifest.url, `${base}manifest.webmanifest`);
 
     // A late failed download must leave no partly ready offline edition.
+    breakDownload = true;
     await prep.tap();
     await page
       .getByText("Impossible de préparer le hors connexion.", { exact: false })
@@ -128,6 +187,9 @@ const server = http.createServer((request, response) => {
     console.log(
       `PASS PWA: installable at ${scope}, opt-in, failed-download retry, all ${release.files.length} assets, offline title/intro/game, WAV ranges`,
     );
+    online = true;
+    await context.close();
+    await checkBrokenAssets(browser, base);
   } finally {
     await browser.close();
   }

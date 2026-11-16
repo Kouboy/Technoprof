@@ -23,15 +23,27 @@ export function installLoadingPresentation(loader: Loader) {
     if (!failed) stage("Chargement des images…", value);
   });
   loader.on("complete", prepareLoadingPresentation);
-  loader.on("loaderror", () => {
-    failed = true;
-    stage("Chargement interrompu. Réessayez.");
-    const retry = document.getElementById("loading-retry");
-    if (retry) {
-      retry.hidden = false;
-      retry.onclick = () => location.reload();
-    }
-  });
+  loader.on("loaderror", (file?: { key: string }) =>
+    showLoadingFailure(file?.key),
+  );
+}
+export function showLoadingFailure(asset?: string) {
+  if (failed) return;
+  failed = true;
+  stage(
+    asset
+      ? `Chargement interrompu. Fichier incomplet ou indisponible (${asset}).`
+      : "Chargement interrompu. Réessayez.",
+  );
+  const retry = document.getElementById("loading-retry");
+  if (retry) {
+    retry.hidden = false;
+    retry.onclick = () => location.reload();
+  }
+  finishLoadingPresentation();
+}
+export function verifyLoadingPresentation() {
+  stage("Vérification des images et des sons…");
 }
 export function prepareLoadingPresentation() {
   // File completion does not mean that the prepared sprites are ready.

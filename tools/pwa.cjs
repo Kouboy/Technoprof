@@ -20,6 +20,30 @@ function createPwaPlugin(root) {
     },
     writeBundle(options, bundle) {
       const dir = path.resolve(options.dir);
+      const dimensions = {};
+      for (const [name, entry] of Object.entries(bundle)) {
+        if (!/^art\/[a-f0-9]+\.png$/.test(name)) continue;
+        const header = entry.source;
+        const view = new DataView(
+          header.buffer,
+          header.byteOffset,
+          header.byteLength,
+        );
+        dimensions[path.basename(name)] = [
+          view.getUint32(16),
+          view.getUint32(20),
+        ];
+      }
+      const index = path.join(dir, "index.html");
+      const html = fs.readFileSync(index, "utf8");
+      fs.writeFileSync(
+        index,
+        html.replace(
+          /<html[^>]*>/,
+          (tag) =>
+            `${tag}\n<script id="asset-dimensions" type="application/json">${JSON.stringify(dimensions)}</script>`,
+        ),
+      );
       fs.mkdirSync(path.join(dir, "pwa"), { recursive: true });
       const icons = [192, 512].map((size) => {
         const name = `icon-${size}.png`;
